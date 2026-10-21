@@ -121,7 +121,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۱۸** — ✅ Archive: **۶۹** — 🧾 مجموع: **۸۷** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۴:۴۹ (`2026-10-21T15:24:49.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۱۹** — ✅ Archive: **۶۹** — 🧾 مجموع: **۸۸** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۴:۵۳ (`2026-10-21T15:24:53.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -131,6 +131,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:EVENTS:START -->
 | 🕒 زمان (ایران / UTC) | رویداد | شناسه لاگ | توسط |
 | --- | --- | --- | --- |
+| ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۴:۵۳<br>`2026-10-21T15:24:53.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-54-53_tohid_push-after-wave10-sync`](./logs/pending/1405-07-29_18-54-53_tohid_push-after-wave10-sync.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۴:۴۹<br>`2026-10-21T15:24:49.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-54-49_tohid_fix-push-log-metadata`](./logs/pending/1405-07-29_18-54-49_tohid_fix-push-log-metadata.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۴:۲۴<br>`2026-10-21T15:24:24.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-54-24_tohid_push`](./logs/pending/1405-07-29_18-54-24_tohid_push.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۴:۱۳<br>`2026-10-21T15:24:13.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-54-13_tohid_sync-main-wave10-alireza`](./logs/pending/1405-07-29_18-54-13_tohid_sync-main-wave10-alireza.md) | **توحید** |
@@ -142,7 +143,6 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۳:۲۲<br>`2026-10-21T15:23:22.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-53-22_alireza_wave10-archive-pr`](./logs/archive/1405-07-29_18-53-22_alireza_wave10-archive-pr.md) | **علیرضا** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۳:۱۸<br>`2026-10-21T15:23:18.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-53-18_alireza_push`](./logs/archive/1405-07-29_18-53-18_alireza_push.md) | **علیرضا** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۳:۱۸<br>`2026-10-21T15:23:18.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-53-18_alireza_wave10-final-archive`](./logs/archive/1405-07-29_18-53-18_alireza_wave10-final-archive.md) | **علیرضا** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۳:۱۷<br>`2026-10-21T15:23:17.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_18-53-03_alireza_wave10-pr`](./logs/archive/1405-07-29_18-53-03_alireza_wave10-pr.md) | **علیرضا** |
 <!-- WORKLOG:EVENTS:END -->
 
 ---
@@ -154,6 +154,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:PENDING:START -->
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- |
+| [`1405-07-29_18-54-53_tohid_push-after-wave10-sync`](./logs/pending/1405-07-29_18-54-53_tohid_push-after-wave10-sync.md) | پوش شاخه پس از همگام‌سازی موج دهم | `Push` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۴:۵۳<br>`2026-10-21T15:24:53.000Z` | origin/arena/ca5ca2d8-escaperoom (origin/main..72d23d7) |
 | [`1405-07-29_18-54-49_tohid_fix-push-log-metadata`](./logs/pending/1405-07-29_18-54-49_tohid_fix-push-log-metadata.md) | اصلاح فراداده لاگ پوش موج دهم | `Commit` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۴:۴۹<br>`2026-10-21T15:24:49.000Z` | شاخه arena/ca5ca2d8-escaperoom |
 | [`1405-07-29_18-54-24_tohid_push`](./logs/pending/1405-07-29_18-54-24_tohid_push.md) | پوش شاخه پس از همگام‌سازی موج دهم | `Push` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۴:۲۴<br>`2026-10-21T15:24:24.000Z` | origin/arena/ca5ca2d8-escaperoom (origin/main..df74f2b) |
 | [`1405-07-29_18-54-13_tohid_sync-main-wave10-alireza`](./logs/pending/1405-07-29_18-54-13_tohid_sync-main-wave10-alireza.md) | همگام‌سازی main — دریافت موج دهم علیرضا | `Commit` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۴:۱۳<br>`2026-10-21T15:24:13.000Z` | origin/main 265548d → arena/ca5ca2d8-escaperoom |
