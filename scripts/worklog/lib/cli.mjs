@@ -29,6 +29,7 @@ import {
   persianDateTime,
   worklogPath,
   logDir,
+  normalizeReaderDetails,
 } from './registry.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
@@ -98,6 +99,23 @@ function readBody(flags, root) {
   return '';
 }
 
+function readReaderDetails(flags) {
+  try {
+    return normalizeReaderDetails(
+      flags['what-done'],
+      flags['user-result'],
+      flags.verification,
+      flags.remaining,
+    );
+  } catch (error) {
+    console.error(`✖ ${error.message}`);
+    console.error(
+      '  هر لاگ جدید باید این چهار مورد را روشن بگوید: --what-done, --user-result, --verification, --remaining. برای «چیزی نمانده» بنویس: --remaining "موردی از این کار باقی نمانده است."',
+    );
+    return null;
+  }
+}
+
 function commitLogFiles(root, files, message) {
   const relative = files
     .map((file) => path.relative(root, file))
@@ -125,11 +143,25 @@ const HELP = `
   list      نمایش لاگ‌های Pending و Archive
   hooks     فعال‌سازی هوک‌های Git پروژه (.githooks)
 
+هر لاگ جدید باید چهار توضیح کوتاه و روشن داشته باشد:
+  --what-done "دقیقاً چه چیزی تغییر کرد؟"
+  --user-result "این تغییر چه نتیجه‌ای برای بازیکن/کاربر دارد؟"
+  --verification "چه تست یا بررسی‌ای انجام شد و نتیجه چه بود؟"
+  --remaining "چه چیزی مانده یا خارج از دامنه است؟ اگر چیزی نمانده، صریح بنویس."
+
 نمونه‌ها:
   npm run worklog:new -- --author علیرضا --slug alireza --activity Commit \\
-    --title "موج ۳ کات‌سین" --topic wave3-cutscene --ref "شاخه arena/xxx"
+    --title "موج ۳ کات‌سین" --topic wave3-cutscene --ref "شاخه arena/xxx" \\
+    --what-done "نمای تاریک سالن پس از پایان سکانس از وضعیت ذخیره‌شده بازسازی می‌شود." \\
+    --user-result "بازیکن پس از refresh در همان مرحلهٔ بازی ادامه می‌دهد." \\
+    --verification "تست SQLite reopen و npm run test:alireza موفق شدند." \\
+    --remaining "حرکت سه‌بعدی همچنان در دامنهٔ مالک رابط است."
 
-  npm run worklog:push -- --author توحید --slug tohid --commit
+  npm run worklog:push -- --author توحید --slug tohid --commit \\
+    --what-done "آزمون بازیابی صندلی پس از refresh اضافه شد." \\
+    --user-result "بازیکن بعد از بارگذاری دوباره همان صندلی و مرحله را می‌بیند." \\
+    --verification "۴۷ تست Tohid و ۱۷۵ تست کامل موفق شدند." \\
+    --remaining "تغییر رابط مرورگر در این پوش انجام نشد."
   npm run worklog:archive -- 1405-07-29_16-35-38_alireza_pr-13_wave1-wave2 \\
     --by توحید --note "PR #13 بررسی و ادغام شد"
   npm run worklog:check
@@ -174,13 +206,20 @@ export function run(argv, root = ROOT) {
 }
 
 function commandNew(flags, root) {
+  const readerDetails = readReaderDetails(flags);
+  if (!readerDetails) return 1;
+
   const branch = flags.branch || currentBranch(root);
   const result = createLog(root, {
     author: flags.author,
     slug: flags.slug,
     activity: flags.activity,
     title: flags.title,
-    summary: flags.summary,
+    summary: flags.summary || `${readerDetails.whatDone} نتیجه: ${readerDetails.userResult}`,
+    whatDone: readerDetails.whatDone,
+    userResult: readerDetails.userResult,
+    verification: readerDetails.verification,
+    remaining: readerDetails.remaining,
     ref: flags.ref,
     branch,
     topic: flags.topic,
@@ -210,6 +249,9 @@ function commandNew(flags, root) {
 }
 
 function commandPush(flags, root) {
+  const readerDetails = readReaderDetails(flags);
+  if (!readerDetails) return 1;
+
   const branch = flags.branch || currentBranch(root);
   const branchName = currentBranch(root);
   const upstream = tryGit(root, [
@@ -304,8 +346,7 @@ function commandPush(flags, root) {
   const summary =
     typeof flags.summary === 'string'
       ? flags.summary
-      : `پوش ${commits.length} کامیت شاخه ${branch} (${base} → ${head})` +
-        (commits.length ? ` از جمله «${commits[0].subject}»` : '');
+      : `${readerDetails.whatDone} نتیجه: ${readerDetails.userResult}`;
 
   const result = createLog(root, {
     author: flags.author,
@@ -316,6 +357,10 @@ function commandPush(flags, root) {
         ? flags.title
         : `پوش شاخه ${branch} — ${head}`,
     summary,
+    whatDone: readerDetails.whatDone,
+    userResult: readerDetails.userResult,
+    verification: readerDetails.verification,
+    remaining: readerDetails.remaining,
     ref: `origin/${branch} (${base}..${head})`,
     branch,
     topic: typeof flags.topic === 'string' ? flags.topic : 'push',
