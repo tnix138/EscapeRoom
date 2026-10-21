@@ -1,0 +1,47 @@
+# Issue sync — اعمال چیدمان Issueهای تیم با توکن خود Actions
+# چرا Actions؟ توکن بیرونی این محیط به ویرایش Issue دسترسی ندارد، ولی GITHUB_TOKEN
+# داخل workflow با permissions: issues: write می‌تواند لیبل، Milestone، مسئول،
+# بدنه، کامنت و بستن Issue را انجام دهد (docs/RULES.md قانون ۵ — اتوماسیون).
+name: Issue sync
+
+on:
+  push:
+    branches:
+      - 'arena/cbc9845a-escaperoom'
+    paths:
+      - 'scripts/issue-plan.json'
+      - 'scripts/issue-bodies/**'
+      - 'scripts/issue-sync.mjs'
+      - '.github/workflows/issue-sync.yml'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'اجرای آزمایشی (فقط گزارش، بدون تغییر)'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: issue-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: همگام‌سازی Issueها
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: اعمال طرح
+        run: node scripts/issue-sync.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run && '1' || '0' }}

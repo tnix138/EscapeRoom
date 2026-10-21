@@ -13,7 +13,7 @@
 //   ADMIN_ROLE           — superadmin | moderator | viewer (پیش‌فرض superadmin)
 //   ADMIN_SESSION_SECRET — کلید امضای جلسه (الزامی در production)
 // اگر هیچ‌کدام تنظیم نشده باشد، ورود ۵۰۳ می‌دهد (fail-closed)، نه ۲۰۰.
-import { createHash, createHmac, randomUUID, timingSafeEqual } from 'node:crypto';
+import { createHash, createHmac, randomUUID, scryptSync, timingSafeEqual } from 'node:crypto';
 import type { AdminRole } from '../../app/admin/login/login-rules';
 
 export const ADMIN_COOKIE_NAME = 'orf_admin_session';
@@ -60,6 +60,24 @@ function safeEqual(a: string, b: string): boolean {
   return timingSafeEqual(left, right);
 }
 
+/**
+ * بررسی گذرواژه در برابر هش ذخیره‌شده.
+ * دو قالب پذیرفته می‌شود تا هم `sha256sum` خط فرمان کار کند و هم
+ * `npm run hash:admin` که هش scrypt می‌سازد:
+ *   - `scrypt$<salt>$<hash>` (۶۴ بایتی، مقایسهٔ ثابت‌زمان)
+ *   - هش SHA-256 هگز
+ */
+function verifyPasswordHash(password: string, stored: string): boolean {
+  if (stored.startsWith('scrypt$')) {
+    const [, salt, expected] = stored.split('$');
+    if (!salt || !expected) return false;
+    const actual = scryptSync(password, salt, 64);
+    const target = Buffer.from(expected, 'hex');
+    return actual.length === target.length && timingSafeEqual(actual, target);
+  }
+  return safeEqual(sha256Hex(password), stored);
+}
+
 function parseRole(value: string): AdminRole {
   const role = value.toLowerCase() as AdminRole;
   return ROLES.includes(role) ? role : 'superadmin';
@@ -97,7 +115,7 @@ export function verifyAdminCredentials(
   const credentials = config.credentials;
   if (!credentials) return null;
   const usernameMatches = safeEqual(username.trim(), credentials.username);
-  const passwordMatches = safeEqual(sha256Hex(password), credentials.passwordHash);
+  const passwordMatches = verifyPasswordHash(password, credentials.passwordHash);
   if (!usernameMatches || !passwordMatches) return null;
   const now = Date.now();
   return {

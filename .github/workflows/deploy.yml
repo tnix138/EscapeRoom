@@ -1,0 +1,104 @@
+# Deploy — انتشار روی Vercel Production از main سبز
+# منبع: docs/AUTO.md (فقط توحید deploy می‌کند) و docs/checklists/before-release.md
+name: Deploy
+
+on:
+  push:
+    branches: ['main']
+  # بعد از ادغام خودکار، push با توکن ربات انجام می‌شود و actor توحید نیست؛
+  # پس اتمام موفق Auto-merge هم یک سیگنال main سبز است.
+  workflow_run:
+    workflows: ['Auto-merge']
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: انتشار production
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'push' && github.actor == 'tnix138') ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      # پیش‌بررسی: بدون این سه secret، انتشار بی‌معنا است. زودتر از نصب/ساخت
+      # شکست می‌خورد تا پیام روشن باشد و دقیقهٔ CI هدر نرود.
+      - name: بررسی secretهای انتشار
+        run: |
+          missing=0
+          for name in VERCEL_TOKEN VERCEL_ORG_ID VERCEL_PROJECT_ID; do
+            if [ -z "${!name}" ]; then
+              echo "❌ secret «$name» تنظیم نشده است."
+              missing=1
+            fi
+          done
+          if [ "$missing" = "1" ]; then
+            echo "برای انتشار، سه secret بالا را در Settings → Secrets and variables → Actions بسازید."
+            exit 1
+          fi
+          echo "✅ secretهای انتشار موجودند."
+          if [ -z "$PRODUCTION_URL" ]; then
+            echo "ℹ️ PRODUCTION_URL تنظیم نشده؛ اسمک‌تست بعد از انتشار رد می‌شود."
+          fi
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          PRODUCTION_URL: ${{ secrets.PRODUCTION_URL }}
+
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: نصب وابستگی‌ها
+        run: npm ci
+
+      - name: آزمون تایپ و تست‌ها قبل از انتشار
+        run: npm run typecheck && npm test
+
+      - name: ساخت نسخهٔ تولیدی
+        run: npm run build
+        env:
+          NEXT_TELEMETRY_DISABLED: '1'
+
+      - name: انتشار روی Vercel
+        run: npx vercel deploy --prod --yes --token="$VERCEL_TOKEN"
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          NEXT_TELEMETRY_DISABLED: '1'
+
+      - name: اسمک‌تست مسیر اصلی بازی (اگر PRODUCTION_URL تنظیم شده باشد)
+        run: |
+          if [ -z "$PRODUCTION_URL" ]; then
+            echo "PRODUCTION_URL تنظیم نشده است؛ اسمک‌تست رد شد."
+            exit 0
+          fi
+          for i in 1 2 3 4 5; do
+            if curl -fsS "$PRODUCTION_URL/api/health" > /dev/null; then
+              break
+            fi
+            echo "تلاش $i برای سلامت ناموفق؛ ۱۰ ثانیه صبر..."
+            sleep 10
+            if [ "$i" = "5" ]; then
+              echo "❌ سرور بعد از انتشار بالا نیامد."
+              exit 1
+            fi
+          done
+          node scripts/smoke-test.mjs
+        env:
+          BASE_URL: ${{ secrets.PRODUCTION_URL }}

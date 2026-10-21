@@ -1,42 +1,47 @@
 {
-    "name":  "escaperoom-orféo",
-    "version":  "0.1.0",
-    "private":  true,
-    "type":  "module",
-    "scripts":  {
-                    "dev":  "next dev --hostname 0.0.0.0",
-                    "build":  "next build",
-                    "start":  "next start --hostname 0.0.0.0",
-                    "typecheck":  "tsc --noEmit",
-                    "test":  "vitest run",
-                    "test:tohid":  "vitest run tests/tohid",
-                    "test:amirali":  "vitest run tests/amirali",
-                    "test:alireza":  "vitest run tests/alireza",
-                    "test:e2e:alireza":  "playwright test tests/alireza/multiplayer-theater.spec.ts",
-                    "docs:index":  "node scripts/docs.mjs index",
-                    "docs:check":  "node scripts/docs.mjs check"
-                },
-    "dependencies":  {
-                         "@fontsource-variable/vazirmatn":  "^5.3.0",
-                         "@types/three":  "^0.186.0",
-                         "next":  "^15.5.28",
-                         "react":  "^19.1.0",
-                         "react-dom":  "^19.1.0",
-                         "three":  "^0.186.1",
-                         "zod":  "^3.24.0"
-                     },
-    "devDependencies":  {
-                            "@playwright/test":  "^1.64.1",
-                            "@types/node":  "^22.0.0",
-                            "@types/react":  "^19.1.0",
-                            "@types/react-dom":  "^19.1.0",
-                            "typescript":  "^5.8.0",
-                            "vitest":  "^5.0.5"
-                        },
-    "overrides":  {
-                      "postcss":  "^8.5.31"
-                  },
-    "engines":  {
-                    "node":  "\u003e=22"
-                }
+  "name": "escaperoom-orféo",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev --hostname 0.0.0.0",
+    "build": "next build",
+    "start": "next start --hostname 0.0.0.0",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:tohid": "vitest run tests/tohid",
+    "test:amirali": "vitest run tests/amirali",
+    "test:alireza": "vitest run tests/alireza",
+    "test:e2e:alireza": "playwright test tests/alireza/multiplayer-theater.spec.ts",
+    "docs:index": "node scripts/docs.mjs index",
+    "docs:check": "node scripts/docs.mjs check",
+    "lint": "node scripts/lint.mjs",
+    "ci": "npm run typecheck && npm run lint && npm test",
+    "auto-merge": "node scripts/auto-merge.mjs",
+    "smoke": "node scripts/smoke-test.mjs",
+    "hash:admin": "node scripts/hash-admin-password.mjs"
+  },
+  "dependencies": {
+    "@fontsource-variable/vazirmatn": "^5.3.0",
+    "@types/three": "^0.186.0",
+    "next": "^15.5.28",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "three": "^0.186.1",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.1",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "typescript": "^5.8.0",
+    "vitest": "^5.0.5"
+  },
+  "overrides": {
+    "postcss": "^8.5.31"
+  },
+  "engines": {
+    "node": ">=22"
+  }
 }

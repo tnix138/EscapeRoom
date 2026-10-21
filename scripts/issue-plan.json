@@ -1,0 +1,600 @@
+{
+  "$comment": "برنامهٔ یک‌بارهٔ چیدمان Issueها — توسط scripts/issue-sync.mjs و workflow issue-sync اجرا می‌شود. تکرارپذیر است.",
+  "labels": [
+    {
+      "name": "split",
+      "color": "c2e0c6",
+      "description": "زیرکار تک‌مالک از یک فاز دو-مالکی"
+    },
+    {
+      "name": "tracker",
+      "color": "1d76db",
+      "description": "مسیر کار یک عضو تیم"
+    },
+    {
+      "name": "guide",
+      "color": "f9d0c4",
+      "description": "راهنمای هماهنگی تیم"
+    },
+    {
+      "name": "contract",
+      "color": "bfdadc",
+      "description": "قرارداد مشترک بین اعضا"
+    },
+    {
+      "name": "status:done",
+      "color": "0e8a16",
+      "description": "پیاده‌سازی و تست شده"
+    }
+  ],
+  "issues": [
+    {
+      "number": 74,
+      "labels": [
+        "phase",
+        "owner:tohid",
+        "priority:critical",
+        "needs-decision"
+      ],
+      "milestone": "هفته ۱ — مستندات و زیرساخت",
+      "assignee": "tnix138"
+    },
+    {
+      "number": 75,
+      "labels": [
+        "phase",
+        "owner:tohid",
+        "priority:critical",
+        "status:done"
+      ],
+      "milestone": "هفته ۲ — CI، نورپردازی، ادمین، داستان",
+      "assignee": "tnix138"
+    },
+    {
+      "number": 76,
+      "labels": [
+        "phase",
+        "owner:tohid",
+        "priority:high",
+        "status:done"
+      ],
+      "milestone": "هفته ۳ — حضور، مواد، آمار، HUD",
+      "assignee": "tnix138"
+    },
+    {
+      "number": 77,
+      "labels": [
+        "owner:alireza",
+        "phase",
+        "priority:high",
+        "status:done"
+      ],
+      "milestone": "هفته ۴ — کلاینت حضور، ترس، ابزارهای مدیریتی",
+      "assignee": "alispy021"
+    },
+    {
+      "number": 78,
+      "labels": [
+        "phase",
+        "owner:alireza",
+        "priority:high"
+      ],
+      "milestone": "هفته ۲ — CI، نورپردازی، ادمین، داستان",
+      "assignee": "alispy021"
+    },
+    {
+      "number": 79,
+      "labels": [
+        "phase",
+        "owner:alireza",
+        "priority:medium"
+      ],
+      "milestone": "هفته ۳ — حضور، مواد، آمار، HUD",
+      "assignee": "alispy021"
+    },
+    {
+      "number": 80,
+      "labels": [
+        "owner:alireza",
+        "owner:amirali",
+        "phase",
+        "priority:high",
+        "status:done"
+      ],
+      "milestone": "هفته ۴ — کلاینت حضور، ترس، ابزارهای مدیریتی"
+    },
+    {
+      "number": 81,
+      "labels": [
+        "phase",
+        "owner:alireza",
+        "priority:medium"
+      ],
+      "milestone": "هفته ۵ — کات‌سین و QA",
+      "assignee": "alispy021"
+    },
+    {
+      "number": 82,
+      "labels": [
+        "phase",
+        "owner:amir",
+        "owner:amirali",
+        "priority:medium",
+        "status:done"
+      ],
+      "milestone": "هفته ۲ — CI، نورپردازی، ادمین، داستان"
+    },
+    {
+      "number": 83,
+      "labels": [
+        "phase",
+        "owner:amir",
+        "priority:medium",
+        "status:done"
+      ],
+      "milestone": "هفته ۳ — حضور، مواد، آمار، HUD"
+    },
+    {
+      "number": 84,
+      "labels": [
+        "owner:alireza",
+        "owner:nazanin",
+        "phase",
+        "priority:medium",
+        "status:done"
+      ],
+      "milestone": "هفته ۲ — CI، نورپردازی، ادمین، داستان"
+    },
+    {
+      "number": 85,
+      "labels": [
+        "phase",
+        "owner:amirali",
+        "priority:medium"
+      ],
+      "milestone": "هفته ۳ — حضور، مواد، آمار، HUD",
+      "assignee": "amiralikj"
+    },
+    {
+      "number": 86,
+      "labels": [
+        "phase",
+        "owner:amir",
+        "priority:low",
+        "status:done"
+      ],
+      "milestone": "هفته ۴ — کلاینت حضور، ترس، ابزارهای مدیریتی"
+    },
+    {
+      "number": 87,
+      "labels": [
+        "phase",
+        "owner:nazanin",
+        "priority:low"
+      ],
+      "milestone": "هفته ۵ — کات‌سین و QA",
+      "assignee": "nazanindavoodi"
+    },
+    {
+      "number": 88,
+      "labels": [
+        "phase",
+        "owner:tohid",
+        "priority:critical"
+      ],
+      "milestone": "هفته ۶ — انتشار",
+      "assignee": "tnix138"
+    },
+    {
+      "number": 90,
+      "labels": [
+        "owner:alireza",
+        "priority:high",
+        "split",
+        "status:done"
+      ],
+      "milestone": "هفته ۴ — کلاینت حضور، ترس، ابزارهای مدیریتی",
+      "assignee": "alispy021"
+    },
+    {
+      "number": 91,
+      "labels": [
+        "split",
+        "owner:amirali",
+        "priority:high"
+      ],
+      "milestone": "هفته ۴ — کلاینت حضور، ترس، ابزارهای مدیریتی",
+      "assignee": "amiralikj"
+    },
+    {
+      "number": 94,
+      "labels": [
+        "split",
+        "owner:amir",
+        "priority:medium",
+        "status:done"
+      ],
+      "milestone": "هفته ۲ — CI، نورپردازی، ادمین، داستان",
+      "assignee": "emirhamzehlou"
+    },
+    {
+      "number": 95,
+      "labels": [
+        "split",
+        "owner:amirali",
+        "priority:medium",
+        "status:done"
+      ],
+      "milestone": "هفته ۲ — CI، نورپردازی، ادمین، داستان",
+      "assignee": "amiralikj"
+    },
+    {
+      "number": 96,
+      "labels": [
+        "owner:alireza",
+        "priority:medium",
+        "split",
+        "status:done"
+      ],
+      "milestone": "هفته ۲ — CI، نورپردازی، ادمین، داستان",
+      "assignee": "alispy021"
+    },
+    {
+      "number": 97,
+      "labels": [
+        "owner:nazanin",
+        "priority:medium",
+        "split",
+        "status:done"
+      ],
+      "milestone": "هفته ۲ — CI، نورپردازی، ادمین، داستان",
+      "assignee": "nazanindavoodi"
+    },
+    {
+      "number": 98,
+      "labels": [
+        "tracker",
+        "owner:tohid"
+      ],
+      "assignee": "tnix138"
+    },
+    {
+      "number": 99,
+      "labels": [
+        "owner:alireza",
+        "status:done",
+        "tracker"
+      ],
+      "assignee": "alispy021",
+      "bodyFile": "scripts/issue-bodies/99.md"
+    },
+    {
+      "number": 100,
+      "labels": [
+        "tracker",
+        "owner:amirali"
+      ],
+      "assignee": "amiralikj",
+      "bodyFile": "scripts/issue-bodies/100.md"
+    },
+    {
+      "number": 101,
+      "labels": [
+        "owner:amir",
+        "status:done",
+        "tracker"
+      ],
+      "assignee": "emirhamzehlou"
+    },
+    {
+      "number": 102,
+      "labels": [
+        "tracker",
+        "owner:nazanin"
+      ],
+      "assignee": "nazanindavoodi"
+    },
+    {
+      "number": 103,
+      "labels": [
+        "guide"
+      ]
+    },
+    {
+      "number": 104,
+      "labels": [
+        "contract",
+        "owner:tohid",
+        "status:done"
+      ],
+      "assignee": "tnix138",
+      "bodyFile": "scripts/issue-bodies/104.md",
+      "milestone": "هفته ۳ — حضور، مواد، آمار، HUD"
+    }
+  ],
+  "comments": [
+    {
+      "number": 77,
+      "marker": "<!-- issue-sync:contract-presence -->",
+      "body": "<!-- issue-sync:contract-presence -->\n🔌 **قرارداد حضور آماده است.** مرجع کامل با نمونهٔ کد و دستورهای curl: #104\n\nخلاصه: `POST /api/rooms/{CODE}/presence` با هدر `x-seat-token`، بدنهٔ `{ position, yaw, phase }` — `yaw` **رادیان** است. دیدن هم‌تیمی‌ها از همان استریم SSE با رویداد `presence_update`.\n\nپیاده‌سازی سرور در #76 با ۲۱ تست سبز است؛ می‌توانی همین حالا فاز ۰۴ را شروع کنی."
+    },
+    {
+      "number": 85,
+      "marker": "<!-- issue-sync:contract-presence-hud -->",
+      "body": "<!-- issue-sync:contract-presence-hud -->\n🔌 **قرارداد حضور آماده است** (#104). HUD تو از رویداد `presence_update` در استریم SSE استفاده می‌کند و به `src/engine3d/**` وابسته نمی‌شود؛ فقط `position`، `yaw` و `playerName` را از payload بگیر.\n\nوابسته به #77 (علیرضا) است؛ تا آن موقع می‌توانی با داده‌ی mock کار کنی."
+    },
+    {
+      "number": 80,
+      "marker": "<!-- issue-sync:split-07 -->",
+      "body": "<!-- issue-sync:split-07 -->\n🧩 **این فاز به دو Issue تک‌مالک شکسته شد:**\n\n- #90 — بخش سه‌بعدی و صدا (علیرضا)\n- #91 — بخش HUD ترس (امیرعلی)\n\nاین Issue فقط مرجع باقی می‌ماند."
+    },
+    {
+      "number": 82,
+      "marker": "<!-- issue-sync:split-09 -->",
+      "body": "<!-- issue-sync:split-09 -->\n🧩 **این فاز به دو Issue تک‌مالک شکسته شد:**\n\n- #94 — سرور، جلسه و فرم ورود (امیر)\n- #95 — چیدمان و صفحهٔ ورود (امیرعلی)\n\nاین Issue فقط مرجع باقی می‌ماند."
+    },
+    {
+      "number": 84,
+      "marker": "<!-- issue-sync:split-11 -->",
+      "body": "<!-- issue-sync:split-11 -->\n🧩 **این فاز به دو Issue تک‌مالک شکسته شد:**\n\n- #96 — دیالوگ، صدا و طراحی مراحل (علیرضا)\n- #97 — مستند داستان و تست روایت (نازنین)\n\nاین Issue فقط مرجع باقی می‌ماند."
+    },
+    {
+      "number": 94,
+      "marker": "<!-- issue-sync:input-from-tohid -->",
+      "body": "<!-- issue-sync:input-from-tohid -->\n🔑 **ورودی‌های موردنیاز تو از توحید (در Issue #98 پیگیری شود):**\n\n- `ADMIN_USERNAME` و `ADMIN_PASSWORD_HASH` روی Vercel و در `.env.local`\n- محدودیت نرخ: فقط `checkAndRecord` را از `src/server/auth/rate-limit.ts` import کن؛ تغییرش نده\n- قرارداد ۵ (`AdminSession`) در `docs/CONTRACTS.md` مرجع است\n\nقرارداد ورود با امیرعلی (#95): `POST /api/admin/login` → `200` با کوکی `httpOnly` | `403 FORBIDDEN` | `429 RATE_LIMITED`"
+    },
+    {
+      "number": 90,
+      "marker": "<!-- issue-sync:input-from-tohid -->",
+      "body": "<!-- issue-sync:input-from-tohid -->\n🔑 **قرارداد ترس:** شکل مشترک با HUD امیرعلی (#91) در `src/contracts/horror.ts` تعریف می‌شود (کار توحید در #98):\n\n```ts\nexport type HorrorIntensity = 'calm' | 'tense' | 'panic';\nexport interface HorrorSignal { level: HorrorIntensity; at: number }\n```\n\nتا آماده شدنش همین شکل را مبنا بگیر و HUD را با یک prop ساده `level` طراحی کن."
+    },
+    {
+      "number": 91,
+      "marker": "<!-- issue-sync:input-from-tohid -->",
+      "body": "<!-- issue-sync:input-from-tohid -->\n🔑 **قرارداد ترس:** سیگنال از `src/contracts/horror.ts` می‌آید (کار توحید در #98):\n\n```ts\nexport type HorrorIntensity = 'calm' | 'tense' | 'panic';\n```\n\nکامپوننت HUD فقط prop `level` بگیرد و به `src/engine3d/**` وابسته نشود."
+    },
+    {
+      "number": 101,
+      "marker": "<!-- issue-sync:input-from-tohid -->",
+      "body": "<!-- issue-sync:input-from-tohid -->\n🔑 **داده‌های فاز ۱۰ و ۱۳ از توحید** (#98) می‌آید؛ خودت در `src/server/**` کد ننویس:\n\n```ts\nlistRoomSummaries(): Promise<RoomSummary[]>;\nlistAdminEvents(limit: number): Promise<AdminEvent[]>;\nrecordAdminEvent(event: AdminEvent): Promise<void>;\ndeleteSeat(roomCode: string, seatIndex: number): Promise<boolean>;\n```\n\nتا آماده شدنشان، APIهای `src/app/api/admin/**` خودت را با داده‌ی mock بساز و بعد فقط منبع داده را عوض کن."
+    },
+    {
+      "number": 94,
+      "marker": "<!-- issue-sync:amir-account-note -->",
+      "body": "<!-- issue-sync:amir-account-note -->\n⚠️ **این Issue مال امیر است، ولی نتوانستیم مسئول (assignee) بگذاریم.**\n\nحساب `emirhamzehlou` در فهرست اعضای ریپو هست، اما GitHub با خطای «Could not resolve to a User» آن را نمی‌شناسد (کاربر ۴۰۴ برمی‌گرداند) — احتمالاً نام کاربری تغییر کرده است.\n\n**لطفاً در همین Issue نام کاربری درست گیت‌هاب را کامنت کن** تا با یک بار اجرای workflow «Issue sync» مسئول هم ثبت شود.\n\nتا آن موقع، این Issue و #94 / #101 مال تو هستند."
+    },
+    {
+      "number": 101,
+      "marker": "<!-- issue-sync:amir-account-note -->",
+      "body": "<!-- issue-sync:amir-account-note -->\n⚠️ **این Issue مال امیر است، ولی نتوانستیم مسئول (assignee) بگذاریم.**\n\nحساب `emirhamzehlou` در فهرست اعضای ریپو هست، اما GitHub با خطای «Could not resolve to a User» آن را نمی‌شناسد (کاربر ۴۰۴ برمی‌گرداند) — احتمالاً نام کاربری تغییر کرده است.\n\n**لطفاً در همین Issue نام کاربری درست گیت‌هاب را کامنت کن** تا با یک بار اجرای workflow «Issue sync» مسئول هم ثبت شود.\n\nتا آن موقع، این Issue و #94 / #101 مال تو هستند."
+    },
+    {
+      "number": 90,
+      "marker": "<!-- issue-sync:horror-contract-ready -->",
+      "body": "<!-- issue-sync:horror-contract-ready -->\n✅ **قرارداد ترس آماده و تست شده است** — `src/contracts/horror.ts` (توحید)\n\n```ts\nexport type HorrorIntensity = 'calm' | 'tense' | 'panic';\nexport interface HorrorSignal { level: HorrorIntensity; at: number }\n\nhorrorLevelFromThreat(threat01: number): HorrorIntensity   // ۰.۴ → tense، ۰.۷۵ → panic\nhorrorLevelFromDistance(distanceM: number, { nearM = 4, farM = 16 }): HorrorIntensity\nmaxHorrorIntensity(a, b): HorrorIntensity                   // ترکیب چند منبع ترس\nparseHorrorSignal(input: unknown): HorrorSignal | null      // ورودی نامطمئن/شبکه\n```\n\n- آستانه‌ها در `HORROR_THRESHOLDS` و بازهٔ فاصله در `HORROR_DISTANCE` قابل تنظیم‌اند.\n- ۹ تست در `tests/tohid/horror-contract.test.ts` سبز است.\n- این فایل مال توحید است؛ تغییرش را از طریق Issue #98 بخواه."
+    },
+    {
+      "number": 91,
+      "marker": "<!-- issue-sync:horror-contract-ready -->",
+      "body": "<!-- issue-sync:horror-contract-ready -->\n✅ **قرارداد ترس آماده و تست شده است** — `src/contracts/horror.ts` (توحید)\n\nبرای HUD فقط همین‌ها لازم است:\n\n```ts\nexport type HorrorIntensity = 'calm' | 'tense' | 'panic';\nnormalizeHorrorIntensity(value: unknown): HorrorIntensity  // ورودی نامعتبر → 'calm'\nisHorrorIntensity(value: unknown): value is HorrorIntensity\n```\n\nکامپوننت HUD ترس فقط یک prop `level: HorrorIntensity` بگیرد. هیچ importی از `src/engine3d/**` لازم نیست."
+    },
+    {
+      "number": 94,
+      "marker": "<!-- issue-sync:admin-secrets-ready -->",
+      "body": "<!-- issue-sync:admin-secrets-ready -->\n🔑 **ابزار و نام متغیرهای محیطی آماده است.**\n\nهش رمز را با این دستور بساز (خروجی را در env بگذار، رمز خام را کامیت نکن):\n\n```bash\nnpm run hash:admin -- 'رمز-دلخواه'\n# ADMIN_PASSWORD_HASH='scrypt$<salt>$<hash>'\n```\n\nمتغیرها: `ADMIN_USERNAME`، `ADMIN_PASSWORD_HASH` (و اختیاری `ADMIN_SESSION_SECRET`).\nنمونه در `.env.example` هست. الگوریتم: scrypt با salt تصادفی ۱۶ بایتی و کلید ۶۴ بایتی؛ برای بررسی رمز از `verifyAdminPassword` در `scripts/hash-admin-password.mjs` تقلید کن (مقایسهٔ constant-time)."
+    },
+    {
+      "number": 101,
+      "marker": "<!-- issue-sync:admin-data-ready -->",
+      "body": "<!-- issue-sync:admin-data-ready -->\n✅ **مدل دادهٔ پنل ادمین آماده و تست شده است** (فاز ۱۰ و ۱۳ — توحید)\n\n```ts\n// src/contracts/admin.ts\nexport interface RoomSummary {\n  code: string; phase: GamePhase; playerCount: number;\n  occupiedSeats: number; onlineCount: number; version: number;\n  createdAt: number; updatedAt: number; hasAuditoriumRestart: boolean;\n}\nexport interface AdminEvent { id; type; roomCode; playerId; payload; createdAt }\nexport interface AdminSession { adminId; username; role; createdAt; expiresAt }  // قرارداد ۵\nexport type AdminRole = 'superadmin' | 'moderator' | 'viewer';\ncanModerate(role): boolean   // فقط superadmin و moderator اجازهٔ مدیریت دارند\n```\n\nمتدهای ریپازیتوری (هر دو درایور SQLite و Supabase):\n\n```ts\nlistRooms(limit?: number): Promise<InternalRoomState[]>\nrecordAdminEvent(event: AdminEvent): Promise<void>\nlistAdminEvents({ limit?, roomCode?, type? }): Promise<AdminEvent[]>\ndeleteSeat(roomCode: string, seatIndex: number): Promise<boolean>\n```\n\nهمچنین:\n- `src/server/admin/room-summary.ts` → `summarizeRoom`، `summarizeRooms`، `buildAdminStats` (آمار آماده برای داشبورد)\n- `supabase/migrations/002_admin_events.sql` → جدول `admin_events` با ایندکس و RLS\n- ۱۹ تست در `tests/tohid/admin-*.test.ts` سبز\n\nدر API خودت (`src/app/api/admin/**`) از `getRoomRepository()` استفاده کن؛ نیازی به کد زدن در `src/server/**` نداری."
+    },
+    {
+      "number": 88,
+      "marker": "<!-- issue-sync:release-prep -->",
+      "body": "<!-- issue-sync:release-prep -->\n🧰 **آماده‌سازی انتشار انجام شده (توحید)**\n\n- [x] `npm run build` سبز\n- [x] `npm run smoke` → ۸ مرحله (سلامت، صفحهٔ اصلی، ساخت اتاق، توکن معتبر/نامعتبر، حضور، محدوده، SSE)\n- [x] اسمک‌تست به‌صورت خودکار بعد از deploy روی `PRODUCTION_URL` در `deploy.yml`\n- [x] `CHANGELOG.md` نوشته شد\n- [x] `npm run hash:admin` برای ساخت هش رمز ادمین\n\n**مسدود تا تکمیل این‌ها:**\n- [ ] تنظیم secrets ریپو: `VERCEL_TOKEN`، `VERCEL_ORG_ID`، `VERCEL_PROJECT_ID`، `PRODUCTION_URL`\n- [ ] `STORAGE_DRIVER=supabase` + `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` روی production\n- [ ] اجرای `supabase/migrations/001_initial_schema.sql` و `002_admin_events.sql`\n- [ ] اولین merge به `main` تا زنجیرهٔ CI → Auto-merge → Deploy فعال شود\n- [ ] پایان فازهای ۰۴ تا ۱۴ (وابستگی فاز ۱۵ طبق `docs/PHASE.md`)\n\n> تا این‌ها انجام نشود، انتشار production عمداً انجام نمی‌شود."
+    },
+    {
+      "number": 88,
+      "marker": "<!-- issue-sync:multi-instance-risk -->",
+      "body": "<!-- issue-sync:multi-instance-risk -->\n⚠️ **ریسک معماری برای انتشار روی Vercel — باید قبل از انتشار تصمیم گرفته شود**\n\nبلادرنگ فعلی در `src/server/realtime/room-hub.ts` و `src/server/presence/presence-store.ts` **در حافظهٔ پروسه** کار می‌کند و همچنین درایور پیش‌فرض `sqlite` است.\n\nپیامدها:\n- روی Vercel، هر نمونه (instance/سرورلس) حافظهٔ جدا دارد؛ اگر دو بازیکن یک اتاق به دو نمونهٔ مختلف برسند، `room_update` و `presence_update` را از هم نمی‌گیرند.\n- مسیر `.data/escaperoom.db` روی Vercel پایدار نیست؛ برای production باید `STORAGE_DRIVER=supabase` باشد.\n- SSE روی محیط serverless به پلن/زمان اجرا محدود است (`vercel.json` روی `maxDuration: 60` است).\n\nگزینه‌های پیشنهادی (یکی انتخاب شود):\n1. **Supabase Realtime** — اتاق‌ها از `supabase` بخوانند و تغییرات را از کانال Realtime پخش کنیم (بیشترین کار، بهترین نتیجه).\n2. **شارژ single-instance** — روی یک نمونهٔ همیشه‌بیدار اجرا شود (ساده، اما مقیاس‌پذیر نیست).\n3. **Polling کوتاه** — کلاینت هر ۳۰۰–۵۰۰ms وضعیت را بخواند و SSE فقط delta بدهد (کمترین تغییر، تأخیر بیشتر).\n\nتا انتخاب این گزینه، انتشار production عمداً انجام نمی‌شود."
+    },
+    {
+      "number": 94,
+      "marker": "<!-- issue-sync:done-09-amir -->",
+      "body": "<!-- issue-sync:done-09-amir -->\n✅ **فاز ۰۹ (بخش امیر) پیاده‌سازی و تست شد.**\n\n| فایل | کار |\n|---|---|\n| `src/server/admin/session.ts` | JWT HS256 بدون وابستگی بیرونی، بررسی رمز scrypt (ثابت‌زمان)، کوکی `httpOnly` + `SameSite=Lax` + `Secure` در production، سقف نرخ ورود |\n| `src/app/api/admin/login/route.ts` | ورود با `username`/`password`؛ موفق: ۲۰۰ + کوکی، اشتباه: **۴۰۳**، بدنهٔ ناقص: ۴۰۰، تلاش ششم در دقیقه: ۴۲۹، بدون env: ۵۰۳ |\n| `src/app/api/admin/logout/route.ts` | خروج با پاک‌کردن کوکی (`Max-Age=0`) |\n| `src/components/admin/LoginForm.tsx` | فرم ورود با پیام خطای فارسی و وضعیت «در حال بررسی» |\n| `src/app/admin/guard.ts` | نگهبان صفحات: بدون نشست معتبر → `/admin/login` |\n\n**تست:** ۱۶ مورد در `tests/amir/admin-auth.test.ts` (ورود درست، رمز اشتباه، نام کاربری ناشناس، بدنهٔ ناقص، ۴۲۹، ۵۰۳، کوکی دست‌کاری‌شده، جلسهٔ منقضی، خروج، توابع نشست).\n\n**تنظیم لازم روی Vercel:** `ADMIN_USERNAME`، `ADMIN_PASSWORD_HASH` (با `npm run hash:admin -- 'رمز'`) و `ADMIN_SESSION_SECRET`؛ نقش اختیاری `ADMIN_ROLE` (`superadmin`|`moderator`|`viewer`، پیش‌فرض `superadmin`)."
+    },
+    {
+      "number": 82,
+      "marker": "<!-- issue-sync:done-09 -->",
+      "body": "<!-- issue-sync:done-09 -->\n✅ **فاز ۰۹ کامل شد و پنل ادمین قابل استفاده است.**\n\n- بخش امیر (احراز هویت، سرور، فرم ورود): #94 — ۱۶ تست سبز.\n- دو فایل بخش امیرعلی (`src/app/admin/layout.tsx` و `src/app/admin/login/page.tsx`) چون ایشان در دسترس نبود، به‌صورت **حداقلی و بدون منطق** ساخته شدند تا پنل از ابتدا تا انتها کار کند؛ محتوای فعلی فقط `LoginForm` را وسط صفحه می‌گذارد. امیرعلی هر زمان برگشت می‌تواند آزادانه جایگزینشان کند — هیچ منطقی به آن‌ها وابسته نیست.\n\nمعیارهای موفقیت فاز: ورود با username/password ✓ · غیر ادمین ۴۰۳ ✓ · کوکی `httpOnly` ✓ · خروج ✓ · تست `tests/amir/admin-auth.test.ts` سبز ✓"
+    },
+    {
+      "number": 83,
+      "marker": "<!-- issue-sync:done-10 -->",
+      "body": "<!-- issue-sync:done-10 -->\n✅ **فاز ۱۰ پیاده‌سازی و تست شد.**\n\n- `GET /api/admin/stats` → `AdminStatsView` (اتاق‌ها، بازیکنان، آنلاین‌ها، رویدادها، **تعداد خطا و نرخ خطا**) — آمار از همان جدول‌های دیتابیس خوانده می‌شود.\n- `GET /api/admin/rooms` → لیست خلاصهٔ اتاق‌ها (کد، فاز، بازیکنان، آنلاین، نسخه، آخرین فعالیت).\n- `GET /api/admin/players` → بازیکنان نشسته با نام، صندلی، فاز و آخرین فعالیت.\n- صفحات `/admin`، `/admin/rooms`، `/admin/players` + کامپوننت‌های `StatsCard`، `RoomsTable`، `PlayersTable`، `AdminSidebar`.\n- `countAdminEvents` به هر دو درایور اضافه شد (SQLite: `COUNT(*)`، Supabase: `Prefer: count=exact` + `Content-Range`).\n\n**تست:** ۷ مورد در `tests/amir/admin-stats.test.ts` — از جمله هم‌خوانی آمار با دیتابیس، نبود توکن صندلی در خروجی، و ۴۰۱ برای هر چهار endpoint بدون نشست."
+    },
+    {
+      "number": 86,
+      "marker": "<!-- issue-sync:done-13 -->",
+      "body": "<!-- issue-sync:done-13 -->\n✅ **فاز ۱۳ پیاده‌سازی و تست شد.**\n\n- `DELETE /api/admin/players/[id]` — اخراج بازیکن: توکن صندلی **باطل** می‌شود، صندلی آزاد و نامش به «صندلی N» برمی‌گردد؛ رویداد `player_removed` با `byAdmin` در `admin_events` ثبت می‌شود. فقط نقش `moderator`/`superadmin` مجاز است (بقیه ۴۰۳).\n- `GET /api/admin/errors` — آخرین خطاهای نوع `error` با کد، اتاق، زمان و توضیح (`?limit=`, `?roomCode=`).\n- صفحهٔ `/admin/errors` + `ErrorsTable`، و دکمهٔ حذف با تأیید در `PlayersTable`.\n\n**تست:** ۶ مورد در `tests/amir/admin-players.test.ts` — حذف واقعی، بی‌اعتبار شدن توکن، ثبت رویداد، ۴۰۴ برای شناسهٔ ناشناس، ۴۰۳ برای نقش viewer، و ۴۰۱ بدون نشست."
+    },
+    {
+      "number": 101,
+      "marker": "<!-- issue-sync:amir-roadmap-status -->",
+      "body": "<!-- issue-sync:amir-roadmap-status -->\n📦 **وضعیت مسیر امیر — هر سه فاز تحویل شد.**\n\n| فاز | Issue | وضعیت |\n|---|---|---|\n| ۰۹ | #94 / #82 | ✅ احراز هویت، نشست، فرم ورود — ۱۶ تست |\n| ۱۰ | #83 | ✅ آمار، اتاق‌ها، بازیکنان، داشبورد — ۷ تست |\n| ۱۳ | #86 | ✅ حذف بازیکن، لیست خطاها — ۶ تست |\n\n- همهٔ endpointها شکل `{ ok, data }` / `{ ok: false, error: { code, message } }` دارند و بدون نشست ۴۰۱ می‌دهند.\n- `npm run typecheck`، `npm run lint`، `npm run build` و کل تست‌ها سبزند.\n- **تنها جای باقی‌مانده:** `src/app/admin/layout.tsx` و `src/app/admin/login/page.tsx` که طبق `docs/PHASE.md` مالکشان امیرعلی است؛ نسخهٔ حداقلی فعلی کار می‌کند و با نسخهٔ اصلی او قابل تعویض است.\n- برای فعال شدن روی production: سه env پنل ادمین در Vercel و ست‌کردن `ADMIN_*` (در #88 پیگیری می‌شود)."
+    },
+    {
+      "number": 95,
+      "marker": "<!-- issue-sync:done-09b -->",
+      "body": "<!-- issue-sync:done-09b -->\n✅ **فاز ۰۹-ب (پوستهٔ پنل ادمین) تحویل شد.**\n\n| کار | وضعیت |\n|---|---|\n| چیدمان `src/app/admin/layout.tsx` با تم تاریک و فونت فارسی (Vazirmatn از `src/app/layout.tsx`) | ✅ |\n| صفحهٔ `/admin/login` که `LoginForm` امیر را import می‌کند | ✅ |\n| هدایت بازدیدکنندهٔ بدون جلسه از `/admin/**` به `/admin/login` (`src/app/admin/guard.ts`) | ✅ |\n| حالت لودینگ و خطای فارسی در `LoginForm` (بدون افشای جزئیات امنیتی) | ✅ |\n| واکنش‌گرا (پنل با `max-width` روی موبایل هم جا می‌شود) | ✅ |\n\n**تست:** ۷ مورد در `tests/amir/admin-shell.test.ts` — رندر صفحهٔ ورود و چیدمان، ریدایرکت بدون جلسه، نشست معتبر، کوکی دست‌کاری‌شده، کوکی منقضی و env تنظیم‌نشده. برای این تست‌ها ترنسفورم JSX در `vitest.config.ts` فعال شد (`oxc.jsx`) تا کامپوننت‌های `.tsx` هم قابل رندر شوند.\n\n⚠️ **شفاف‌سازی:** این دو فایل چون امیرعلی در دسترس نبود، توسط توحید به‌صورت **حداقلی** نوشته شده‌اند و کامل‌اند از نظر رفتار، نه طراحی نهایی. هر وقت امیرعلی برگشت می‌تواند آزادانه جایگزینشان کند؛ تست‌های بالا نگهبان رفتار باقی می‌مانند."
+    },
+    {
+      "number": 77,
+      "marker": "<!-- issue-sync:avatares-04 -->",
+      "body": "<!-- issue-sync:avatares-04 -->\n🔍 **بازبینی دوبارهٔ #77 — یک شکاف واقعی پیدا و بسته شد**\n\nکد `RemotePlayerManager` / `RemotePlayer` / `usePresence` تست داشت، ولی **در هیچ صحنه‌ای mount نبود**؛ یعنی HUD حضور هم‌تیمی را نشان می‌داد اما در جهان سه‌بعدی کسی دیده نمی‌شد. الان وصل است:\n\n- `src/client-sdk/presence-avatars.ts` — تبدیل قاب حضور HUD (`position`, `yawDeg`) به snapshot موتور (`transform`, `updatedAt`)، حذف بازیکن محلی، یکتاسازی، رد موقعیت نامعتبر (NaN/∞).\n- `src/components/alley/AlleyRoomThreeIntegration.tsx` — ساخت `RemotePlayerManager`، افزودن به `engine.scene`، هم‌گام‌سازی با هر قاب حضور، به‌روزرسانی آواتارها در تیک هر فریم و `dispose` در unmount.\n- `tests/tohid/presence-avatar-wiring.test.ts` — ۱۰ تست: تبدیل، حالت‌های خطا، چرخهٔ عمر (ساخت/به‌روز/حذف آفلاین ۳۰ ثانیه/dispose) و اتصال واقعی فایل صحنه.\n\n**شاهد:** `tests/alireza/presence-client.test.ts` (۸) + `tests/amirali/presence-contract.test.ts` (۲۱) + `tests/amirali/presence-phase12.test.ts` (۳۲) + `tests/tohid/presence-avatar-wiring.test.ts` (۱۰) — همه سبز. کامیت `59ad5c5`.\n\n**دربارهٔ FPS:** اندازه‌گیری روی سخت‌افزار واقعی در سندباکس ممکن نیست (بدون GPU/مرورگر). به‌جای تیک زدن الکی، روش گام‌به‌گام اندازه‌گیری در `docs/checklists/before-release.md` ثبت شد و این معیار به‌عنوان دروازهٔ انتشار در #88 و #87 پیگیری می‌شود."
+    },
+    {
+      "number": 90,
+      "marker": "<!-- issue-sync:horror-07a -->",
+      "body": "<!-- issue-sync:horror-07a -->\n🔍 **بازبینی — شکاف واقعی: مه و صدای ترس ساخته شده بودند ولی در بازی نبودند**\n\n`FearResponsiveFog` و `HorrorAudio` تست داشتند اما هیچ صحنه‌ای mount نمی‌کرد. الان در صحنهٔ سه‌بعدی کوچه زنده‌اند (کامیت `c030fec`):\n\n- **مه واکنش‌گرا:** `FearResponsiveFog` روی `engine.scene` ساخته می‌شود، با هر تغییر سطح ترس HUD (`calm/tense/panic` → ۰٫۰۸/۰٫۳۴/۰٫۶۸) چگالی هدف عوض می‌شود، در حلقهٔ رندر نرم می‌شود و در unmount مه قبلی بازگردانده می‌شود.\n- **صدای محیطی + ضربان قلب:** `HorrorAudio` فقط با تعامل کاربر (کلیک «قفل ماوس») `init` می‌شود (قانون autoplay مرورگرها)، سپس `startAmbience` + `startHeartbeat`؛ `setFearLevel` با سطح ترس هم‌گام است و در unmount `dispose`.\n- **HUD ترس** (سهم امیرعلی) از قبل با `HorrorSignalHud` به همان صحنه وصل بود.\n- `tests/qa/horror-wiring.test.ts` (۴ تست): اتصال واقعی، صعودی بودن چگالی مه با سه سطح، تندتر شدن ضربان با ترس، و سازگاری جهت مدل صوتی با مدل HUD.\n\n**شاهد:** `tests/alireza/horror-atmosphere.test.ts` (۹) + `tests/amirali/horror-phase07.test.ts` (۲۱) + `tests/amirali/horror-signal-phase07.test.ts` (۱۴) + `tests/qa/horror-wiring.test.ts` (۴).\n\n**دربارهٔ FPS:** اندازه‌گیری روی سخت‌افزار واقعی در سندباکس ممکن نیست (بدون GPU/مرورگر). به‌جای تیک زدن الکی، روش گام‌به‌گام اندازه‌گیری در `docs/checklists/before-release.md` ثبت شد و این معیار به‌عنوان دروازهٔ انتشار در #88 و #87 پیگیری می‌شود."
+    },
+    {
+      "number": 80,
+      "marker": "<!-- issue-sync:horror-07 -->",
+      "body": "<!-- issue-sync:horror-07 -->\n🔍 **بازبینی — شکاف واقعی: مه و صدای ترس ساخته شده بودند ولی در بازی نبودند**\n\n`FearResponsiveFog` و `HorrorAudio` تست داشتند اما هیچ صحنه‌ای mount نمی‌کرد. الان در صحنهٔ سه‌بعدی کوچه زنده‌اند (کامیت `c030fec`):\n\n- **مه واکنش‌گرا:** `FearResponsiveFog` روی `engine.scene` ساخته می‌شود، با هر تغییر سطح ترس HUD (`calm/tense/panic` → ۰٫۰۸/۰٫۳۴/۰٫۶۸) چگالی هدف عوض می‌شود، در حلقهٔ رندر نرم می‌شود و در unmount مه قبلی بازگردانده می‌شود.\n- **صدای محیطی + ضربان قلب:** `HorrorAudio` فقط با تعامل کاربر (کلیک «قفل ماوس») `init` می‌شود (قانون autoplay مرورگرها)، سپس `startAmbience` + `startHeartbeat`؛ `setFearLevel` با سطح ترس هم‌گام است و در unmount `dispose`.\n- **HUD ترس** (سهم امیرعلی) از قبل با `HorrorSignalHud` به همان صحنه وصل بود.\n- `tests/qa/horror-wiring.test.ts` (۴ تست): اتصال واقعی، صعودی بودن چگالی مه با سه سطح، تندتر شدن ضربان با ترس، و سازگاری جهت مدل صوتی با مدل HUD.\n\n**شاهد:** `tests/alireza/horror-atmosphere.test.ts` (۹) + `tests/amirali/horror-phase07.test.ts` (۲۱) + `tests/amirali/horror-signal-phase07.test.ts` (۱۴) + `tests/qa/horror-wiring.test.ts` (۴).\n\n**دربارهٔ FPS:** اندازه‌گیری روی سخت‌افزار واقعی در سندباکس ممکن نیست (بدون GPU/مرورگر). به‌جای تیک زدن الکی، روش گام‌به‌گام اندازه‌گیری در `docs/checklists/before-release.md` ثبت شد و این معیار به‌عنوان دروازهٔ انتشار در #88 و #87 پیگیری می‌شود."
+    },
+    {
+      "number": 96,
+      "marker": "<!-- issue-sync:story-11a -->",
+      "body": "<!-- issue-sync:story-11a -->\n🔍 **بازبینی #96 — انجام شده و حالا تست هم دارد**\n\n- دیالوگ‌ها در کات‌سین واقعی دیده می‌شوند: `ThreeCutsceneView` از `getStoryDialogueAt(elapsedMs)` می‌خواند و کپشن را روی همان ساعت سرور می‌سازد.\n- افکت‌های صوتی داستانی در `FirstPersonCutsceneStage` با `StoryCueDirector` پخش می‌شوند (هر cue یک بار، بدون تکرار بعد از پرش میان‌کات‌سین).\n- **زمان‌بندی با `contracts/types` هم‌خوان است:** هر ۱۰ بیت داستان داخل `[0, 74s)` و شروع هر کدام در یک `CutsceneBeatId` رسمی (`CUTSCENE_BEAT_WINDOWS`) است.\n- **رد متن خالی/بلند:** `tests/qa/story-script-rules.ts` (بیرون از `src/components/cinema/**` تا محدودهٔ مالک دست‌نخورده بماند) متن کوتاه‌تر از ۸ یا بلندتر از ۱۵۰ نویسه، بازهٔ نامعتبر، بیرون از ۷۴ ثانیه، هم‌پوشانی، ترتیب نادرست و شناسهٔ تکراری را می‌گیرد.\n- تلمیح بدون لو دادن جواب: `findSpoilers()` هیچ عدد سه‌رقمی/رمز/جوابی در متن‌ها پیدا نمی‌کند.\n\n**تست‌ها:** `tests/qa/story-narrative.test.ts` (۱۲) + `tests/qa/story-cue-timing.test.ts` (۶).\n**مستند مرجع:** `docs/features/story.md` (#97). کامیت `e46e4f5`."
+    },
+    {
+      "number": 97,
+      "marker": "<!-- issue-sync:story-11b -->",
+      "body": "<!-- issue-sync:story-11b -->\n✅ **#97 انجام شد — مستند داستان + تست روایت**\n\n- `docs/features/story.md`: خلاصهٔ روایت، شخصیت‌ها (دربان، راوی، بانوی صحنه، مرد سیاه‌پوش، همهمهٔ تالار)، پایان، جدول ۱۰ بیت با زمان و متن مرجع، افکت‌های صوتی، مسیر احساسی ترس → همکاری → کشف → فرار، سیاست اسپویل و واژه‌نامهٔ فارسی هم‌لحن با HUD.\n- `tests/qa/story-narrative.test.ts` (۱۲ تست): ترتیب فازها، هم‌خوانی بیت‌ها با `CutsceneBeatId`، لبه‌های `[start, end)`، متن‌های مجاز، و این‌که هیچ متنی جواب معما را لو نمی‌دهد.\n- `tests/qa/story-cue-timing.test.ts` (۶ تست): زمان‌بندی یک‌بارهٔ افکت‌ها، پرش میان‌کات‌سین، آستانهٔ تأخیر، `reset` و پن استریو.\n- `tests/qa/game-path.test.ts` (۸ تست): مسیر کامل `alley_puzzle → door_cutscene → theater_cutscene → in_theater` بدون عقب‌گرد.\n\n**شاهد:** ۵۹۳ تست در ۵۶ فایل سبز، `tsc` و `lint` پاک. کامیت `e46e4f5`."
+    },
+    {
+      "number": 84,
+      "marker": "<!-- issue-sync:story-11 -->",
+      "body": "<!-- issue-sync:story-11 -->\n✅ **فاز ۱۱ کامل شد.** هر دو زیرکار بسته شدند:\n\n- #96 (اجرا — علیرضا): دیالوگ و cueهای صوتی در کات‌سین واقعی، تست‌های زمان‌بندی و بازبینی متن.\n- #97 (محتوا — نازنین): `docs/features/story.md` + `tests/qa/story-*.test.ts`.\n\nنتیجهٔ معیارها: داستان مستند است ✅ · دیالوگ‌ها پیاده شده‌اند ✅ · صداهای داستانی پخش می‌شوند ✅ · تست داستان سبز ✅ (`tests/qa/`). کامیت `e46e4f5`."
+    },
+    {
+      "number": 104,
+      "marker": "<!-- issue-sync:contract-presence-review -->",
+      "body": "<!-- issue-sync:contract-presence-review -->\n✅ **بازبینی قرارداد — هر دو مصرف‌کننده تأیید شدند**\n\n- **کلاینت ۳D (#77):** `usePresence` + `RemotePlayerManager` در صحنهٔ کوچه mount شدند و بازیکن‌ها همدیگر را می‌بینند (کامیت `59ad5c5`).\n- **HUD (#85):** `usePresenceFeed` + `PresenceHud` با ۳۲ تست قرارداد/فاز ۱۲.\n\n**تغییر مسیرهای مرجع بعد از ادغام شاخه‌ها** (قرارداد فقط یک پیاده‌سازی دارد):\n\n| مورد | مسیر قطعی فعلی |\n|---|---|\n| نگه‌داری و اعتبارسنجی حضور | `src/server/realtime/presence-tracker.ts` |\n| سرویس (توکن صندلی، محدوده، rate limit ۵۰/ث) | `src/server/services/presence-service.ts` |\n| مسیر HTTP | `src/app/api/rooms/[code]/presence/route.ts` |\n| قرارداد سمت HUD | `src/components/hud/presence/presence-contract.ts` |\n| انتقال سمت کلاینت | `src/engine3d/presence/usePresence.ts` |\n\n`src/contracts/presence.ts` و `src/server/presence/**` (نسخهٔ موازی) در ادغام حذف شدند تا دو قرارداد هم‌زمان نماند.\n\n**تفاوت شکل پاسخ:** پاسخ `POST/GET` الان `data: { presences, serverNow }` است (بدون `accepted`/`entry`). هویت همچنان فقط از هدر `x-seat-token` خوانده می‌شود، `yaw` رادیان و در `[-π, π)` نرمال می‌شود، موقعیت خارج از محدودهٔ کوچه رد می‌شود (۴۰۰) و توکن نامعتبر ۴۰۱ می‌دهد. تیک‌های ۱۰Hz سمت کلاینت حفظ شده‌اند."
+    },
+    {
+      "number": 99,
+      "marker": "<!-- issue-sync:tracker-alireza-done -->",
+      "body": "<!-- issue-sync:tracker-alireza-done -->\n✅ **همهٔ کارهای این مسیر انجام و ادغام شد.**\n\n| کار | Issue | شاهد |\n|---|---|---|\n| حضور در کلاینت (دیدن هم‌تیمی) | #77 | `RemotePlayerManager` در صحنهٔ کوچه + ۷۱ تست حضور |\n| نورپردازی PBR و سایه | #78 | `src/engine3d/lighting/**` + `tests/alireza/lighting-rig.test.ts` |\n| مواد و بافت رویه‌ای | #79 | `src/engine3d/materials/**` + `tests/alireza/materials-pbr.test.ts` |\n| اتمسفر ترس — ۳D و صدا | #90 | مه + `HorrorAudio` در صحنه + `tests/qa/horror-wiring.test.ts` |\n| کات‌سین سینمایی | #81 | ۸ شات `camera-path` + `tests/alireza/cinema-camera-path.test.ts` |\n| محتوای داستانی — دیالوگ و صدا | #96 | `story-script` + `StoryCueDirector` + `tests/qa/story-*.test.ts` |\n\nاندازه‌گیری FPS روی دستگاه واقعی به‌عنوان دروازهٔ انتشار در #88 پیگیری می‌شود."
+    },
+    {
+      "number": 101,
+      "marker": "<!-- issue-sync:tracker-amir-done -->",
+      "body": "<!-- issue-sync:tracker-amir-done -->\n✅ **همهٔ کارهای این مسیر انجام شد.**\n\n| کار | Issue | شاهد |\n|---|---|---|\n| احراز هویت ادمین (سرور + فرم) | #94 | `src/server/auth/admin-session.ts` + `/api/admin/{login,logout,session}` + `tests/amir/admin-auth.test.ts` (۱۸) |\n| آمار و مشاهده | #83 | `/api/admin/{stats,rooms,players}` + داشبورد `src/app/admin/**` |\n| ابزارهای مدیریتی (حذف بازیکن، خطاها) | #86 | `DELETE /api/admin/players/[id]` + `/admin/errors` + رویدادهای ادمین |\n\nبعد از ادغام، ماژول نشست مشترک با نسخهٔ امیرعلی یکی شد (`admin-session.ts`) و `LoginForm` جداگانه حذف شد؛ رفتار پنل با `tests/amir/admin-*.test.ts` نگهبان است."
+    },
+    {
+      "number": 87,
+      "marker": "<!-- issue-sync:qa-14-status -->",
+      "body": "<!-- issue-sync:qa-14-status -->\n🟡 **وضعیت #87 — بخش خودکار کامل و سبز، بخش دستی باقی است**\n\nانجام‌شده و تست‌شده:\n- **مسیر کامل بازی:** `tests/qa/game-path.test.ts` (۸ تست) — ترتیب `alley_puzzle → door_cutscene → theater_cutscene → in_theater`، مرزهای دقیق ۱۱s/۷۴s، هم‌گامی `resolveRoomPhase` با ساعت سرور، شروع سالن تاریک و نبود توکن/seed در نمای کلاینت.\n- **روایت و صدا:** `tests/qa/story-narrative.test.ts` + `tests/qa/story-cue-timing.test.ts`.\n- **چک‌لیست انتشار:** بخش «وضعیت بازبینی» در `docs/checklists/before-release.md` پر شد و هر مورد شاهد جداگانه دارد.\n\nباقی‌ماندهٔ دستی (در سندباکس قابل سنجش نیست):\n- FPS دسکتاپ ۶۰ / موبایل ۳۰+ روی دستگاه واقعی — روش گام‌به‌گام در `docs/checklists/before-release.md` نوشته شد.\n- بررسی نبود خطای کنسول در مرورگر واقعی.\n- یک بازی واقعی ۴ نفرهٔ ۳۰ دقیقه‌ای.\n\nIssue باز می‌ماند تا این سه مورد با شاهد واقعی تیک بخورند."
+    },
+    {
+      "number": 88,
+      "marker": "<!-- issue-sync:release-15-status -->",
+      "body": "<!-- issue-sync:release-15-status -->\n🚫 **وضعیت #88 — انتشار هنوز مسدود است**\n\nآماده: `deploy.yml` (فقط از `main` سبز)، `npm run smoke`، `CHANGELOG.md` به‌روز، `docs/checklists/before-release.md` با بخش «وضعیت بازبینی».\n\nمسدودکننده‌ها:\n1. **production کهنه است:** `https://escaperoom-orfeo.vercel.app/api/health` سالم است (`storageDriver: supabase`) ولی `/admin/login` و مسیرهای جدید پنل ۴۰۴ می‌دهند؛ یعنی آخرین deploy قبل از فازهای ۰۹/۱۰/۱۳ است.\n2. **متغیرهای ادمین روی Vercel ست نیستند:** `ADMIN_USERNAME`، `ADMIN_PASSWORD_HASH` (`scrypt$…` از `npm run hash:admin`)، `ADMIN_SESSION_SECRET` — بدون آن‌ها ورود عمداً ۵۰۳ می‌دهد (fail-closed).\n3. **`.github/workflows` روی `main` وجود ندارد** (فایل‌ها فقط روی شاخهٔ ادغام‌اند)، پس deploy خودکار از `main` اجرا نمی‌شود و برنچ‌پروتکشن/سکرت `GITHUB_TOKEN` هم بدون دسترسی ادمین قابل تنظیم نیست.\n\nقدم بعدی: merge این شاخه به `main` → ست کردن سه متغیر بالا در Vercel → اجرای `npm run smoke` روی production → تیک نهایی چک‌لیست."
+    },
+    {
+      "number": 102,
+      "marker": "<!-- issue-sync:tracker-nazanin-status -->",
+      "body": "<!-- issue-sync:tracker-nazanin-status -->\n🟡 **وضعیت مسیر نازنین**\n\n- #97 ✅ انجام شد: `docs/features/story.md` + `tests/qa/story-narrative.test.ts` + `tests/qa/story-cue-timing.test.ts`.\n- #87 🟡 بخش خودکار (مسیر کامل بازی + روایت + وضعیت چک‌لیست) انجام شد؛ فقط سنجش FPS/خطای کنسول روی دستگاه واقعی و یک بازی ۴ نفره باقی است. جزئیات در کامنت #87."
+    },
+    {
+      "number": 87,
+      "marker": "<!-- issue-sync:qa-14-smoke -->",
+      "body": "<!-- issue-sync:qa-14-smoke -->\n🧪 **اسمک‌تست مسیر کامل اضافه شد — شاهد تازه برای #87**\n\n`scripts/smoke-test.mjs` بازنویسی شد تا کل مسیر بازی را روی یک سرور واقعی طی کند (کامیت `d516fa5`):\n\n```\n✅ سلامت سرور (/api/health)\n✅ صفحهٔ اصلی\n✅ ساخت اتاق و لینک‌های دعوت\n✅ خواندن وضعیت اتاق با توکن صندلی\n✅ رد توکن صندلی نامعتبر (۴۰۱)\n✅ ثبت حضور بازیکن (قرارداد #104: presences + serverNow)\n✅ رد موقعیت خارج از محدوده (۴۰۰)\n✅ استریم بلادرنگ SSE\n✅ پانچ بلیط هر سه بازیکن — ارقام: 441\n✅ باز کردن در با ارقام طلایی — فاز: door_cutscene\n✅ قفل تعامل در کات‌سین (۴۰۹)\n✅ پایان کات‌سین و ورود به سالن تاریک — فاز: in_theater   (با SMOKE_FULL_PATH=1)\n✅ پیش‌نمایش کوچه / سالن تاریک / ورود ادمین\n✅ نگهبان پنل ادمین (۳۰۷ بدون جلسه)\n```\n\n- **معمای واقعی حل می‌شود:** هر بازیکن نماد و پردهٔ بلیط هم‌تیمی را از کوپن خودش می‌خواند و ردیف را از جدول دیوار راست؛ اسمک همان کار را از روی API انجام می‌دهد، پس هم‌کاری سه‌نفره واقعاً سنجیده می‌شود.\n- **لاگ سرور در تمام این مسیر هیچ خطایی نداشت** (شاهد برای «هیچ خطای کنسولی» در سمت سرور).\n- پوشش همین مراحل با `tests/qa/release-smoke.test.ts` (۵ تست) قفل شده است.\n\nباقی‌ماندهٔ دستی: FPS روی دستگاه واقعی، کنسول مرورگر و یک بازی ۴ نفرهٔ ۳۰ دقیقه‌ای (روش سنجش در `docs/checklists/before-release.md`)."
+    },
+    {
+      "number": 88,
+      "marker": "<!-- issue-sync:release-15-smoke -->",
+      "body": "<!-- issue-sync:release-15-smoke -->\n🧪 **اسمک‌تست انتشار حالا کل مسیر را می‌سنجد (و روی build تولیدی سبز است)**\n\n`node scripts/smoke-test.mjs` روی `next start` محلی ۱۵ مرحله سبز و با `SMOKE_FULL_PATH=1` ۱۶ مرحله سبز داد: رزرو → حضور → SSE → پانچ سه بلیط → باز شدن در → قفل کات‌سین → `in_theater` → پیش‌نمایش‌ها → نگهبان ادمین. کامیت `d516fa5`.\n\nاین یعنی بعد از رفع مسدودکننده‌های زیر، `deploy.yml` با همین اسکریپت می‌تواند سبزی production را بسنجد:\n\n1. merge این شاخه به `main` (تا workflowها و کد جدید روی `main` باشند)،\n2. ست کردن `ADMIN_USERNAME` / `ADMIN_PASSWORD_HASH` / `ADMIN_SESSION_SECRET` در Vercel،\n3. اجرای smoke روی دامنهٔ production (الان `/admin/login` ۴۰۴ می‌دهد؛ یعنی deploy کهنه است)."
+    },
+    {
+      "number": 102,
+      "marker": "<!-- issue-sync:tracker-nazanin-smoke -->",
+      "body": "<!-- issue-sync:tracker-nazanin-smoke -->\n🧪 **به‌روزرسانی مسیر: ابزار QA مسیر کامل آماده است**\n\n- `scripts/smoke-test.mjs` کل مسیر بازی را می‌پیماید (۱۵ مرحله؛ با `SMOKE_FULL_PATH=1` تا سالن تاریک = ۱۶ مرحله).\n- `tests/qa/` شامل `game-path`، `story-narrative`، `story-cue-timing`، `horror-wiring` و `release-smoke` است.\n- `docs/checklists/before-release.md` بخش «وضعیت بازبینی» + روش اندازه‌گیری FPS را دارد.\n\nتنها کار باقی‌ماندهٔ #87 سنجش FPS/کنسول روی دستگاه واقعی است."
+    }
+  ],
+  "close": [
+    {
+      "number": 75,
+      "marker": "<!-- issue-sync:done-02 -->",
+      "body": "<!-- issue-sync:done-02 -->\n✅ **یک پیاده‌سازی و تست شده است** — کامیت `2d72c6b`\n\n- `.github/workflows/ci.yml` (typecheck + lint + test + build روی `agent/**`، `arena/**`، `phase/**`)\n- `.github/workflows/auto-merge.yml` + `scripts/auto-merge.mjs` (سیاست merge با محافظ شاخه، تشخیص merge تکراری و تعارض)\n- `.github/workflows/deploy.yml` (فقط از `main` سبز، قفل actor، اسمک‌تست `/api/health`)\n- `scripts/lint.mjs` و اسکریپت‌های `lint` / `ci` / `auto-merge` در `package.json`\n- رفع BOM در `package.json` که `next build` را می‌شکست\n- ۱۲ تست در `tests/tohid/ci-automation.test.ts`\n\n**باقی‌ماندهٔ عملیاتی (در Issue مادر #98):** فعال‌سازی اولیه با یک merge دستی به `main`، و تنظیم `VERCEL_TOKEN`، `VERCEL_ORG_ID`، `VERCEL_PROJECT_ID`، `PRODUCTION_URL`."
+    },
+    {
+      "number": 76,
+      "marker": "<!-- issue-sync:done-03 -->",
+      "body": "<!-- issue-sync:done-03 -->\n✅ **یک پیاده‌سازی و تست شده است** — کامیت `2d72c6b`\n\n- `src/contracts/presence.ts` — `PresenceSnapshot` طبق قرارداد ۲، محدودهٔ کوچه/سالن، نرمال‌سازی `yaw`\n- `src/server/presence/` — store (فقط آخرین snapshot، انقضای ۳۰ ثانیه)، سرویس (احراز صندلی + ۵۰ درخواست در ثانیه)، هم‌جوشی ارسال ۵۰ms\n- `POST|GET /api/rooms/[code]/presence` با هویت از توکن صندلی (جلوگیری از جعل هویت هم‌تیمی)\n- رویداد `presence_update` در استریم SSE (تأخیر اندازه‌گیری‌شده ۵۱ms)\n- ۲۱ تست در `tests/tohid/presence-*.test.ts`\n\n**مرجع مصرف برای علیرضا (#77) و امیرعلی (#85):** #104"
+    },
+    {
+      "number": 74,
+      "marker": "<!-- issue-sync:decision-01 -->",
+      "reason": "not_planned",
+      "body": "<!-- issue-sync:decision-01 -->\n🧭 **تصمیم تیم: این فاز منسوخ شد و انجام نمی‌شود.**\n\nمستندات فعلی در پوشهٔ `docs/` **جدیدترین نسخه** و مرجع پروژه‌اند؛ ساختن `docs-v2/` و حذف `docs/` لازم نیست.\n\nنتیجه:\n- `docs/` دست‌نخورده می‌ماند و تنها مرجع است.\n- ارجاع‌های قدیمی به `docs-v2/` در `docs/AGENTS.md` و `docs/PHASE.md` (برای فازهای ۰۱ و ۱۱ و ۱۴) از نظر مسیر منقضی‌اند؛ محتوای فازها همان است و مرجع، همین `docs/` است.\n- کارهای واقعی باقی‌مانده (CI، حضور، ادمین، انتشار) در Issueهای خودشان پیگیری می‌شوند."
+    },
+    {
+      "number": 98,
+      "marker": "<!-- issue-sync:tracker-tohid-done -->",
+      "body": "<!-- issue-sync:tracker-tohid-done -->\n✅ **همهٔ کارهای این مسیر انجام شد؛ Issue بسته می‌شود.**\n\n| کار | نتیجه |\n|---|---|\n| قرارداد ترس برای فاز ۰۷ | `src/contracts/horror.ts` + ۹ تست → #90 و #91 آنبلاک شدند |\n| مدل دادهٔ پنل ادمین | `src/contracts/admin.ts`، متدهای هر دو درایور، `002_admin_events.sql`، ۱۹ تست → #101 آماده کار |\n| ابزار رمز ادمین | `npm run hash:admin` + `.env.example` → #94 |\n| تصمیم مستندات | #74 منسوخ و بسته شد |\n| ابزار انتشار | `npm run smoke` و اتصال به `deploy.yml`، `CHANGELOG.md` → #88 |\n\n**باقی‌مانده‌هایی که نیاز به دسترسی بیرونی دارند** (در #88 پیگیری می‌شوند): تنظیم secrets وریسل/Supabase، اولین merge به `main`، و انتشار نهایی بعد از تکمیل فازهای ۰۴ تا ۱۴."
+    },
+    {
+      "number": 94,
+      "marker": "<!-- issue-sync:close-09-amir -->",
+      "body": "<!-- issue-sync:close-09-amir -->\n✅ فاز ۰۹ (بخش امیر) کامل شد: نشست ادمین، login/logout، فرم ورود و نگهبان صفحات — ۱۶ تست سبز. جزئیات در کامنت بالا."
+    },
+    {
+      "number": 82,
+      "marker": "<!-- issue-sync:close-09 -->",
+      "body": "<!-- issue-sync:close-09 -->\n✅ فاز ۰۹ کامل شد و پنل ادمین سرتاسر کار می‌کند. دو فایل بخش امیرعلی حداقلی ساخته شدند تا پنل بلاک نماند و قابل جایگزینی‌اند."
+    },
+    {
+      "number": 83,
+      "marker": "<!-- issue-sync:close-10 -->",
+      "body": "<!-- issue-sync:close-10 -->\n✅ فاز ۱۰ کامل شد: آمار، اتاق‌ها، بازیکنان و داشبورد — ۷ تست سبز."
+    },
+    {
+      "number": 86,
+      "marker": "<!-- issue-sync:close-13 -->",
+      "body": "<!-- issue-sync:close-13 -->\n✅ فاز ۱۳ کامل شد: حذف بازیکن با باطل‌کردن توکن و ثبت رویداد، لیست خطاها — ۶ تست سبز."
+    },
+    {
+      "number": 95,
+      "marker": "<!-- issue-sync:close-09b -->",
+      "body": "<!-- issue-sync:close-09b -->\n✅ فاز ۰۹-ب تحویل شد: چیدمان و صفحهٔ ورود پنل ادمین + نگهبان ریدایرکت، با ۷ تست در `tests/amir/admin-shell.test.ts`. نسخهٔ فعلی حداقلی است و با طرح نهایی امیرعلی قابل تعویض."
+    },
+    {
+      "number": 77,
+      "marker": "<!-- issue-sync:close-04 -->",
+      "body": "<!-- issue-sync:close-04 -->\n✅ **فاز ۰۴ بسته شد — بازیکن‌ها همدیگر را در جهان سه‌بعدی می‌بینند.**\n\n- `RemotePlayerManager` + `RemotePlayer` + `usePresence` (قرارداد #104) اکنون در صحنهٔ کوچه mount هستند.\n- `src/client-sdk/presence-avatars.ts` قاب حضور HUD را به snapshot موتور تبدیل می‌کند.\n- آواتارِ آفلاین بعد از ۳۰ ثانیه از صحنه حذف می‌شود؛ بازیکن محلی هرگز آواتار نمی‌گیرد.\n- ۱۰ تست جدید در `tests/tohid/presence-avatar-wiring.test.ts` + ۶۱ تست حضور موجود.\n\nFPS روی دستگاه واقعی در دروازهٔ انتشار #88 سنجیده می‌شود. کامیت `59ad5c5`."
+    },
+    {
+      "number": 80,
+      "marker": "<!-- issue-sync:close-07 -->",
+      "body": "<!-- issue-sync:close-07 -->\n✅ **فاز ۰۷ بسته شد — اتمسفر ترس در بازی واقعی وجود دارد.**\n\n- مهِ واکنش‌گرا به سطح ترس (`FearResponsiveFog`) روی صحنهٔ کوچه.\n- صدای محیطی و ضربان قلب (`HorrorAudio`) فقط بعد از تعامل کاربر، هم‌گام با سطح ترس.\n- جامپ‌اسکر زمان‌محور، vignette/grain و HUD سه‌سطحی ترس از قبل وصل و تست‌شده بودند.\n- ۴ تست اتصال در `tests/qa/horror-wiring.test.ts` + ۴۴ تست ترس موجود.\n\nFPS روی دستگاه واقعی در #88. کامیت `c030fec`."
+    },
+    {
+      "number": 90,
+      "marker": "<!-- issue-sync:close-07a -->",
+      "body": "<!-- issue-sync:close-07a -->\n✅ **فاز ۰۷-الف بسته شد.**\n\nمه حجمی متغیر با ترس، vignette/grain، صدای محیطی تئاتر، ضربان قلب متناسب با تهدید و جامپ‌اسکر زمان‌بندی‌شده — همه پیاده، تست‌شده **و اکنون در صحنه mount**.\n\nاثبات: `tests/alireza/horror-atmosphere.test.ts` (۹) + `tests/qa/horror-wiring.test.ts` (۴) + `tests/amirali/horror-*.test.ts` (۳۵). کامیت `c030fec`."
+    },
+    {
+      "number": 96,
+      "marker": "<!-- issue-sync:close-11a -->",
+      "body": "<!-- issue-sync:close-11a -->\n✅ **فاز ۱۱-الف بسته شد.** دیالوگ، صدا و زمان‌بندی داستان در کات‌سین واقعی؛ بازبینی متن و زمان‌بندی cue با ۱۸ تست در `tests/qa/`. کامیت `e46e4f5`."
+    },
+    {
+      "number": 97,
+      "marker": "<!-- issue-sync:close-11b -->",
+      "body": "<!-- issue-sync:close-11b -->\n✅ **فاز ۱۱-ب بسته شد.** `docs/features/story.md` مرجع داستان است و `tests/qa/story-*.test.ts` روایت، زمان‌بندی و سیاست اسپویل را نگهبان است. کامیت `e46e4f5`."
+    },
+    {
+      "number": 84,
+      "marker": "<!-- issue-sync:close-11 -->",
+      "body": "<!-- issue-sync:close-11 -->\n✅ **فاز ۱۱ بسته شد.** هر دو زیرکار (#96، #97) کامل و تست‌شده‌اند؛ مستند داستان، دیالوگ‌های کات‌سین، صداهای داستانی و تست روایت موجودند. کامیت `e46e4f5`."
+    },
+    {
+      "number": 99,
+      "marker": "<!-- issue-sync:close-tracker-alireza -->",
+      "body": "<!-- issue-sync:close-tracker-alireza -->\n✅ **مسیر علیرضا بسته شد.** هر شش کار (#77، #78، #79، #90، #81، #96) انجام و ادغام شده‌اند. جدول شاهد در کامنت بالا."
+    },
+    {
+      "number": 101,
+      "marker": "<!-- issue-sync:close-tracker-amir -->",
+      "body": "<!-- issue-sync:close-tracker-amir -->\n✅ **مسیر امیر بسته شد.** #94، #83 و #86 انجام و ادغام شده‌اند؛ پنل ادمین سرتاسر کار می‌کند. جدول شاهد در کامنت بالا."
+    },
+    {
+      "number": 104,
+      "marker": "<!-- issue-sync:close-contract-presence -->",
+      "body": "<!-- issue-sync:close-contract-presence -->\n✅ **قرارداد حضور بسته شد.** هر دو مصرف‌کننده (#77 کلاینت ۳D، #85 HUD) پیاده و تست شده‌اند؛ مسیرهای قطعی و تفاوت شکل پاسخ در کامنت بالا ثبت شد."
+    }
+  ]
+}

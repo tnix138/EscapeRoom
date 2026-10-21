@@ -1,0 +1,41 @@
+# Auto-merge — اگر CI یک شاخهٔ ایجنت سبز شد، همان شاخه به main ادغام می‌شود
+# منبع: docs/AUTO.md (بدون PR دستی). سیاست merge در scripts/auto-merge.mjs است
+# تا هم در CI و هم در تست محلی یک رفتار واحد داشته باشد.
+name: Auto-merge
+
+on:
+  workflow_run:
+    workflows: ['CI']
+    types: [completed]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: auto-merge-main
+  cancel-in-progress: false
+
+jobs:
+  merge:
+    name: ادغام خودکار به main
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch != 'main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: ادغام با سیاست scripts/auto-merge.mjs
+        env:
+          MERGE_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          CI_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+          BASE_BRANCH: main
+        run: node scripts/auto-merge.mjs
