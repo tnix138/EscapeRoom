@@ -1,0 +1,99 @@
+{
+  "$comment": "برنامهٔ یک‌بارهٔ چیدمان Issueها — توسط scripts/issue-sync.mjs و workflow issue-sync اجرا می‌شود. تکرارپذیر است.",
+  "labels": [
+    { "name": "split", "color": "c2e0c6", "description": "زیرکار تک‌مالک از یک فاز دو-مالکی" },
+    { "name": "tracker", "color": "1d76db", "description": "مسیر کار یک عضو تیم" },
+    { "name": "guide", "color": "f9d0c4", "description": "راهنمای هماهنگی تیم" },
+    { "name": "contract", "color": "bfdadc", "description": "قرارداد مشترک بین اعضا" },
+    { "name": "status:done", "color": "0e8a16", "description": "پیاده‌سازی و تست شده" }
+  ],
+  "issues": [
+    { "number": 74, "labels": ["phase", "owner:tohid", "priority:critical", "needs-decision"], "milestone": "هفته ۱ — مستندات و زیرساخت", "assignee": "tnix138" },
+    { "number": 75, "labels": ["phase", "owner:tohid", "priority:critical", "status:done"], "milestone": "هفته ۲ — CI، نورپردازی، ادمین، داستان", "assignee": "tnix138" },
+    { "number": 76, "labels": ["phase", "owner:tohid", "priority:high", "status:done"], "milestone": "هفته ۳ — حضور، مواد، آمار، HUD", "assignee": "tnix138" },
+    { "number": 77, "labels": ["phase", "owner:alireza", "priority:high"], "milestone": "هفته ۴ — کلاینت حضور، ترس، ابزارهای مدیریتی", "assignee": "alispy021" },
+    { "number": 78, "labels": ["phase", "owner:alireza", "priority:high"], "milestone": "هفته ۲ — CI، نورپردازی، ادمین، داستان", "assignee": "alispy021" },
+    { "number": 79, "labels": ["phase", "owner:alireza", "priority:medium"], "milestone": "هفته ۳ — حضور، مواد، آمار، HUD", "assignee": "alispy021" },
+    { "number": 80, "labels": ["phase", "owner:alireza", "owner:amirali", "priority:high"], "milestone": "هفته ۴ — کلاینت حضور، ترس، ابزارهای مدیریتی" },
+    { "number": 81, "labels": ["phase", "owner:alireza", "priority:medium"], "milestone": "هفته ۵ — کات‌سین و QA", "assignee": "alispy021" },
+    { "number": 82, "labels": ["phase", "owner:amir", "owner:amirali", "priority:medium"], "milestone": "هفته ۲ — CI، نورپردازی، ادمین، داستان" },
+    { "number": 83, "labels": ["phase", "owner:amir", "priority:medium"], "milestone": "هفته ۳ — حضور، مواد، آمار، HUD" },
+    { "number": 84, "labels": ["phase", "owner:alireza", "owner:nazanin", "priority:medium"], "milestone": "هفته ۲ — CI، نورپردازی، ادمین، داستان" },
+    { "number": 85, "labels": ["phase", "owner:amirali", "priority:medium"], "milestone": "هفته ۳ — حضور، مواد، آمار، HUD", "assignee": "amiralikj" },
+    { "number": 86, "labels": ["phase", "owner:amir", "priority:low"], "milestone": "هفته ۴ — کلاینت حضور، ترس، ابزارهای مدیریتی" },
+    { "number": 87, "labels": ["phase", "owner:nazanin", "priority:low"], "milestone": "هفته ۵ — کات‌سین و QA", "assignee": "nazanindavoodi" },
+    { "number": 88, "labels": ["phase", "owner:tohid", "priority:critical"], "milestone": "هفته ۶ — انتشار", "assignee": "tnix138" },
+    { "number": 90, "labels": ["split", "owner:alireza", "priority:high"], "milestone": "هفته ۴ — کلاینت حضور، ترس، ابزارهای مدیریتی", "assignee": "alispy021" },
+    { "number": 91, "labels": ["split", "owner:amirali", "priority:high"], "milestone": "هفته ۴ — کلاینت حضور، ترس، ابزارهای مدیریتی", "assignee": "amiralikj" },
+    { "number": 94, "labels": ["split", "owner:amir", "priority:medium"], "milestone": "هفته ۲ — CI، نورپردازی، ادمین، داستان", "assignee": "emirhamzehlou" },
+    { "number": 95, "labels": ["split", "owner:amirali", "priority:medium"], "milestone": "هفته ۲ — CI، نورپردازی، ادمین، داستان", "assignee": "amiralikj" },
+    { "number": 96, "labels": ["split", "owner:alireza", "priority:medium"], "milestone": "هفته ۲ — CI، نورپردازی، ادمین، داستان", "assignee": "alispy021" },
+    { "number": 97, "labels": ["split", "owner:nazanin", "priority:medium"], "milestone": "هفته ۲ — CI، نورپردازی، ادمین، داستان", "assignee": "nazanindavoodi" },
+    { "number": 98, "labels": ["tracker", "owner:tohid"], "assignee": "tnix138" },
+    { "number": 99, "labels": ["tracker", "owner:alireza"], "assignee": "alispy021", "bodyFile": "scripts/issue-bodies/99.md" },
+    { "number": 100, "labels": ["tracker", "owner:amirali"], "assignee": "amiralikj", "bodyFile": "scripts/issue-bodies/100.md" },
+    { "number": 101, "labels": ["tracker", "owner:amir"], "assignee": "emirhamzehlou" },
+    { "number": 102, "labels": ["tracker", "owner:nazanin"], "assignee": "nazanindavoodi" },
+    { "number": 103, "labels": ["guide"] },
+    { "number": 104, "labels": ["contract", "owner:tohid"], "assignee": "tnix138" }
+  ],
+  "comments": [
+    {
+      "number": 77,
+      "marker": "<!-- issue-sync:contract-presence -->",
+      "body": "<!-- issue-sync:contract-presence -->\n🔌 **قرارداد حضور آماده است.** مرجع کامل با نمونهٔ کد و دستورهای curl: #104\n\nخلاصه: `POST /api/rooms/{CODE}/presence` با هدر `x-seat-token`، بدنهٔ `{ position, yaw, phase }` — `yaw` **رادیان** است. دیدن هم‌تیمی‌ها از همان استریم SSE با رویداد `presence_update`.\n\nپیاده‌سازی سرور در #76 با ۲۱ تست سبز است؛ می‌توانی همین حالا فاز ۰۴ را شروع کنی."
+    },
+    {
+      "number": 85,
+      "marker": "<!-- issue-sync:contract-presence-hud -->",
+      "body": "<!-- issue-sync:contract-presence-hud -->\n🔌 **قرارداد حضور آماده است** (#104). HUD تو از رویداد `presence_update` در استریم SSE استفاده می‌کند و به `src/engine3d/**` وابسته نمی‌شود؛ فقط `position`، `yaw` و `playerName` را از payload بگیر.\n\nوابسته به #77 (علیرضا) است؛ تا آن موقع می‌توانی با داده‌ی mock کار کنی."
+    },
+    {
+      "number": 80,
+      "marker": "<!-- issue-sync:split-07 -->",
+      "body": "<!-- issue-sync:split-07 -->\n🧩 **این فاز به دو Issue تک‌مالک شکسته شد:**\n\n- #90 — بخش سه‌بعدی و صدا (علیرضا)\n- #91 — بخش HUD ترس (امیرعلی)\n\nاین Issue فقط مرجع باقی می‌ماند."
+    },
+    {
+      "number": 82,
+      "marker": "<!-- issue-sync:split-09 -->",
+      "body": "<!-- issue-sync:split-09 -->\n🧩 **این فاز به دو Issue تک‌مالک شکسته شد:**\n\n- #94 — سرور، جلسه و فرم ورود (امیر)\n- #95 — چیدمان و صفحهٔ ورود (امیرعلی)\n\nاین Issue فقط مرجع باقی می‌ماند."
+    },
+    {
+      "number": 84,
+      "marker": "<!-- issue-sync:split-11 -->",
+      "body": "<!-- issue-sync:split-11 -->\n🧩 **این فاز به دو Issue تک‌مالک شکسته شد:**\n\n- #96 — دیالوگ، صدا و طراحی مراحل (علیرضا)\n- #97 — مستند داستان و تست روایت (نازنین)\n\nاین Issue فقط مرجع باقی می‌ماند."
+    },
+    {
+      "number": 94,
+      "marker": "<!-- issue-sync:input-from-tohid -->",
+      "body": "<!-- issue-sync:input-from-tohid -->\n🔑 **ورودی‌های موردنیاز تو از توحید (در Issue #98 پیگیری شود):**\n\n- `ADMIN_USERNAME` و `ADMIN_PASSWORD_HASH` روی Vercel و در `.env.local`\n- محدودیت نرخ: فقط `checkAndRecord` را از `src/server/auth/rate-limit.ts` import کن؛ تغییرش نده\n- قرارداد ۵ (`AdminSession`) در `docs/CONTRACTS.md` مرجع است\n\nقرارداد ورود با امیرعلی (#95): `POST /api/admin/login` → `200` با کوکی `httpOnly` | `403 FORBIDDEN` | `429 RATE_LIMITED`"
+    },
+    {
+      "number": 90,
+      "marker": "<!-- issue-sync:input-from-tohid -->",
+      "body": "<!-- issue-sync:input-from-tohid -->\n🔑 **قرارداد ترس:** شکل مشترک با HUD امیرعلی (#91) در `src/contracts/horror.ts` تعریف می‌شود (کار توحید در #98):\n\n```ts\nexport type HorrorIntensity = 'calm' | 'tense' | 'panic';\nexport interface HorrorSignal { level: HorrorIntensity; at: number }\n```\n\nتا آماده شدنش همین شکل را مبنا بگیر و HUD را با یک prop ساده `level` طراحی کن."
+    },
+    {
+      "number": 91,
+      "marker": "<!-- issue-sync:input-from-tohid -->",
+      "body": "<!-- issue-sync:input-from-tohid -->\n🔑 **قرارداد ترس:** سیگنال از `src/contracts/horror.ts` می‌آید (کار توحید در #98):\n\n```ts\nexport type HorrorIntensity = 'calm' | 'tense' | 'panic';\n```\n\nکامپوننت HUD فقط prop `level` بگیرد و به `src/engine3d/**` وابسته نشود."
+    },
+    {
+      "number": 101,
+      "marker": "<!-- issue-sync:input-from-tohid -->",
+      "body": "<!-- issue-sync:input-from-tohid -->\n🔑 **داده‌های فاز ۱۰ و ۱۳ از توحید** (#98) می‌آید؛ خودت در `src/server/**` کد ننویس:\n\n```ts\nlistRoomSummaries(): Promise<RoomSummary[]>;\nlistAdminEvents(limit: number): Promise<AdminEvent[]>;\nrecordAdminEvent(event: AdminEvent): Promise<void>;\ndeleteSeat(roomCode: string, seatIndex: number): Promise<boolean>;\n```\n\nتا آماده شدنشان، APIهای `src/app/api/admin/**` خودت را با داده‌ی mock بساز و بعد فقط منبع داده را عوض کن."
+    }
+  ],
+  "close": [
+    {
+      "number": 75,
+      "marker": "<!-- issue-sync:done-02 -->",
+      "body": "<!-- issue-sync:done-02 -->\n✅ **یک پیاده‌سازی و تست شده است** — کامیت `2d72c6b`\n\n- `.github/workflows/ci.yml` (typecheck + lint + test + build روی `agent/**`، `arena/**`، `phase/**`)\n- `.github/workflows/auto-merge.yml` + `scripts/auto-merge.mjs` (سیاست merge با محافظ شاخه، تشخیص merge تکراری و تعارض)\n- `.github/workflows/deploy.yml` (فقط از `main` سبز، قفل actor، اسمک‌تست `/api/health`)\n- `scripts/lint.mjs` و اسکریپت‌های `lint` / `ci` / `auto-merge` در `package.json`\n- رفع BOM در `package.json` که `next build` را می‌شکست\n- ۱۲ تست در `tests/tohid/ci-automation.test.ts`\n\n**باقی‌ماندهٔ عملیاتی (در Issue مادر #98):** فعال‌سازی اولیه با یک merge دستی به `main`، و تنظیم `VERCEL_TOKEN`، `VERCEL_ORG_ID`، `VERCEL_PROJECT_ID`، `PRODUCTION_URL`."
+    },
+    {
+      "number": 76,
+      "marker": "<!-- issue-sync:done-03 -->",
+      "body": "<!-- issue-sync:done-03 -->\n✅ **یک پیاده‌سازی و تست شده است** — کامیت `2d72c6b`\n\n- `src/contracts/presence.ts` — `PresenceSnapshot` طبق قرارداد ۲، محدودهٔ کوچه/سالن، نرمال‌سازی `yaw`\n- `src/server/presence/` — store (فقط آخرین snapshot، انقضای ۳۰ ثانیه)، سرویس (احراز صندلی + ۵۰ درخواست در ثانیه)، هم‌جوشی ارسال ۵۰ms\n- `POST|GET /api/rooms/[code]/presence` با هویت از توکن صندلی (جلوگیری از جعل هویت هم‌تیمی)\n- رویداد `presence_update` در استریم SSE (تأخیر اندازه‌گیری‌شده ۵۱ms)\n- ۲۱ تست در `tests/tohid/presence-*.test.ts`\n\n**مرجع مصرف برای علیرضا (#77) و امیرعلی (#85):** #104"
+    }
+  ]
+}
