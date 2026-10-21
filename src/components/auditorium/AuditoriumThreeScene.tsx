@@ -13,7 +13,7 @@
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { useThreeEngine } from '@/engine3d/useThreeEngine';
-import { createTheaterGeometry } from '@/engine3d/theater-geometry';
+import { createSeatedPlayerCharacter, createTheaterGeometry } from '@/engine3d/theater-geometry';
 import { ThreeErrorBoundary } from '@/engine3d/ThreeErrorBoundary';
 import type { ClientRoomView } from '@/contracts/types';
 
@@ -44,24 +44,22 @@ function TheaterCore({ room, elapsedMs = 0, showAllSeats = false, onSeatClick }:
     theaterRef.current = theater;
     engine.scene.add(theater.group);
 
-    // قرار دادن بازیکنان روی صندلی‌ها
+    // قرار دادن بازیکنان روی صندلی‌ها با کاراکتر سه‌بعدی کامل انسان
+    const seatedAvatars: THREE.Group[] = [];
     seatAssignments.forEach(({ player, row, col }) => {
       const seat = theater.seats.find((s) => s.userData.row === row && s.userData.col === col);
       if (seat) {
         seat.userData.occupied = true;
         seat.userData.playerName = player.playerName;
 
-        // آواتار ساده بزرگسال روی صندلی
-        const avatarGeo = new THREE.CapsuleGeometry(0.22, 0.6, 4, 8);
-        const avatarMat = new THREE.MeshStandardMaterial({
-          color: player.playerId === room.me.playerId ? 0xc9a86a : 0x8888aa,
-          roughness: 0.7,
+        const avatar = createSeatedPlayerCharacter({
+          playerId: player.playerId,
+          playerName: player.playerName,
+          seatIndex: player.seatIndex,
+          isLocalPlayer: player.playerId === room.me.playerId,
         });
-        const avatar = new THREE.Mesh(avatarGeo, avatarMat);
-        avatar.position.set(0, 0.9, 0);
-        avatar.name = `Avatar_${player.playerName}`;
-        avatar.castShadow = true;
         seat.add(avatar);
+        seatedAvatars.push(avatar);
 
         // برچسب نام
         const canvas = document.createElement('canvas');
@@ -141,6 +139,20 @@ function TheaterCore({ room, elapsedMs = 0, showAllSeats = false, onSeatClick }:
         centerCurtain.position.y = 2.2 + openProgress * 2.5;
         centerCurtain.scale.y = 1 - openProgress * 0.9;
       }
+
+      // تنفس طبیعی و چرخش نرم سر کاراکترهای پلیر نشسته
+      seatedAvatars.forEach((avatar, idx) => {
+        const phase = t * 0.0022 + idx * 1.1;
+        const body = avatar.getObjectByName('avatar-body');
+        const head = avatar.getObjectByName('avatar-head');
+        if (body) {
+          body.position.y = 0.78 + Math.sin(phase) * 0.008;
+        }
+        if (head) {
+          head.position.y = 1.2 + Math.sin(phase) * 0.009;
+          head.rotation.y = Math.sin(phase * 0.45) * 0.08;
+        }
+      });
     });
 
     engine.start();

@@ -10,12 +10,16 @@
  * - حرکت آزاد
  */
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { useThreeEngine } from '@/engine3d/useThreeEngine';
 import { usePlayerControls } from '@/engine3d/usePlayerControls';
 import { createTheaterGeometry } from '@/engine3d/theater-geometry';
+import { RemotePlayerManager } from '@/engine3d/presence/RemotePlayerManager';
+import { toPresenceSnapshots } from '@/client-sdk/presence-avatars';
 import { ThreeErrorBoundary } from '@/engine3d/ThreeErrorBoundary';
+import PresenceHud from '../hud/presence/PresenceHud';
+import { usePresenceFeed } from '../hud/presence/use-presence-feed';
 import type { ClientRoomView, AuditoriumHotspotId } from '@/contracts/types';
 
 export interface DarkAuditoriumThreeSceneProps {
@@ -35,6 +39,45 @@ function DarkCore({ room, onInspectHotspot, onSendWhisper }: DarkAuditoriumThree
     engine,
     enabled: true,
   });
+
+  const presence = usePresenceFeed({
+    roomCode: room.roomCode,
+    seatToken: null,
+    playerId: room.me.playerId,
+    transform,
+    phase: room.phase,
+  });
+
+  const presenceNames = useMemo(() => {
+    const map: Record<string, string> = {};
+    for (const player of room.players) map[player.playerId] = player.playerName;
+    return map;
+  }, [room.players]);
+
+  const remotePlayersRef = useRef<RemotePlayerManager | null>(null);
+  useEffect(() => {
+    const manager = new RemotePlayerManager();
+    remotePlayersRef.current = manager;
+    return () => {
+      manager.dispose();
+      remotePlayersRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    const manager = remotePlayersRef.current;
+    if (!engine || !manager) return;
+    engine.scene.add(manager);
+    return () => {
+      engine.scene.remove(manager);
+    };
+  }, [engine]);
+
+  useEffect(() => {
+    const manager = remotePlayersRef.current;
+    if (!manager) return;
+    manager.sync(toPresenceSnapshots(presence.presences, room.me.playerId), Date.now(), room.me.playerId);
+  }, [presence.presences, room.me.playerId]);
 
   // تشخیص نزدیک بودن به hotspot
   const [nearHotspot, setNearHotspot] = useState<AuditoriumHotspotId | null>(null);
@@ -98,6 +141,7 @@ function DarkCore({ room, onInspectHotspot, onSendWhisper }: DarkAuditoriumThree
     engine.setTick((delta) => {
       flickerTime += delta;
       flicker.intensity = 0.4 + Math.sin(flickerTime * 7) * 0.2 + Math.random() * 0.15;
+      remotePlayersRef.current?.update(delta);
     });
 
     engine.start();
@@ -176,6 +220,14 @@ function DarkCore({ room, onInspectHotspot, onSendWhisper }: DarkAuditoriumThree
         <div style={{ position: 'absolute', top: '50%', left: 0, right: 0, height: 1, background: 'rgba(232,220,200,0.6)' }} />
         <div style={{ position: 'absolute', left: '50%', top: 0, bottom: 0, width: 1, background: 'rgba(232,220,200,0.6)' }} />
       </div>
+
+      <PresenceHud
+        local={{ position: transform, yawDeg: transform.yawDeg, pitchDeg: transform.pitchDeg }}
+        players={presence.presences}
+        names={presenceNames}
+        localPlayerId={room.me.playerId}
+        now={presence.serverNow ?? undefined}
+      />
 
       {/* HUD */}
       <div style={{ position: 'absolute', top: 12, left: 12, right: 12, display: 'flex', justifyContent: 'space-between', direction: 'rtl', pointerEvents: 'none' }}>

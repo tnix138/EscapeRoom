@@ -12,6 +12,7 @@ import { PresenceTracker } from '../../src/engine3d/presence/presence-tracker';
 import { RemotePlayer } from '../../src/engine3d/presence/RemotePlayer';
 import { RemotePlayerManager } from '../../src/engine3d/presence/RemotePlayerManager';
 import { createPresenceHttpTransport } from '../../src/engine3d/presence/usePresence';
+import { createSeatedPlayerCharacter } from '../../src/engine3d/theater-geometry';
 
 function snapshot(
   playerId: string,
@@ -77,6 +78,40 @@ describe('فاز ۰۴ — حضور بازیکن در کلاینت', () => {
     expect(remote.position.z).toBeLessThan(-2);
     expect(remote.rotation.y).toBeGreaterThan(0);
     remote.dispose();
+  });
+
+  it('RemotePlayer و کاراکتر نشستهٔ سالن ساختار کامل بدن انسان (سر، مو، تنه، دو دست و دو پا) و انیمیشن گام‌برداری دارند', () => {
+    const remote = new RemotePlayer({ ...snapshot('teammate', 100), seatIndex: 2, playerName: 'سارا' });
+    expect(remote.getObjectByName('avatar-body')).toBeDefined();
+    expect(remote.getObjectByName('avatar-head')).toBeDefined();
+    expect(remote.getObjectByName('avatar-hair')).toBeDefined();
+    const leftArm = remote.getObjectByName('avatar-arm-left');
+    const rightArm = remote.getObjectByName('avatar-arm-right');
+    const leftLeg = remote.getObjectByName('avatar-leg-left');
+    const rightLeg = remote.getObjectByName('avatar-leg-right');
+    expect(leftArm).toBeDefined();
+    expect(rightArm).toBeDefined();
+    expect(leftLeg).toBeDefined();
+    expect(rightLeg).toBeDefined();
+
+    remote.setSnapshot(snapshot('teammate', 200, { x: 4, z: -5, yawDeg: 45, pitchDeg: 12 }));
+    remote.update(1 / 30);
+    expect(Math.abs(leftLeg!.rotation.x)).toBeGreaterThan(0);
+    expect(leftLeg!.rotation.x).toBeCloseTo(-rightLeg!.rotation.x, 5);
+    expect(leftArm!.rotation.x).toBeCloseTo(-rightArm!.rotation.x, 5);
+    remote.dispose();
+
+    const seated = createSeatedPlayerCharacter({
+      playerId: 'seat-1',
+      playerName: 'مریم',
+      seatIndex: 1,
+      isLocalPlayer: false,
+    });
+    expect(seated.name).toBe('Avatar_مریم');
+    expect(seated.getObjectByName('avatar-body')).toBeDefined();
+    expect(seated.getObjectByName('avatar-head')).toBeDefined();
+    expect(seated.getObjectByName('avatar-arm-left')).toBeDefined();
+    expect(seated.getObjectByName('avatar-leg-left')).toBeDefined();
   });
 
   it('فریم سرور با مختصات و yaw رادیانی را به transform کلاینت تبدیل می‌کند', () => {

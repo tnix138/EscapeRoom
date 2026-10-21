@@ -23,6 +23,11 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import AdminLoginPage from '../../src/app/admin/login/page';
 import AdminLayout from '../../src/app/admin/layout';
+import AdminSidebar from '../../src/components/admin/AdminSidebar';
+import CharactersShowcase, {
+  HUMAN_ANATOMY_PARTS,
+  PLAYER_CHARACTER_PRESETS,
+} from '../../src/components/admin/CharactersShowcase';
 import { ADMIN_LOGIN_PATH, requireAdminPage } from '../../src/app/admin/guard';
 import {
   ADMIN_COOKIE_NAME,
@@ -62,6 +67,40 @@ describe('فاز ۰۹-ب — صفحهٔ ورود و چیدمان', () => {
       AdminLayout({ children: createElement('span', null, 'محتوای تست') }),
     );
     expect(html).toContain('محتوای تست');
+  });
+
+  it('سایدبار لینک کاراکترها را دارد و نمایشگاه کاراکترها هر ۸ پلیر و کالبدشکافی انسان را رندر می‌کند', () => {
+    const sidebarHtml = renderToStaticMarkup(
+      createElement(AdminSidebar, { active: 'characters', username: USERNAME, role: 'superadmin' }),
+    );
+    expect(sidebarHtml).toContain('/admin/characters');
+    expect(sidebarHtml).toContain('کاراکترها');
+
+    expect(PLAYER_CHARACTER_PRESETS).toHaveLength(8);
+    expect(HUMAN_ANATOMY_PARTS.length).toBeGreaterThanOrEqual(6);
+
+    const showcaseHtml = renderToStaticMarkup(
+      createElement(CharactersShowcase, {
+        players: [
+          {
+            playerId: 'seat-1',
+            playerName: 'سارا',
+            roomCode: 'RM01',
+            seatIndex: 0,
+            seatLabel: 'ردیف ۱ صندلی ۱',
+            phase: 'alley_puzzle',
+            isOnline: true,
+            lastSeenAt: Date.now(),
+          },
+        ],
+      }),
+    );
+    for (const preset of PLAYER_CHARACTER_PRESETS) {
+      expect(showcaseHtml).toContain(preset.archetypeName);
+      expect(showcaseHtml).toContain(preset.coatLabel);
+    }
+    expect(showcaseHtml).toContain('استودیوی سه‌بعدی کاراکترهای بازی');
+    expect(showcaseHtml).toContain('کالبدشکافی و اجزای مدل سه‌بعدی کاراکتر پلیر');
   });
 });
 

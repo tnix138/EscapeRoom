@@ -67,9 +67,24 @@ function auditoriumCaption(elapsedMs: number, playerCount: number): string {
   return 'هر دو غیب شده‌اند… اما آهنگ ترسناک هنوز در سالن تاریک و ویران ادامه دارد و درها قفل مانده‌اند.';
 }
 
-/** نیم‌تنه هم‌تیمی نشسته (سر و شانه) با رنگ اختصاصی صندلی او */
+const PLAYER_SKINS = [
+  '#e4be9c', '#d9ad87', '#ecd0b6', '#cf9f78',
+  '#e0b592', '#dfb896', '#d4a37d', '#ead0b8',
+] as const;
+
+const PLAYER_HAIRS = [
+  '#221710', '#3b2516', '#151218', '#4d311d',
+  '#2c221b', '#1c1820', '#3f2818', '#251a14',
+] as const;
+
+/** نیم‌تنه انسانی هم‌تیمی نشسته (سر، گردن، یقه، کت و اجزای کامل چهره) با رنگ اختصاصی صندلی او */
 function PlayerBust({ player, small = false }: { player: PlayerSeatPublicView; small?: boolean }) {
-  const color = PLAYER_COLORS[player.seatIndex % PLAYER_COLORS.length];
+  const idx = Math.max(0, player.seatIndex);
+  const color = PLAYER_COLORS[idx % PLAYER_COLORS.length];
+  const skin = PLAYER_SKINS[idx % PLAYER_SKINS.length];
+  const hair = PLAYER_HAIRS[idx % PLAYER_HAIRS.length];
+  const hairVariant = idx % 3;
+
   return (
     <svg
       viewBox="0 0 120 120"
@@ -77,12 +92,77 @@ function PlayerBust({ player, small = false }: { player: PlayerSeatPublicView; s
       role="img"
       aria-label={`هم‌تیمی: ${player.playerName}`}
     >
-      <path d="M18 120 Q22 82 60 80 Q98 82 102 120 Z" fill={color} />
-      <circle cx="60" cy="54" r="24" fill="#d9b48c" />
-      <path d="M36 52 Q38 28 60 27 Q82 28 84 52 Q76 38 60 38 Q44 38 36 52Z" fill="#2b1c10" />
-      <circle cx="51" cy="55" r="2.4" fill="#241a12" />
-      <circle cx="69" cy="55" r="2.4" fill="#241a12" />
-      <path d="M52 66 Q60 70 68 66" stroke="#8a6a4a" strokeWidth="2.2" fill="none" strokeLinecap="round" />
+      {/* شانه‌ها و کت تئاتر */}
+      <path d="M12 120 C16 90 34 80 60 80 C86 80 104 90 108 120 Z" fill={color} />
+      {/* پیراهن و دستمال گردن */}
+      <path d="M47 81 L60 108 L73 81 Z" fill="#f1e6d2" />
+      <path d="M56 84 L60 106 L64 84 Z" fill="#8b1e2f" />
+      {/* یقه برگردان کت */}
+      <path d="M44 80 L55 110 L47 112 L37 85 Z" fill="rgba(12,8,16,0.38)" />
+      <path d="M76 80 L65 110 L73 112 L83 85 Z" fill="rgba(12,8,16,0.38)" />
+      {/* سنجاق طلایی بلیط روی سینه */}
+      <rect x="74" y="96" width="8" height="4.5" rx="1.2" fill="#d4af63" />
+
+      {/* گردن و سایه زیر چانه */}
+      <rect x="52" y="68" width="16" height="16" rx="6" fill={skin} />
+      <path d="M52 72 Q60 77 68 72 L68 76 Q60 80 52 76 Z" fill="rgba(40,22,12,0.18)" />
+
+      {/* موی پشت سر (برای مدل‌های موی بلندتر) */}
+      {hairVariant === 1 && (
+        <path d="M34 52 Q30 72 38 82 L82 82 Q90 72 86 52 Z" fill={hair} />
+      )}
+
+      {/* گوش‌ها */}
+      <ellipse cx="37" cy="54" rx="4.2" ry="6.5" fill={skin} />
+      <ellipse cx="83" cy="54" rx="4.2" ry="6.5" fill={skin} />
+
+      {/* فرم سر و فک انسان */}
+      <path
+        d="M38 48 C38 30 47 24 60 24 C73 24 82 30 82 48 C82 61 73 73 60 74 C47 73 38 61 38 48 Z"
+        fill={skin}
+      />
+
+      {/* ابروها */}
+      <path d="M44 46 Q50 43.5 55 45.5" stroke={hair} strokeWidth="2.2" fill="none" strokeLinecap="round" />
+      <path d="M65 45.5 Q70 43.5 76 46" stroke={hair} strokeWidth="2.2" fill="none" strokeLinecap="round" />
+
+      {/* چشم‌ها (صلبیه، عنبیه، مردمک و برق چشم) */}
+      <ellipse cx="50" cy="51.5" rx="4.2" ry="2.7" fill="#faf4ea" />
+      <ellipse cx="70" cy="51.5" rx="4.2" ry="2.7" fill="#faf4ea" />
+      <circle cx="50" cy="51.5" r="2.2" fill="#2b1d14" />
+      <circle cx="70" cy="51.5" r="2.2" fill="#2b1d14" />
+      <circle cx="50.8" cy="50.8" r="0.7" fill="#ffffff" />
+      <circle cx="70.8" cy="50.8" r="0.7" fill="#ffffff" />
+
+      {/* بینی */}
+      <path d="M60 49 L58.5 58.5 Q60 60 62 58.5" stroke="rgba(90,52,32,0.48)" strokeWidth="1.7" fill="none" strokeLinecap="round" />
+
+      {/* لب‌ها */}
+      <path d="M53.5 64.5 Q60 67.2 66.5 64.5" stroke="#8e4e3b" strokeWidth="2.1" fill="none" strokeLinecap="round" />
+      <path d="M56 66.5 Q60 68 64 66.5" stroke="rgba(110,55,40,0.45)" strokeWidth="1.2" fill="none" strokeLinecap="round" />
+
+      {/* موی سر با حالت‌های متنوع انسانی */}
+      {hairVariant === 0 && (
+        <path
+          d="M36 50 C35 30 46 20 60 20 C75 20 85 30 84 50 C80 39 73 34 62 35 C50 36 42 40 36 50 Z"
+          fill={hair}
+        />
+      )}
+      {hairVariant === 1 && (
+        <path
+          d="M35 51 C35 29 46 19 60 19 C74 19 85 29 85 51 C81 38 71 33 60 33 C49 33 39 38 35 51 Z"
+          fill={hair}
+        />
+      )}
+      {hairVariant === 2 && (
+        <>
+          <circle cx="60" cy="18" r="7.5" fill={hair} />
+          <path
+            d="M36 49 C36 29 46 21 60 21 C74 21 84 29 84 49 C78 37 69 34 60 34 C51 34 42 37 36 49 Z"
+            fill={hair}
+          />
+        </>
+      )}
     </svg>
   );
 }
