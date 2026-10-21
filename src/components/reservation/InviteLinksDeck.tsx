@@ -49,7 +49,7 @@ export default function InviteLinksDeck({ reservation, onReset, isDemo }: {
         <p>لینک هر صندلی را فقط برای همان مهمان بفرستید.</p>
       </div>
       {isDemo && <div className="demo-notice"><span>✳</span><span><strong>حالت پیش‌نمایش</strong> — سرویس رزرو هنوز متصل نیست؛ این لینک‌ها برای نمایش موج اول ساخته شده‌اند.</span></div>}
-      <div className="room-code-line"><span>کد اتاق</span><strong dir="ltr">{reservation.roomCode}</strong><span>{reservation.playerCount} مهمان</span></div>
+      <div className="room-code-line"><span>کد اتاق</span><strong dir="ltr">{reservation.roomCode}</strong><span>{reservation.playerCount.toLocaleString('fa')} مهمان</span></div>
       <div className="invite-list">
         {reservation.invites.map((invite) => (
           <article className="invite-card" key={invite.seatToken}>
