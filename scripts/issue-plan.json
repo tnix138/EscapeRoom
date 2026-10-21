@@ -487,6 +487,21 @@
       "number": 102,
       "marker": "<!-- issue-sync:tracker-nazanin-status -->",
       "body": "<!-- issue-sync:tracker-nazanin-status -->\n🟡 **وضعیت مسیر نازنین**\n\n- #97 ✅ انجام شد: `docs/features/story.md` + `tests/qa/story-narrative.test.ts` + `tests/qa/story-cue-timing.test.ts`.\n- #87 🟡 بخش خودکار (مسیر کامل بازی + روایت + وضعیت چک‌لیست) انجام شد؛ فقط سنجش FPS/خطای کنسول روی دستگاه واقعی و یک بازی ۴ نفره باقی است. جزئیات در کامنت #87."
+    },
+    {
+      "number": 87,
+      "marker": "<!-- issue-sync:qa-14-smoke -->",
+      "body": "<!-- issue-sync:qa-14-smoke -->\n🧪 **اسمک‌تست مسیر کامل اضافه شد — شاهد تازه برای #87**\n\n`scripts/smoke-test.mjs` بازنویسی شد تا کل مسیر بازی را روی یک سرور واقعی طی کند (کامیت `d516fa5`):\n\n```\n✅ سلامت سرور (/api/health)\n✅ صفحهٔ اصلی\n✅ ساخت اتاق و لینک‌های دعوت\n✅ خواندن وضعیت اتاق با توکن صندلی\n✅ رد توکن صندلی نامعتبر (۴۰۱)\n✅ ثبت حضور بازیکن (قرارداد #104: presences + serverNow)\n✅ رد موقعیت خارج از محدوده (۴۰۰)\n✅ استریم بلادرنگ SSE\n✅ پانچ بلیط هر سه بازیکن — ارقام: 441\n✅ باز کردن در با ارقام طلایی — فاز: door_cutscene\n✅ قفل تعامل در کات‌سین (۴۰۹)\n✅ پایان کات‌سین و ورود به سالن تاریک — فاز: in_theater   (با SMOKE_FULL_PATH=1)\n✅ پیش‌نمایش کوچه / سالن تاریک / ورود ادمین\n✅ نگهبان پنل ادمین (۳۰۷ بدون جلسه)\n```\n\n- **معمای واقعی حل می‌شود:** هر بازیکن نماد و پردهٔ بلیط هم‌تیمی را از کوپن خودش می‌خواند و ردیف را از جدول دیوار راست؛ اسمک همان کار را از روی API انجام می‌دهد، پس هم‌کاری سه‌نفره واقعاً سنجیده می‌شود.\n- **لاگ سرور در تمام این مسیر هیچ خطایی نداشت** (شاهد برای «هیچ خطای کنسولی» در سمت سرور).\n- پوشش همین مراحل با `tests/qa/release-smoke.test.ts` (۵ تست) قفل شده است.\n\nباقی‌ماندهٔ دستی: FPS روی دستگاه واقعی، کنسول مرورگر و یک بازی ۴ نفرهٔ ۳۰ دقیقه‌ای (روش سنجش در `docs/checklists/before-release.md`)."
+    },
+    {
+      "number": 88,
+      "marker": "<!-- issue-sync:release-15-smoke -->",
+      "body": "<!-- issue-sync:release-15-smoke -->\n🧪 **اسمک‌تست انتشار حالا کل مسیر را می‌سنجد (و روی build تولیدی سبز است)**\n\n`node scripts/smoke-test.mjs` روی `next start` محلی ۱۵ مرحله سبز و با `SMOKE_FULL_PATH=1` ۱۶ مرحله سبز داد: رزرو → حضور → SSE → پانچ سه بلیط → باز شدن در → قفل کات‌سین → `in_theater` → پیش‌نمایش‌ها → نگهبان ادمین. کامیت `d516fa5`.\n\nاین یعنی بعد از رفع مسدودکننده‌های زیر، `deploy.yml` با همین اسکریپت می‌تواند سبزی production را بسنجد:\n\n1. merge این شاخه به `main` (تا workflowها و کد جدید روی `main` باشند)،\n2. ست کردن `ADMIN_USERNAME` / `ADMIN_PASSWORD_HASH` / `ADMIN_SESSION_SECRET` در Vercel،\n3. اجرای smoke روی دامنهٔ production (الان `/admin/login` ۴۰۴ می‌دهد؛ یعنی deploy کهنه است)."
+    },
+    {
+      "number": 102,
+      "marker": "<!-- issue-sync:tracker-nazanin-smoke -->",
+      "body": "<!-- issue-sync:tracker-nazanin-smoke -->\n🧪 **به‌روزرسانی مسیر: ابزار QA مسیر کامل آماده است**\n\n- `scripts/smoke-test.mjs` کل مسیر بازی را می‌پیماید (۱۵ مرحله؛ با `SMOKE_FULL_PATH=1` تا سالن تاریک = ۱۶ مرحله).\n- `tests/qa/` شامل `game-path`، `story-narrative`، `story-cue-timing`، `horror-wiring` و `release-smoke` است.\n- `docs/checklists/before-release.md` بخش «وضعیت بازبینی» + روش اندازه‌گیری FPS را دارد.\n\nتنها کار باقی‌ماندهٔ #87 سنجش FPS/کنسول روی دستگاه واقعی است."
     }
   ],
   "close": [
