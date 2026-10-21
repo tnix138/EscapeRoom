@@ -38,8 +38,16 @@ const layoutSource = read('../../src/app/admin/layout.tsx');
 const css = read('../../src/app/globals.css');
 
 const PHASE09_MARKER = 'فاز ۰۹ — پنل ادمین: چیدمان و صفحهٔ ورود';
-const phase09Start = css.indexOf(PHASE09_MARKER);
-const adminCss = phase09Start >= 0 ? css.slice(phase09Start) : '';
+
+/** برش یک بخش CSS تا شروع بخش بعدی، تا افزودن فازهای بعدی این تست را نشکند. */
+function cssSection(marker: string): string {
+  const start = css.indexOf(marker);
+  if (start < 0) return '';
+  const next = css.indexOf('\n/* ====', start);
+  return css.slice(start, next > 0 ? next : undefined);
+}
+
+const adminCss = cssSection(PHASE09_MARKER);
 
 function rule(selector: string): string {
   const start = adminCss.indexOf(`${selector} {`);
