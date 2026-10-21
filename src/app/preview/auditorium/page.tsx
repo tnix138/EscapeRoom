@@ -10,10 +10,14 @@
  */
 
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import type { AuditoriumHotspotId, ClientRoomView } from '@/contracts/types';
 import { createPreviewRoomState } from '@/client-sdk';
 import DarkAuditoriumScene from '@/components/auditorium/DarkAuditoriumScene';
 import styles from './page.module.css';
+
+const DarkAuditoriumThreeScene = dynamic(() => import('@/components/auditorium/DarkAuditoriumThreeScene'), { ssr: false });
+const AuditoriumThreeScene = dynamic(() => import('@/components/auditorium/AuditoriumThreeScene'), { ssr: false });
 
 const ROTATED_NAMES = ['علیرضا', 'توحید', 'امیرعلی', 'سارا', 'مریم', 'نیما', 'لیلا', 'کیان'];
 
@@ -24,6 +28,7 @@ function toFaDigits(value: string | number): string {
 export default function AuditoriumPreviewPage() {
   const [playerCount, setPlayerCount] = useState(4);
   const [muted, setMuted] = useState(false);
+  const [mode, setMode] = useState<'three-dark' | 'three-light' | 'css'>('three-dark');
   const [room, setRoom] = useState<ClientRoomView>(() =>
     createPreviewRoomState('in_theater', 4, ROTATED_NAMES),
   );
@@ -99,14 +104,26 @@ export default function AuditoriumPreviewPage() {
         </div>
       </header>
 
-      <div className={styles.stageWrap}>
-        <DarkAuditoriumScene
-          room={room}
-          muted={muted}
-          onToggleMute={() => setMuted((prev) => !prev)}
-          onInspectHotspot={handleInspectHotspot}
-          onSendWhisper={handleSendWhisper}
-        />
+      <div style={{ display: 'flex', gap: 8, marginBottom: 12, direction: 'rtl' }}>
+        <button type="button" onClick={() => setMode('three-dark')} style={{ padding: '6px 12px', borderRadius: 6, border: mode === 'three-dark' ? '2px solid #c9a86a' : '1px solid #555', background: mode === 'three-dark' ? '#1a1a2e' : '#222', color: '#e8dcc8' }}>🌑 سه‌بعدی تاریک (ویران)</button>
+        <button type="button" onClick={() => setMode('three-light')} style={{ padding: '6px 12px', borderRadius: 6, border: mode === 'three-light' ? '2px solid #c9a86a' : '1px solid #555', background: mode === 'three-light' ? '#1a1a2e' : '#222', color: '#e8dcc8' }}>🎭 سه‌بعدی روشن (۲۰ صندلی)</button>
+        <button type="button" onClick={() => setMode('css')} style={{ padding: '6px 12px', borderRadius: 6, border: mode === 'css' ? '2px solid #c9a86a' : '1px solid #555', background: mode === 'css' ? '#1a1a2e' : '#222', color: '#e8dcc8' }}>🎨 کلاسیک CSS</button>
+      </div>
+
+      <div className={styles.stageWrap} style={{ minHeight: 600 }}>
+        {mode === 'three-dark' ? (
+          <DarkAuditoriumThreeScene room={room} onInspectHotspot={handleInspectHotspot} onSendWhisper={handleSendWhisper} />
+        ) : mode === 'three-light' ? (
+          <AuditoriumThreeScene room={room} />
+        ) : (
+          <DarkAuditoriumScene
+            room={room}
+            muted={muted}
+            onToggleMute={() => setMuted((prev) => !prev)}
+            onInspectHotspot={handleInspectHotspot}
+            onSendWhisper={handleSendWhisper}
+          />
+        )}
       </div>
 
       <section className={styles.panel}>
