@@ -20,6 +20,7 @@ import {
   teammateSettleProgress,
   victimPoseAt,
 } from './cutscene-timing';
+import { getStoryDialogueAt } from './story-script';
 import styles from './AuditoriumPerformanceView.module.css';
 
 export interface AuditoriumPerformanceViewProps {
@@ -611,7 +612,16 @@ export default function AuditoriumPerformanceView({
         )}
       </div>
 
-      <p className={styles.caption}>{auditoriumCaption(elapsedMs, room.playerCount)}</p>
+      {(() => {
+        const storyDialogue = getStoryDialogueAt(elapsedMs);
+        return (
+          <p className={styles.caption}>
+            {storyDialogue
+              ? `${storyDialogue.speaker}: «${storyDialogue.textFa}»`
+              : auditoriumCaption(elapsedMs, room.playerCount)}
+          </p>
+        );
+      })()}
     </div>
   );
 }

@@ -10,12 +10,14 @@
  * بازی واقعی وجود ندارند (TASKS-ALIREZA.md). نیمه وحشت ۴۰ تا ۷۴ (موج ۳) نیز کامل شده و ادامه سالن تاریک در /preview/auditorium است.
  */
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { TOTAL_CUTSCENE_DURATION_MS } from '@/contracts/types';
 import { createPreviewRoomState } from '@/client-sdk';
 import FirstPersonCutsceneStage from '@/components/cinema/FirstPersonCutsceneStage';
+import { ORFEO_STORY_SCRIPT } from '@/components/cinema/story-script';
 import {
   CUTSCENE_BEAT_WINDOWS,
+  TheaterAudioEngine,
   beatFromElapsedMs,
 } from '@/audio/theater-audio-engine';
 import styles from './page.module.css';
@@ -57,6 +59,8 @@ export default function CinemaPreviewPage() {
   const [playing, setPlaying] = useState(false);
   const [speed, setSpeed] = useState<1 | 4>(1);
   const [muted, setMuted] = useState(false);
+  const [auditioningCueId, setAuditioningCueId] = useState<string | null>(null);
+  const stageEngineRef = useRef<TheaterAudioEngine | null>(null);
 
   const room = useMemo(
     () => createPreviewRoomState('theater_cutscene', playerCount, ROTATED_NAMES),
@@ -125,6 +129,9 @@ export default function CinemaPreviewPage() {
           elapsedMs={elapsedMs}
           muted={muted}
           onToggleMute={() => setMuted((prev) => !prev)}
+          onEngineReady={(engine) => {
+            stageEngineRef.current = engine;
+          }}
         />
       </div>
 
@@ -154,7 +161,12 @@ export default function CinemaPreviewPage() {
             type="button"
             className={styles.buttonPrimary}
             onClick={() => {
-              if (elapsedMs >= TOTAL_CUTSCENE_DURATION_MS) setElapsedMs(0);
+              void stageEngineRef.current?.init();
+              if (playing) {
+                stageEngineRef.current?.stopCharacterVoice();
+              } else if (elapsedMs >= TOTAL_CUTSCENE_DURATION_MS) {
+                setElapsedMs(0);
+              }
               setPlaying((prev) => !prev);
             }}
           >
@@ -172,6 +184,7 @@ export default function CinemaPreviewPage() {
             className={styles.button}
             onClick={() => {
               setPlaying(false);
+              stageEngineRef.current?.stopAll();
               setElapsedMs(0);
             }}
           >
@@ -184,11 +197,52 @@ export default function CinemaPreviewPage() {
               key={point.atMs}
               type="button"
               className={styles.button}
-              onClick={() => setElapsedMs(point.atMs)}
+              onClick={() => {
+                void stageEngineRef.current?.init();
+                setElapsedMs(point.atMs);
+              }}
             >
               {point.label}
             </button>
           ))}
+        </div>
+      </section>
+
+      <section className={styles.panel}>
+        <h2>🎙️ صدای هوش مصنوعی شخصیت‌ها (۵ نقش — ۱۰ دیالوگ فضایی)</h2>
+        <p className={styles.panelHint}>
+          روی هر دیالوگ کلیک کن تا دوربین روی همان لحظه صحنه قرار بگیرد و صدای شخصیت با ریورب سالن
+          اپرا، فیلتر آکوستیک اختصاصی و پن سه‌بعدی چرخش سر پخش شود:
+        </p>
+        <div className={styles.voiceGrid}>
+          {ORFEO_STORY_SCRIPT.map((cue) => {
+            const active = auditioningCueId === cue.id;
+            return (
+              <button
+                key={cue.id}
+                type="button"
+                className={active ? styles.voiceCardActive : styles.voiceCard}
+                onClick={async () => {
+                  setPlaying(false);
+                  setMuted(false);
+                  setElapsedMs(cue.startMs);
+                  setAuditioningCueId(cue.id);
+                  const engine = stageEngineRef.current;
+                  if (engine) {
+                    await engine.init();
+                    engine.setMuted(false);
+                    await engine.playCharacterCue(cue.id);
+                  }
+                }}
+              >
+                <span className={styles.voiceMeta}>
+                  <strong>🔊 {cue.speaker}</strong>
+                  <small>{formatClock(cue.startMs)}</small>
+                </span>
+                <span className={styles.voiceLine}>«{cue.textFa}»</span>
+              </button>
+            );
+          })}
         </div>
       </section>
 

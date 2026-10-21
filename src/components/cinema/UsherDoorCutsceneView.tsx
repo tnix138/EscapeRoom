@@ -12,6 +12,7 @@
 import type { ClientRoomView } from '../../contracts/types';
 import { getPovCameraStyle } from './usePovHeadPan';
 import { getDoorTimeline, progressBetween } from './cutscene-timing';
+import { getStoryDialogueAt } from './story-script';
 import styles from './UsherDoorCutsceneView.module.css';
 
 export interface UsherDoorCutsceneViewProps {
@@ -233,7 +234,16 @@ export default function UsherDoorCutsceneView({
         </div>
       )}
 
-      <p className={styles.caption}>{doorCaption(elapsedMs, room.me.playerName)}</p>
+      {(() => {
+        const storyDialogue = getStoryDialogueAt(elapsedMs);
+        return (
+          <p className={styles.caption}>
+            {storyDialogue
+              ? `${storyDialogue.speaker}: «${storyDialogue.textFa}»`
+              : doorCaption(elapsedMs, room.me.playerName)}
+          </p>
+        );
+      })()}
     </div>
   );
 }
