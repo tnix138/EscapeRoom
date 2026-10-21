@@ -13,6 +13,12 @@
   user-select: none;
 }
 
+.cssFallback {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
 .vignette {
   position: absolute;
   inset: 0;

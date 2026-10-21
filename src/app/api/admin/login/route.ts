@@ -1,70 +1,77 @@
-// POST /api/admin/login — ورود ادمین با username/password از env (فاز ۰۹)
-// پاسخ موفق: نشست در کوکی httpOnly + بدنهٔ { ok: true, data: { session } }
+// POST /api/admin/login — ورود ادمین (قرارداد ۵، فاز ۰۹)
+// بدنه: { username, password } → ۲۰۰ + کوکی httpOnly | ۴۰۰ | ۴۰۱ | ۴۲۹ | ۵۰۳
+import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { checkAndRecord } from '@/server/auth/rate-limit';
 import {
+  ADMIN_LOGIN_RATE_LIMIT_MAX,
+  ADMIN_LOGIN_RATE_LIMIT_WINDOW_MS,
   adminSessionCookie,
-  authenticateAdmin,
-  clientIp,
+  isAdminConfigured,
   readAdminConfig,
   signAdminSession,
-} from '@/server/admin/session';
-import { ADMIN_LOGIN_RATE_MAX, ADMIN_LOGIN_RATE_WINDOW_MS, adminLoginRateKey } from '../_lib/limits';
-import { jsonError, jsonOk } from '../_lib/responses';
+  verifyAdminCredentials,
+} from '../../../../server/auth/admin-session';
+import { checkAndRecord } from '../../../../server/auth/rate-limit';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 const loginSchema = z.object({
-  username: z.string().trim().min(1).max(64),
-  password: z.string().min(1).max(200),
+  username: z.string().trim().min(1).max(32),
+  password: z.string().min(1).max(128),
 });
+
+function clientKey(req: Request): string {
+  const forwarded = req.headers.get('x-forwarded-for');
+  const ip = forwarded?.split(',')[0]?.trim() || req.headers.get('x-real-ip') || 'local';
+  return `admin-login:${ip}`;
+}
 
 export async function POST(req: Request) {
   const config = readAdminConfig();
-  if (!config) {
-    return jsonError(
-      'ADMIN_NOT_CONFIGURED',
-      'پنل ادمین تنظیم نشده است؛ ADMIN_USERNAME، ADMIN_PASSWORD_HASH و ADMIN_SESSION_SECRET را تنظیم کنید.',
-      503,
+  // پیکربندی ناقص = قفل بسته؛ هرگز جلسهٔ بدون کلید صادر نمی‌شود.
+  if (!isAdminConfigured(config) || !config.secret) {
+    return NextResponse.json(
+      {
+        ok: false,
+        error: {
+          code: 'ADMIN_NOT_CONFIGURED',
+          message:
+            process.env.NODE_ENV === 'production'
+              ? 'ورود مدیریت پیکربندی نشده است.'
+              : 'ورود مدیریت پیکربندی نشده است؛ ADMIN_USERNAME و ADMIN_SESSION_SECRET را تنظیم کنید.',
+        },
+      },
+      { status: 503 },
     );
   }
 
-  const allowed = checkAndRecord(
-    adminLoginRateKey(clientIp(req)),
-    ADMIN_LOGIN_RATE_MAX,
-    ADMIN_LOGIN_RATE_WINDOW_MS,
-  );
-  if (!allowed) {
-    return jsonError('RATE_LIMITED', 'تلاش‌های ورود زیاد بود؛ یک دقیقه صبر کنید.', 429);
+  if (!checkAndRecord(clientKey(req), ADMIN_LOGIN_RATE_LIMIT_MAX, ADMIN_LOGIN_RATE_LIMIT_WINDOW_MS)) {
+    return NextResponse.json(
+      { ok: false, error: { code: 'RATE_LIMITED', message: 'تلاش‌های ورود بیش از حد مجاز است؛ یک دقیقه صبر کنید.' } },
+      { status: 429 },
+    );
   }
 
-  let body: unknown;
-  try {
-    body = await req.json();
-  } catch {
-    return jsonError('VALIDATION_ERROR', 'بدنهٔ درخواست JSON معتبر نیست.', 400);
-  }
-
+  const body: unknown = await req.json().catch(() => null);
   const parsed = loginSchema.safeParse(body);
   if (!parsed.success) {
-    return jsonError('VALIDATION_ERROR', 'نام کاربری و رمز عبور هر دو لازم‌اند.', 400);
+    return NextResponse.json(
+      { ok: false, error: { code: 'VALIDATION_ERROR', message: 'نام کاربری و گذرواژه را کامل وارد کنید.' } },
+      { status: 400 },
+    );
   }
 
-  const session = authenticateAdmin(parsed.data.username, parsed.data.password, config);
+  const session = verifyAdminCredentials(parsed.data.username, parsed.data.password, config);
   if (!session) {
-    // مطابق معیار فاز ۰۹: غیر ادمین ۴۰۳ می‌گیرد.
-    return jsonError('FORBIDDEN', 'نام کاربری یا رمز عبور درست نیست.', 403);
+    return NextResponse.json(
+      { ok: false, error: { code: 'INVALID_CREDENTIALS', message: 'نام کاربری یا گذرواژه درست نیست.' } },
+      { status: 401 },
+    );
   }
 
-  const token = signAdminSession(session, config.sessionSecret);
-  return jsonOk(
-    { session },
-    {
-      headers: {
-        'set-cookie': adminSessionCookie(token, session.expiresAt - session.createdAt),
-        'cache-control': 'no-store',
-      },
-    },
-  );
+  const token = signAdminSession(session, config.secret);
+  const response = NextResponse.json({ ok: true, data: session });
+  response.headers.append('Set-Cookie', adminSessionCookie(token));
+  return response;
 }

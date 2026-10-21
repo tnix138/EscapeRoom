@@ -24,6 +24,7 @@ import {
   type ClientRoomView,
 } from '../../contracts/types';
 import { TheaterAudioEngine } from '../../audio/theater-audio-engine';
+import { StoryCueDirector } from '../../audio/story-cue-director';
 import { usePovHeadPan } from './usePovHeadPan';
 import {
   CHANDELIER_FALL_AT_MS,
@@ -33,6 +34,7 @@ import {
 } from './cutscene-timing';
 import UsherDoorCutsceneView from './UsherDoorCutsceneView';
 import AuditoriumPerformanceView from './AuditoriumPerformanceView';
+import ThreeCutsceneView from './ThreeCutsceneView';
 import styles from './FirstPersonCutsceneStage.module.css';
 
 export interface FirstPersonCutsceneStageProps {
@@ -52,6 +54,7 @@ export default function FirstPersonCutsceneStage({
   const engineRef = useRef<TheaterAudioEngine | null>(null);
   const prevElapsedRef = useRef(0);
   const [audioRunning, setAudioRunning] = useState(false);
+  const [threeReady, setThreeReady] = useState(false);
 
   const { yaw, handlers } = usePovHeadPan({
     onYawChange: (nextYaw) => engineRef.current?.setHeadYaw(nextYaw),
@@ -106,6 +109,8 @@ export default function FirstPersonCutsceneStage({
 
   /* رویدادهای صوتی یک‌باره موج ۳ که زمان‌بندی شده‌اند (برای جلوگیری از شلیک دوباره در هر فریم) */
   const scheduledOneShotsRef = useRef<Set<string>>(new Set());
+  const storyCueDirectorRef = useRef<StoryCueDirector | null>(null);
+  storyCueDirectorRef.current ??= new StoryCueDirector();
 
   /* قلب همگام‌سازی صوتی: فقط elapsedMs سرور، بدون تایمر محلی */
   useEffect(() => {
@@ -116,9 +121,29 @@ export default function FirstPersonCutsceneStage({
     if (clampedElapsed < prev - 300) {
       engine.stopAll();
       scheduledOneShotsRef.current.clear();
+      storyCueDirectorRef.current?.reset();
     }
     prevElapsedRef.current = clampedElapsed;
     engine.syncToElapsedMs(clampedElapsed);
+    storyCueDirectorRef.current?.update(clampedElapsed, (cue) => {
+      switch (cue.id) {
+        case 'door-creak':
+          engine.playStoryDoorCreak();
+          break;
+        case 'curtain-sweep':
+          engine.playStoryCurtainSweep(0);
+          break;
+        case 'shadow-breath':
+          engine.playStoryWhisper(cue.pan, 2.1);
+          break;
+        case 'audience-gasp':
+          engine.playStoryWhisper(cue.pan, 1.25);
+          break;
+        case 'final-whisper':
+          engine.playStoryWhisper(cue.pan, 2.4);
+          break;
+      }
+    });
 
     /* --- شلیک دقیق افکت‌های موج ۳ روی فریم انیمیشن متناظر --- */
     // لحظه پس زدن دست مرد توسط زن (عبور رو به جلو از آستانه)
@@ -164,11 +189,18 @@ export default function FirstPersonCutsceneStage({
         if (!audioRunning) void tryUnlockAudio();
       }}
     >
-      {inDoorScene ? (
-        <UsherDoorCutsceneView room={room} elapsedMs={clampedElapsed} yaw={yaw} />
-      ) : (
-        <AuditoriumPerformanceView room={room} elapsedMs={clampedElapsed} yaw={yaw} />
-      )}
+      <ThreeCutsceneView elapsedMs={clampedElapsed} yaw={yaw} onReady={setThreeReady} />
+      <div
+        className={styles.cssFallback}
+        style={{ display: threeReady ? 'none' : undefined }}
+        aria-hidden={threeReady}
+      >
+        {!threeReady && (inDoorScene ? (
+          <UsherDoorCutsceneView room={room} elapsedMs={clampedElapsed} yaw={yaw} />
+        ) : (
+          <AuditoriumPerformanceView room={room} elapsedMs={clampedElapsed} yaw={yaw} />
+        ))}
+      </div>
 
       {/* وینیت سینمایی + فید گذر بین سکانس‌ها */}
       <div className={styles.vignette} aria-hidden="true" />

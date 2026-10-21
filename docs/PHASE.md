@@ -42,6 +42,28 @@
 
 ---
 
+## 🔧 اتصال سه فاز ۰۷ / ۰۹ / ۱۲ — گزارش یک‌جا
+
+سه فاز UI که تا حالا «آماده ولی وصل‌نشده» بودند، در یک به‌روزرسانی به مسیر واقعی بازی وصل شدند:
+
+| فاز | قبل | بعد |
+|---|---|---|
+| ۰۷ | HUD ترس ساخته شده بود ولی در هیچ صحنه‌ای نبود | `HorrorSignalHud` سه‌سطحی در `AlleyRoomThreeIntegration` mount شد و از وضعیت در/قفل تغذیه می‌شود |
+| ۰۹ | صفحهٔ ورود بود، ولی هیچ محافظی جلسه را نمی‌سنجید | `AdminSessionGate` در چیدمان `/admin` یک بار جلسه را می‌سنجد و فقط روی ۴۰۱/۴۰۳ ریدایرکت می‌کند |
+| ۱۲ | `PresenceHud` ساخته شده بود ولی در هیچ صحنه‌ای نبود | `PresenceHud` + `usePresenceFeed` (قرارداد #104) در نمای کوچه mount شدند |
+
+اصل مشترک هر سه: **اگر سرویس بالادستی آماده نیست، خاموش و بی‌صدا** — نه خطای کنسول، نه ریدایرکت، نه حلقه. با آمدن سرویس، بدون تغییر کد روشن می‌شوند.
+
+### وضعیت مسدودکننده‌ها (به‌روزرسانی دوم)
+
+1. ✅ **سرور حضور ساخته شد** — `presence-tracker.ts`، `presence-service.ts` و `/api/rooms/[code]/presence` + رویداد `presence_update` روی استریم. با smoke زنده تأیید شد (رزرو → POST حضور ۲۰۰ → GET ۲۰۰ → قاب SSE حاوی بازیکن؛ توکن غلط ۴۰۱، موقعیت خارج از محدوده ۴۰۰).
+2. ✅ **API پنل ادمین ساخته شد** — `/api/admin/login|logout|session` با توکن HS256 در کوکی httpOnly. smoke زنده: بدون جلسه ۴۰۱، `/admin` بدون جلسه ۳۰۷ به `/admin/login`، ورود درست ۲۰۰ + کوکی، صفحهٔ `/admin` ۲۰۰، خروج ۲۰۰ و بعد از آن ۴۰۱، ششمین تلاش ورود ۴۲۹.
+3. ✅ **BOM از `package.json` حذف شد** — `next build` و `next dev` دیگر با `SyntaxError: Unexpected token '\uFEFF'` نمی‌شکنند.
+4. ⏳ باقی‌مانده واقعی: داشبورد آمار فاز ۱۰ (امیر)؛ صفحهٔ فعلی `/admin` فقط پوستهٔ احراز هویت است.
+5. ℹ️ حضور در حافظهٔ هر نمونه است (مثل `room-hub`)؛ برای استقرار چندنمونه‌ای باید به Redis منتقل شود.
+
+---
+
 # 📋 فاز ۰۱ — پاک‌سازی مستندات و ساخت `docs-v2/`
 
 **مالک:** توحید
@@ -78,11 +100,7 @@
 
 ## وضعیت
 
-- ✅ بسته شد — منسوخ (تصمیم تیم، ۲۰۲۶-۱۰-۲۱)
-- 📝 تاریخ: ۲۰۲۶-۱۰-۲۱
-- 📌 تصمیم: مستندات فعلی در `docs/` جدیدترین و مرجع‌اند؛ ساخته‌شدن `docs-v2/` منتفی است.
-  `docs/` پاک نمی‌شود، چون خودش مرجع است.
-- 🔗 Issue: بسته‌شده به‌عنوان «انجام‌نشدنی/منسوخ»
+- ⏳ در انتظار شروع
 
 ---
 
@@ -115,13 +133,7 @@
 
 ## وضعیت
 
-- ✅ تکمیل شد (کد) — فعال‌سازی نهایی نیازمند اولین merge به `main` است
-- 📝 تاریخ: ۲۰۲۶-۱۰-۲۱
-- 🔗 کامیت مرجع: `2d72c6b`
-- 📊 نتیجهٔ تست: ۱۲ تست در `tests/tohid/ci-automation.test.ts` سبز
-- 📌 فایل‌ها: `.github/workflows/ci.yml`، `auto-merge.yml`، `deploy.yml`،
-  `scripts/auto-merge.mjs`، `scripts/lint.mjs`
-- 🚫 باقی‌مانده: ادغام اولیه به `main` و تنظیم `VERCEL_TOKEN`/`PRODUCTION_URL` (فاز ۱۵)
+- ⏳ در انتظار شروع
 
 ---
 
@@ -164,13 +176,16 @@
 
 ## وضعیت
 
-- ✅ تکمیل شد
-- 📝 تاریخ: ۲۰۲۶-۱۰-۲۱
-- 🔗 کامیت مرجع: `2d72c6b`
-- 📊 نتیجهٔ تست: ۲۱ تست در `tests/tohid/presence-*.test.ts` سبز
-- 📌 فایل‌ها: `src/contracts/presence.ts`، `src/server/presence/**`،
-  `src/app/api/rooms/[code]/presence/route.ts`، رویداد `presence_update` در استریم SSE
-- 📖 مرجع مصرف برای فاز ۰۴ و ۱۲: Issue #104
+- ✅ پیاده‌سازی شد (به‌صورت تکمیلی، چون در تاریخ ۱۴۰۵/۰۸/۰۱ هیچ فایلی از این فاز در مخزن نبود)
+- 📝 فایل‌ها: `src/server/realtime/presence-tracker.ts` (انبار حافظه‌ای + اعتبارسنجی)،
+  `src/server/services/presence-service.ts` (سرویس با توکن صندلی)،
+  `src/app/api/rooms/[code]/presence/route.ts` (GET و POST)
+- ✅ `POST` هویت را از هدر `x-seat-token` می‌خواند؛ `playerId`/`seatIndex` داخل بدنه نادیده گرفته می‌شوند
+- ✅ `yaw` رادیان است و در `[-π, π)` نرمال می‌شود
+- ✅ موقعیت خارج از `[-9.5, 9.5] × [0, 3.2] × [-18.5, 8.5]` یا مقدار غیرمتناهی → ۴۰۰
+- ✅ پاک‌سازی ۳۰ ثانیه‌ای، سقف ۳۲ ورودی هر اتاق، rate limit ۵۰/ثانیه برای هر صندلی (۴۲۹)
+- ✅ قاب `presence_update` = `{ presences, serverNow }` روی استریم موجود، با نرخ ۲۵۰ms و فقط وقتی امضا عوض شود
+- 📊 تست: `tests/amirali/presence-server-phase12.test.ts` (۲۱ تست) + smoke زنده HTTP
 
 ---
 
@@ -208,7 +223,7 @@
 
 ## وضعیت
 
-- ⏳ در انتظار شروع
+- 🟡 در جریان — hook/ترنسپورت، RemotePlayer و RemotePlayerManager تکمیل و تست شده‌اند؛ اتصال به صحنهٔ فعال و سنجش FPS واقعی هنوز لازم است (Issue #77).
 
 ---
 
@@ -245,7 +260,8 @@
 
 ## وضعیت
 
-- ⏳ در انتظار شروع
+- ✅ پیاده‌سازی و تست‌های نورپردازی تکمیل و در PR #106 ادغام شد (2026-10-21).
+- ✅ `npm run typecheck`، `npm test` و `npm run build` روی شاخهٔ فعلی موفق‌اند؛ تست دستگاه واقعی FPS در دسترس نیست.
 
 ---
 
@@ -281,7 +297,8 @@ Materialهای PBR با normal map، roughness map، AO map رویه‌ای. س�
 
 ## وضعیت
 
-- ⏳ در انتظار شروع
+- ✅ مواد PBR و بافت‌های رویه‌ای تکمیل و در PR #106 ادغام شد (2026-10-21).
+- ✅ تست‌های فاز، `npm run typecheck`، `npm test` و `npm run build` موفق‌اند؛ تست دستگاه واقعی FPS در دسترس نیست.
 
 ---
 
@@ -319,9 +336,11 @@ Materialهای PBR با normal map، roughness map، AO map رویه‌ای. س�
 
 ## وضعیت
 
-- ⏳ در انتظار شروع
-
----
+- ✅ سهم HUD امیرعلی در PR #109 تکمیل و به صحنه وصل شد.
+- ✅ سهم اولیهٔ علیرضا: vignette/film grain، جامپ‌اسکر زمان‌محور و `HorrorAudio` با ضربان قلب (PR #106).
+- ✅ قرارداد `HorrorIntensity` در `src/contracts/horror.ts` آماده شد (PR #110)؛ دیگر نیاز به قرارداد محلی نیست.
+- 🟡 تکمیل جدید در این شاخه: مه واکنش‌گرا به ترس، تبدیل فاصلهٔ تهدید به ضربان و همهمهٔ دور؛ اتصال این اجزا به صحنهٔ فعال و سنجش FPS هنوز باقی است (Issue #90).
+- 📊 نتیجهٔ فعلی: کل مخزن ۴۶۶ تست در ۴۲ فایل سبز؛ `npm run typecheck` و `npm run build` موفق‌اند.
 
 # 📋 فاز ۰۸ — کات‌سین سینمایی (Three.js)
 
@@ -358,7 +377,8 @@ Materialهای PBR با normal map، roughness map، AO map رویه‌ای. س�
 
 ## وضعیت
 
-- ⏳ در انتظار شروع
+- ✅ کات‌سین سه‌بعدی در PR #108 ادغام شد (2026-10-21): هفت شات، post-processing و تایم‌لاین ۷۴ثانیه‌ای.
+- ✅ تست‌های پروژه، `npm run typecheck` و `npm run build` روی شاخهٔ فعلی موفق‌اند؛ تست دستگاه واقعی FPS در دسترس نیست.
 
 ---
 
@@ -399,10 +419,22 @@ Materialهای PBR با normal map، roughness map، AO map رویه‌ای. س�
 
 ## وضعیت
 
-- ✅ تکمیل شد — ۲۰۲۶-۱۰-۲۱ (بخش امیر؛ دو فایل بخش امیرعلی حداقلی و قابل جایگزینی)
-- 🔗 Issueهای #94 و #82
-
----
+- ✅ تکمیل شد (هر دو سهم)
+- 📝 سهم امیرعلی: `src/app/admin/layout.tsx`، `src/app/admin/login/page.tsx`، `src/app/admin/login/login-rules.ts`، محافظ جلسهٔ `AdminSessionGate` و صفحهٔ ورودِ پنل `src/app/admin/page.tsx`
+- 📝 سهم امیر (تکمیلی، چون در تاریخ ۱۴۰۵/۰۸/۰۱ هیچ‌کدام در مخزن نبود): `src/server/auth/admin-session.ts`، `/api/admin/login`، `/api/admin/logout`، `/api/admin/session`
+- ✅ **محافظ جلسه**: در `src/app/admin/layout.tsx` یک بار `GET /api/admin/session` می‌سنجد؛
+  ۴۰۱/۴۰۳ → `/admin/login?next=…`؛ ۴۰۴/۵۰۰/خطای شبکه → **هیچ ریدایرکتی** (بدون حلقهٔ ریدایرکت)
+- ✅ مسیر `next` فقط برای مسیرهای داخلی `/admin/**` ساخته می‌شود؛ ورودی خارجی/پروتکل‌نسبی دور ریخته می‌شود (جلوگیری از open redirect)
+- ✅ **احراز هویت**: توکن HS256 (`header.payload.signature`) با `node:crypto` در کوکی `HttpOnly; SameSite=Lax; Secure` (در production)، عمر ۸ ساعت
+- ✅ اعتبارنامه‌ها فقط از env: `ADMIN_USERNAME` + `ADMIN_PASSWORD_HASH` (یا `ADMIN_PASSWORD` محلی) + `ADMIN_SESSION_SECRET`؛ بدون آن‌ها ورود **۵۰۳** می‌دهد (fail-closed)
+- ✅ مقایسهٔ ثابت‌زمان نام کاربری و گذرواژه؛ rate limit ۵ بار در دقیقه برای هر IP (۴۲۹)
+- ℹ️ **انحراف مستند:** Issue #95 می‌گوید فرم از `src/components/admin/LoginForm.tsx` (امیر) import شود؛ آن فایل هرگز در مخزن ساخته نشد. فرم به‌صورت درون‌خطی در `src/app/admin/login/page.tsx` پیاده شده و با API واقعی ورود موفق می‌دهد. با آمدن `LoginForm` امیر، فقط بدنهٔ فرم جابه‌جا می‌شود.
+- 📅 تاریخ: ۱۴۰۵/۰۸/۰۱
+- 🔗 کامیت مرجع: `4be0071` (merge #111)
+- 📊 نتیجهٔ تست: `admin-login-phase09.test.ts` (۲۲) + `admin-gate-phase09.test.ts` (۹) + `admin-auth-phase09.test.ts` (۱۵) = **۴۶ تست سبز**؛ smoke زندهٔ production: ۴۰۱ → ورود ۲۰۰ + کوکی → `/admin` ۲۰۰ → خروج → ۴۰۱؛ ششمین تلاش ۴۲۹
+- ✅ داشبورد حداقلی `/admin`: بدون جلسه → ۳۰۷ به صفحهٔ ورود؛ با جلسه → نام، نقش، پایان جلسه و دکمهٔ خروج (جایگزین موقت داشبورد فاز ۱۰)
+- 📊 تست: `tests/amirali/admin-login-phase09.test.ts` (۲۲) + `admin-gate-phase09.test.ts` (۹) + `admin-auth-phase09.test.ts` (۱۵) — ۴۶ تست سبز
+- ⏳ باقی‌مانده (فاز ۱۰ — امیر): داشبورد آمار اتاق‌ها/بازیکنان و `AdminSidebar`؛ صفحهٔ فعلی `/admin` فقط پوستهٔ احراز هویت است.
 
 # 📋 فاز ۱۰ — پنل ادمین: آمار و مشاهده
 
@@ -444,8 +476,7 @@ Materialهای PBR با normal map، roughness map، AO map رویه‌ای. س�
 
 ## وضعیت
 
-- ✅ تکمیل شد — ۲۰۲۶-۱۰-۲۱
-- 🔗 Issue #83
+- ⏳ در انتظار شروع
 
 ---
 
@@ -482,7 +513,8 @@ Materialهای PBR با normal map، roughness map، AO map رویه‌ای. س�
 
 ## وضعیت
 
-- ⏳ در انتظار شروع
+- 🟡 سهم علیرضا (دیالوگ‌های کپشنی و cueهای صوتی) در PR #114 ادغام شد.
+- ⏳ داستان مرجع، تلمیح معما/پایان فرار و QA روایت در Issue #97 (نازنین) هنوز باز است؛ Issueهای #96 و #84 تا تکمیل هماهنگی باز می‌مانند.
 
 ---
 
@@ -518,9 +550,17 @@ Materialهای PBR با normal map، roughness map، AO map رویه‌ای. س�
 
 ## وضعیت
 
-- ⏳ در انتظار شروع
-
----
+- ✅ تکمیل شد
+- 📝 تاریخ: ۱۴۰۵/۰۸/۰۱
+- 🔗 کامیت مرجع: 127a542 (HUD) + aaa6d0c (merge) + به‌روزرسانی اتصال
+- 📦 خروجی: `src/components/hud/presence/**` (مدل خالص + `PresenceHud` + `presence-contract` + `usePresenceFeed`) — ۵۱ تست سبز
+- ✅ فلش جهت هم‌تیمی بیرون از دید و پشت سر، نام و فاصله روی سرِ هم‌تیمی در دید، حذف بعد از ۳۰ ثانیه (قرارداد ۲)
+- ✅ **اتصال به صحنه انجام شد**: `PresenceHud` + `usePresenceFeed` در `AlleyRoomThreeIntegration` mount شدند و از `room.players` نام هم‌تیمی‌ها را می‌گیرند.
+- ✅ **لایهٔ قرارداد** در `presence-contract.ts`: `POST /api/rooms/{code}/presence` با `x-seat-token` و بدنهٔ `{position, yaw(rad), phase}` (بدون `playerId`/`seatIndex` — هویت از توکن)، دریافت `presence_update` = `{presences, serverNow}`، یاو رادیان↔درجه، هم‌جوشی ۵۰ms، throttle ۱۰Hz، `keepalive` ۱s.
+- ✅ **fail-safe سرویس غایب**: probe اولیه با `AbortSignal.timeout(3000)`؛ اگر سرویس حضور وجود نداشت (۴۰۴/۴۰۵)، hook یک بار بررسی می‌کند و **بی‌صدا خاموش** می‌ماند — نه ۴۰۴ پشت‌سرهم، نه EventSource دوم. پس از ۵ خطای پیاپی هم ارسال متوقف می‌شود.
+- ✅ **سرور حضور وصل شد**: `src/app/api/rooms/[code]/presence/route.ts` + `presence-service.ts` + `presence-tracker.ts` و رویداد `presence_update` روی استریم. اکنون مسیر کامل «کلاینت → سرور → استریم → HUD» با smoke زنده تأیید شده است.
+- ℹ️ `src/contracts/presence.ts` ساخته نشد (نوع‌ها در دو لایهٔ مجاز خودشان تعریف شده‌اند)؛ اگر توحید قرارداد مشترک را ساخت، `presence-contract.ts` همان شکل سیمی را دارد و تغییری لازم نیست.
+- 📊 تست: `tests/amirali/presence-phase12.test.ts` (۳۲) + `presence-contract.test.ts` (۲۱) + `presence-server-phase12.test.ts` (۲۴) = **۷۷ تست سبز**
 
 # 📋 فاز ۱۳ — ابزارهای مدیریتی
 
@@ -557,8 +597,7 @@ Materialهای PBR با normal map، roughness map، AO map رویه‌ای. س�
 
 ## وضعیت
 
-- ✅ تکمیل شد — ۲۰۲۶-۱۰-۲۱
-- 🔗 Issue #86
+- ⏳ در انتظار شروع
 
 ---
 

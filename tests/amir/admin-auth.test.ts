@@ -1,37 +1,56 @@
-// تست فاز ۰۹ — احراز هویت ادمین: ورود، خروج، کوکی httpOnly و رد غیر ادمین
+// تست فاز ۰۹ — احراز هویت ادمین روی ماژول مشترک `src/server/auth/admin-session.ts`
+// (پس از ادغام شاخهٔ توحید با شاخهٔ امیرعلی؛ هر دو قالب هش و هر دو مسیر پوشش داده می‌شوند)
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
-import { scryptSync } from 'node:crypto';
-import { afterAll, beforeEach, describe, expect, it } from 'vitest';
+import { createHash, scryptSync } from 'node:crypto';
+import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
-// مسیر دیتابیس موقت باید پیش از اولین استفادهٔ ریپازیتوری در env باشد
+const { cookieJar } = vi.hoisted(() => ({ cookieJar: new Map<string, string>() }));
+
+vi.mock('next/headers', () => ({
+  cookies: async () => ({
+    get: (name: string) =>
+      cookieJar.has(name) ? { name, value: cookieJar.get(name) as string } : undefined,
+  }),
+}));
+
+vi.mock('next/navigation', () => ({
+  redirect: (url: string) => {
+    throw new Error(`REDIRECT:${url}`);
+  },
+}));
+
 const tmpDir = mkdtempSync(path.join(tmpdir(), 'escaperoom-admin-auth-'));
 process.env.ESCAPEROOM_DB_PATH = path.join(tmpDir, 'auth.db');
 
 import { POST as loginRoute } from '../../src/app/api/admin/login/route';
 import { POST as logoutRoute } from '../../src/app/api/admin/logout/route';
+import { GET as sessionRoute } from '../../src/app/api/admin/session/route';
 import { GET as statsRoute } from '../../src/app/api/admin/stats/route';
 import { resetRateLimits } from '../../src/server/auth/rate-limit';
 import {
-  ADMIN_SESSION_COOKIE,
+  ADMIN_COOKIE_NAME,
   adminSessionCookie,
-  authenticateAdmin,
-  clearedAdminSessionCookie,
+  isAdminConfigured,
   readAdminConfig,
-  readCookie,
+  readCookieValue,
   signAdminSession,
-  verifyAdminPassword,
+  verifyAdminCredentials,
   verifyAdminSessionToken,
-} from '../../src/server/admin/session';
-import { createAdminSession } from '../../src/contracts/admin';
+} from '../../src/server/auth/admin-session';
+import { requireAdminPage, ADMIN_LOGIN_PATH } from '../../src/app/admin/guard';
 
 const ADMIN_USERNAME = 'tohid-admin';
 const ADMIN_PASSWORD = 'ramz-e-adeem-12345';
 const ADMIN_SECRET = 'test-session-secret-for-admin-panel';
 const TEST_IP = '203.0.113.7';
 
-function hashPassword(password: string, salt = 'a1b2c3d4e5f60718'): string {
+function sha256Hex(value: string): string {
+  return createHash('sha256').update(value, 'utf8').digest('hex');
+}
+
+function scryptHash(password: string, salt = 'a1b2c3d4e5f60718'): string {
   return `scrypt$${salt}$${scryptSync(password, salt, 64).toString('hex')}`;
 }
 
@@ -39,9 +58,11 @@ afterAll(() => rmSync(tmpDir, { recursive: true, force: true }));
 
 beforeEach(() => {
   process.env.ADMIN_USERNAME = ADMIN_USERNAME;
-  process.env.ADMIN_PASSWORD_HASH = hashPassword(ADMIN_PASSWORD);
+  process.env.ADMIN_PASSWORD_HASH = sha256Hex(ADMIN_PASSWORD);
   process.env.ADMIN_SESSION_SECRET = ADMIN_SECRET;
   delete process.env.ADMIN_ROLE;
+  delete process.env.ADMIN_PASSWORD;
+  cookieJar.clear();
   resetRateLimits();
 });
 
@@ -53,72 +74,59 @@ function loginRequest(body: unknown, ip = TEST_IP): Request {
   });
 }
 
-interface LoginBody {
+interface ErrorBody {
   ok: boolean;
-  data?: { session: { username: string; role: string; expiresAt: number } };
   error?: { code: string; message: string };
+  data?: { username?: string; role?: string; expiresAt?: number };
 }
 
-async function login(ip = TEST_IP): Promise<{ cookie: string; body: LoginBody }> {
+async function login(ip = TEST_IP): Promise<{ cookie: string; body: ErrorBody }> {
   const res = await loginRoute(loginRequest({ username: ADMIN_USERNAME, password: ADMIN_PASSWORD }, ip));
   const raw = res.headers.get('set-cookie') ?? '';
-  return {
-    cookie: raw.split(';')[0] ?? '',
-    body: (await res.json()) as LoginBody,
-  };
+  return { cookie: raw.split(';')[0] ?? '', body: (await res.json()) as ErrorBody };
 }
 
-function statsRequest(cookie?: string): Request {
-  return new Request('http://localhost/api/admin/stats', {
-    headers: cookie ? { cookie } : {},
-  });
-}
-
-describe('فاز ۰۹ — ورود ادمین', () => {
-  it('با نام کاربری و رمز درست، جلسه در کوکی httpOnly ست می‌شود', async () => {
+describe('فاز ۰۹ — ورود ادمین (endpoint)', () => {
+  it('با اطلاعات درست ۲۰۰ و کوکی httpOnly برمی‌گرداند', async () => {
     const res = await loginRoute(
       loginRequest({ username: ADMIN_USERNAME, password: ADMIN_PASSWORD }),
     );
     expect(res.status).toBe(200);
 
     const setCookie = res.headers.get('set-cookie') ?? '';
-    expect(setCookie).toContain(`${ADMIN_SESSION_COOKIE}=`);
+    expect(setCookie).toContain(`${ADMIN_COOKIE_NAME}=`);
     expect(setCookie.toLowerCase()).toContain('httponly');
     expect(setCookie).toContain('SameSite=Lax');
     expect(setCookie).toContain('Path=/');
 
-    const body = (await res.json()) as LoginBody;
+    const body = (await res.json()) as ErrorBody;
     expect(body.ok).toBe(true);
-    expect(body.data?.session.username).toBe(ADMIN_USERNAME);
-    expect(body.data?.session.role).toBe('superadmin');
-    expect(body.data?.session.expiresAt).toBeGreaterThan(Date.now());
+    expect(body.data?.username).toBe(ADMIN_USERNAME);
+    expect(body.data?.role).toBe('superadmin');
   });
 
-  it('رمز اشتباه ۴۰۳ می‌گیرد و کوکی ست نمی‌شود', async () => {
+  it('گذرواژهٔ اشتباه ۴۰۱ می‌گیرد و کوکی ست نمی‌شود', async () => {
     const res = await loginRoute(
       loginRequest({ username: ADMIN_USERNAME, password: 'ramz-e-eshtebah' }),
     );
-    expect(res.status).toBe(403);
+    expect(res.status).toBe(401);
     expect(res.headers.get('set-cookie')).toBeNull();
-    const body = (await res.json()) as LoginBody;
-    expect(body.ok).toBe(false);
-    expect(body.error?.code).toBe('FORBIDDEN');
+    const body = (await res.json()) as ErrorBody;
+    expect(body.error?.code).toBe('INVALID_CREDENTIALS');
   });
 
-  it('نام کاربری ناشناس هم ۴۰۳ می‌گیرد (بدون افشای وجود کاربر)', async () => {
+  it('نام کاربری ناشناس هم ۴۰۱ می‌گیرد (بدون افشای وجود کاربر)', async () => {
     const res = await loginRoute(
       loginRequest({ username: 'karbar-nashenas', password: ADMIN_PASSWORD }),
     );
-    expect(res.status).toBe(403);
-    const body = (await res.json()) as LoginBody;
-    expect(body.error?.code).toBe('FORBIDDEN');
+    expect(res.status).toBe(401);
+    expect(((await res.json()) as ErrorBody).error?.code).toBe('INVALID_CREDENTIALS');
   });
 
   it('بدنهٔ ناقص ۴۰۰ می‌گیرد', async () => {
     const res = await loginRoute(loginRequest({ username: ADMIN_USERNAME }));
     expect(res.status).toBe(400);
-    const body = (await res.json()) as LoginBody;
-    expect(body.error?.code).toBe('VALIDATION_ERROR');
+    expect(((await res.json()) as ErrorBody).error?.code).toBe('VALIDATION_ERROR');
   });
 
   it('بعد از ۵ تلاش ناموفق، تلاش ششم ۴۲۹ می‌گیرد', async () => {
@@ -126,123 +134,148 @@ describe('فاز ۰۹ — ورود ادمین', () => {
       const res = await loginRoute(
         loginRequest({ username: ADMIN_USERNAME, password: 'eshtebah' }, '198.51.100.9'),
       );
-      expect(res.status).toBe(403);
+      expect(res.status).toBe(401);
     }
     const blocked = await loginRoute(
       loginRequest({ username: ADMIN_USERNAME, password: 'eshtebah' }, '198.51.100.9'),
     );
     expect(blocked.status).toBe(429);
-    const body = (await blocked.json()) as LoginBody;
-    expect(body.error?.code).toBe('RATE_LIMITED');
+    expect(((await blocked.json()) as ErrorBody).error?.code).toBe('RATE_LIMITED');
   });
 
-  it('بدون تنظیم env پنل، ورود ۵۰۳ می‌دهد', async () => {
-    delete process.env.ADMIN_PASSWORD_HASH;
+  it('بدون پیکربندی env، ورود ۵۰۳ می‌دهد (fail-closed)', async () => {
+    delete process.env.ADMIN_SESSION_SECRET;
     const res = await loginRoute(
       loginRequest({ username: ADMIN_USERNAME, password: ADMIN_PASSWORD }),
     );
     expect(res.status).toBe(503);
-    const body = (await res.json()) as LoginBody;
-    expect(body.error?.code).toBe('ADMIN_NOT_CONFIGURED');
+    expect(((await res.json()) as ErrorBody).error?.code).toBe('ADMIN_NOT_CONFIGURED');
+  });
+
+  it('هش scrypt ساخته‌شده با npm run hash:admin هم پذیرفته می‌شود', async () => {
+    process.env.ADMIN_PASSWORD_HASH = scryptHash(ADMIN_PASSWORD);
+    resetRateLimits();
+    const res = await loginRoute(
+      loginRequest({ username: ADMIN_USERNAME, password: ADMIN_PASSWORD }, '198.51.100.20'),
+    );
+    expect(res.status).toBe(200);
+  });
+
+  it('گذرواژهٔ خام محلی (ADMIN_PASSWORD) فقط وقتی هش نیست کار می‌کند', () => {
+    delete process.env.ADMIN_PASSWORD_HASH;
+    process.env.ADMIN_PASSWORD = ADMIN_PASSWORD;
+    expect(verifyAdminCredentials(ADMIN_USERNAME, ADMIN_PASSWORD)).not.toBeNull();
+    expect(verifyAdminCredentials(ADMIN_USERNAME, 'ghalat')).toBeNull();
   });
 });
 
-describe('فاز ۰۹ — خروج و محافظت از مسیرها', () => {
+describe('فاز ۰۹ — خروج و بررسی جلسه', () => {
   it('خروج کوکی را با Max-Age=0 پاک می‌کند', async () => {
     const res = await logoutRoute();
     expect(res.status).toBe(200);
     const setCookie = res.headers.get('set-cookie') ?? '';
-    expect(setCookie).toContain(`${ADMIN_SESSION_COOKIE}=;`);
+    expect(setCookie).toContain(`${ADMIN_COOKIE_NAME}=;`);
     expect(setCookie).toContain('Max-Age=0');
-    expect((await res.json()) as { ok: boolean }).toMatchObject({ ok: true });
+    expect(await res.json()).toMatchObject({ ok: true });
   });
 
-  it('بدون کوکی، آمار ۴۰۱ می‌گیرد', async () => {
-    const res = await statsRoute(statsRequest());
+  it('بدون کوکی، بررسی جلسه ۴۰۱ می‌دهد', async () => {
+    const res = await sessionRoute(new Request('http://localhost/api/admin/session'));
     expect(res.status).toBe(401);
-    const body = (await res.json()) as LoginBody;
-    expect(body.error?.code).toBe('UNAUTHORIZED');
   });
 
-  it('کوکی با امضای دست‌کاری‌شده ۴۰۱ می‌گیرد', async () => {
+  it('با کوکی معتبر، بررسی جلسه ۲۰۰ می‌دهد', async () => {
     const { cookie } = await login();
-    const tampered = `${cookie}x`;
-    const res = await statsRoute(statsRequest(tampered));
-    expect(res.status).toBe(401);
-  });
-
-  it('جلسهٔ منقضی‌شده ۴۰۱ می‌گیرد', async () => {
-    const config = readAdminConfig();
-    expect(config).not.toBeNull();
-    const expired = createAdminSession({
-      adminId: 'adm_test',
-      username: ADMIN_USERNAME,
-      role: 'superadmin',
-      now: Date.now() - 9 * 60 * 60 * 1_000,
-      ttlMs: 8 * 60 * 60 * 1_000,
-    });
-    const token = signAdminSession(expired, config!.sessionSecret);
-    const res = await statsRoute(statsRequest(`${ADMIN_SESSION_COOKIE}=${token}`));
-    expect(res.status).toBe(401);
-  });
-
-  it('کوکی معتبر به آمار دسترسی می‌دهد', async () => {
-    const { cookie } = await login();
-    const res = await statsRoute(statsRequest(cookie));
+    const res = await sessionRoute(
+      new Request('http://localhost/api/admin/session', { headers: { cookie } }),
+    );
     expect(res.status).toBe(200);
-    expect((await res.json()) as { ok: boolean }).toMatchObject({ ok: true });
+    expect(((await res.json()) as ErrorBody).data?.username).toBe(ADMIN_USERNAME);
+  });
+
+  it('کوکی دست‌کاری‌شده ۴۰۱ می‌گیرد', async () => {
+    const { cookie } = await login();
+    const res = await sessionRoute(
+      new Request('http://localhost/api/admin/session', { headers: { cookie: `${cookie}x` } }),
+    );
+    expect(res.status).toBe(401);
   });
 });
 
-describe('فاز ۰۹ — توابع نشست', () => {
-  it('هش scrypt درست را می‌پذیرد و هش خراب را رد می‌کند', () => {
-    const stored = hashPassword(ADMIN_PASSWORD);
-    expect(verifyAdminPassword(ADMIN_PASSWORD, stored)).toBe(true);
-    expect(verifyAdminPassword('ramz-e-digar', stored)).toBe(false);
-    expect(verifyAdminPassword(ADMIN_PASSWORD, 'md5$salt$hash')).toBe(false);
-    expect(verifyAdminPassword(ADMIN_PASSWORD, '')).toBe(false);
+describe('فاز ۰۹ — محافظت از endpointهای ادمین و صفحات', () => {
+  it('آمار بدون نشست ۴۰۱ و با نشست ۲۰۰ می‌دهد', async () => {
+    const anonymous = await statsRoute(new Request('http://localhost/api/admin/stats'));
+    expect(anonymous.status).toBe(401);
+
+    const { cookie } = await login();
+    const authed = await statsRoute(
+      new Request('http://localhost/api/admin/stats', { headers: { cookie } }),
+    );
+    expect(authed.status).toBe(200);
   });
 
-  it('احراز هویت نشست با نقش پیش‌فرض superadmin می‌سازد', () => {
-    const config = readAdminConfig();
-    const session = authenticateAdmin(ADMIN_USERNAME, ADMIN_PASSWORD, config!);
-    expect(session).not.toBeNull();
-    expect(session?.role).toBe('superadmin');
-    expect(session?.expiresAt).toBeGreaterThan(session?.createdAt ?? 0);
-    expect(authenticateAdmin('karbar-digar', ADMIN_PASSWORD, config!)).toBeNull();
+  it('نقش viewer به عملیات مدیریتی ۴۰۳ می‌گیرد', async () => {
+    process.env.ADMIN_ROLE = 'viewer';
+    resetRateLimits();
+    const { cookie } = await login('198.51.100.30');
+    const { DELETE } = await import('../../src/app/api/admin/players/[id]/route');
+    const res = await DELETE(
+      new Request('http://localhost/api/admin/players/seat-1', {
+        method: 'DELETE',
+        headers: { cookie },
+      }),
+      { params: Promise.resolve({ id: 'seat-1' }) },
+    );
+    expect(res.status).toBe(403);
+    expect(((await res.json()) as ErrorBody).error?.code).toBe('FORBIDDEN');
   });
 
+  it('صفحهٔ ادمین بدون نشست به /admin/login می‌رود و با نشست باز می‌شود', async () => {
+    await expect(requireAdminPage()).rejects.toThrow(`REDIRECT:${ADMIN_LOGIN_PATH}`);
+
+    const { cookie } = await login('198.51.100.31');
+    const token = readCookieValue(cookie, ADMIN_COOKIE_NAME);
+    expect(token).toBeTruthy();
+    cookieJar.set(ADMIN_COOKIE_NAME, token as string);
+    const session = await requireAdminPage();
+    expect(session).toMatchObject({ username: ADMIN_USERNAME, role: 'superadmin' });
+  });
+
+  it('پیکربندی ناقص = قفل بسته و ریدایرکت به ورود', async () => {
+    delete process.env.ADMIN_USERNAME;
+    cookieJar.set(ADMIN_COOKIE_NAME, 'a.b.c');
+    expect(isAdminConfigured(readAdminConfig())).toBe(false);
+    await expect(requireAdminPage()).rejects.toThrow(`REDIRECT:${ADMIN_LOGIN_PATH}`);
+  });
+});
+
+describe('فاز ۰۹ — توابع جلسه', () => {
   it('توکن امضا و بازخوانی می‌شود و توکن دست‌کاری‌شده رد می‌شود', () => {
-    const session = createAdminSession({
-      adminId: 'adm_x',
+    const config = readAdminConfig();
+    const session = verifyAdminCredentials(ADMIN_USERNAME, ADMIN_PASSWORD, config);
+    expect(session).not.toBeNull();
+    const token = signAdminSession(session!, ADMIN_SECRET);
+    expect(verifyAdminSessionToken(token, ADMIN_SECRET)).toMatchObject({
       username: ADMIN_USERNAME,
-      role: 'moderator',
-    });
-    const token = signAdminSession(session, ADMIN_SECRET);
-    const restored = verifyAdminSessionToken(token, ADMIN_SECRET);
-    expect(restored).toMatchObject({
-      adminId: 'adm_x',
-      username: ADMIN_USERNAME,
-      role: 'moderator',
+      role: 'superadmin',
     });
     expect(verifyAdminSessionToken(token, 'secret-digar')).toBeNull();
     expect(verifyAdminSessionToken('not-a-jwt', ADMIN_SECRET)).toBeNull();
+    expect(verifyAdminSessionToken(null, ADMIN_SECRET)).toBeNull();
   });
 
-  it('کوکی در حالت production پرچم Secure دارد و در حالت دیگر ندارد', () => {
-    const prod = adminSessionCookie('token-value', 60_000, true);
-    expect(prod).toContain('Secure');
-    expect(prod).toContain('HttpOnly');
-    expect(adminSessionCookie('token-value', 60_000, false)).not.toContain('Secure');
-    expect(clearedAdminSessionCookie(false)).toContain('Max-Age=0');
-  });
-
-  it('readCookie مقدار کوکی را از هدر جدا می‌کند', () => {
-    const req = new Request('http://localhost/x', {
-      headers: { cookie: `a=1; ${ADMIN_SESSION_COOKIE}=abc.def.ghi; b=2` },
-    });
-    expect(readCookie(req, ADMIN_SESSION_COOKIE)).toBe('abc.def.ghi');
-    expect(readCookie(req, 'mojood-nist')).toBeNull();
-    expect(readCookie(new Request('http://localhost/x'), ADMIN_SESSION_COOKIE)).toBeNull();
+  it('کوکی در production پرچم Secure دارد و در حالت دیگر ندارد', () => {
+    const previous = process.env.NODE_ENV;
+    try {
+      // @ts-expect-error — NODE_ENV فقط در زمان اجرا قابل تغییر است
+      process.env.NODE_ENV = 'production';
+      expect(adminSessionCookie('t', 60_000)).toContain('Secure');
+      // @ts-expect-error
+      process.env.NODE_ENV = 'test';
+      expect(adminSessionCookie('t', 60_000)).not.toContain('Secure');
+    } finally {
+      // @ts-expect-error
+      process.env.NODE_ENV = previous;
+    }
   });
 });

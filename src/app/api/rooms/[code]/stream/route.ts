@@ -1,11 +1,16 @@
 // GET /api/rooms/[code]/stream?token=<seatToken>&sinceVersion=0 — استریم بلادرنگ SSE
 // event: room_update به محض تغییر نسخه اتاق + event: heartbeat حاوی serverNow برای همگام‌سازی کات‌سین
+// event: presence_update = { presences, serverNow } — حضور حرکتی هم‌تیمی‌ها (قرارداد #104)
 import type { ClientRoomView } from '../../../../../contracts/types';
 import { projectRoomView } from '../../../../../engine/view-projector';
 import { subscribeRoom } from '../../../../../server/realtime/room-hub';
 import { shouldSendRoomViewUpdate } from '../../../../../server/realtime/presence';
-import { createPresenceCoalescer } from '../../../../../server/presence/presence-coalescer';
-import { getRoomPresence, subscribePresence } from '../../../../../server/presence/presence-store';
+import {
+  PRESENCE_BROADCAST_MS,
+  listPresence,
+  presenceSignature,
+  subscribePresence,
+} from '../../../../../server/realtime/presence-tracker';
 import {
   GameServiceError,
   findSeatIndexByToken,
@@ -54,7 +59,7 @@ export async function GET(
   let unsubscribe: (() => void) | null = null;
   let heartbeat: ReturnType<typeof setInterval> | null = null;
   let presenceHeartbeat: ReturnType<typeof setInterval> | null = null;
-  let presenceCoalescer: ReturnType<typeof createPresenceCoalescer> | null = null;
+  let presenceTick: ReturnType<typeof setInterval> | null = null;
   let unsubscribePresence: (() => void) | null = null;
   let lastSentVersion = 0;
   let lastOnlineSignature = '';
@@ -79,17 +84,27 @@ export async function GET(
       lastSentVersion = initialView.version;
       sendRoomView(initialView);
 
-      // حضور هم‌تیمی‌ها: فوراً آخرین وضعیت، بعد از آن هر تغییر با هم‌جوشی ۵۰ms
-      presenceCoalescer = createPresenceCoalescer((presences) => {
-        send('presence_update', { presences, serverNow: Date.now() });
+      // ---- حضور حرکتی (قرارداد #104) ----
+      // یک قاب کامل بلافاصله، بعد از آن هر ۲۵۰ms فقط اگر امضا عوض شده باشد.
+      let lastPresenceSignature = '';
+      let presenceDirty = false;
+      const flushPresence = (force = false) => {
+        const serverNow = Date.now();
+        const presences = listPresence(code, serverNow);
+        const signature = presenceSignature(presences);
+        if (!force && signature === lastPresenceSignature) return;
+        lastPresenceSignature = signature;
+        send('presence_update', { presences, serverNow });
+      };
+      flushPresence(true);
+      unsubscribePresence = subscribePresence(code, () => {
+        presenceDirty = true;
       });
-      send('presence_update', {
-        presences: getRoomPresence(code, Date.now()),
-        serverNow: Date.now(),
-      });
-      unsubscribePresence = subscribePresence(code, (presences) => {
-        presenceCoalescer?.push(presences);
-      });
+      presenceTick = setInterval(() => {
+        if (!presenceDirty) return;
+        presenceDirty = false;
+        flushPresence();
+      }, PRESENCE_BROADCAST_MS);
 
       unsubscribe = subscribeRoom(code, (state) => {
         if (state.version <= lastSentVersion) return;
@@ -138,12 +153,12 @@ export async function GET(
       const cleanup = () => {
         if (heartbeat) clearInterval(heartbeat);
         if (presenceHeartbeat) clearInterval(presenceHeartbeat);
-        if (unsubscribe) unsubscribe();
+        if (presenceTick) clearInterval(presenceTick);
         if (unsubscribePresence) unsubscribePresence();
-        presenceCoalescer?.dispose();
+        if (unsubscribe) unsubscribe();
         heartbeat = null;
         presenceHeartbeat = null;
-        presenceCoalescer = null;
+        presenceTick = null;
         unsubscribePresence = null;
         unsubscribe = null;
       };
@@ -160,12 +175,12 @@ export async function GET(
     cancel() {
       if (heartbeat) clearInterval(heartbeat);
       if (presenceHeartbeat) clearInterval(presenceHeartbeat);
-      if (unsubscribe) unsubscribe();
+      if (presenceTick) clearInterval(presenceTick);
       if (unsubscribePresence) unsubscribePresence();
-      presenceCoalescer?.dispose();
+      if (unsubscribe) unsubscribe();
       heartbeat = null;
       presenceHeartbeat = null;
-      presenceCoalescer = null;
+      presenceTick = null;
       unsubscribePresence = null;
       unsubscribe = null;
     },

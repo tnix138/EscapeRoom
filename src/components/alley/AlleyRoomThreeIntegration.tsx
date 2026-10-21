@@ -10,7 +10,7 @@
  * - بدون تغییر منطق پازل سرور — فقط درخواست‌های توافق‌شده
  */
 
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import { useThreeEngine } from '@/engine3d/useThreeEngine';
 import { usePlayerControls } from '@/engine3d/usePlayerControls';
@@ -30,6 +30,10 @@ import TheaterCompanionHud from '../hud/TheaterCompanionHud';
 import MovementNotice from '../hud/MovementNotice';
 import ExplorationHud from '../hud/ExplorationHud';
 import type { ExplorationInput } from '../hud/exploration-hud';
+import PresenceHud from '../hud/presence/PresenceHud';
+import { usePresenceFeed } from '../hud/presence/use-presence-feed';
+import HorrorSignalHud from '../hud/horror/HorrorSignalHud';
+import type { HorrorIntensity } from '../hud/horror/horror-signal';
 
 const AlleyThreeSceneCore = dynamic(() => Promise.resolve(ThreeCore), { ssr: false });
 
@@ -62,6 +66,27 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
     enabled: true,
     initialTransform,
   });
+
+  // حضور هم‌تیمی‌ها — قرارداد #104. در نبود سرویس (فاز ۰۳) بی‌صدا خاموش می‌ماند.
+  const presence = usePresenceFeed({
+    roomCode: room.roomCode,
+    seatToken: null, // از همان کلیدهای صفحهٔ اتاق خوانده می‌شود
+    playerId: room.me.playerId,
+    transform,
+    phase: room.phase,
+  });
+  // سیگنال ترس فاز ۰۷-ب: در گشودن در (گذار به کات‌سین) «دلواپس»، وگرنه «آرام».
+  const horrorLevel = useMemo<HorrorIntensity>(() => {
+    if (transition?.phase === 'door_opening') return 'tense';
+    if (room.alley.doorLockState.attempts >= 2) return 'tense';
+    return 'calm';
+  }, [transition?.phase, room.alley.doorLockState.attempts]);
+
+  const presenceNames = useMemo(() => {
+    const map: Record<string, string> = {};
+    for (const player of room.players) map[player.playerId] = player.playerName;
+    return map;
+  }, [room.players]);
 
   // ذخیره موقعیت برای reconnect
   useEffect(() => {
@@ -250,6 +275,17 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
       />
 
       <ExplorationHud input={explorationInput} onOpenChat={() => setChatOpen(true)} />
+
+      <HorrorSignalHud level={horrorLevel} showBadge={false} />
+
+      {/* نام و جهت هم‌تیمی‌ها در جهان سه‌بعدی — تا سرویس حضور آماده نشود خالی می‌ماند. */}
+      <PresenceHud
+        local={{ position: transform, yawDeg: transform.yawDeg, pitchDeg: transform.pitchDeg }}
+        players={presence.presences}
+        names={presenceNames}
+        localPlayerId={room.me.playerId}
+        now={presence.serverNow ?? undefined}
+      />
 
       {/* HUD پایین */}
       <div style={{ position: 'absolute', bottom: 12, left: 12, right: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', pointerEvents: 'none', direction: 'rtl' }}>
