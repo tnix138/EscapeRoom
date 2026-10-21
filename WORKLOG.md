@@ -121,7 +121,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۱۰** — ✅ Archive: **۵۴** — 🧾 مجموع: **۶۴** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۸:۵۲ (`2026-10-21T15:18:52.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۷** — ✅ Archive: **۵۷** — 🧾 مجموع: **۶۴** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۹:۰۵ (`2026-10-21T15:19:05.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -131,18 +131,18 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:EVENTS:START -->
 | 🕒 زمان (ایران / UTC) | رویداد | شناسه لاگ | توسط |
 | --- | --- | --- | --- |
-| ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۸:۵۲<br>`2026-10-21T15:18:52.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-48-52_alireza_wave4-archive-pr`](./logs/pending/1405-07-29_18-48-52_alireza_wave4-archive-pr.md) | **علیرضا** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۸:۴۹<br>`2026-10-21T15:18:49.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-48-49_alireza_push`](./logs/pending/1405-07-29_18-48-49_alireza_push.md) | **علیرضا** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۸:۴۹<br>`2026-10-21T15:18:49.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-48-49_alireza_wave4-archive`](./logs/pending/1405-07-29_18-48-49_alireza_wave4-archive.md) | **علیرضا** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۹:۰۵<br>`2026-10-21T15:19:05.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_18-48-52_alireza_wave4-archive-pr`](./logs/archive/1405-07-29_18-48-52_alireza_wave4-archive-pr.md) | **علیرضا** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۹:۰۵<br>`2026-10-21T15:19:05.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_18-48-49_alireza_push`](./logs/archive/1405-07-29_18-48-49_alireza_push.md) | **علیرضا** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۹:۰۵<br>`2026-10-21T15:19:05.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_18-48-49_alireza_wave4-archive`](./logs/archive/1405-07-29_18-48-49_alireza_wave4-archive.md) | **علیرضا** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۸:۵۲<br>`2026-10-21T15:18:52.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-48-52_alireza_wave4-archive-pr`](./logs/archive/1405-07-29_18-48-52_alireza_wave4-archive-pr.md) | **علیرضا** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۸:۴۹<br>`2026-10-21T15:18:49.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-48-49_alireza_push`](./logs/archive/1405-07-29_18-48-49_alireza_push.md) | **علیرضا** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۸:۴۹<br>`2026-10-21T15:18:49.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-48-49_alireza_wave4-archive`](./logs/archive/1405-07-29_18-48-49_alireza_wave4-archive.md) | **علیرضا** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۸:۴۳<br>`2026-10-21T15:18:43.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_18-48-27_alireza_wave4-pr`](./logs/archive/1405-07-29_18-48-27_alireza_wave4-pr.md) | **علیرضا** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۸:۴۳<br>`2026-10-21T15:18:43.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_18-48-20_alireza_push`](./logs/archive/1405-07-29_18-48-20_alireza_push.md) | **علیرضا** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۸:۴۳<br>`2026-10-21T15:18:43.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_18-48-15_alireza_wave4-3d-alley`](./logs/archive/1405-07-29_18-48-15_alireza_wave4-3d-alley.md) | **علیرضا** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۸:۲۷<br>`2026-10-21T15:18:27.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-48-27_alireza_wave4-pr`](./logs/archive/1405-07-29_18-48-27_alireza_wave4-pr.md) | **علیرضا** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۸:۲۰<br>`2026-10-21T15:18:20.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-48-20_alireza_push`](./logs/archive/1405-07-29_18-48-20_alireza_push.md) | **علیرضا** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۸:۱۵<br>`2026-10-21T15:18:15.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-48-15_alireza_wave4-3d-alley`](./logs/archive/1405-07-29_18-48-15_alireza_wave4-3d-alley.md) | **علیرضا** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۰:۳۱<br>`2026-10-21T15:10:31.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-40-31_arena-agent_agent-docs-wave-breakdown`](./logs/pending/1405-07-29_18-40-31_arena-agent_agent-docs-wave-breakdown.md) | **ایجنت Arena** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۰:۳۱<br>`2026-10-21T15:10:31.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-40-31_arena-agent_push`](./logs/pending/1405-07-29_18-40-31_arena-agent_push.md) | **ایجنت Arena** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۰:۰۴<br>`2026-10-21T15:10:04.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-40-04_arena-agent_push`](./logs/pending/1405-07-29_18-40-04_arena-agent_push.md) | **ایجنت Arena** |
 <!-- WORKLOG:EVENTS:END -->
 
 ---
@@ -154,9 +154,6 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:PENDING:START -->
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- |
-| [`1405-07-29_18-48-52_alireza_wave4-archive-pr`](./logs/pending/1405-07-29_18-48-52_alireza_wave4-archive-pr.md) | PR آرشیو موج ۴ | `PR` | **علیرضا** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۸:۵۲<br>`2026-10-21T15:18:52.000Z` | PR #25 |
-| [`1405-07-29_18-48-49_alireza_push`](./logs/pending/1405-07-29_18-48-49_alireza_push.md) | پوش شاخه arena/424e63a7-escaperoom — ebc8019 | `Push` | **علیرضا** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۸:۴۹<br>`2026-10-21T15:18:49.000Z` | origin/arena/424e63a7-escaperoom (origin/main..ebc8019) |
-| [`1405-07-29_18-48-49_alireza_wave4-archive`](./logs/pending/1405-07-29_18-48-49_alireza_wave4-archive.md) | آرشیو لاگ‌های موج ۴ | `Commit` | **علیرضا** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۸:۴۹<br>`2026-10-21T15:18:49.000Z` | شاخه arena/424e63a7-escaperoom |
 | [`1405-07-29_18-40-31_arena-agent_agent-docs-wave-breakdown`](./logs/pending/1405-07-29_18-40-31_arena-agent_agent-docs-wave-breakdown.md) | درخواست بازبینی مستندات عامل‌محور و برنامهٔ ده‌موجی | `PR` | **ایجنت Arena** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۰:۳۱<br>`2026-10-21T15:10:31.000Z` | شاخه arena/6d25be20-escaperoom → main |
 | [`1405-07-29_18-40-31_arena-agent_push`](./logs/pending/1405-07-29_18-40-31_arena-agent_push.md) | پوش شاخه arena/6d25be20-escaperoom — 806f206 | `Push` | **ایجنت Arena** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۰:۳۱<br>`2026-10-21T15:10:31.000Z` | origin/arena/6d25be20-escaperoom (origin/main..806f206) |
 | [`1405-07-29_18-40-04_arena-agent_push`](./logs/pending/1405-07-29_18-40-04_arena-agent_push.md) | پوش شاخه arena/6d25be20-escaperoom — 028b400 | `Push` | **ایجنت Arena** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۰:۰۴<br>`2026-10-21T15:10:04.000Z` | origin/arena/6d25be20-escaperoom (origin/main..028b400) |
@@ -175,6 +172,9 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:ARCHIVE:START -->
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | آرشیو شده توسط | زمان آرشیو (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- | --- | --- |
+| [`1405-07-29_18-48-52_alireza_wave4-archive-pr`](./logs/archive/1405-07-29_18-48-52_alireza_wave4-archive-pr.md) | PR آرشیو موج ۴ | `PR` | **علیرضا** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۸:۵۲<br>`2026-10-21T15:18:52.000Z` | **علیرضا** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۹:۰۵<br>`2026-10-21T15:19:05.000Z` | PR #25 |
+| [`1405-07-29_18-48-49_alireza_push`](./logs/archive/1405-07-29_18-48-49_alireza_push.md) | پوش شاخه arena/424e63a7-escaperoom — ebc8019 | `Push` | **علیرضا** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۸:۴۹<br>`2026-10-21T15:18:49.000Z` | **علیرضا** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۹:۰۵<br>`2026-10-21T15:19:05.000Z` | origin/arena/424e63a7-escaperoom (origin/main..ebc8019) |
+| [`1405-07-29_18-48-49_alireza_wave4-archive`](./logs/archive/1405-07-29_18-48-49_alireza_wave4-archive.md) | آرشیو لاگ‌های موج ۴ | `Commit` | **علیرضا** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۸:۴۹<br>`2026-10-21T15:18:49.000Z` | **علیرضا** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۹:۰۵<br>`2026-10-21T15:19:05.000Z` | شاخه arena/424e63a7-escaperoom |
 | [`1405-07-29_18-48-27_alireza_wave4-pr`](./logs/archive/1405-07-29_18-48-27_alireza_wave4-pr.md) | PR موج ۴ علیرضا — هسته سه‌بعدی و کوچه قابل پیمایش | `PR` | **علیرضا** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۸:۲۷<br>`2026-10-21T15:18:27.000Z` | **علیرضا** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۸:۴۳<br>`2026-10-21T15:18:43.000Z` | PR #24 |
 | [`1405-07-29_18-48-20_alireza_push`](./logs/archive/1405-07-29_18-48-20_alireza_push.md) | پوش شاخه arena/424e63a7-escaperoom — 1d84bc7 | `Push` | **علیرضا** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۸:۲۰<br>`2026-10-21T15:18:20.000Z` | **علیرضا** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۸:۴۳<br>`2026-10-21T15:18:43.000Z` | origin/arena/424e63a7-escaperoom (origin/main..1d84bc7) |
 | [`1405-07-29_18-48-15_alireza_wave4-3d-alley`](./logs/archive/1405-07-29_18-48-15_alireza_wave4-3d-alley.md) | موج ۴ علیرضا — هسته سه‌بعدی Three.js و کوچه قابل پیمایش | `Commit` | **علیرضا** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۸:۱۵<br>`2026-10-21T15:18:15.000Z` | **علیرضا** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۸:۴۳<br>`2026-10-21T15:18:43.000Z` | شاخه arena/424e63a7-escaperoom |
