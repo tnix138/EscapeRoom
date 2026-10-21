@@ -65,8 +65,13 @@ export const KNOWN_AUTHORS = [
 
 export const META_KEY_ORDER = [
   'id',
+  'format_version',
   'title',
   'summary',
+  'what_done',
+  'user_result',
+  'verification',
+  'remaining',
   'author',
   'author_slug',
   'activity',
@@ -88,6 +93,8 @@ export const META_KEY_ORDER = [
 
 export const HEADER_START = '<!-- WORKLOG:LOG-HEADER:START -->';
 export const HEADER_END = '<!-- WORKLOG:LOG-HEADER:END -->';
+export const READER_SUMMARY_START = '<!-- WORKLOG:READER-SUMMARY:START -->';
+export const READER_SUMMARY_END = '<!-- WORKLOG:READER-SUMMARY:END -->';
 
 export const WORKLOG_BLOCKS = ['STATS', 'EVENTS', 'PENDING', 'ARCHIVE'];
 
@@ -190,6 +197,45 @@ const escapeCell = (value) =>
 
 const code = (value) => (value ? `\`${String(value).replaceAll('`', '')}\`` : '—');
 
+const GENERIC_READER_TEXT = new Set([
+  'انجام شد',
+  'تغییرات انجام شد',
+  'کار انجام شد',
+  'اصلاحات انجام شد',
+  'بهبود انجام شد',
+  'طبق درخواست انجام شد',
+  'درخواست اجرا شد',
+]);
+
+export function normalizeReaderDetails(whatDone, userResult, verification, remaining) {
+  const normalize = (value, label, minLength = 24) => {
+    const text = String(value ?? '').replace(/\s+/g, ' ').trim();
+    const generic = text.replace(/[.!؟?،؛]+$/g, '').trim();
+    if (text.length < minLength) {
+      throw new Error(`«${label}» باید دست‌کم ${minLength} نویسه و توضیح مشخص داشته باشد.`);
+    }
+    if (text.length > 240) {
+      throw new Error(`«${label}» بیش از ۲۴۰ نویسه است؛ آن را کوتاه و روشن بنویس.`);
+    }
+    const looksLikePlaceholder = /(?:اینجا\s*(?:دقیقاً\s*)?توضیح بده|جای‌نگهدار|توضیح بده|شرح دقیق|TODO|TBD)/i.test(text);
+    if (
+      /[<>]/.test(text) ||
+      looksLikePlaceholder ||
+      (label !== 'موارد باقی‌مانده' && GENERIC_READER_TEXT.has(generic))
+    ) {
+      throw new Error(`«${label}» نباید جای‌نگهدار یا عبارت کلی باشد؛ نتیجهٔ واقعی را توضیح بده.`);
+    }
+    return text;
+  };
+
+  return {
+    whatDone: normalize(whatDone, 'چه کاری انجام شد'),
+    userResult: normalize(userResult, 'نتیجه برای کاربر'),
+    verification: normalize(verification, 'چطور بررسی شد', 12),
+    remaining: normalize(remaining, 'موارد باقی‌مانده', 3),
+  };
+}
+
 export function persianDate(jalali) {
   return jalali ? jalaliDisplay(jalali) : '—';
 }
@@ -233,6 +279,14 @@ function renderSpecTable(meta) {
     ['شناسه لاگ', code(meta.id)],
     ['عنوان', escapeCell(meta.title)],
     ['خلاصه', escapeCell(meta.summary)],
+    ...(meta.format_version >= 2
+      ? [
+          ['چه کاری انجام شد؟', escapeCell(meta.what_done)],
+          ['نتیجه برای کاربر', escapeCell(meta.user_result)],
+          ['چطور بررسی شد؟', escapeCell(meta.verification)],
+          ['چه چیزی باقی مانده؟', escapeCell(meta.remaining)],
+        ]
+      : []),
     ['نوع فعالیت', code(meta.activity)],
     ['مرجع', escapeCell(meta.ref)],
     ['شاخه', code(meta.branch)],
@@ -291,6 +345,23 @@ function renderLifecycleTable(meta) {
   ].join('\n');
 }
 
+export function renderReaderSummary(meta) {
+  if (meta.format_version < 2 || !meta.what_done || !meta.user_result) return '';
+  return [
+    READER_SUMMARY_START,
+    '## 👀 توضیح روشن برای خواننده',
+    '',
+    `**چه کاری انجام شد؟** ${escapeCell(meta.what_done)}`,
+    '',
+    `**نتیجه برای کاربر چیست؟** ${escapeCell(meta.user_result)}`,
+    '',
+    `**چطور بررسی شد؟** ${escapeCell(meta.verification)}`,
+    '',
+    `**چه چیزی باقی مانده؟** ${escapeCell(meta.remaining)}`,
+    READER_SUMMARY_END,
+  ].join('\n');
+}
+
 export function renderLogHeader(meta) {
   return [
     HEADER_START,
@@ -322,6 +393,10 @@ export function stripGeneratedScaffold(body) {
     new RegExp(`${escapeRe(HEADER_START)}[\\s\\S]*?${escapeRe(HEADER_END)}`, 'g'),
     '',
   );
+  text = text.replace(
+    new RegExp(`${escapeRe(READER_SUMMARY_START)}[\\s\\S]*?${escapeRe(READER_SUMMARY_END)}`, 'g'),
+    '',
+  );
 
   text = text
     .split('\n')
@@ -341,6 +416,7 @@ export function stripGeneratedScaffold(body) {
 
 export function composeLogFile(meta, body) {
   const cleanBody = stripGeneratedScaffold(body);
+  const readerSummary = renderReaderSummary(meta);
 
   return [
     serializeFrontMatter(meta, META_KEY_ORDER).trimEnd(),
@@ -354,6 +430,7 @@ export function composeLogFile(meta, body) {
     '',
     '---',
     '',
+    ...(readerSummary ? [readerSummary, '', '---', ''] : []),
     cleanBody,
     '',
   ].join('\n');
@@ -409,6 +486,12 @@ function ensureLogsDirs(root) {
  */
 export function createLog(root, options) {
   ensureLogsDirs(root);
+  const readerDetails = normalizeReaderDetails(
+    options.whatDone,
+    options.userResult,
+    options.verification,
+    options.remaining,
+  );
 
   const rawAt = options.at ? new Date(options.at) : new Date();
   if (Number.isNaN(rawAt.getTime())) throw new Error(`Invalid --at: ${options.at}`);
@@ -437,8 +520,13 @@ export function createLog(root, options) {
 
   const meta = {
     id,
+    format_version: 2,
     title: options.title || `گزارش ${activity} — ${topic}`,
-    summary: options.summary || options.title || `گزارش ${activity}`,
+    summary: options.summary || `${readerDetails.whatDone} نتیجه: ${readerDetails.userResult}`,
+    what_done: readerDetails.whatDone,
+    user_result: readerDetails.userResult,
+    verification: readerDetails.verification,
+    remaining: readerDetails.remaining,
     author: author.name,
     author_slug: author.slug,
     activity,
@@ -469,11 +557,10 @@ export function createLog(root, options) {
   const body =
     options.body?.trim() ||
     [
-      '## 📝 شرح دقیق فعالیت انجام‌شده',
+      '## 📝 جزئیات تکمیلی (فنی)',
       '',
-      `- **موضوع:** ${meta.title}`,
-      `- **مرجع:** ${meta.ref}`,
-      '- **جزئیات:** <اینجا دقیقاً توضیح بده چه کاری انجام شد، کدام فایل‌ها تغییر کردند و نتیجه تست‌ها چه بود.>',
+      `- **عنوان/مرجع:** ${meta.title} — ${meta.ref}`,
+      '- **توضیحات فنی بیشتر:** برای ثبت فایل‌های درگیر، جزئیات پیاده‌سازی یا خروجی کامل تست‌ها، از گزینهٔ `--body-file` استفاده کن.',
       '',
       '## ✅ نتیجه بررسی‌ها و تست‌ها',
       '',
@@ -802,6 +889,21 @@ export function validateLog(log) {
   ]) {
     if (meta[field] === null || meta[field] === undefined || meta[field] === '') {
       push(`فیلد «${field}» خالی است.`);
+    }
+  }
+
+  if (meta.format_version !== undefined && Number(meta.format_version) !== 2) {
+    push(`نسخه قالب لاگ (${meta.format_version}) پشتیبانی نمی‌شود.`);
+  }
+  if (Number(meta.format_version) === 2) {
+    try {
+      normalizeReaderDetails(meta.what_done, meta.user_result, meta.verification, meta.remaining);
+    } catch (error) {
+      push(error.message);
+    }
+    const readerSummary = renderReaderSummary(meta);
+    if (!readerSummary || !log.raw.includes(readerSummary)) {
+      push('بخش «توضیح روشن برای خواننده» وجود ندارد یا با فراداده هم‌خوان نیست؛ npm run worklog:sync را اجرا کنید.');
     }
   }
 

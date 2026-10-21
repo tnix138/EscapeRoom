@@ -9,7 +9,7 @@ import {
   archiveLog,
   checkWorklog,
   composeLogFile,
-  createLog,
+  createLog as createLogRecord,
   readAllLogs,
   renderLogHeader,
   syncAll,
@@ -33,6 +33,16 @@ function makeSandbox() {
 }
 
 let sandbox: string;
+
+function createLog(root: string, options: Record<string, unknown>) {
+  return createLogRecord(root, {
+    whatDone: 'قالب لاگ تیمی برای ثبت فعالیت‌های تازه به‌روزرسانی شد.',
+    userResult: 'خواننده می‌تواند از روی گزارش بفهمد چه چیزی تغییر کرده و چه نتیجه‌ای داشته است.',
+    verification: 'تست‌های سیستم لاگ با Vitest اجرا و نتیجه موفق ثبت شد.',
+    remaining: 'کارهای خارج از این تغییر جداگانه در لاگ بعدی ثبت می‌شوند.',
+    ...options,
+  });
+}
 
 beforeEach(() => {
   sandbox = makeSandbox();
