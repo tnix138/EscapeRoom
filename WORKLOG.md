@@ -121,7 +121,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۱۹** — ✅ Archive: **۶۹** — 🧾 مجموع: **۸۸** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۵:۳۰ (`2026-10-21T15:25:30.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۲۰** — ✅ Archive: **۶۹** — 🧾 مجموع: **۸۹** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۵:۳۹ (`2026-10-21T15:25:39.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -131,6 +131,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:EVENTS:START -->
 | 🕒 زمان (ایران / UTC) | رویداد | شناسه لاگ | توسط |
 | --- | --- | --- | --- |
+| ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۵:۳۹<br>`2026-10-21T15:25:39.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-55-39_tohid_push-after-log-cleanup`](./logs/pending/1405-07-29_18-55-39_tohid_push-after-log-cleanup.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۵:۳۰<br>`2026-10-21T15:25:30.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-55-30_tohid_remove-draft-push-log`](./logs/pending/1405-07-29_18-55-30_tohid_remove-draft-push-log.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۴:۵۳<br>`2026-10-21T15:24:53.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-54-53_tohid_push-after-wave10-sync`](./logs/pending/1405-07-29_18-54-53_tohid_push-after-wave10-sync.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۴:۴۹<br>`2026-10-21T15:24:49.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-54-49_tohid_fix-push-log-metadata`](./logs/pending/1405-07-29_18-54-49_tohid_fix-push-log-metadata.md) | **توحید** |
@@ -142,7 +143,6 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۳:۳۳<br>`2026-10-21T15:23:33.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-53-33_tohid_sync-main-wave7-9`](./logs/pending/1405-07-29_18-53-33_tohid_sync-main-wave7-9.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۳:۲۲<br>`2026-10-21T15:23:22.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-53-22_alireza_wave10-archive-pr`](./logs/archive/1405-07-29_18-53-22_alireza_wave10-archive-pr.md) | **علیرضا** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۳:۱۸<br>`2026-10-21T15:23:18.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-53-18_alireza_push`](./logs/archive/1405-07-29_18-53-18_alireza_push.md) | **علیرضا** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۳:۱۸<br>`2026-10-21T15:23:18.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-53-18_alireza_wave10-final-archive`](./logs/archive/1405-07-29_18-53-18_alireza_wave10-final-archive.md) | **علیرضا** |
 <!-- WORKLOG:EVENTS:END -->
 
 ---
@@ -154,6 +154,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:PENDING:START -->
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- |
+| [`1405-07-29_18-55-39_tohid_push-after-log-cleanup`](./logs/pending/1405-07-29_18-55-39_tohid_push-after-log-cleanup.md) | پوش شاخه پس از پاک‌سازی گزارش موقت | `Push` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۵:۳۹<br>`2026-10-21T15:25:39.000Z` | origin/arena/ca5ca2d8-escaperoom (origin/main..bedc5cd) |
 | [`1405-07-29_18-55-30_tohid_remove-draft-push-log`](./logs/pending/1405-07-29_18-55-30_tohid_remove-draft-push-log.md) | پاک‌سازی گزارش پوش موقت تکراری | `Commit` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۵:۳۰<br>`2026-10-21T15:25:30.000Z` | شاخه arena/ca5ca2d8-escaperoom |
 | [`1405-07-29_18-54-53_tohid_push-after-wave10-sync`](./logs/pending/1405-07-29_18-54-53_tohid_push-after-wave10-sync.md) | پوش شاخه پس از همگام‌سازی موج دهم | `Push` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۴:۵۳<br>`2026-10-21T15:24:53.000Z` | origin/arena/ca5ca2d8-escaperoom (origin/main..72d23d7) |
 | [`1405-07-29_18-54-49_tohid_fix-push-log-metadata`](./logs/pending/1405-07-29_18-54-49_tohid_fix-push-log-metadata.md) | اصلاح فراداده لاگ پوش موج دهم | `Commit` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۴:۴۹<br>`2026-10-21T15:24:49.000Z` | شاخه arena/ca5ca2d8-escaperoom |
