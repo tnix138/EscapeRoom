@@ -121,7 +121,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۴** — ✅ Archive: **۱۰۳** — 🧾 مجموع: **۱۰۷** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۵:۳۵ (`2026-10-21T15:55:35.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۵** — ✅ Archive: **۱۰۳** — 🧾 مجموع: **۱۰۸** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۶:۱۶ (`2026-10-21T15:56:16.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -131,6 +131,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:EVENTS:START -->
 | 🕒 زمان (ایران / UTC) | رویداد | شناسه لاگ | توسط |
 | --- | --- | --- | --- |
+| ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۶:۱۶<br>`2026-10-21T15:56:16.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-26-16_amirali_push`](./logs/pending/1405-07-29_19-26-16_amirali_push.md) | **امیرعلی** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۵:۳۵<br>`2026-10-21T15:55:35.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-25-35_amirali_wave2-b3-ticket-container`](./logs/pending/1405-07-29_19-25-35_amirali_wave2-b3-ticket-container.md) | **امیرعلی** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۲:۵۳<br>`2026-10-21T15:52:53.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-22-53_amirali_wave3-controls-help`](./logs/pending/1405-07-29_19-22-53_amirali_wave3-controls-help.md) | **امیرعلی** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۲:۳۳<br>`2026-10-21T15:52:33.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-22-33_amirali_push`](./logs/pending/1405-07-29_19-22-33_amirali_push.md) | **امیرعلی** |
@@ -142,7 +143,6 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۱۶:۴۵<br>`2026-10-21T15:46:45.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_18-56-06_amirali_wave2-readable-shell`](./logs/archive/1405-07-29_18-56-06_amirali_wave2-readable-shell.md) | **علیرضا** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۱۶:۳۰<br>`2026-10-21T15:46:30.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_19-14-36_alireza_fix-conflict-pr`](./logs/archive/1405-07-29_19-14-36_alireza_fix-conflict-pr.md) | **علیرضا** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۱۶:۳۰<br>`2026-10-21T15:46:30.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_19-14-30_alireza_fix-conflict-archive`](./logs/archive/1405-07-29_19-14-30_alireza_fix-conflict-archive.md) | **علیرضا** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۹:۱۶:۳۰<br>`2026-10-21T15:46:30.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_19-14-30_alireza_push`](./logs/archive/1405-07-29_19-14-30_alireza_push.md) | **علیرضا** |
 <!-- WORKLOG:EVENTS:END -->
 
 ---
@@ -154,6 +154,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:PENDING:START -->
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- |
+| [`1405-07-29_19-26-16_amirali_push`](./logs/pending/1405-07-29_19-26-16_amirali_push.md) | پوش شاخه arena/9bbb79f7-escaperoom — 1f69d93 | `Push` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۶:۱۶<br>`2026-10-21T15:56:16.000Z` | origin/arena/9bbb79f7-escaperoom (origin/main..1f69d93) |
 | [`1405-07-29_19-25-35_amirali_wave2-b3-ticket-container`](./logs/pending/1405-07-29_19-25-35_amirali_wave2-b3-ticket-container.md) | پیگیری — خوانایی بلیط در پنل باریک سه‌بعدی | `Commit` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۵:۳۵<br>`2026-10-21T15:55:35.000Z` | شاخه arena/9bbb79f7-escaperoom |
 | [`1405-07-29_19-22-53_amirali_wave3-controls-help`](./logs/pending/1405-07-29_19-22-53_amirali_wave3-controls-help.md) | PR #39 — موج ۳ امیرعلی: راهنمای کنترل‌ها | `PR` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۲:۵۳<br>`2026-10-21T15:52:53.000Z` | PR #39 — arena/9bbb79f7-escaperoom ➔ main |
 | [`1405-07-29_19-22-33_amirali_push`](./logs/pending/1405-07-29_19-22-33_amirali_push.md) | پوش شاخه arena/9bbb79f7-escaperoom — 364dff3 | `Push` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۲:۳۳<br>`2026-10-21T15:52:33.000Z` | origin/arena/9bbb79f7-escaperoom (origin/main..364dff3) |
