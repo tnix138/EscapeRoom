@@ -12,6 +12,7 @@ intended_audience: coding_agents_only
 - بررسی مسیر ذخیره‌سازی و بازخوانی وضعیت کاوش سالن (`inspectedHotspots`، `restartedInTheaterAt` و `messages`) در جدول `public.rooms` پایگاه دادهٔ Supabase Cloud (`yavwoaqxhptzufmjckwz`) و درایور محلی SQLite (`.data/escaperoom.db`).
 - بررسی یکپارچگی اکشن‌های فاز `in_theater` در `POST /api/rooms/[code]/action` (`inspect_hotspot` برای ۵ نقطهٔ تعاملی سالن و `chat` برای تختهٔ گفتگو/یادداشت تیمی) و حفظ کامل وضعیت کاوش پس از رفرش صفحه یا اتصال مجدد.
 - بررسی تطابق کامل با تست‌های موج ۹ توحید (`tests/tohid/persistent-exploration.test.ts` و `tests/tohid/exploration-immutability-and-chat-security.test.ts`).
+- استقرار موج ۹ امیرعلی (`PR #69` — HUD کاوش سالن تاریک `ExplorationHud.tsx`، تختهٔ تیمی ۵ نقطه‌ای، بازخوانی کشف‌ها پس از رفرش و صفحهٔ بررسی `/qa/exploration`) روی Vercel Production با شناسهٔ `dpl_92YBE2abGq9ebZLzNcixLBzzchrc` (کامیت `b7dcb50`).
 
 ## شواهد ذخیره‌سازی و بازخوانی در Supabase Cloud
 

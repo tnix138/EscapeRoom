@@ -12,6 +12,7 @@ intended_audience: coding_agents_only
 - بررسی هدرهای پاسخ استریم زنده در مسیر `GET /api/rooms/[code]/stream` و تطبیق تنظیمات `vercel.json` با نیازمندی‌های استریم بدون بافرینگ روی لبهٔ Vercel (`Cache-Control: no-cache, no-transform`، `X-Accel-Buffering: no`، `Connection: keep-alive` و `maxDuration: 60`).
 - بررسی همگام‌سازی ساعت سرور (`serverNow`)، تیک‌های ۱ ثانیه‌ای SSE در طول کات‌سین (`cutsceneStartedAt` / `cutsceneDurationMs = 15000`)، و ارتقای خودکار فاز از `cutscene` به `in_theater` حتی در صورت قطع موقت SSE و بازگشت به Polling شرطی (`sinceVersion`).
 - بررسی یکپارچگی تست‌های کات‌سین و ساعت سرور (`tests/tohid/cutscene-sync-and-lock.test.ts`، `tests/tohid/server-hardening-and-clock-sync.test.ts`، `tests/tohid/realtime-stream-and-clock.test.ts` و `tests/alireza/cutscene-timing.test.ts`).
+- استقرار موج ۸ امیرعلی (`PR #67` و `PR #68` — لایهٔ زیرنویس و روایت `NarrationLayer.tsx`، مدیریت صدا `audio-preferences.ts` و اعلان حرکت `MovementNotice.tsx` بدون ایجاد اتصال شبکهٔ اضافی) روی Vercel Production با شناسهٔ `dpl_2HTchzK9wjGkaSKsLzuBXyupxDFL` (کامیت `44859b3`).
 
 ## جدول تنظیمات و رفتار استریم SSE و کات‌سین
 
