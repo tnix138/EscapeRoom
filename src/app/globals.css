@@ -7436,3 +7436,52 @@ button:disabled {
     padding: 9px 10px 10px;
   }
 }
+
+/* ==========================================================================
+   موج ۱۰ — QA تجربه: هدف لمسی ۴۴px، پنجره‌های کوتاه و زوم ۲۰۰٪ (امیرعلی)
+   قاعده: در ۳۲۰px و زوم ۲۰۰٪ هیچ پنل ثابتی از صفحه بیرون نزند و هیچ
+   کنترل لمسی زیر ۴۴px نماند.
+   ========================================================================== */
+
+/* ۱) کنترل‌هایی که در پالایش‌های قبلی زیر ۴۴px مانده بودند. */
+.door-modal-close {
+  width: var(--control-height);
+  height: var(--control-height);
+}
+
+.alley-head-button {
+  min-height: var(--control-height);
+}
+
+.camera-controls button {
+  width: var(--control-height);
+  min-width: var(--control-height);
+  min-height: var(--control-height);
+}
+
+.story-cue-dismiss {
+  width: var(--control-height);
+  height: var(--control-height);
+  margin: -10px -10px 0 0;
+}
+
+/* ۲) پنل نجوا هرگز از لبهٔ صفحه بیرون نمی‌زند (۳۲۰px و زوم ۲۰۰٪). */
+.whisper-panel,
+.whisper-expanded {
+  max-width: calc(100vw - 16px);
+}
+
+/* ارتفاع فهرست پیام‌ها با ارتفاع صفحه نفس می‌کشد تا دکمهٔ ارسال گم نشود. */
+.whisper-messages {
+  max-height: min(248px, 34svh);
+}
+
+/* ۳) نمای کوچه در پنجره‌های کوتاه (زوم ۲۰۰٪) بدون اسکرول عمودی جا شود. */
+@media (max-width: 720px) {
+  .alley-panorama,
+  .alley-preview-wrap .alley-panorama {
+    height: min(540px, 76svh);
+    min-height: min(540px, 76svh);
+    max-height: 580px;
+  }
+}
