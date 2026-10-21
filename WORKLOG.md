@@ -121,7 +121,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۲۱** — ✅ Archive: **۱۱۱** — 🧾 مجموع: **۱۳۲** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۹:۴۳:۳۴ (`2026-10-21T16:13:34.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۲۲** — ✅ Archive: **۱۱۱** — 🧾 مجموع: **۱۳۳** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۹:۴۴:۰۴ (`2026-10-21T16:14:04.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -131,6 +131,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:EVENTS:START -->
 | 🕒 زمان (ایران / UTC) | رویداد | شناسه لاگ | توسط |
 | --- | --- | --- | --- |
+| ۱۴۰۵/۰۷/۲۹ — ۱۹:۴۴:۰۴<br>`2026-10-21T16:14:04.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-44-04_infra-agent_pr45-wave10-infra-final`](./logs/pending/1405-07-29_19-44-04_infra-agent_pr45-wave10-infra-final.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۴۳:۳۴<br>`2026-10-21T16:13:34.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-43-34_infra-agent_push`](./logs/pending/1405-07-29_19-43-34_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۴۳:۰۵<br>`2026-10-21T16:13:05.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-43-05_infra-agent_wave10-infra-final-completion`](./logs/pending/1405-07-29_19-43-05_infra-agent_wave10-infra-final-completion.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۴۳:۰۵<br>`2026-10-21T16:13:05.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_19-32-23_infra-agent_push`](./logs/archive/1405-07-29_19-32-23_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
@@ -142,7 +143,6 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۳۹:۳۱<br>`2026-10-21T16:09:31.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-39-31_amirali_wave3-controls-help`](./logs/pending/1405-07-29_19-39-31_amirali_wave3-controls-help.md) | **امیرعلی** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۳۲:۲۳<br>`2026-10-21T16:02:23.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-32-23_infra-agent_push`](./logs/archive/1405-07-29_19-32-23_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۳۱:۵۲<br>`2026-10-21T16:01:52.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-31-52_infra-agent_pr43-production-deploy-3d`](./logs/archive/1405-07-29_19-31-52_infra-agent_pr43-production-deploy-3d.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۹:۳۱:۲۹<br>`2026-10-21T16:01:29.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-31-29_infra-agent_push`](./logs/archive/1405-07-29_19-31-29_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 <!-- WORKLOG:EVENTS:END -->
 
 ---
@@ -154,6 +154,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:PENDING:START -->
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- |
+| [`1405-07-29_19-44-04_infra-agent_pr45-wave10-infra-final`](./logs/pending/1405-07-29_19-44-04_infra-agent_pr45-wave10-infra-final.md) | PR #45 — تکمیل نهایی تمام ۱۰ موج ایجنت چهارم زیرساخت (WAVE-10-INFRA-FINAL.md) | `PR` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۴۴:۰۴<br>`2026-10-21T16:14:04.000Z` | PR #45 (arena/5f12b76c-escaperoom → main) |
 | [`1405-07-29_19-43-34_infra-agent_push`](./logs/pending/1405-07-29_19-43-34_infra-agent_push.md) | پوش شاخه arena/5f12b76c-escaperoom — 898e698 | `Push` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۴۳:۳۴<br>`2026-10-21T16:13:34.000Z` | origin/arena/5f12b76c-escaperoom (origin/arena/5f12b76c-escaperoom..898e698) |
 | [`1405-07-29_19-43-05_infra-agent_wave10-infra-final-completion`](./logs/pending/1405-07-29_19-43-05_infra-agent_wave10-infra-final-completion.md) | تکمیل نهایی ۱۰ موج ایجنت چهارم زیرساخت (WAVE-10-INFRA-FINAL.md) و استقرار Production/Preview | `Infra-FullDeploy` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۴۳:۰۵<br>`2026-10-21T16:13:05.000Z` | WAVE-10-INFRA-FINAL.md / dpl_C7VNbP8N1zJCLMLuK3jzyUo1VZHJ / dpl_kQYaCHXKijotMZRifboVkHxG5s9e |
 | [`1405-07-29_19-39-53_amirali_wave3-controls-help`](./logs/pending/1405-07-29_19-39-53_amirali_wave3-controls-help.md) | PR #44 — تکمیل موج ۳: راهنمای کنترل‌ها | `PR` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۳۹:۵۳<br>`2026-10-21T16:09:53.000Z` | PR #44 — arena/f70fac20-escaperoom ➔ main |
