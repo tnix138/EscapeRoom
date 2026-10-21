@@ -26,6 +26,7 @@ import ClueReadingPanel from './ClueReadingPanel';
 import TheaterDoorLockModal from './TheaterDoorLockModal';
 import { resolveOwnRevealedDigit } from './puzzle-rules';
 import WhisperChatPanel from '../hud/WhisperChatPanel';
+import TheaterCompanionHud from '../hud/TheaterCompanionHud';
 
 const AlleyThreeSceneCore = dynamic(() => Promise.resolve(ThreeCore), { ssr: false });
 
@@ -196,6 +197,13 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
         <div style={{ position: 'absolute', top: '50%', left: 0, right: 0, height: 1, background: 'rgba(232,220,200,0.7)' }} />
         <div style={{ position: 'absolute', left: '50%', top: 0, bottom: 0, width: 1, background: 'rgba(232,220,200,0.7)' }} />
       </div>
+
+      <TheaterCompanionHud
+        players={room.players}
+        meId={room.me.playerId}
+        phase={room.phase}
+        punchedCount={room.players.filter((player) => player.ticketPunched).length}
+      />
 
       {/* HUD پایین */}
       <div style={{ position: 'absolute', bottom: 12, left: 12, right: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', pointerEvents: 'none', direction: 'rtl' }}>
