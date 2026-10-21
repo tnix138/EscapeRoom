@@ -4,8 +4,8 @@
 - **تاریخ شمسی:** ۱۴۰۵/۰۷/۲۹
 - **ساعت انجام:** ۱۶:۲۰:۳۰
 - **نوع فعالیت:** Infra-Vercel
-- **شناسه مرجع (Commit / PR):** شاخه `arena/c9528bce-escaperoom` — دیپلوی `dpl_5sfQnbAujrEaDsquEr93BjERSw54` و فایل `vercel.json`
-- **وضعیت:** Pending (هنوز تأیید نشده)
+- **شناسه مرجع (Commit / PR):** شاخه `arena/c9528bce-escaperoom` (ادغام‌شده در `PR #9`) — دیپلوی `dpl_5sfQnbAujrEaDsquEr93BjERSw54` و فایل `vercel.json`
+- **وضعیت:** Archive (کامل و ادغام‌شده در `main`)
 - **زمان دقیق سیستمی:** 2026-10-21T12:50:30Z
 
 ### شرح دقیق فعالیت انجام‌شده
