@@ -33,4 +33,13 @@
   text-shadow: 0 2px 8px #000;
   backdrop-filter: blur(4px);
   pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.speaker {
+  color: #d6b867;
+  font-size: 0.82em;
+  font-weight: 700;
 }
