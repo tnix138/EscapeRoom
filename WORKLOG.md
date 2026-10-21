@@ -121,7 +121,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۳۱** — ✅ Archive: **۱۱۱** — 🧾 مجموع: **۱۴۲** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۸:۴۵ (`2026-10-21T16:28:45.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۳۲** — ✅ Archive: **۱۱۱** — 🧾 مجموع: **۱۴۳** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۸:۵۹ (`2026-10-21T16:28:59.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -131,6 +131,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:EVENTS:START -->
 | 🕒 زمان (ایران / UTC) | رویداد | شناسه لاگ | توسط |
 | --- | --- | --- | --- |
+| ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۸:۵۹<br>`2026-10-21T16:28:59.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-58-59_amirali_wave4-alley-clues`](./logs/pending/1405-07-29_19-58-59_amirali_wave4-alley-clues.md) | **امیرعلی** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۸:۴۵<br>`2026-10-21T16:28:45.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-58-45_amirali_push`](./logs/pending/1405-07-29_19-58-45_amirali_push.md) | **امیرعلی** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۸:۳۸<br>`2026-10-21T16:28:38.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-58-38_amirali_wave4-alley-clues`](./logs/pending/1405-07-29_19-58-38_amirali_wave4-alley-clues.md) | **امیرعلی** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۴:۲۷<br>`2026-10-21T16:24:27.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-54-27_tohid_pr-wave4-scene-state`](./logs/pending/1405-07-29_19-54-27_tohid_pr-wave4-scene-state.md) | **توحید** |
@@ -142,7 +143,6 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۴۴:۳۶<br>`2026-10-21T16:14:36.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-44-36_infra-agent_push`](./logs/pending/1405-07-29_19-44-36_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۴۴:۰۴<br>`2026-10-21T16:14:04.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-44-04_infra-agent_pr45-wave10-infra-final`](./logs/pending/1405-07-29_19-44-04_infra-agent_pr45-wave10-infra-final.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۴۳:۳۴<br>`2026-10-21T16:13:34.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-43-34_infra-agent_push`](./logs/pending/1405-07-29_19-43-34_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۹:۴۳:۰۵<br>`2026-10-21T16:13:05.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-43-05_infra-agent_wave10-infra-final-completion`](./logs/pending/1405-07-29_19-43-05_infra-agent_wave10-infra-final-completion.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 <!-- WORKLOG:EVENTS:END -->
 
 ---
@@ -154,6 +154,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:PENDING:START -->
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- |
+| [`1405-07-29_19-58-59_amirali_wave4-alley-clues`](./logs/pending/1405-07-29_19-58-59_amirali_wave4-alley-clues.md) | PR #50 — موج ۴ امیرعلی: خواندن سرنخ کوچه | `PR` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۸:۵۹<br>`2026-10-21T16:28:59.000Z` | PR #50 — arena/afce0985-escaperoom ➔ main |
 | [`1405-07-29_19-58-45_amirali_push`](./logs/pending/1405-07-29_19-58-45_amirali_push.md) | پوش شاخه arena/afce0985-escaperoom — e984566 | `Push` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۸:۴۵<br>`2026-10-21T16:28:45.000Z` | origin/arena/afce0985-escaperoom (origin/main..e984566) |
 | [`1405-07-29_19-58-38_amirali_wave4-alley-clues`](./logs/pending/1405-07-29_19-58-38_amirali_wave4-alley-clues.md) | موج ۴ — محتوای کوچه و حالت خواندن سرنخ | `Commit` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۸:۳۸<br>`2026-10-21T16:28:38.000Z` | شاخه arena/afce0985-escaperoom |
 | [`1405-07-29_19-54-27_tohid_pr-wave4-scene-state`](./logs/pending/1405-07-29_19-54-27_tohid_pr-wave4-scene-state.md) | ثبت PR #47 — state صحنه و refresh موج ۴ | `PR` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۴:۲۷<br>`2026-10-21T16:24:27.000Z` | https://github.com/tnix138/EscapeRoom/pull/47 |
