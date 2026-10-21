@@ -121,7 +121,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۲۶** — ✅ Archive: **۱۱۵** — 🧾 مجموع: **۱۴۱** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۶:۵۳ (`2026-10-21T16:26:53.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۲۷** — ✅ Archive: **۱۱۵** — 🧾 مجموع: **۱۴۲** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۷:۱۹ (`2026-10-21T16:27:19.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -131,6 +131,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:EVENTS:START -->
 | 🕒 زمان (ایران / UTC) | رویداد | شناسه لاگ | توسط |
 | --- | --- | --- | --- |
+| ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۷:۱۹<br>`2026-10-21T16:27:19.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-57-19_infra-agent_push`](./logs/pending/1405-07-29_19-57-19_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۶:۵۳<br>`2026-10-21T16:26:53.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-56-53_infra-agent_production-deploy-after-pr46-pr47`](./logs/pending/1405-07-29_19-56-53_infra-agent_production-deploy-after-pr46-pr47.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۶:۵۳<br>`2026-10-21T16:26:53.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_19-44-36_infra-agent_push`](./logs/archive/1405-07-29_19-44-36_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۶:۵۲<br>`2026-10-21T16:26:52.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_19-44-04_infra-agent_pr45-wave10-infra-final`](./logs/archive/1405-07-29_19-44-04_infra-agent_pr45-wave10-infra-final.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
@@ -142,7 +143,6 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۴۹:۰۳<br>`2026-10-21T16:19:03.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-49-03_tohid_pr-wave3-presence`](./logs/pending/1405-07-29_19-49-03_tohid_pr-wave3-presence.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۴۸:۴۱<br>`2026-10-21T16:18:41.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-48-41_tohid_push-wave3-presence`](./logs/pending/1405-07-29_19-48-41_tohid_push-wave3-presence.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۴۸:۲۴<br>`2026-10-21T16:18:24.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-48-24_tohid_wave3-presence-reconnect`](./logs/pending/1405-07-29_19-48-24_tohid_wave3-presence-reconnect.md) | **توحید** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۹:۴۴:۳۶<br>`2026-10-21T16:14:36.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-44-36_infra-agent_push`](./logs/archive/1405-07-29_19-44-36_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 <!-- WORKLOG:EVENTS:END -->
 
 ---
@@ -154,6 +154,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:PENDING:START -->
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- |
+| [`1405-07-29_19-57-19_infra-agent_push`](./logs/pending/1405-07-29_19-57-19_infra-agent_push.md) | پوش شاخه arena/0473db0f-escaperoom — 07e3202 | `Push` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۷:۱۹<br>`2026-10-21T16:27:19.000Z` | origin/arena/0473db0f-escaperoom (origin/main..07e3202) |
 | [`1405-07-29_19-56-53_infra-agent_production-deploy-after-pr46-pr47`](./logs/pending/1405-07-29_19-56-53_infra-agent_production-deploy-after-pr46-pr47.md) | دیپلوی Production پس از ادغام موج‌های ۳ و ۴ توحید (dpl_BWq27G9267uGzCNKL7ENjLXH7sQ2) و آرشیو لاگ‌های PR #45 | `Infra-FullDeploy` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۶:۵۳<br>`2026-10-21T16:26:53.000Z` | Vercel dpl_BWq27G9267uGzCNKL7ENjLXH7sQ2 / PR #46 & PR #47 |
 | [`1405-07-29_19-54-27_tohid_pr-wave4-scene-state`](./logs/pending/1405-07-29_19-54-27_tohid_pr-wave4-scene-state.md) | ثبت PR #47 — state صحنه و refresh موج ۴ | `PR` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۴:۲۷<br>`2026-10-21T16:24:27.000Z` | https://github.com/tnix138/EscapeRoom/pull/47 |
 | [`1405-07-29_19-54-07_tohid_push-wave4-scene-state`](./logs/pending/1405-07-29_19-54-07_tohid_push-wave4-scene-state.md) | پوش موج ۴ — پایداری scene در refresh | `Push` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۴:۰۷<br>`2026-10-21T16:24:07.000Z` | origin/arena/bab0d18a-escaperoom (origin/main..babf2c0) |
