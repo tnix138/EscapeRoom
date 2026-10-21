@@ -121,7 +121,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۵** — ✅ Archive: **۲۲** — 🧾 مجموع: **۲۷** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۶:۵۲:۰۵ (`2026-10-21T13:22:05.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۶** — ✅ Archive: **۲۲** — 🧾 مجموع: **۲۸** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۶:۵۲:۱۶ (`2026-10-21T13:22:16.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -131,6 +131,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:EVENTS:START -->
 | 🕒 زمان (ایران / UTC) | رویداد | شناسه لاگ | توسط |
 | --- | --- | --- | --- |
+| ۱۴۰۵/۰۷/۲۹ — ۱۶:۵۲:۱۶<br>`2026-10-21T13:22:16.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_16-52-16_arena-agent_push`](./logs/pending/1405-07-29_16-52-16_arena-agent_push.md) | **ایجنت Arena** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۶:۵۲:۰۵<br>`2026-10-21T13:22:05.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_16-52-05_arena-agent_worklog-lifecycle-system`](./logs/pending/1405-07-29_16-52-05_arena-agent_worklog-lifecycle-system.md) | **ایجنت Arena** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۶:۳۵:۳۸<br>`2026-10-21T13:05:38.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_16-35-38_alireza_pr-13_wave1-wave2`](./logs/pending/1405-07-29_16-35-38_alireza_pr-13_wave1-wave2.md) | **علیرضا** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۶:۳۴:۰۱<br>`2026-10-21T13:04:01.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_16-30-24_tohid_pr-11_contract-conformance`](./logs/archive/1405-07-29_16-30-24_tohid_pr-11_contract-conformance.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
@@ -142,7 +143,6 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | ۱۴۰۵/۰۷/۲۹ — ۱۶:۲۹:۵۱<br>`2026-10-21T12:59:51.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_16-29-51_tohid_contract-conformance-and-dod`](./logs/archive/1405-07-29_16-29-51_tohid_contract-conformance-and-dod.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۶:۲۷:۱۶<br>`2026-10-21T12:57:16.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_16-27-16_alireza_wave2-door-auditorium`](./logs/pending/1405-07-29_16-27-16_alireza_wave2-door-auditorium.md) | **علیرضا** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۶:۲۴:۵۳<br>`2026-10-21T12:54:53.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_16-24-53_infra-agent_pr-10_wave3-fulldeploy`](./logs/archive/1405-07-29_16-24-53_infra-agent_pr-10_wave3-fulldeploy.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۶:۲۴:۵۰<br>`2026-10-21T12:54:50.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_16-21-15_infra-agent_pr-9_wave2-vercel`](./logs/archive/1405-07-29_16-21-15_infra-agent_pr-9_wave2-vercel.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 <!-- WORKLOG:EVENTS:END -->
 
 ---
@@ -154,6 +154,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:PENDING:START -->
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- |
+| [`1405-07-29_16-52-16_arena-agent_push`](./logs/pending/1405-07-29_16-52-16_arena-agent_push.md) | پوش شاخه arena/8e9aee3f-escaperoom — 57f1c65 | `Push` | **ایجنت Arena** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۵۲:۱۶<br>`2026-10-21T13:22:16.000Z` | origin/arena/8e9aee3f-escaperoom (origin/main..57f1c65) |
 | [`1405-07-29_16-52-05_arena-agent_worklog-lifecycle-system`](./logs/pending/1405-07-29_16-52-05_arena-agent_worklog-lifecycle-system.md) | سیستم کامل لاگ با چرخه عمر Pending ➔ Archive و گارد پوش/کامیت فارسی | `Commit` | **ایجنت Arena** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۵۲:۰۵<br>`2026-10-21T13:22:05.000Z` | شاخه arena/8e9aee3f-escaperoom |
 | [`1405-07-29_16-35-38_alireza_pr-13_wave1-wave2`](./logs/pending/1405-07-29_16-35-38_alireza_pr-13_wave1-wave2.md) | PR #13 — تحویل موج‌های ۱ و ۲ علیرضا | `PR` | **علیرضا** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۳۵:۳۸<br>`2026-10-21T13:05:38.000Z` | PR #13 (`arena/f2303553-escaperoom` ➔ `main`) |
 | [`1405-07-29_16-32-30_infra-agent_wave4-tohid-final-deploy-and-alireza-preview`](./logs/pending/1405-07-29_16-32-30_infra-agent_wave4-tohid-final-deploy-and-alireza-preview.md) | موج ۴ زیرساخت — استقرار Production و Preview علیرضا | `Infra-FullDeploy` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۳۲:۳۰<br>`2026-10-21T13:02:30.000Z` | شاخه `arena/b6d06c28-escaperoom` — دیپلوی Production `dpl_F4ddK4xRwvE8FR4cedNAuwVhmSh2` (`f354b65`) + دیپلوی Preview علیرضا `dpl_7bnxrUqTxnVrWFQCHLXcUoD7t1Ca` (`49ef807`) |
