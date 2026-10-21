@@ -6,6 +6,8 @@ import TheaterDoorLockModal from './TheaterDoorLockModal';
 import WhisperChatPanel from '../hud/WhisperChatPanel';
 import TheaterCompanionHud from '../hud/TheaterCompanionHud';
 import MovementNotice from '../hud/MovementNotice';
+import ExplorationHud from '../hud/ExplorationHud';
+import type { ExplorationInput } from '../hud/exploration-hud';
 import ClueReadingPanel from './ClueReadingPanel';
 import { inspectHint, type ClueKind } from './clue-reading-data';
 import { resolveOwnRevealedDigit } from './puzzle-rules';
@@ -30,6 +32,8 @@ export default function AlleyFirstPersonScene({ room, onPunchTicket, onUnlockDoo
   const [ticketFeedback, setTicketFeedback] = useState('');
   const [doorUnlocked, setDoorUnlocked] = useState(false);
   const [openClue, setOpenClue] = useState<ClueKind | null>(null);
+  const [visitedClues, setVisitedClues] = useState<string[]>([]);
+  const [chatOpen, setChatOpen] = useState(false);
   const pointerX = useRef<number | null>(null);
   const activeView = yaw < -12 ? 'left' : yaw > 12 ? 'right' : 'center';
   const currentEmblem = THEATER_EMBLEMS.find((item) => item.id === room.myHeldTickets.companionStub.targetEmblem);
@@ -48,6 +52,37 @@ export default function AlleyFirstPersonScene({ room, onPunchTicket, onUnlockDoo
       doorLockState: { ...room.alley.doorLockState, punchedCount: Math.max(room.alley.doorLockState.punchedCount, players.filter((player) => player.ticketPunched).length) },
     },
   };
+  const explorationInput = useMemo<ExplorationInput>(() => ({
+    phase: room.phase,
+    me: { playerName: room.me.playerName, seatIndex: room.me.seatIndex, ticketPunched: isTicketPunched },
+    players: roomWithLocalState.players.map((player) => ({
+      playerName: player.playerName,
+      seatLabel: player.seatLabel,
+      seatIndex: player.seatIndex,
+      ticketPunched: player.ticketPunched,
+      isOnline: player.isOnline,
+    })),
+    alley: {
+      doorLockState: {
+        punchedCount: roomWithLocalState.alley.doorLockState.punchedCount,
+        requiredCount: room.playerCount,
+      },
+    },
+    messages: room.messages,
+    visitedClues,
+    doorUnlocked: doorUnlocked || room.phase !== 'alley_puzzle',
+    positionLabel: activeView === 'left'
+      ? 'سمت چپ · تابلوی اعلانات'
+      : activeView === 'right'
+        ? 'سمت راست · گیشهٔ برنجی'
+        : 'روبه‌رو · درِ تماشاخانه',
+  }), [room.phase, room.me.playerName, room.me.seatIndex, isTicketPunched, roomWithLocalState.players, roomWithLocalState.alley.doorLockState.punchedCount, room.playerCount, room.messages, visitedClues, doorUnlocked, activeView]);
+
+  function openCluePanel(kind: ClueKind) {
+    setOpenClue(kind);
+    setVisitedClues((previous) => (previous.includes(kind) ? previous : [...previous, kind]));
+  }
+
   const couponText = useMemo(() => `کوپن من برای ${room.myHeldTickets.companionStub.targetTeammateName}: نماد ${currentEmblem?.label ?? 'نامشخص'}؛ پردهٔ «${room.myHeldTickets.companionStub.targetActSceneTitle}». ${room.myHeldTickets.companionStub.whisperNote}`, [room.myHeldTickets.companionStub, currentEmblem?.label]);
 
   useEffect(() => {
@@ -68,7 +103,7 @@ export default function AlleyFirstPersonScene({ room, onPunchTicket, onUnlockDoo
         const target: ClueKind | null = activeView === 'left' ? 'playbill' : activeView === 'right' ? 'rowChart' : null;
         if (!target) return;
         event.preventDefault();
-        setOpenClue(target);
+        openCluePanel(target);
       }
     }
     window.addEventListener('keydown', onKey);
@@ -121,6 +156,8 @@ export default function AlleyFirstPersonScene({ room, onPunchTicket, onUnlockDoo
 
       <MovementNotice modalOpen={doorOpen || openClue !== null} />
 
+      <ExplorationHud input={explorationInput} onOpenChat={() => setChatOpen(true)} />
+
       <section className={`alley-panorama view-${activeView} ${isDragging ? 'is-dragging' : ''}`} onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerEnd} onPointerCancel={onPointerEnd} aria-label="نمای اول‌شخص از کوچه؛ برای چرخاندن دوربین بکشید">
         <div className="alley-sky" />
         <div className="alley-building alley-building-left"><div className="building-window" /><div className="building-lamp">✦</div><span className="building-vine vine-one">❧</span></div>
@@ -135,7 +172,7 @@ export default function AlleyFirstPersonScene({ room, onPunchTicket, onUnlockDoo
             <footer>یک اجرا · یک شب · یک راز</footer>
           </div></div>
           <p>سرنخ نمایش‌نامهٔ امشب</p>
-          <button className="clue-inspect-button pan-ignore" type="button" onClick={() => setOpenClue('playbill')}>
+          <button className="clue-inspect-button pan-ignore" type="button" onClick={() => openCluePanel('playbill')}>
             <span aria-hidden="true">🎭</span>
             <span>{inspectHint('playbill')}</span>
             <kbd>E</kbd>
@@ -162,7 +199,7 @@ export default function AlleyFirstPersonScene({ room, onPunchTicket, onUnlockDoo
           </div>
           <div className="brass-counter"><span>بلیط‌های آماده</span><strong>{room.alley.doorLockState.punchedCount.toLocaleString('fa')}<i>/</i>{room.playerCount.toLocaleString('fa')}</strong></div>
           <p>جدول تبدیل ردیف‌ها</p>
-          <button className="clue-inspect-button pan-ignore" type="button" onClick={() => setOpenClue('rowChart')}>
+          <button className="clue-inspect-button pan-ignore" type="button" onClick={() => openCluePanel('rowChart')}>
             <span aria-hidden="true">⌘</span>
             <span>{inspectHint('rowChart')}</span>
             <kbd>E</kbd>
@@ -186,7 +223,14 @@ export default function AlleyFirstPersonScene({ room, onPunchTicket, onUnlockDoo
         <div className="ticket-feedback" aria-live="polite">{ticketFeedback && <span className={isTicketPunched ? 'ticket-success-text' : ''}>{isTicketPunched ? '✦ ' : '◇ '}{ticketFeedback}</span>}</div>
       </div>
 
-      <WhisperChatPanel messages={room.messages} currentPlayerName={room.me.playerName} couponText={couponText} onSendWhisper={onSendWhisper} />
+      <WhisperChatPanel
+        messages={room.messages}
+        currentPlayerName={room.me.playerName}
+        couponText={couponText}
+        onSendWhisper={onSendWhisper}
+        open={chatOpen}
+        onOpenChange={setChatOpen}
+      />
       <TheaterDoorLockModal room={roomWithLocalState} open={doorOpen} onClose={() => setDoorOpen(false)} onUnlock={async (code) => { const result = await onUnlockDoor(code); if (result.accepted) setDoorUnlocked(true); return result; }} />
       {openClue && (
         <ClueReadingPanel
