@@ -134,7 +134,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۱** — ✅ Archive: **۲۱۱** — 🧾 مجموع: **۲۱۲** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۲۱:۲۲:۰۲ (`2026-10-21T17:52:02.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۲** — ✅ Archive: **۲۱۱** — 🧾 مجموع: **۲۱۳** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۲۱:۲۲:۰۲ (`2026-10-21T17:52:02.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -145,6 +145,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | 🕒 زمان (ایران / UTC) | رویداد | شناسه لاگ | توسط |
 | --- | --- | --- | --- |
 | ۱۴۰۵/۰۷/۲۹ — ۲۱:۲۲:۰۲<br>`2026-10-21T17:52:02.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_21-22-02_infra-agent_final-wave10-production-deploy-all-agents-pr71`](./logs/pending/1405-07-29_21-22-02_infra-agent_final-wave10-production-deploy-all-agents-pr71.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
+| ۱۴۰۵/۰۷/۲۹ — ۲۱:۲۲:۰۲<br>`2026-10-21T17:52:02.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_21-22-02_infra-agent_push`](./logs/pending/1405-07-29_21-22-02_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۱:۲۰:۲۵<br>`2026-10-21T17:50:25.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_21-14-37_amirali_pr-71-wave10-experience-qa`](./logs/archive/1405-07-29_21-14-37_amirali_pr-71-wave10-experience-qa.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۱:۲۰:۲۵<br>`2026-10-21T17:50:25.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_21-14-23_amirali_push`](./logs/archive/1405-07-29_21-14-23_amirali_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۱:۲۰:۲۵<br>`2026-10-21T17:50:25.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_21-14-20_amirali_wave10-experience-qa`](./logs/archive/1405-07-29_21-14-20_amirali_wave10-experience-qa.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
@@ -155,7 +156,6 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | ۱۴۰۵/۰۷/۲۹ — ۲۱:۱۴:۲۳<br>`2026-10-21T17:44:23.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_21-14-23_amirali_push`](./logs/archive/1405-07-29_21-14-23_amirali_push.md) | **امیرعلی** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۱:۱۴:۲۰<br>`2026-10-21T17:44:20.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_21-14-20_amirali_wave10-experience-qa`](./logs/archive/1405-07-29_21-14-20_amirali_wave10-experience-qa.md) | **امیرعلی** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۱:۰۷:۴۶<br>`2026-10-21T17:37:46.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_21-07-46_infra-agent_pr70-deploy-wave8-wave9-and-archive`](./logs/archive/1405-07-29_21-07-46_infra-agent_pr70-deploy-wave8-wave9-and-archive.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
-| ۱۴۰۵/۰۷/۲۹ — ۲۱:۰۷:۴۶<br>`2026-10-21T17:37:46.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_21-07-46_infra-agent_push`](./logs/archive/1405-07-29_21-07-46_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 <!-- WORKLOG:EVENTS:END -->
 
 ---
@@ -168,6 +168,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- |
 | [`1405-07-29_21-22-02_infra-agent_final-wave10-production-deploy-all-agents-pr71`](./logs/pending/1405-07-29_21-22-02_infra-agent_final-wave10-production-deploy-all-agents-pr71.md) | استقرار نهایی موج ۱۰ تمام ۴ ایجنت روی Vercel Production (dpl_DqNszUJSo1f9P9Qfva2stEMgofGh) و آرشیو لاگ‌های PR #70 و PR #71 | `Infra-FullDeploy` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۲۱:۲۲:۰۲<br>`2026-10-21T17:52:02.000Z` | dpl_DqNszUJSo1f9P9Qfva2stEMgofGh (escaperoom-orfeo.vercel.app) |
+| [`1405-07-29_21-22-02_infra-agent_push`](./logs/pending/1405-07-29_21-22-02_infra-agent_push.md) | پوش شاخه arena/09720ff5-escaperoom — 5c83bb0 | `Push` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۲۱:۲۲:۰۲<br>`2026-10-21T17:52:02.000Z` | origin/arena/09720ff5-escaperoom (origin/main..5c83bb0) |
 <!-- WORKLOG:PENDING:END -->
 
 ---
