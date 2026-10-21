@@ -55,6 +55,7 @@
 ### رفع شد
 - `package.json` با BOM ذخیره شده بود و `next build` (و هر deploy روی Vercel) با `SyntaxError` می‌شکست.
 - اسکریپت `lint` که مستندات CI الزام کرده بود وجود نداشت.
+- انتشار خودکار به اتصال Git پروژهٔ Vercel منتقل شد (هر merge روی `main` خودش روی production می‌رود)؛ ورک‌فلوی `Deploy` گیت‌هاب فقط‌-دستی شد تا به‌خاطر secretهای تنظیم‌نشده روی هر push شکست نخورد و دیپلوی دوبل ساخته نشود.
 
 ### تست
 - `npm run typecheck`، `npm run lint`، `npm test` و `npm run build` سبز

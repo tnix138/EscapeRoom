@@ -241,9 +241,15 @@ describe('فاز ۰۲ — هم‌خوانی با docs/AUTO.md', () => {
     expect(autoMerge).toContain('node scripts/auto-merge.mjs');
   });
 
-  it('Deploy فقط از main سبز و با توکن Vercel انجام می‌شود', () => {
+  it('انتشار خودکار با اتصال Git ورسل است و Deploy فقط مسیر دستیِ توحید است', () => {
     const deploy = read('.github/workflows/deploy.yml');
-    expect(deploy).toContain("branches: ['main']");
+    // مسیر اصلی: اتصال Git در Vercel؛ این workflow نباید خودکار اجرا شود
+    expect(deploy).toContain('اتصال Git در Vercel');
+    expect(deploy).toContain('workflow_dispatch');
+    expect(deploy).not.toContain('workflow_run');
+    expect(deploy).not.toContain("branches: ['main']");
+    // مسیر دستی هم فقط از main و فقط با اجرای توحید منتشر می‌کند
+    expect(deploy).toContain('ref: main');
     expect(deploy).toContain("github.actor == 'tnix138'");
     expect(deploy).toContain('secrets.VERCEL_TOKEN');
     expect(deploy).toContain('/api/health');
