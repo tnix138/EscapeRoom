@@ -303,9 +303,10 @@ Materialهای PBR با normal map، roughness map، AO map رویه‌ای. س�
 
 ## وضعیت
 
-- ⏳ در انتظار شروع
-
----
+- 🟡 در حال انجام
+- 📝 سهم امیرعلی (HUD) تکمیل شد: `src/components/hud/horror/**` + `tests/amirali/horror-phase07.test.ts` (۲۱ تست سبز)
+- 🔗 کامیت مرجع: 3abe980
+- ⏳ باقی‌مانده: سهم علیرضا (صدای ضربان قلب، post-processing و mount کردن `HorrorHud` در نمای سالن) — پس از تحویل، وصل می‌شود و فاز بسته می‌شود.
 
 # 📋 فاز ۰۸ — کات‌سین سینمایی (Three.js)
 
@@ -383,9 +384,9 @@ Materialهای PBR با normal map، roughness map، AO map رویه‌ای. س�
 
 ## وضعیت
 
-- ⏳ در انتظار شروع
-
----
+- 🟡 در حال انجام
+- 📝 سهم امیرعلی تکمیل شد: `src/app/admin/layout.tsx` و `src/app/admin/login/page.tsx` + `tests/amirali/admin-login-phase09.test.ts` (۲۲ تست سبز)
+- ⏳ باقی‌مانده: سهم امیر (`/api/admin/login`، `/api/admin/logout`، `LoginForm`، `AdminSidebar`، تست‌های `tests/amir`)
 
 # 📋 فاز ۱۰ — پنل ادمین: آمار و مشاهده
 
