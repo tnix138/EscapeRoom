@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import '@fontsource-variable/vazirmatn';
 import './globals.css';
+import ControlsHelpOverlay from '@/components/alley/ControlsHelpOverlay';
 
 export const metadata: Metadata = {
   title: 'پردهٔ سرخ | تماشاخانهٔ اُرفه‌ئو',
@@ -20,6 +21,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body>
         <a className="skip-link" href="#main-content">پرش به محتوای اصلی</a>
         <div id="main-content" tabIndex={-1}>{children}</div>
+        <ControlsHelpOverlay />
       </body>
     </html>
   );
