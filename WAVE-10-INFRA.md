@@ -25,7 +25,8 @@ intended_audience: coding_agents_only
 | **`dpl_AcVtEAPxUJs71pczn5chv4ycTzJ6`** | Production | `37e11ac` | `32.0s` | `READY / PROMOTED` |
 | **`dpl_CGJM9AoYPVbNPQ21yXoacXhQDTXf`** | Production | `fc166ee` | `45.8s` | `READY / PROMOTED` |
 | **`dpl_2HTchzK9wjGkaSKsLzuBXyupxDFL`** | Production | `44859b3` | `30.2s` | `READY / PROMOTED` |
-| **`dpl_92YBE2abGq9ebZLzNcixLBzzchrc`** | Production | `b7dcb50` | `READY` | `READY / PROMOTED` |
+| **`dpl_92YBE2abGq9ebZLzNcixLBzzchrc`** | Production | `b7dcb50` | `49.5s` | `READY / PROMOTED` |
+| **`dpl_DqNszUJSo1f9P9Qfva2stEMgofGh`** | Production | `21f6771` | `49.5s` | `READY / PROMOTED` |
 
 ## فهرست گزارش‌های تک‌موج زیرساخت
 
