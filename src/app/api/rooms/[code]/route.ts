@@ -2,6 +2,7 @@
 import { NextResponse } from 'next/server';
 import {
   GameServiceError,
+  getRoomViewConditional,
   getRoomViewForSeat,
 } from '../../../../server/services/room-service';
 
@@ -35,14 +36,13 @@ export async function GET(
         { status: 401 },
       );
     }
-    const sinceVersion = Number(new URL(req.url).searchParams.get('sinceVersion') ?? '0');
-    const roomView = await getRoomViewForSeat(code, seatToken);
-    if (sinceVersion === roomView.version) {
-      return NextResponse.json({
-        ok: true,
-        data: { unchanged: true, version: roomView.version, serverNow: roomView.serverNow },
-      });
+    const rawSince = new URL(req.url).searchParams.get('sinceVersion');
+    const sinceVersion = rawSince !== null ? Number(rawSince) : 0;
+    if (Number.isFinite(sinceVersion) && sinceVersion > 0) {
+      const data = await getRoomViewConditional(code, seatToken, sinceVersion);
+      return NextResponse.json({ ok: true, data });
     }
+    const roomView = await getRoomViewForSeat(code, seatToken);
     return NextResponse.json({ ok: true, data: { unchanged: false, roomView } });
   } catch (err) {
     return errorResponse(err);

@@ -91,6 +91,6 @@ export function projectRoomView(
       },
     },
     auditorium: state.phase === 'in_theater' ? createDarkAuditoriumState(state) : null,
-    messages: [...state.messages],
+    messages: state.messages.map((m) => ({ ...m })),
   };
 }
