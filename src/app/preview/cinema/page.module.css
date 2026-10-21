@@ -149,6 +149,57 @@
   color: #ffe9a8;
 }
 
+.voiceGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 10px;
+}
+
+.voiceCard,
+.voiceCardActive {
+  text-align: start;
+  border-radius: 12px;
+  padding: 11px 13px;
+  font-family: inherit;
+  cursor: pointer;
+  border: 1px solid #533a6d;
+  background: #1a1027;
+  color: #f3e9dc;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: transform 0.08s ease, border-color 0.15s ease;
+}
+
+.voiceCard:hover,
+.voiceCardActive:hover {
+  transform: translateY(-1px);
+  border-color: #d4af37;
+}
+
+.voiceCardActive {
+  background: linear-gradient(180deg, #4b1523, #270c1a);
+  border-color: #d4af37;
+}
+
+.voiceMeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: #ffe9a8;
+}
+
+.voiceMeta small {
+  color: #b7a58c;
+}
+
+.voiceLine {
+  font-size: 13.5px;
+  line-height: 1.8;
+  color: #e4d6c3;
+}
+
 .footer {
   color: #9c8b73;
   font-size: 13px;

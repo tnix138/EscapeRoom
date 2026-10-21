@@ -29,6 +29,10 @@ import {
   TOTAL_CUTSCENE_DURATION_MS,
   type CutsceneBeatId,
 } from '../contracts/types';
+import {
+  CharacterVoiceDirector,
+  type DialogueBufferLoader,
+} from './character-voices';
 
 /* =====================================================================================
  * بخش خالص (Pure) — بدون وابستگی به AudioContext؛ قابل تست واحد در Node
@@ -148,6 +152,8 @@ const HORROR_CELLO_MOTIF_MIDI = [48, 49, 48, 43, 46, 41, 48, 36] as const;
 export interface TheaterAudioEngineOptions {
   /** حجم صدای اصلی در بازه [0, 1] — پیش‌فرض 0.8 */
   masterVolume?: number;
+  /** بارگذار سفارشی فایل‌های دیالوگ (مخصوص تست واحد) */
+  dialogueLoader?: DialogueBufferLoader;
 }
 
 interface LoopScheduler {
@@ -160,11 +166,14 @@ export class TheaterAudioEngine {
   private ctx: AudioContext | null = null;
   private masterGain: GainNode | null = null;
   private headPanner: StereoPannerNode | null = null;
+  private accompanimentDuck: GainNode | null = null;
   private musicBus: GainNode | null = null;
   private sopranoBus: GainNode | null = null;
   private horrorBus: GainNode | null = null;
   private sfxBus: GainNode | null = null;
+  private voiceBus: GainNode | null = null;
   private noiseBuffer: AudioBuffer | null = null;
+  private readonly voiceDirector: CharacterVoiceDirector;
 
   private readonly masterVolume: number;
   private muted = false;
@@ -184,6 +193,18 @@ export class TheaterAudioEngine {
 
   constructor(options: TheaterAudioEngineOptions = {}) {
     this.masterVolume = Math.min(1, Math.max(0, options.masterVolume ?? 0.8));
+    this.voiceDirector = new CharacterVoiceDirector({
+      loader: options.dialogueLoader,
+      onDuckChange: (duckLevel) => {
+        if (this.accompanimentDuck && this.ctx) {
+          this.rampGain(
+            this.accompanimentDuck.gain,
+            duckLevel,
+            duckLevel < 1 ? 0.16 : 0.45,
+          );
+        }
+      },
+    });
   }
 
   /* ------------------------------- چرخه حیات ------------------------------- */
@@ -230,21 +251,25 @@ export class TheaterAudioEngine {
     if (this.ctx.state === 'suspended') {
       await this.ctx.resume();
     }
+    void this.voiceDirector.preloadAll();
     return true;
   }
 
   /** توقف کامل همه صداها و بستن کانتکست (خروج از اتاق بازی) */
   async dispose(): Promise<void> {
     this.stopAll();
+    this.voiceDirector.dispose();
     if (this.ctx) {
       await this.ctx.close().catch(() => undefined);
       this.ctx = null;
       this.masterGain = null;
       this.headPanner = null;
+      this.accompanimentDuck = null;
       this.musicBus = null;
       this.sopranoBus = null;
       this.horrorBus = null;
       this.sfxBus = null;
+      this.voiceBus = null;
       this.noiseBuffer = null;
       this.currentBeat = null;
       this.appliedBeat = null;
@@ -280,17 +305,24 @@ export class TheaterAudioEngine {
     wetGain.connect(reverb);
     reverb.connect(this.masterGain);
 
+    // گره Auto-Ducking برای موسیقی پس‌زمینه هنگام صحبت کاراکترها
+    this.accompanimentDuck = ctx.createGain();
+    this.accompanimentDuck.gain.value = 1;
+    this.accompanimentDuck.connect(this.headPanner);
+
     // باس‌های مجزا برای کنترل مستقل هر لایه
-    const makeBus = (initialGain: number): GainNode => {
+    const makeBus = (initialGain: number, destination: AudioNode): GainNode => {
       const bus = ctx.createGain();
       bus.gain.value = initialGain;
-      bus.connect(this.headPanner as StereoPannerNode);
+      bus.connect(destination);
       return bus;
     };
-    this.musicBus = makeBus(0);
-    this.sopranoBus = makeBus(0);
-    this.horrorBus = makeBus(0);
-    this.sfxBus = makeBus(1);
+    this.musicBus = makeBus(0, this.accompanimentDuck);
+    this.sopranoBus = makeBus(0, this.accompanimentDuck);
+    this.horrorBus = makeBus(0, this.accompanimentDuck);
+    this.sfxBus = makeBus(1, this.headPanner);
+    this.voiceBus = makeBus(1.12, this.headPanner);
+    this.voiceDirector.attach(ctx, this.voiceBus);
   }
 
   private createImpulseResponse(durationSec: number, decay: number): AudioBuffer {
@@ -1273,11 +1305,32 @@ export class TheaterAudioEngine {
     }
   }
 
-  /** میانبر موج ۲: فقط elapsedMs سرور را بده؛ بیت و صدا خودکار هم‌فاز می‌شوند */
+  /** میانبر موج ۲: فقط elapsedMs سرور را بده؛ بیت، موسیقی و دیالوگ کاراکترها خودکار هم‌فاز می‌شوند */
   syncToElapsedMs(elapsedMs: number): CutsceneBeatId {
     const beat = beatFromElapsedMs(elapsedMs);
     this.applyBeat(beat);
+    this.voiceDirector.syncToElapsedMs(elapsedMs);
     return beat;
+  }
+
+  /** بارگذاری پیش‌دستانه همه دیالوگ‌های هوش مصنوعی در حافظه */
+  async preloadVoices(): Promise<void> {
+    await this.voiceDirector.preloadAll();
+  }
+
+  /** پخش مستقیم یک دیالوگ از ابتدا با زنجیره آکوستیک شخصیت (مخصوص تست و پیش‌نمایش) */
+  async playCharacterCue(cueId: string): Promise<boolean> {
+    if (!this.ready()) return false;
+    return this.voiceDirector.playCueFromStart(cueId);
+  }
+
+  /** توقف فوری صدای دیالوگ در حال پخش */
+  stopCharacterVoice(): void {
+    this.voiceDirector.stopActiveVoice();
+  }
+
+  get activeCharacterCueId(): string | null {
+    return this.voiceDirector.activeCueId;
   }
 
   /** زمزمه بم و خفه زیر موسیقی شاد لحظه‌ای که مرد سیاه‌پوش در سایه چپ دیده می‌شود */
@@ -1314,6 +1367,7 @@ export class TheaterAudioEngine {
     this.stopSoprano(0.4);
     this.stopHorrorAmbience(0.6);
     this.stopRoomRumble();
+    this.voiceDirector.reset();
     this.inversionTriggered = false;
     this.musicStateValue = 'silent';
     this.currentBeat = null;

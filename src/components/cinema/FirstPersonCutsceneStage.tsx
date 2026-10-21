@@ -43,6 +43,8 @@ export interface FirstPersonCutsceneStageProps {
   elapsedMs: number;
   muted: boolean;
   onToggleMute: () => void;
+  /** قلاب اختیاری برای صفحه پیش‌نمایش جهت تست مستقیم صدای کاراکترها */
+  onEngineReady?: (engine: TheaterAudioEngine | null) => void;
 }
 
 export default function FirstPersonCutsceneStage({
@@ -50,6 +52,7 @@ export default function FirstPersonCutsceneStage({
   elapsedMs,
   muted,
   onToggleMute,
+  onEngineReady,
 }: FirstPersonCutsceneStageProps) {
   const engineRef = useRef<TheaterAudioEngine | null>(null);
   const prevElapsedRef = useRef(0);
@@ -85,6 +88,7 @@ export default function FirstPersonCutsceneStage({
   useEffect(() => {
     let cancelled = false;
     const engine = getEngine();
+    onEngineReady?.(engine);
     void engine.init().then(() => {
       if (!cancelled) setAudioRunning(engine.contextState === 'running');
     });
@@ -95,6 +99,7 @@ export default function FirstPersonCutsceneStage({
     return () => {
       cancelled = true;
       clearInterval(watcher);
+      onEngineReady?.(null);
       void engine.dispose();
       engineRef.current = null;
     };
