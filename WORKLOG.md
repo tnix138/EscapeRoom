@@ -134,7 +134,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۵۷** — ✅ Archive: **۱۵۸** — 🧾 مجموع: **۲۱۵** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۲۰:۳۶:۱۱ (`2026-10-21T17:06:11.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۵۸** — ✅ Archive: **۱۵۸** — 🧾 مجموع: **۲۱۶** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۲۰:۳۶:۵۸ (`2026-10-21T17:06:58.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -144,6 +144,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:EVENTS:START -->
 | 🕒 زمان (ایران / UTC) | رویداد | شناسه لاگ | توسط |
 | --- | --- | --- | --- |
+| ۱۴۰۵/۰۷/۲۹ — ۲۰:۳۶:۵۸<br>`2026-10-21T17:06:58.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-36-58_infra-agent_worklog-reader-summary`](./logs/pending/1405-07-29_20-36-58_infra-agent_worklog-reader-summary.md) | **ایجنت چهارم زیرساخت** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۳۶:۱۱<br>`2026-10-21T17:06:11.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-36-11_infra-agent_push`](./logs/pending/1405-07-29_20-36-11_infra-agent_push.md) | **ایجنت چهارم زیرساخت** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۳۵:۴۸<br>`2026-10-21T17:05:48.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-35-48_infra-agent_worklog-reader-summary`](./logs/pending/1405-07-29_20-35-48_infra-agent_worklog-reader-summary.md) | **ایجنت چهارم زیرساخت** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۳۳:۳۹<br>`2026-10-21T17:03:39.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-33-39_infra-agent_push`](./logs/pending/1405-07-29_20-33-39_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
@@ -155,7 +156,6 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۵:۵۲<br>`2026-10-21T16:55:52.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-25-52_amirali_wave6-ticket-puzzle`](./logs/pending/1405-07-29_20-25-52_amirali_wave6-ticket-puzzle.md) | **امیرعلی** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۴:۵۴<br>`2026-10-21T16:54:54.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-24-54_infra-agent_pr54-wave9-infra`](./logs/pending/1405-07-29_20-24-54_infra-agent_pr54-wave9-infra.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۴:۵۲<br>`2026-10-21T16:54:52.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-24-52_infra-agent_push`](./logs/pending/1405-07-29_20-24-52_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
-| ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۴:۵۱<br>`2026-10-21T16:54:51.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-24-51_infra-agent_wave9-auditorium-persistence-restore`](./logs/pending/1405-07-29_20-24-51_infra-agent_wave9-auditorium-persistence-restore.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 <!-- WORKLOG:EVENTS:END -->
 
 ---
@@ -167,6 +167,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:PENDING:START -->
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- |
+| [`1405-07-29_20-36-58_infra-agent_worklog-reader-summary`](./logs/pending/1405-07-29_20-36-58_infra-agent_worklog-reader-summary.md) | درخواست ادغام قالب خوانای Worklog | `PR` | **ایجنت چهارم زیرساخت** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۳۶:۵۸<br>`2026-10-21T17:06:58.000Z` | PR #63: خواناتر کردن گزارش‌های جدید Worklog |
 | [`1405-07-29_20-36-11_infra-agent_push`](./logs/pending/1405-07-29_20-36-11_infra-agent_push.md) | پوش شاخه arena/fdf788c2-escaperoom — 76931bc | `Push` | **ایجنت چهارم زیرساخت** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۳۶:۱۱<br>`2026-10-21T17:06:11.000Z` | origin/arena/fdf788c2-escaperoom (origin/main..76931bc) |
 | [`1405-07-29_20-35-48_infra-agent_worklog-reader-summary`](./logs/pending/1405-07-29_20-35-48_infra-agent_worklog-reader-summary.md) | گزارش خوانای نسخهٔ دوم Worklog | `Commit` | **ایجنت چهارم زیرساخت** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۳۵:۴۸<br>`2026-10-21T17:05:48.000Z` | شاخه arena/fdf788c2-escaperoom |
 | [`1405-07-29_20-33-39_infra-agent_push`](./logs/pending/1405-07-29_20-33-39_infra-agent_push.md) | پوش شاخه arena/3cf79cfd-escaperoom — 1079037 | `Push` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۳۳:۳۹<br>`2026-10-21T17:03:39.000Z` | origin/arena/3cf79cfd-escaperoom (origin/arena/3cf79cfd-escaperoom..1079037) |
