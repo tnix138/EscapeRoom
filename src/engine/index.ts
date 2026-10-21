@@ -116,7 +116,12 @@ export function createDarkAuditoriumState(state: InternalRoomState): DarkAuditor
     chandelierShatteredOnFloor: true,
     wallPaintingsCrooked: true,
     performersVanished: true,
-    inspectedHotspots: state.inspectedHotspots,
+    inspectedHotspots: {
+      'shattered-chandelier': [...state.inspectedHotspots['shattered-chandelier']],
+      'crooked-paintings': [...state.inspectedHotspots['crooked-paintings']],
+      'three-dark-stages': [...state.inspectedHotspots['three-dark-stages']],
+      'locked-exit-doors': [...state.inspectedHotspots['locked-exit-doors']],
+    },
     chapterStatusBanner:
       'کات‌سین به پایان رسید؛ بازی از همین سالن تاریک و به‌هم‌ریخته ادامه می‌یابد. (پایان فصل اول)',
   };
