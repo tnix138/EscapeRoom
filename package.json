@@ -11,7 +11,17 @@
     "test": "vitest run",
     "test:tohid": "vitest run tests/tohid",
     "test:amirali": "vitest run tests/amirali",
-    "test:alireza": "vitest run tests/alireza"
+    "test:alireza": "vitest run tests/alireza",
+    "worklog": "node scripts/worklog.mjs",
+    "worklog:new": "node scripts/worklog.mjs new",
+    "worklog:push": "node scripts/worklog.mjs push",
+    "worklog:archive": "node scripts/worklog.mjs archive",
+    "worklog:sync": "node scripts/worklog.mjs sync",
+    "worklog:check": "node scripts/worklog.mjs check",
+    "worklog:attach": "node scripts/worklog.mjs attach",
+    "worklog:list": "node scripts/worklog.mjs list",
+    "worklog:hooks": "node scripts/worklog.mjs hooks",
+    "test:worklog": "vitest run tests/worklog"
   },
   "dependencies": {
     "@fontsource-variable/vazirmatn": "^5.3.0",
@@ -30,5 +40,7 @@
   "overrides": {
     "postcss": "^8.5.31"
   },
-  "engines": { "node": ">=22" }
+  "engines": {
+    "node": ">=22"
+  }
 }

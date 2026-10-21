@@ -1,77 +1,286 @@
-# 📋 دفتر جامع ثبت فعالیت‌های تیم (Commit, PR & Infra Worklog)
+# 📋 دفتر جامع ثبت فعالیت‌های تیم (Worklog & Lifecycle)
 
-> **قوانین الزامی پروژه:**
-> 1. **ثبت لاگ برای هر تغییر کد:** هر یک از اعضای تیم (**توحید، امیرعلی، علیرضا و ایجنت چهارم زیرساخت**) به ازای **هر Commit** و **هر Pull Request (PR)** موظف است یک فایل گزارش لاگ شامل **نام شخص، تاریخ شمسی، ساعت انجام و توضیحات دقیق کار** ایجاد کرده و در این فایل فهرست نماید.
-> 2. **ثبت لاگ برای عملیات‌های Vercel و Supabase:** از آنجا که **امیرعلی** و **علیرضا** فقط و فقط به ریپازیتوری GitHub دسترسی دارند، هرگونه نیاز به اقدام یا تغییر روی **Vercel** یا **Supabase** باید به شکل یک لاگ استاندارد با نوع `Infra-Supabase`، `Infra-Vercel` یا `Infra-FullDeploy` در بخش **`Pending`** ثبت شود تا **ایجنت چهارم زیرساخت (با مدیریت توحید — [`TASKS-INFRA-AGENT.md`](./TASKS-INFRA-AGENT.md))** آن را اجرا و به **`Archive`** منتقل کند.
->
-> **دسته‌بندی وضعیت‌ها:**
-> - **⏳ `Pending` (هنوز تأیید / اجرا نشده‌اند):** کامیت‌ها و PRهای منتظر تأیید نهایی + درخواست‌های عملیات Vercel/Supabase منتظر اجرای ایجنت چهارم (`logs/pending/`).
-> - **✅ `Archive` (کامل و تأیید شده‌اند):** کامیت‌ها و PRهای تأیید/ادغام‌شده + عملیات‌های زیرساختی انجام‌شده توسط ایجنت چهارم (`logs/archive/`).
+> این فایل **مرجع واحد و الزامی** ثبت تمام فعالیت‌های تیم است: هر کامیت، هر پوش و هر Pull Request و هر عملیات زیرساختی (Vercel / Supabase).
+> هیچ فعالیتی «ثبت‌نشده» پذیرفته نیست؛ و هیچ لاگی بدون **چرخه عمر کامل** (چه کسی ساخت، چه کسی آرشیو کرد، در چه تاریخی) پذیرفته نیست.
 
 ---
 
-## ⏳ Pending (هنوز تأیید / اجرا نشده‌اند)
+## ⚠️ قوانین طلایی (غیرقابل‌مذاکره)
 
-| شناسه لاگ | نام شخص | تاریخ شمسی | ساعت انجام | نوع فعالیت و مرجع | توضیحات کار انجام‌شده / عملیات درخواستی | فایل جزئیات |
-|---|---|---|---|---|---|---|
-| `1405-07-29_16-46-30_infra-agent_wave5-full-integration-deploy` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ | ۱۶:۴۶:۳۰ | `Infra-FullDeploy` (شاخه `arena/7e8eac07-escaperoom`) | استقرار Production یکپارچه پس از PR #13 علیرضا (`dpl_BWQnxbFLaeqT3p6TcK33Kduw5zUG`) و PR #14 امیرعلی (`dpl_ExEjEsRrAyfWNXUt1mXkuF8DkjFn` از `d97ac25`) + دیپلوی‌های Preview شاخه امیرعلی + تست دود مسیرهای زنده (`/`, `/preview/invitation`, `/preview/alley`, `/preview/cinema`, `/api/health`) و آرشیو لاگ‌های PR #12 تا #15. | [مشاهده فایل](./logs/pending/1405-07-29_16-46-30_infra-agent_wave5-full-integration-deploy.md) |
-
----
-
-## ✅ Archive (کامل و تأیید شده‌اند)
-
-| شناسه لاگ | نام شخص | تاریخ شمسی | ساعت انجام | نوع فعالیت و مرجع | توضیحات کار انجام‌شده | فایل جزئیات |
-|---|---|---|---|---|---|---|
-| `1405-07-29_16-46-02_amirali_pr-archive-pr14-worklogs` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ | ۱۶:۴۶:۰۲ | `PR` (`PR #15` — `arena/dbd0f4f3-escaperoom` ➔ `main`, ادغام‌شده در `94ca95c`) | ادغام به‌روزرسانی WORKLOG و آرشیو لاگ‌های امیرعلی مربوط به PR #14. | [مشاهده فایل](./logs/archive/1405-07-29_16-46-02_amirali_pr-archive-pr14-worklogs.md) |
-| `1405-07-29_16-46-02_amirali_archive-pr14-worklogs` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ | ۱۶:۴۶:۰۲ | `Commit` (`5286da8` — شاخه `arena/dbd0f4f3-escaperoom`) | انتقال سه لاگ امیرعلی برای کامیت رابط، PR #14 و همگام‌سازی main از `Pending` به `Archive` پس از ادغام موفق PR #14. | [مشاهده فایل](./logs/archive/1405-07-29_16-46-02_amirali_archive-pr14-worklogs.md) |
-| `1405-07-29_16-42-02_amirali_sync-pr13-main` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ | ۱۶:۴۲:۰۲ | `Commit` (`88b9de4` — شاخه `arena/dbd0f4f3-escaperoom`) | ادغام main به‌روز در شاخهٔ امیرعلی و حل تعارض گام ۰ با حفظ فایل‌های رابط/سبک امیرعلی و نماهای سینمایی علیرضا؛ ثبت موج‌های ۱ و ۲ علیرضا در WORKLOG. ادغام‌شده در PR #14. | [مشاهده فایل](./logs/archive/1405-07-29_16-42-02_amirali_sync-pr13-main.md) |
-| `1405-07-29_16-39-38_amirali_pr-ui-waves-1-3` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ | ۱۶:۳۹:۳۸ | `PR` (`PR #14` — `arena/dbd0f4f3-escaperoom` ➔ `main`, ادغام‌شده در `d97ac25`) | ادغام موج‌های ۱ تا ۳ رابط امیرعلی شامل رزرو/دعوت، موشن دعوت‌نامه و صحنهٔ کوچه/بلیط‌ها پس از همگام‌سازی با تحویل علیرضا؛ ۸۲ تست پاس و build/typecheck/audit موفق. | [مشاهده فایل](./logs/archive/1405-07-29_16-39-38_amirali_pr-ui-waves-1-3.md) |
-| `1405-07-29_16-39-38_amirali_ui-waves-1-3` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ | ۱۶:۳۹:۳۸ | `Commit` (`5121ab3` — شاخه `arena/dbd0f4f3-escaperoom`) | پیاده‌سازی رابط رزرو ۳–۸ نفره، دعوت‌نامهٔ گرافیکی و درگاه بازیکن، کوچهٔ اول‌شخص، بلیط/کوپن، پانچ، قفل برنجی، نجوا و پیش‌نمایش محلی؛ اتصال به APIهای مشترک و افزودن ۶ تست امیرعلی. ادغام در PR #14. | [مشاهده فایل](./logs/archive/1405-07-29_16-39-38_amirali_ui-waves-1-3.md) |
-| `1405-07-29_16-35-38_alireza_pr-13_wave1-wave2` | **علیرضا** | ۱۴۰۵/۰۷/۲۹ | ۱۶:۳۵:۳۸ | `PR` (`PR #13` — `arena/f2303553-escaperoom` ➔ `main`) | ایجاد PR شماره #13 برای ادغام تحویل موج‌های ۱ و ۲ علیرضا (دوربین POV و موتور صدای فضایی + کات‌سین دربان و نیمه اول سالن ۲۰ نفره) پس از ادغام آخرین `main` (تحویل‌های توحید و زیرساخت) و حل کانفلیکت‌های گام ۰؛ ۷۶ تست پاس. | [مشاهده فایل](./logs/archive/1405-07-29_16-35-38_alireza_pr-13_wave1-wave2.md) |
-| `1405-07-29_16-34-04_infra-agent_pr-12_wave4-deploy` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ | ۱۶:۳۴:۰۴ | `PR` (`PR #12` — `arena/b6d06c28-escaperoom` ➔ `main`) | ادغام PR شماره #12 برای تحویل موج ۴ ایجنت چهارم زیرساخت (دیپلوی Production پس از PR #11 توحید، دیپلوی Preview علیرضا و آرشیو لاگ‌های PR #10 و #11). | [مشاهده فایل](./logs/archive/1405-07-29_16-34-04_infra-agent_pr-12_wave4-deploy.md) |
-| `1405-07-29_16-32-30_infra-agent_wave4-tohid-final-deploy-and-alireza-preview` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ | ۱۶:۳۲:۳۰ | `Infra-FullDeploy` (شاخه `arena/b6d06c28-escaperoom`) | استقرار Production جدید پس از PR #11 توحید (`dpl_F4ddK4xRwvE8FR4cedNAuwVhmSh2` از `f354b65` با ۳۹ تست پاس) + استقرار Preview شاخه علیرضا (`dpl_7bnxrUqTxnVrWFQCHLXcUoD7t1Ca` از `arena/f2303553-escaperoom`) + تست سلامت `/api/health` و آرشیو لاگ‌های PR #10 و PR #11. | [مشاهده فایل](./logs/archive/1405-07-29_16-32-30_infra-agent_wave4-tohid-final-deploy-and-alireza-preview.md) |
-| `1405-07-29_16-27-16_alireza_wave2-door-auditorium` | **علیرضا** | ۱۴۰۵/۰۷/۲۹ | ۱۶:۲۷:۱۶ | `Commit` (`arena/f2303553-escaperoom` — کامیت حاوی همین لاگ) | اجرای کامل **موج ۲ علیرضا** طبق `TASKS-ALIREZA.md` (ثانیه ۰ تا ۴۰ کات‌سین POV): کات‌سین دم درب با دربان «سینیور مَتِئو»، دست اول‌شخص و تحویل بلیط پانچ‌شده نام‌دار و باز شدن کامل درها (`UsherDoorCutsceneView`) + نیمه اول سالن ۲۰ نفره با سه سِن قرمز، تابلوها و لوستر، نشستن فقط پلیرهای واقعی ۳ تا ۸ نفر با برچسب نام هنگام چرخش سر، باز شدن پرده و رقص بانوی ایتالیایی و پیدایش مرد سیاه‌پوش در سایه چپ (`AuditoriumPerformanceView`) + کارگردان اصلی `FirstPersonCutsceneStage` با امضای دقیق `API-CONTRACT.md §۴.۳` و زمان‌بندی خالص قابل‌تست `cutscene-timing.ts`؛ ارتقای `/preview/cinema` به سینمای زنده موج ۲ با انتخاب‌گر ۳ تا ۸ پلیر و در مجموع ۳۷ تست پاس‌شده. | [مشاهده فایل](./logs/archive/1405-07-29_16-27-16_alireza_wave2-door-auditorium.md) |
-| `1405-07-29_16-10-45_alireza_wave1-pov-audio` | **علیرضا** | ۱۴۰۵/۰۷/۲۹ | ۱۶:۱۰:۴۵ | `Commit` (`arena/f2303553-escaperoom` — کامیت حاوی همین لاگ) | اجرای کامل **موج ۱ علیرضا** طبق `TASKS-ALIREZA.md`: هوک دوربین اول‌شخص محدود چپ/راست `usePovHeadPan` (فقط ±۴۲ درجه، ماوس/تاچ/کیبورد با میرایی نرم) + موتور صدای فضایی `theater-audio-engine` + اتاق تست زنده `/preview/cinema` و ۲۱ تست واحد پاس‌شده؛ به‌همراه **گام ۰ مشترک تیم**. | [مشاهده فایل](./logs/archive/1405-07-29_16-10-45_alireza_wave1-pov-audio.md) |
-| `1405-07-29_16-30-24_tohid_pr-11_contract-conformance` | **توحید** | ۱۴۰۵/۰۷/۲۹ | ۱۶:۳۰:۲۴ | `PR` (`PR #11` — `arena/045041ba-escaperoom` ➔ `main`) | ایجاد و ادغام PR شماره #11 برای تحویل نهایی توحید (تست انطباق ۱۰۰٪ با `API-CONTRACT.md`، مجموع ۳۹ تست پاس و تیک کامل چک‌لیست `TASKS-TOHID.md`). | [مشاهده فایل](./logs/archive/1405-07-29_16-30-24_tohid_pr-11_contract-conformance.md) |
-| `1405-07-29_16-29-51_tohid_contract-conformance-and-dod` | **توحید** | ۱۴۰۵/۰۷/۲۹ | ۱۶:۲۹:۵۱ | `Commit` (شاخه `arena/045041ba-escaperoom`) | بستن تحویل نهایی توحید: افزودن `tests/tohid/contract-conformance.test.ts` (۷ تست انطباق کامل با قرارداد برای امیرعلی و علیرضا؛ مجموع ۳۹ تست پاس) و تکمیل چک‌لیست `TASKS-TOHID.md`. | [مشاهده فایل](./logs/archive/1405-07-29_16-29-51_tohid_contract-conformance-and-dod.md) |
-| `1405-07-29_16-24-53_infra-agent_pr-10_wave3-fulldeploy` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ | ۱۶:۲۴:۵۳ | `PR` (`PR #10` — `arena/c9528bce-escaperoom` ➔ `main`) | ادغام PR شماره #10 برای تحویل موج ۳ ایجنت چهارم زیرساخت (تأیید FullDeploy و آرشیو لاگ‌های ادغام‌شده). | [مشاهده فایل](./logs/archive/1405-07-29_16-24-53_infra-agent_pr-10_wave3-fulldeploy.md) |
-| `1405-07-29_16-24-00_infra-agent_wave3-fulldeploy-and-archive` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ | ۱۶:۲۴:۰۰ | `Infra-FullDeploy` (شاخه `arena/c9528bce-escaperoom`) | استقرار مجدد Production از آخرین `main` (`dpl_4jfxZBLatr4Q9gwfTqZAAg3cmUps` با تنظیمات `vercel.json` و سخت‌سازی موج ۲ توحید)، تست سلامت آنلاین `https://escaperoom-orfeo.vercel.app/api/health` و انتقال تمامی لاگ‌های ادغام‌شده از `Pending` به `Archive`. | [مشاهده فایل](./logs/archive/1405-07-29_16-24-00_infra-agent_wave3-fulldeploy-and-archive.md) |
-| `1405-07-29_16-21-15_infra-agent_pr-9_wave2-vercel` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ | ۱۶:۲۱:۱۵ | `PR` (`PR #9` — `arena/c9528bce-escaperoom` ➔ `main`) | ادغام PR شماره #9 برای تحویل موج ۲ ایجنت چهارم زیرساخت (`vercel.json`، استقرار Production روی Vercel و تست سلامت `/api/health`). | [مشاهده فایل](./logs/archive/1405-07-29_16-21-15_infra-agent_pr-9_wave2-vercel.md) |
-| `1405-07-29_16-20-30_infra-agent_wave2-vercel-config-and-deploy` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ | ۱۶:۲۰:۳۰ | `Infra-Vercel` (شاخه `arena/c9528bce-escaperoom`) | ایجاد پروژه Vercel (`escaperoom-orfeo` — `prj_HD4C8ADfEmbBJtIFToqu7GuxyOtI`)، افزودن `vercel.json` با تنظیمات استریم SSE و توابع سرور، اجرای دیپلوی Production (`dpl_5sfQnbAujrEaDsquEr93BjERSw54`) و تأیید `/api/health` با `storageDriver: "supabase"` روی `https://escaperoom-orfeo.vercel.app`. | [مشاهده فایل](./logs/archive/1405-07-29_16-20-30_infra-agent_wave2-vercel-config-and-deploy.md) |
-| `1405-07-29_16-20-09_tohid_pr-8_wave2-hardening` | **توحید** | ۱۴۰۵/۰۷/۲۹ | ۱۶:۲۰:۰۹ | `PR` (`PR #8` — `arena/d4e4b986-escaperoom` ➔ `main`) | ایجاد و ادغام PR شماره #8 برای تحویل تکمیل و سخت‌سازی موج ۲ توحید (پانچ همزمان ۸ نفره و ماندگاری گذار فاز). | [مشاهده فایل](./logs/archive/1405-07-29_16-20-09_tohid_pr-8_wave2-hardening.md) |
-| `1405-07-29_16-19-40_tohid_wave2-hardening-concurrent-punch` | **توحید** | ۱۴۰۵/۰۷/۲۹ | ۱۶:۱۹:۴۰ | `Commit` (شاخه `arena/d4e4b986-escaperoom`) | تکمیل و سخت‌سازی موج ۲: رفع گم شدن پانچ همزمان ۸ نفره با افزایش سقف OCC به ۱۶، ماندگاری گذار فاز هنگام رد اکشن در کات‌سین و افزودن ۴ تست جدید (مجموع ۳۲ تست پاس). | [مشاهده فایل](./logs/archive/1405-07-29_16-19-40_tohid_wave2-hardening-concurrent-punch.md) |
-| `1405-07-29_16-19-00_infra-agent_pr-7_wave1-supabase` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ | ۱۶:۱۹:۰۰ | `PR` (`PR #7` — `arena/c9528bce-escaperoom` ➔ `main`) | ادغام PR شماره #7 برای تحویل موج ۱ ایجنت چهارم زیرساخت (마이گریشن Supabase، متغیرهای رمزنگاری‌شده Vercel و آرشیو لاگ زیرساخت توحید). | [مشاهده فایل](./logs/archive/1405-07-29_16-19-00_infra-agent_pr-7_wave1-supabase.md) |
-| `1405-07-29_16-18-30_infra-agent_wave1-supabase-migration-001` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ | ۱۶:۱۸:۳۰ | `Infra-Supabase` (شاخه `arena/c9528bce-escaperoom`) | راه‌اندازی پروژه Supabase (`escaperoom-orfeo` — `yavwoaqxhptzufmjckwz`)، اجرای مایگریشن `001_initial_schema.sql`، تست سلامت جدول `public.rooms` و RLS، ثبت رمزنگاری‌شده کلیدها در Vercel و آرشیو درخواست زیرساخت توحید. | [مشاهده فایل](./logs/archive/1405-07-29_16-18-30_infra-agent_wave1-supabase-migration-001.md) |
-| `1405-07-29_15-59-27_tohid_infra-supabase-migration-001` | **توحید (اجرا: ایجنت چهارم زیرساخت)** | ۱۴۰۵/۰۷/۲۹ | ۱۵:۵۹:۲۷ | `Infra-Supabase` (شاخه `arena/32c2d8dd-escaperoom` ➔ `arena/c9528bce-escaperoom`) | تکمیل درخواست زیرساخت توحید توسط ایجنت چهارم: اجرای `supabase/migrations/001_initial_schema.sql` روی پروژه `escaperoom-orfeo` (`yavwoaqxhptzufmjckwz`)، تست سلامت جدول `public.rooms` و ثبت امن متغیرهای محیطی در Vercel. | [مشاهده فایل](./logs/archive/1405-07-29_15-59-27_tohid_infra-supabase-migration-001.md) |
-| `1405-07-29_16-07-25_tohid_archive-wave1-3-logs` | **توحید** | ۱۴۰۵/۰۷/۲۹ | ۱۶:۰۷:۲۵ | `Commit` (شاخه `arena/32c2d8dd-escaperoom` — `PR #6`) | انتقال ۶ لاگ مرج‌شده موج‌های ۱ تا ۳ توحید (PRهای #3 و #4 و #5) از `Pending` به `Archive`؛ لاگ Infra-Supabase برای ایجنت چهارم در Pending ماند. | [مشاهده فایل](./logs/archive/1405-07-29_16-07-25_tohid_archive-wave1-3-logs.md) |
-| `1405-07-29_15-59-27_tohid_wave1-backend-foundation` | **توحید** | ۱۴۰۵/۰۷/۲۹ | ۱۵:۵۹:۲۷ | `Commit` (شاخه `arena/32c2d8dd-escaperoom`) | اجرای موج ۱ توحید: اسکافولد Next.js + قرارداد منجمد، `createPreviewRoomState` برای امیرعلی/علیرضا، دیتابیس دوگانه SQLite/Supabase با OCC، توکن SHA-256، `POST /api/rooms` رزرو ۳–۸ نفره با لینک دعوت نام‌دار، `GET /api/health` و ۱۴ تست پاس. | [مشاهده فایل](./logs/archive/1405-07-29_15-59-27_tohid_wave1-backend-foundation.md) |
-| `1405-07-29_16-01-22_tohid_pr-3_wave1-backend-foundation` | **توحید** | ۱۴۰۵/۰۷/۲۹ | ۱۶:۰۱:۲۲ | `PR` (`PR #3` — `arena/32c2d8dd-escaperoom` ➔ `main`) | ایجاد PR شماره #3 برای تحویل موج ۱ توحید (بک‌اند، دیتابیس دوگانه، رزرو ۳–۸ نفره و فیكسچر پیش‌نمایش) جهت بررسی و ادغام در `main`. | [مشاهده فایل](./logs/archive/1405-07-29_16-01-22_tohid_pr-3_wave1-backend-foundation.md) |
-| `1405-07-29_16-04-03_tohid_wave2-cyclic-puzzle-engine` | **توحید** | ۱۴۰۵/۰۷/۲۹ | ۱۶:۰۴:۰۳ | `Commit` (شاخه `arena/32c2d8dd-escaperoom`) | اجرای موج ۲ توحید: موتور کامل معمای حلقوی ۳–۸ نفره، اکشن‌های پانچ/قفل در با Rate-Limit، اندپوینت‌های GET/Action/Chat، قفل `CUTSCENE_LOCKED` و ۲۴ تست پاس. | [مشاهده فایل](./logs/archive/1405-07-29_16-04-03_tohid_wave2-cyclic-puzzle-engine.md) |
-| `1405-07-29_16-04-23_tohid_pr-4_wave2-cyclic-puzzle` | **توحید** | ۱۴۰۵/۰۷/۲۹ | ۱۶:۰۴:۲۳ | `PR` (`PR #4` — `arena/32c2d8dd-escaperoom` ➔ `main`) | ایجاد PR شماره #4 برای تحویل موج ۲ توحید (موتور معمای حلقوی، اکشن‌ها و قفل کات‌سین) جهت بررسی و ادغام در `main`. | [مشاهده فایل](./logs/archive/1405-07-29_16-04-23_tohid_pr-4_wave2-cyclic-puzzle.md) |
-| `1405-07-29_16-06-37_tohid_wave3-sse-sync` | **توحید** | ۱۴۰۵/۰۷/۲۹ | ۱۶:۰۶:۳۷ | `Commit` (شاخه `arena/32c2d8dd-escaperoom`) | اجرای موج ۳ توحید: استریم SSE بلادرنگ، heartbeat ساعت سرور، هوک کامل `useTheaterSession` با همگام‌سازی ۶۰fps کات‌سین و ۲۸ تست پاس. | [مشاهده فایل](./logs/archive/1405-07-29_16-06-37_tohid_wave3-sse-sync.md) |
-| `1405-07-29_16-06-58_tohid_pr-5_wave3-sse-sync` | **توحید** | ۱۴۰۵/۰۷/۲۹ | ۱۶:۰۶:۵۸ | `PR` (`PR #5` — `arena/32c2d8dd-escaperoom` ➔ `main`) | ایجاد PR شماره #5 برای تحویل موج ۳ توحید (SSE بلادرنگ و همگام‌سازی کات‌سین) جهت بررسی و ادغام در `main`. | [مشاهده فایل](./logs/archive/1405-07-29_16-06-58_tohid_pr-5_wave3-sse-sync.md) |
-| `1405-07-29_15-47-00_pr-2_theater-docs-and-4-agents` | **معمار تیم (توحید / امیرعلی / علیرضا)** | ۱۴۰۵/۰۷/۲۹ | ۱۵:۴۷:۰۰ | `PR` (`PR #2` — `arena/1d5c8b17-escaperoom` ➔ `main`) | ایجاد Pull Request شماره `#2` برای تحویل نهایی مستندات سناریوی جدید تماشاخانه اُرفه‌ئو، تقسیم کار موازی **توحید، امیرعلی و علیرضا**، پروتکل **ایجنت چهارم زیرساخت (`Supabase` + `Vercel`)** و سیستم لاگ شمسی `Pending`/`Archive`. | [مشاهده فایل](./logs/archive/1405-07-29_15-47-00_pr-2_theater-docs-and-4-agents.md) |
-| `1405-07-29_15-43-00_commit_infra-agent-and-github-isolation` | **معمار تیم (به سفارش توحید)** | ۱۴۰۵/۰۷/۲۹ | ۱۵:۴۳:۰۰ | `Commit` (`e49c875`) | افزودن معماری دسترسی فقط-گیت‌هاب برای **امیرعلی** و **علیرضا** + تعریف کامل و خودکفای **ایجنت چهارم زیرساخت (`TASKS-INFRA-AGENT.md`) با مدیریت توحید** برای پردازش لاگ‌های `Vercel` و `Supabase` از صف `Pending` و انتقال به `Archive`. | [مشاهده فایل](./logs/archive/1405-07-29_15-43-00_commit_infra-agent-and-github-isolation.md) |
-| `1405-07-29_15-38-00_commit_theater-docs-team-split` | **معمار تیم (توحید / امیرعلی / علیرضا)** | ۱۴۰۵/۰۷/۲۹ | ۱۵:۳۸:۰۰ | `Commit` (`6bf6f38`) | حذف کامل سناریوی قبلی و بازنویسی کامل مستندات برای سناریوی فصل اول **«پرده سرخ: تماشاخانه اُرفه‌ئو»** (۳ تا ۸ نفر، لینک نام‌دار، ویدیوی کارت دعوت، معمای بلیط‌ها، کات‌سین کامل `POV` سالن ۲۰ نفره و شروع مجدد داخل سالن تاریک) + تقسیم کار موازی بدون بیکاری بین **توحید، امیرعلی و علیرضا** در ۳ موج همگام + راه‌اندازی سیستم لاگ شمسی `Pending`/`Archive`. | [مشاهده فایل](./logs/archive/1405-07-29_15-38-00_commit_theater-docs-team-split.md) |
-| `1405-07-29_15-02-12_pr-1_initial-docs` | **معمار مستندات تیم** | ۱۴۰۵/۰۷/۲۹ | ۱۵:۰۲:۱۲ | `Commit & PR` (`f59c495` / `PR #1` -> `abd4b2d`) | طراحی نسخه اولیه ساختار مستندات مرحله ۱، معماری دیتابیس دوگانه و چارچوب تقسیم وظایف تیمی و ادغام PR شماره `#1` در `main`. | [مشاهده فایل](./logs/archive/1405-07-29_15-02-12_pr-1_initial-docs.md) |
+| # | قانون | جزئیات |
+| --- | --- | --- |
+| ۱ | **به ازای هر پوش (Push) یک لاگ** | هر `git push` باید حداقل یک فایل جدید/ویرایش‌شده در `logs/` داشته باشد. هوک `pre-push` و CI این را بررسی می‌کنند. |
+| ۲ | **به ازای هر Commit و هر PR یک لاگ** | لاگ `Commit` هنگام کامیت، لاگ `PR` هنگام باز کردن/ادغام Pull Request. |
+| ۳ | **چرخه عمر کامل در خود فایل لاگ** | هر لاگ باید نشان دهد: **ساخته‌شده توسط چه کسی و در چه تاریخ/ساعتی** و پس از آرشیو: **آرشیو‌شده توسط چه کسی و در چه تاریخ/ساعتی** (هم شمسی/ایران و هم UTC). این اطلاعات از فراداده (YAML) فایل ساخته می‌شود و نباید دستی و ناهماهنگ نوشته شود. |
+| ۴ | **پیام‌های کامیت حتماً فارسی** | موضوع (subject) هر کامیت باید فارسی باشد؛ هوک `commit-msg` کامیت غیرفارسی را رد می‌کند. پیشوند نوع (`feat`، `fix`، `docs`، `chore`) مجاز است. |
+| ۵ | **همگام‌سازی اجباری** | هر تغییر در `logs/` باید `WORKLOG.md` را هم به‌روز کند: `npm run worklog:sync`. CI واگرایی جدول‌ها را خطا می‌داند. |
 
 ---
 
-## 📐 قالب استاندارد ثبت لاگ جدید (کد / PR / درخواست زیرساخت Vercel و Supabase)
+## 🚦 دو وضعیت رسمی
 
-هنگام زدن هر `Commit`، ساخت هر `PR`، یا ثبت درخواست عملیات روی `Vercel` / `Supabase`، یک فایل در مسیر `logs/pending/<YYYY-MM-DD>_<HH-MM-SS>_<author>_<topic>.md` با قالب زیر بسازید و ردیف آن را به جدول **Pending** بالا اضافه کنید:
+| وضعیت | پوشه | معنا | انتقال |
+| --- | --- | --- | --- |
+| 🟡 **`Pending`** | `logs/pending/` | ایجاد شده و در انتظار بررسی تیم، ادغام PR یا اجرای ایجنت چهارم زیرساخت | با `npm run worklog:archive` به Archive می‌رود |
+| ✅ **`Archive`** | `logs/archive/` | تأیید و ادغام‌شده یا اجراشده؛ با ثبت **آرشیو شده توسط / زمان آرشیو** | برگشت‌پذیر نیست (به‌جز اصلاح خطا) |
+
+> **نکته:** پوشه و فراداده باید هم‌خوان باشند؛ اگر وضعیت `archive` باشد اما فایل در `logs/pending/` بماند، `worklog:check` خطا می‌دهد.
+
+---
+
+## 🧭 چرخه عمر یک لاگ (Lifecycle)
+
+```
+   ┌─────────────────────────────────────────────────────────────────────┐
+   │  ۱) ایجاد لاگ (همراه با کامیت/پوش/PR)                                │
+   │     npm run worklog:new  ← یا →  npm run worklog:push --commit       │
+   │     ثبت: created_by + created_at (شمسی/ایران) + created_at_utc       │
+   └───────────────────────────────┬─────────────────────────────────────┘
+                                   ▼
+   ┌─────────────────────────────────────────────────────────────────────┐
+   │  ۲) فایل در logs/pending/<id>.md  و ردیف آن در جدول «Pending»       │
+   │     وضعیت: 🟡 Pending (در انتظار بررسی/ادغام/اجرا)                  │
+   └───────────────────────────────┬─────────────────────────────────────┘
+                                   ▼  تأیید تیم / ادغام PR / اجرای زیرساخت
+   ┌─────────────────────────────────────────────────────────────────────┐
+   │  ۳) npm run worklog:archive <id> --by "<نام آرشیوکننده>" --note "…" │
+   │     انتقال فایل به logs/archive/ + ثبت: archived_by + archived_at   │
+   │     وضعیت: ✅ Archive (چرخه عمر کامل شد)                            │
+   └─────────────────────────────────────────────────────────────────────┘
+```
+
+### نمونه خط زمانی داخل هر فایل لاگ (خودکار ساخته می‌شود)
 
 ```markdown
-# گزارش فعالیت تیمی — <شناسه-فایل>
-
-- **نام شخص:** <توحید | امیرعلی | علیرضا | ایجنت چهارم زیرساخت — توحید>
-- **تاریخ شمسی:** <مثلاً ۱۴۰۵/۰۷/۲۹>
-- **ساعت انجام:** <مثلاً ۱۶:۲۰:۰۰>
-- **نوع فعالیت:** <Commit | PR | Infra-Supabase | Infra-Vercel | Infra-FullDeploy>
-- **شناسه مرجع (Commit / PR):** <کد کوتاه کامیت، شاخه یا شماره PR>
-- **وضعیت:** Pending (هنوز تأیید / اجرا نشده)
-- **زمان دقیق سیستمی:** <ISO Timestamp>
-
-### شرح دقیق فعالیت انجام‌شده / عملیات درخواستی
-<شرح دقیق بخش ساخته‌شده یا دستورالعمل دقیق موردنیاز روی Vercel / Supabase>
+| رویداد | توسط | تاریخ شمسی | ساعت (ایران) | زمان UTC | یادداشت |
+| 🟡 ایجاد و ثبت در `Pending` | **علیرضا** | ۱۴۰۵/۰۷/۲۹ | ۱۶:۳۵:۳۸ | 2026-10-21T13:05:38.000Z | ثبت اولیه گزارش |
+| 🟢 تبدیل به `Archive` | **توحید** | ۱۴۰۵/۰۷/۳۰ | ۱۰:۱۲:۰۰ | 2026-10-21T06:42:00.000Z | PR #13 بررسی و ادغام شد |
 ```
+
+---
+
+## ⚡ راهنمای سریع (۵ دستور اصلی)
+
+```bash
+# ۱) فعال‌سازی یک‌بارهٔ هوک‌های گیت (pre-push + commit-msg فارسی)
+npm run worklog:hooks
+
+# ۲) لاگ کامیت / PR (موضوع لاتین برای نام فایل، عنوان فارسی)
+npm run worklog:new -- --author "علیرضا" --slug alireza --activity Commit \
+  --title "موج ۳ علیرضا — نیمه دوم سالن تاریک" --topic wave3-dark-auditorium \
+  --ref "شاخه arena/8e9aee3f-escaperoom" --commit-sha a1b2c3d --commit
+
+# ۳) لاگ پوش (به‌صورت خودکار کامیت‌های شاخه، فایل‌های تغییر یافته و SHA را می‌نویسد)
+npm run worklog:push -- --author "توحید" --slug tohid --commit
+
+# ۴) آرشیو کردن (حتماً با «آرشیو شده توسط» و یادداشت)
+npm run worklog:archive -- 1405-07-29_16-35-38_alireza_pr-13_wave1-wave2 \
+  --by "توحید" --note "PR #13 بررسی، تست و ادغام شد"
+
+# ۵) بررسی سلامت و همگام‌سازی
+npm run worklog:sync && npm run worklog:check
+```
+
+> 🔎 نمای وضعیت: `npm run worklog:list` — راهنمای کامل: `npm run worklog -- help`
+
+---
+
+## 📌 مشخصات اجباری هر لاگ
+
+| فیلد | در فراداده | الزام | توضیح |
+| --- | --- | --- | --- |
+| شناسه لاگ | `id` | همیشه | `<تاریخ شمسی>_<ساعت-ایران>_<نویسنده>_<موضوع>` — نام فایل هم همین است |
+| عنوان | `title` | همیشه | فارسی و کوتاه |
+| خلاصه | `summary` | همیشه | یک جمله برای جدول `WORKLOG.md` |
+| نام شخص | `author` / `created_by` | همیشه | توحید / امیرعلی / علیرضا / ایجنت چهارم زیرساخت |
+| شناسه لاتین | `author_slug` | همیشه (در لاگ‌های جدید) | `tohid` / `amirali` / `alireza` / `infra-agent` |
+| نوع فعالیت | `activity` | همیشه | `Commit` \| `Push` \| `PR` \| `Commit & PR` \| `Infra-Supabase` \| `Infra-Vercel` \| `Infra-FullDeploy` |
+| مرجع | `ref` | همیشه | شماره PR، شاخه یا شناسه دیپلوی/مایگریشن |
+| شاخه | `branch` | در صورت وجود | مثلاً `arena/8e9aee3f-escaperoom` |
+| زمان ایجاد | `created_at_jalali` + `created_at_time` + `created_at_utc` | همیشه | شمسی/ایران + UTC؛ باید دقیقاً هم‌خوان باشند |
+| آرشیو‌کننده | `archived_by` | فقط Archive | نام کسی که تأیید/ادغام/اجرا کرد |
+| زمان آرشیو | `archived_at_jalali` + `archived_at_time` + `archived_at_utc` | فقط Archive | همان قواعد زمان ایجاد |
+| یادداشت آرشیو | `archive_note` | فقط Archive | مثلاً «PR #21 ادغام شد» یا «دیپلوی Production تأیید شد» |
+| کامیت‌های مرتبط | `commits` | توصیه‌شده | SHA کوتاه/کامل ۷ تا ۴۰ کاراکتری — هنگام پوش خودکار پر می‌شود |
+
+> ✅ اعتبارسنجی خودکار: `npm run worklog:check` هم‌خوانی تاریخ شمسی/ایران با UTC، تطابق نام فایل با شناسه، تطابق پوشه با وضعیت، اجباری بودن فیلدهای آرشیو و هم‌خوانی `WORKLOG.md` را بررسی می‌کند.
+
+---
+
+## 🗂️ ساختار پوشه‌ها
+
+```
+logs/
+├── pending/<id>.md      ← لاگ‌های در انتظار
+└── archive/<id>.md      ← لاگ‌های تأیید/ادغام/اجراشده (با archived_by و archived_at)
+scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبارسنجی)
+.githooks/               ← گارد pre-push و commit-msg فارسی
+.github/workflows/worklog.yml ← همان بررسی‌ها روی GitHub
+```
+
+---
+
+<!-- WORKLOG:STATS:START -->
+> 🔢 **آمار زنده:** ⏳ Pending: **۵** — ✅ Archive: **۳۲** — 🧾 مجموع: **۳۷** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۶:۵۴:۵۷ (`2026-10-21T13:24:57.000Z`)
+<!-- WORKLOG:STATS:END -->
+
+---
+
+## 🕒 جریان رویدادها (آخرین ۱۲ رویداد ایجاد/آرشیو)
+
+<!-- WORKLOG:EVENTS:START -->
+| 🕒 زمان (ایران / UTC) | رویداد | شناسه لاگ | توسط |
+| --- | --- | --- | --- |
+| ۱۴۰۵/۰۷/۲۹ — ۱۶:۵۴:۵۷<br>`2026-10-21T13:24:57.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_16-54-57_arena-agent_push-after-main-merge`](./logs/pending/1405-07-29_16-54-57_arena-agent_push-after-main-merge.md) | **ایجنت Arena** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۶:۵۲:۴۳<br>`2026-10-21T13:22:43.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_16-52-43_arena-agent_pr-17-worklog-system`](./logs/pending/1405-07-29_16-52-43_arena-agent_pr-17-worklog-system.md) | **ایجنت Arena** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۶:۵۲:۱۶<br>`2026-10-21T13:22:16.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_16-52-16_arena-agent_push`](./logs/pending/1405-07-29_16-52-16_arena-agent_push.md) | **ایجنت Arena** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۶:۵۲:۰۵<br>`2026-10-21T13:22:05.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_16-52-05_arena-agent_worklog-lifecycle-system`](./logs/pending/1405-07-29_16-52-05_arena-agent_worklog-lifecycle-system.md) | **ایجنت Arena** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۶:۵۰:۴۸<br>`2026-10-21T13:20:48.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_16-46-02_amirali_archive-pr14-worklogs`](./logs/archive/1405-07-29_16-46-02_amirali_archive-pr14-worklogs.md) | **توحید** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۶:۵۰:۴۸<br>`2026-10-21T13:20:48.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_16-46-02_amirali_pr-archive-pr14-worklogs`](./logs/archive/1405-07-29_16-46-02_amirali_pr-archive-pr14-worklogs.md) | **توحید** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۶:۴۹:۰۵<br>`2026-10-21T13:19:05.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_16-35-38_alireza_pr-13_wave1-wave2`](./logs/archive/1405-07-29_16-35-38_alireza_pr-13_wave1-wave2.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۶:۴۹:۰۵<br>`2026-10-21T13:19:05.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_16-34-04_infra-agent_pr-12_wave4-deploy`](./logs/archive/1405-07-29_16-34-04_infra-agent_pr-12_wave4-deploy.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۶:۴۹:۰۵<br>`2026-10-21T13:19:05.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_16-32-30_infra-agent_wave4-tohid-final-deploy-and-alireza-preview`](./logs/archive/1405-07-29_16-32-30_infra-agent_wave4-tohid-final-deploy-and-alireza-preview.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۶:۴۹:۰۵<br>`2026-10-21T13:19:05.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_16-27-16_alireza_wave2-door-auditorium`](./logs/archive/1405-07-29_16-27-16_alireza_wave2-door-auditorium.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۶:۴۹:۰۵<br>`2026-10-21T13:19:05.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_16-10-45_alireza_wave1-pov-audio`](./logs/archive/1405-07-29_16-10-45_alireza_wave1-pov-audio.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۶:۴۷:۲۸<br>`2026-10-21T13:17:28.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_16-42-02_amirali_sync-pr13-main`](./logs/archive/1405-07-29_16-42-02_amirali_sync-pr13-main.md) | **amiralikj** |
+<!-- WORKLOG:EVENTS:END -->
+
+---
+
+## ⏳ Pending — در انتظار تأیید / ادغام / اجرا
+
+> این جدول کاملاً **خودکار** از فراداده فایل‌های `logs/pending/` ساخته می‌شود. برای یافتن مسئول هر مورد: ستون «ساخته‌شده توسط» و ستون «نوع».
+
+<!-- WORKLOG:PENDING:START -->
+| شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | مرجع |
+| --- | --- | --- | --- | --- | --- |
+| [`1405-07-29_16-54-57_arena-agent_push-after-main-merge`](./logs/pending/1405-07-29_16-54-57_arena-agent_push-after-main-merge.md) | پوش پس از ادغام main — مهاجرت لاگ‌های جدید و همگام‌سازی | `Push` | **ایجنت Arena** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۵۴:۵۷<br>`2026-10-21T13:24:57.000Z` | origin/arena/8e9aee3f-escaperoom (5fba304) |
+| [`1405-07-29_16-52-43_arena-agent_pr-17-worklog-system`](./logs/pending/1405-07-29_16-52-43_arena-agent_pr-17-worklog-system.md) | PR #17 — سیستم کامل لاگ با چرخه عمر Pending ➔ Archive | `PR` | **ایجنت Arena** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۵۲:۴۳<br>`2026-10-21T13:22:43.000Z` | PR #17 — arena/8e9aee3f-escaperoom ➔ main |
+| [`1405-07-29_16-52-16_arena-agent_push`](./logs/pending/1405-07-29_16-52-16_arena-agent_push.md) | پوش شاخه arena/8e9aee3f-escaperoom — 57f1c65 | `Push` | **ایجنت Arena** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۵۲:۱۶<br>`2026-10-21T13:22:16.000Z` | origin/arena/8e9aee3f-escaperoom (origin/main..57f1c65) |
+| [`1405-07-29_16-52-05_arena-agent_worklog-lifecycle-system`](./logs/pending/1405-07-29_16-52-05_arena-agent_worklog-lifecycle-system.md) | سیستم کامل لاگ با چرخه عمر Pending ➔ Archive و گارد پوش/کامیت فارسی | `Commit` | **ایجنت Arena** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۵۲:۰۵<br>`2026-10-21T13:22:05.000Z` | شاخه arena/8e9aee3f-escaperoom |
+| [`1405-07-29_16-46-30_infra-agent_wave5-full-integration-deploy`](./logs/pending/1405-07-29_16-46-30_infra-agent_wave5-full-integration-deploy.md) | استقرار Production یکپارچه پس از PR #13 علیرضا (`dpl_BWQnxbFLaeqT3p6TcK33Kduw5zUG`) و PR… | `Infra-FullDeploy` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۴۶:۳۰<br>`2026-10-21T13:16:30.000Z` | شاخه arena/7e8eac07-escaperoom` — دیپلوی Production `dpl_BWQnxbFLaeqT3p6TcK33Kduw5zUG` (`8b389fb`) و `dpl_ExEjEsRrAyfWNXUt1mXkuF8DkjFn` (`d97ac25`) + دیپلوی‌های Preview امیرعلی `dpl_EKcwm9AHWuRz5RYAkYzx6HKCB29o` و `dpl_838LNSfpfUu4myqNik5GzcDbyDbW |
+<!-- WORKLOG:PENDING:END -->
+
+---
+
+## ✅ Archive — تأیید، ادغام یا اجراشده
+
+> در این جدول علاوه بر سازنده و زمان ساخت، **آرشیو‌کننده و زمان دقیق آرشیو** ثبت می‌شود.
+
+<!-- WORKLOG:ARCHIVE:START -->
+| شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | آرشیو شده توسط | زمان آرشیو (ایران / UTC) | مرجع |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| [`1405-07-29_16-46-02_amirali_archive-pr14-worklogs`](./logs/archive/1405-07-29_16-46-02_amirali_archive-pr14-worklogs.md) | انتقال سه لاگ امیرعلی برای کامیت رابط، PR #14 و همگام‌سازی main از `Pending` به `Archive`… | `Commit` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۴۶:۰۲<br>`2026-10-21T13:16:02.000Z` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۵۰:۴۸<br>`2026-10-21T13:20:48.000Z` | شاخه `arena/dbd0f4f3-escaperoom` — ثبت آرشیو PR #14 |
+| [`1405-07-29_16-46-02_amirali_pr-archive-pr14-worklogs`](./logs/archive/1405-07-29_16-46-02_amirali_pr-archive-pr14-worklogs.md) | ادغام به‌روزرسانی WORKLOG و آرشیو لاگ‌های امیرعلی مربوط به PR #14. | `PR` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۴۶:۰۲<br>`2026-10-21T13:16:02.000Z` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۵۰:۴۸<br>`2026-10-21T13:20:48.000Z` | شاخهٔ مبدأ `arena/dbd0f4f3-escaperoom` ➔ `main` (ثبت آرشیو فعالیت PR #14) |
+| [`1405-07-29_16-35-38_alireza_pr-13_wave1-wave2`](./logs/archive/1405-07-29_16-35-38_alireza_pr-13_wave1-wave2.md) | PR #13 — تحویل موج‌های ۱ و ۲ علیرضا | `PR` | **علیرضا** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۳۵:۳۸<br>`2026-10-21T13:05:38.000Z` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۴۹:۰۵<br>`2026-10-21T13:19:05.000Z` | PR #13 (`arena/f2303553-escaperoom` ➔ `main`) |
+| [`1405-07-29_16-34-04_infra-agent_pr-12_wave4-deploy`](./logs/archive/1405-07-29_16-34-04_infra-agent_pr-12_wave4-deploy.md) | ادغام PR شماره #12 برای تحویل موج ۴ ایجنت چهارم زیرساخت (دیپلوی Production پس از PR #11… | `PR` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۳۴:۰۴<br>`2026-10-21T13:04:04.000Z` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۴۹:۰۵<br>`2026-10-21T13:19:05.000Z` | PR #12 (`arena/b6d06c28-escaperoom` ➔ `main` — کامیت ادغام `66a457d`) |
+| [`1405-07-29_16-32-30_infra-agent_wave4-tohid-final-deploy-and-alireza-preview`](./logs/archive/1405-07-29_16-32-30_infra-agent_wave4-tohid-final-deploy-and-alireza-preview.md) | موج ۴ زیرساخت — استقرار Production و Preview علیرضا | `Infra-FullDeploy` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۳۲:۳۰<br>`2026-10-21T13:02:30.000Z` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۴۹:۰۵<br>`2026-10-21T13:19:05.000Z` | شاخه `arena/b6d06c28-escaperoom` — دیپلوی Production `dpl_F4ddK4xRwvE8FR4cedNAuwVhmSh2` (`f354b65`) + دیپلوی Preview علیرضا `dpl_7bnxrUqTxnVrWFQCHLXcUoD7t1Ca` (`49ef807`) |
+| [`1405-07-29_16-27-16_alireza_wave2-door-auditorium`](./logs/archive/1405-07-29_16-27-16_alireza_wave2-door-auditorium.md) | موج ۲ علیرضا — کات‌سین دربان و سالن ۲۰ نفره | `Commit` | **علیرضا** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۲۷:۱۶<br>`2026-10-21T12:57:16.000Z` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۴۹:۰۵<br>`2026-10-21T13:19:05.000Z` | کامیت حاوی همین فایل لاگ روی شاخه کاری `arena/f2303553-escaperoom` (شاخه نشست Arena علیرضا) |
+| [`1405-07-29_16-10-45_alireza_wave1-pov-audio`](./logs/archive/1405-07-29_16-10-45_alireza_wave1-pov-audio.md) | موج ۱ علیرضا — دوربین POV و موتور صدای فضایی | `Commit` | **علیرضا** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۱۰:۴۵<br>`2026-10-21T12:40:45.000Z` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۴۹:۰۵<br>`2026-10-21T13:19:05.000Z` | کامیت حاوی همین فایل لاگ روی شاخه کاری `arena/f2303553-escaperoom` (شاخه نشست Arena علیرضا) |
+| [`1405-07-29_16-42-02_amirali_sync-pr13-main`](./logs/archive/1405-07-29_16-42-02_amirali_sync-pr13-main.md) | ادغام main به‌روز در شاخهٔ امیرعلی و حل تعارض گام ۰ با حفظ فایل‌های رابط/سبک امیرعلی و… | `Commit` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۴۲:۰۲<br>`2026-10-21T13:12:02.000Z` | **amiralikj** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۴۷:۲۸<br>`2026-10-21T13:17:28.000Z` | 88b9de4` — شاخه `arena/dbd0f4f3-escaperoom |
+| [`1405-07-29_16-39-38_amirali_pr-ui-waves-1-3`](./logs/archive/1405-07-29_16-39-38_amirali_pr-ui-waves-1-3.md) | ادغام موج‌های ۱ تا ۳ رابط امیرعلی شامل رزرو/دعوت، موشن دعوت‌نامه و صحنهٔ کوچه/بلیط‌ها پس از… | `PR` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۳۹:۳۸<br>`2026-10-21T13:09:38.000Z` | **amiralikj** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۴۷:۲۸<br>`2026-10-21T13:17:28.000Z` | PR #14` — شاخهٔ مبدأ `arena/dbd0f4f3-escaperoom` ➔ `main |
+| [`1405-07-29_16-39-38_amirali_ui-waves-1-3`](./logs/archive/1405-07-29_16-39-38_amirali_ui-waves-1-3.md) | پیاده‌سازی رابط رزرو ۳–۸ نفره، دعوت‌نامهٔ گرافیکی و درگاه بازیکن، کوچهٔ اول‌شخص، بلیط/کوپن… | `Commit` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۳۹:۳۸<br>`2026-10-21T13:09:38.000Z` | **amiralikj** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۴۷:۲۸<br>`2026-10-21T13:17:28.000Z` | 5121ab3` — شاخه `arena/dbd0f4f3-escaperoom |
+| [`1405-07-29_16-30-24_tohid_pr-11_contract-conformance`](./logs/archive/1405-07-29_16-30-24_tohid_pr-11_contract-conformance.md) | PR #11 — تحویل نهایی توحید | `PR` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۳۰:۲۴<br>`2026-10-21T13:00:24.000Z` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۳۴:۰۱<br>`2026-10-21T13:04:01.000Z` | PR #11 — `arena/045041ba-escaperoom` ➔ `main` (کامیت `aac4f20`) |
+| [`1405-07-29_16-29-51_tohid_contract-conformance-and-dod`](./logs/archive/1405-07-29_16-29-51_tohid_contract-conformance-and-dod.md) | تحویل نهایی توحید — تست انطباق قرارداد | `Commit` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۲۹:۵۱<br>`2026-10-21T12:59:51.000Z` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۳۴:۰۱<br>`2026-10-21T13:04:01.000Z` | شاخه `arena/045041ba-escaperoom` — بستن تحویل نهایی توحید |
+| [`1405-07-29_16-24-53_infra-agent_pr-10_wave3-fulldeploy`](./logs/archive/1405-07-29_16-24-53_infra-agent_pr-10_wave3-fulldeploy.md) | PR #10 — تحویل موج ۳ زیرساخت | `PR` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۲۴:۵۳<br>`2026-10-21T12:54:53.000Z` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۳۴:۰۱<br>`2026-10-21T13:04:01.000Z` | PR #10 (`arena/c9528bce-escaperoom` ➔ `main` — کامیت ادغام `c731756`) |
+| [`1405-07-29_16-24-00_infra-agent_wave3-fulldeploy-and-archive`](./logs/archive/1405-07-29_16-24-00_infra-agent_wave3-fulldeploy-and-archive.md) | موج ۳ زیرساخت — استقرار نهایی و آرشیو لاگ‌ها | `Infra-FullDeploy` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۲۴:۰۰<br>`2026-10-21T12:54:00.000Z` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۳۴:۰۱<br>`2026-10-21T13:04:01.000Z` | شاخه arena/c9528bce-escaperoom` (ادغام‌شده در `PR #10` — `c731756`) — دیپلوی `dpl_4jfxZBLatr4Q9gwfTqZAAg3cmUps |
+| [`1405-07-29_16-21-15_infra-agent_pr-9_wave2-vercel`](./logs/archive/1405-07-29_16-21-15_infra-agent_pr-9_wave2-vercel.md) | PR #9 — تحویل موج ۲ زیرساخت | `PR` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۲۱:۱۵<br>`2026-10-21T12:51:15.000Z` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۲۴:۵۰<br>`2026-10-21T12:54:50.000Z` | PR #9 (`arena/c9528bce-escaperoom` ➔ `main` — کامیت ادغام `c7335c9`) |
+| [`1405-07-29_16-20-30_infra-agent_wave2-vercel-config-and-deploy`](./logs/archive/1405-07-29_16-20-30_infra-agent_wave2-vercel-config-and-deploy.md) | موج ۲ زیرساخت — vercel.json و استقرار Production | `Infra-Vercel` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۲۰:۳۰<br>`2026-10-21T12:50:30.000Z` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۲۴:۵۰<br>`2026-10-21T12:54:50.000Z` | شاخه arena/c9528bce-escaperoom` (ادغام‌شده در `PR #9`) — دیپلوی `dpl_5sfQnbAujrEaDsquEr93BjERSw54` و فایل `vercel.json |
+| [`1405-07-29_16-20-09_tohid_pr-8_wave2-hardening`](./logs/archive/1405-07-29_16-20-09_tohid_pr-8_wave2-hardening.md) | PR #8 — تحویل سخت‌سازی موج ۲ توحید | `PR` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۲۰:۰۹<br>`2026-10-21T12:50:09.000Z` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۲۴:۵۰<br>`2026-10-21T12:54:50.000Z` | PR #8 — `arena/d4e4b986-escaperoom` ➔ `main` (کامیت `5e73188`) |
+| [`1405-07-29_16-19-40_tohid_wave2-hardening-concurrent-punch`](./logs/archive/1405-07-29_16-19-40_tohid_wave2-hardening-concurrent-punch.md) | سخت‌سازی موج ۲ توحید — پانچ همزمان ۸ نفره | `Commit` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۱۹:۴۰<br>`2026-10-21T12:49:40.000Z` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۲۴:۵۰<br>`2026-10-21T12:54:50.000Z` | شاخه `arena/d4e4b986-escaperoom` — تکمیل و سخت‌سازی موج ۲ توحید |
+| [`1405-07-29_16-07-25_tohid_archive-wave1-3-logs`](./logs/archive/1405-07-29_16-07-25_tohid_archive-wave1-3-logs.md) | آرشیو لاگ‌های موج ۱ تا ۳ توحید | `Commit` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۰۷:۲۵<br>`2026-10-21T12:37:25.000Z` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۲۴:۵۰<br>`2026-10-21T12:54:50.000Z` | شاخه `arena/32c2d8dd-escaperoom` — آرشیو لاگ‌های موج ۱ تا ۳ |
+| [`1405-07-29_15-47-00_pr-2_theater-docs-and-4-agents`](./logs/archive/1405-07-29_15-47-00_pr-2_theater-docs-and-4-agents.md) | PR #2 — بسته کامل مستندات فصل اول و نقشه چهار ایجنت | `PR` | **معمار تیم (توحید، امیرعلی و علیرضا)** | ۱۴۰۵/۰۷/۲۹ — ۱۵:۴۷:۰۰<br>`2026-10-21T12:17:00.000Z` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۲۴:۵۰<br>`2026-10-21T12:54:50.000Z` | PR #2 (`arena/1d5c8b17-escaperoom` ➔ `main`) |
+| [`1405-07-29_15-43-00_commit_infra-agent-and-github-isolation`](./logs/archive/1405-07-29_15-43-00_commit_infra-agent-and-github-isolation.md) | پروتکل GitHub-Only و تعریف ایجنت چهارم زیرساخت | `Commit` | **معمار تیم (به سفارش توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۵:۴۳:۰۰<br>`2026-10-21T12:13:00.000Z` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۲۴:۵۰<br>`2026-10-21T12:54:50.000Z` | Branch Commit 24fc8e2 (arena/1d5c8b17-escaperoom) |
+| [`1405-07-29_15-38-00_commit_theater-docs-team-split`](./logs/archive/1405-07-29_15-38-00_commit_theater-docs-team-split.md) | بازنویسی مستندات سناریوی «پرده سرخ» و تقسیم کار سه‌نفره | `Commit` | **معمار مستندات تیم (هماهنگ‌کننده توحید، امیرعلی و علیرضا)** | ۱۴۰۵/۰۷/۲۹ — ۱۵:۳۸:۰۰<br>`2026-10-21T12:08:00.000Z` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۲۴:۵۰<br>`2026-10-21T12:54:50.000Z` | Branch Commit e517085 (arena/1d5c8b17-escaperoom) |
+| [`1405-07-29_16-19-00_infra-agent_pr-7_wave1-supabase`](./logs/archive/1405-07-29_16-19-00_infra-agent_pr-7_wave1-supabase.md) | PR #7 — تحویل موج ۱ زیرساخت | `PR` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۱۹:۰۰<br>`2026-10-21T12:49:00.000Z` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۲۱:۱۰<br>`2026-10-21T12:51:10.000Z` | PR #7 (`arena/c9528bce-escaperoom` ➔ `main` — کامیت ادغام `e397d70`) |
+| [`1405-07-29_16-18-30_infra-agent_wave1-supabase-migration-001`](./logs/archive/1405-07-29_16-18-30_infra-agent_wave1-supabase-migration-001.md) | موج ۱ زیرساخت — اجرای مایگریشن ۰۰۱ Supabase | `Infra-Supabase` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۱۸:۳۰<br>`2026-10-21T12:48:30.000Z` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۲۱:۱۰<br>`2026-10-21T12:51:10.000Z` | کامیت `94047cb` در شاخه `arena/c9528bce-escaperoom` (ادغام‌شده در `PR #7`) |
+| [`1405-07-29_15-59-27_tohid_infra-supabase-migration-001`](./logs/archive/1405-07-29_15-59-27_tohid_infra-supabase-migration-001.md) | درخواست اجرای مایگریشن ۰۰۱ روی Supabase | `Infra-Supabase` | **توحید (اجرا توسط: ایجنت چهارم زیرساخت — به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۵:۵۹:۲۷<br>`2026-10-21T12:29:27.000Z` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۱۹:۲۳<br>`2026-10-21T12:49:23.000Z` | شاخه arena/32c2d8dd-escaperoom` ➔ `arena/c9528bce-escaperoom` — فایل `supabase/migrations/001_initial_schema.sql |
+| [`1405-07-29_16-06-58_tohid_pr-5_wave3-sse-sync`](./logs/archive/1405-07-29_16-06-58_tohid_pr-5_wave3-sse-sync.md) | PR #5 — تحویل موج ۳ توحید | `PR` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۰۶:۵۸<br>`2026-10-21T12:36:58.000Z` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۰۷:۴۹<br>`2026-10-21T12:37:49.000Z` | PR #5 — `arena/32c2d8dd-escaperoom` ➔ `main` (کامیت `a96c4df`) |
+| [`1405-07-29_16-06-37_tohid_wave3-sse-sync`](./logs/archive/1405-07-29_16-06-37_tohid_wave3-sse-sync.md) | موج ۳ توحید — استریم SSE و همگام‌سازی کات‌سین | `Commit` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۰۶:۳۷<br>`2026-10-21T12:36:37.000Z` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۰۷:۴۹<br>`2026-10-21T12:37:49.000Z` | شاخه `arena/32c2d8dd-escaperoom` — موج ۳ توحید |
+| [`1405-07-29_16-04-23_tohid_pr-4_wave2-cyclic-puzzle`](./logs/archive/1405-07-29_16-04-23_tohid_pr-4_wave2-cyclic-puzzle.md) | PR #4 — تحویل موج ۲ توحید | `PR` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۰۴:۲۳<br>`2026-10-21T12:34:23.000Z` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۰۷:۴۹<br>`2026-10-21T12:37:49.000Z` | PR #4 — `arena/32c2d8dd-escaperoom` ➔ `main` (کامیت `7d6545e`) |
+| [`1405-07-29_16-04-03_tohid_wave2-cyclic-puzzle-engine`](./logs/archive/1405-07-29_16-04-03_tohid_wave2-cyclic-puzzle-engine.md) | موج ۲ توحید — موتور معمای حلقوی، اکشن‌ها و قفل کات‌سین | `Commit` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۰۴:۰۳<br>`2026-10-21T12:34:03.000Z` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۰۷:۴۹<br>`2026-10-21T12:37:49.000Z` | شاخه `arena/32c2d8dd-escaperoom` — موج ۲ توحید |
+| [`1405-07-29_16-01-22_tohid_pr-3_wave1-backend-foundation`](./logs/archive/1405-07-29_16-01-22_tohid_pr-3_wave1-backend-foundation.md) | PR #3 — تحویل موج ۱ توحید | `PR` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۰۱:۲۲<br>`2026-10-21T12:31:22.000Z` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۰۷:۴۹<br>`2026-10-21T12:37:49.000Z` | PR #3 — `arena/32c2d8dd-escaperoom` ➔ `main` (کامیت `60abe2e`) |
+| [`1405-07-29_15-59-27_tohid_wave1-backend-foundation`](./logs/archive/1405-07-29_15-59-27_tohid_wave1-backend-foundation.md) | موج ۱ توحید — اسکلت بک‌اند، دیتابیس دوگانه و رزرو ۳–۸ نفره | `Commit` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۵:۵۹:۲۷<br>`2026-10-21T12:29:27.000Z` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۰۷:۴۹<br>`2026-10-21T12:37:49.000Z` | شاخه `arena/32c2d8dd-escaperoom` — موج ۱ توحید (هش کامیت در پیام کامیت همین گزارش ثبت شده است) |
+| [`1405-07-29_15-02-12_pr-1_initial-docs`](./logs/archive/1405-07-29_15-02-12_pr-1_initial-docs.md) | PR #1 — مستندات اولیه و معماری دیتابیس دوگانه | `Commit & PR` | **معمار مستندات تیم (توحید / امیرعلی / علیرضا)** | ۱۴۰۵/۰۷/۲۹ — ۱۵:۰۲:۱۲<br>`2026-10-21T11:32:12.000Z` | **معمار مستندات تیم (توحید / امیرعلی / علیرضا)** | ۱۴۰۵/۰۷/۲۹ — ۱۵:۳۸:۳۷<br>`2026-10-21T12:08:37.000Z` | Commit `f59c495` / PR `#1` (Merged: `abd4b2d`) |
+<!-- WORKLOG:ARCHIVE:END -->
+
+---
+
+## 🧾 مسئولیت آرشیو (چه کسی و چه زمانی؟)
+
+| نوع فعالیت | آرشیو‌کننده | شرط آرشیو | یادداشت پیشنهادی |
+| --- | --- | --- | --- |
+| `Commit` | نویسنده + یک بازبین تیم | پس از بررسی کد و پاس شدن تست‌ها | «بررسی شد؛ تست‌ها پاس» |
+| `Push` | همان نویسندهٔ پوش | پس از سبز شدن CI و بررسی لاگ‌ها | «پوش شاخه تأیید شد» |
+| `PR` | ادغام‌کنندهٔ PR (توحید یا مسئول همان شاخه) | پس از `Merge` شدن PR در `main` | «PR #N بررسی و ادغام شد» |
+| `Infra-Supabase` / `Infra-Vercel` / `Infra-FullDeploy` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | فقط پس از اجرای موفق و ثبت لینک/نتیجه | «دیپلوی `dpl_...` با وضعیت READY تأیید شد» |
+
+> ⏰ توصیه: هیچ لاگ `Pending` نباید بیش از **۷ روز** بماند؛ `worklog:check` برای موارد قدیمی هشدار می‌دهد.
+
+---
+
+## 🤖 گاردها و خودکارسازی
+
+| ابزار | چه کاری می‌کند |
+| --- | --- |
+| `.githooks/pre-push` | اگر پوش هیچ فایل لاگی نداشته باشد یا لاگ‌ها نامعتبر باشند، پوش را **متوقف** می‌کند |
+| `.githooks/commit-msg` | کامیت بدون متن فارسی را **رد** می‌کند و امضای Arena را حفظ می‌کند |
+| `.github/workflows/worklog.yml` | روی هر پوش و PR، `worklog:check` و تست‌های سیستم لاگ را اجرا می‌کند |
+| `scripts/worklog/lib/*` | تاریخ شمسی/ایران، رندر جدول‌ها، اعتبارسنجی و ساخت لاگ |
+
+فعال‌سازی یک‌باره در هر کلون:
+
+```bash
+npm run worklog:hooks
+```
+
+> 🚑 در شرایط اضطراری (مثلاً رفع فوری یک خرابی در `main`): `git push --no-verify` مجاز است، اما **بلافاصله بعد از آن** لاگ مربوطه را ثبت و در PR ذکر کنید.
+
+---
+
+## ✍️ قالب دست‌نویس (اگر ابزار در دسترس نبود)
+
+```markdown
+---
+id: '1405-07-30_10-12-00_alireza_wave3-dark-auditorium'
+title: 'موج ۳ علیرضا — نیمه دوم سالن تاریک'
+summary: 'پیاده‌سازی نیمه وحشت ۴۰ تا ۷۴ و صحنه سالن تاریک'
+author: 'علیرضا'
+author_slug: 'alireza'
+activity: 'Commit'
+ref: 'شاخه arena/8e9aee3f-escaperoom'
+branch: 'arena/8e9aee3f-escaperoom'
+status: 'pending'
+created_by: 'علیرضا'
+created_at_jalali: '1405-07-30'
+created_at_time: '10:12:00'
+created_at_utc: '2026-10-22T06:42:00.000Z'
+archived_by: null
+archived_at_jalali: null
+archived_at_time: null
+archived_at_utc: null
+archive_note: null
+commits: ['a1b2c3d']
+tags: null
+---
+
+# گزارش فعالیت تیمی — 1405-07-30_10-12-00_alireza_wave3-dark-auditorium
+
+## 📝 شرح دقیق فعالیت انجام‌شده
+
+<شرح دقیق: چه شد، کدام فایل‌ها، چرا>
+
+## ✅ نتیجه بررسی‌ها و تست‌ها
+
+- `npm run test:alireza` → ۳۷ تست پاس
+```
+
+> بهتر است به‌جای نوشتن دستی، همیشه از `npm run worklog:new` استفاده کنید تا بلوک چرخه عمر و تاریخ‌ها خودکار و بدون خطا ساخته شوند.
+
+---
+
+## 📚 مراجع مرتبط
+
+- [`TEAM.md` §۴](./TEAM.md) — قانون لاگ‌گذاری و پیام کامیت فارسی
+- [`TASKS-INFRA-AGENT.md` §۵](./TASKS-INFRA-AGENT.md) — چرخه آرشیو توسط ایجنت چهارم زیرساخت
+- [`README.md`](./README.md) — مرور کلی پروژه و راه‌اندازی
