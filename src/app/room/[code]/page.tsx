@@ -19,6 +19,7 @@
 
 import { Suspense, use, useEffect, useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import { useTheaterSession } from '@/client-sdk/index';
 import AlleyFirstPersonScene from '@/components/alley/AlleyFirstPersonScene';
 import FirstPersonCutsceneStage from '@/components/cinema/FirstPersonCutsceneStage';
@@ -26,6 +27,8 @@ import DarkAuditoriumScene from '@/components/auditorium/DarkAuditoriumScene';
 import { resolveRoomPhase } from '@/components/room/resolve-room-phase';
 import type { AuditoriumHotspotId } from '@/contracts/types';
 import styles from './page.module.css';
+
+const AlleyRoomThreeIntegration = dynamic(() => import('@/components/alley/AlleyRoomThreeIntegration'), { ssr: false });
 
 interface RoomPageProps {
   params: Promise<{ code: string }>;
@@ -79,6 +82,7 @@ function RoomExperience({ roomCode }: { roomCode: string }) {
   const { loading, room, cutsceneElapsedMs, error, performAction, sendWhisper } =
     useTheaterSession(roomCode, seatToken ?? '');
   const [muted, setMuted] = useState(false);
+  const [useThree, setUseThree] = useState(true);
 
   const invitePath = useMemo(
     () =>
@@ -171,22 +175,52 @@ function RoomExperience({ roomCode }: { roomCode: string }) {
     );
   }
 
-  /* alley_puzzle — صحنه واقعی امیرعلی با هندلرهای سرور توحید */
+  /* alley_puzzle — کوچه سه‌بعدی واقعی (موج ۵) با fallback به CSS امیرعلی */
   return (
     <main className={styles.page}>
-      <AlleyFirstPersonScene
-        room={room}
-        onPunchTicket={(emblem, actNumber, rowCode) =>
-          performAction({ type: 'PUNCH_MY_TICKET', emblem, actNumber, rowCode })
-        }
-        onUnlockDoor={(doorCode) =>
-          performAction({ type: 'UNLOCK_THEATER_DOOR', code: doorCode })
-        }
-        onSendWhisper={sendWhisper}
-        onReplayInvitation={() => {
-          if (invitePath) router.push(invitePath);
-        }}
-      />
+      <div style={{ position: 'absolute', top: 8, right: 8, zIndex: 50, display: 'flex', gap: 8 }}>
+        <button
+          type="button"
+          onClick={() => setUseThree((v) => !v)}
+          style={{
+            padding: '6px 12px',
+            borderRadius: 6,
+            border: '1px solid #c9a86a',
+            background: 'rgba(0,0,0,0.7)',
+            color: '#e8dcc8',
+            fontSize: 11,
+            cursor: 'pointer',
+          }}
+        >
+          {useThree ? '🎨 نمای کلاسیک' : '🌐 نمای سه‌بعدی'}
+        </button>
+      </div>
+      {useThree ? (
+        <AlleyRoomThreeIntegration
+          room={room}
+          onPunchTicket={(emblem, actNumber, rowCode) =>
+            performAction({ type: 'PUNCH_MY_TICKET', emblem, actNumber, rowCode })
+          }
+          onUnlockDoor={(doorCode) =>
+            performAction({ type: 'UNLOCK_THEATER_DOOR', code: doorCode })
+          }
+          onSendWhisper={sendWhisper}
+        />
+      ) : (
+        <AlleyFirstPersonScene
+          room={room}
+          onPunchTicket={(emblem, actNumber, rowCode) =>
+            performAction({ type: 'PUNCH_MY_TICKET', emblem, actNumber, rowCode })
+          }
+          onUnlockDoor={(doorCode) =>
+            performAction({ type: 'UNLOCK_THEATER_DOOR', code: doorCode })
+          }
+          onSendWhisper={sendWhisper}
+          onReplayInvitation={() => {
+            if (invitePath) router.push(invitePath);
+          }}
+        />
+      )}
     </main>
   );
 }
