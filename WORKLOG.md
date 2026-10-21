@@ -121,7 +121,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۳** — ✅ Archive: **۹۵** — 🧾 مجموع: **۹۸** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۹:۱۴:۳۶ (`2026-10-21T15:44:36.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۸** — ✅ Archive: **۹۵** — 🧾 مجموع: **۱۰۳** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۹:۱۴:۳۶ (`2026-10-21T15:44:36.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -157,6 +157,11 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | [`1405-07-29_19-14-36_alireza_fix-conflict-pr`](./logs/pending/1405-07-29_19-14-36_alireza_fix-conflict-pr.md) | PR اصلاح کانفلیکت — آرشیو ۲۳ لاگ Pending | `PR` | **علیرضا** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۱۴:۳۶<br>`2026-10-21T15:44:36.000Z` | PR #36 |
 | [`1405-07-29_19-14-30_alireza_fix-conflict-archive`](./logs/pending/1405-07-29_19-14-30_alireza_fix-conflict-archive.md) | اصلاح کانفلیکت PR آخر — آرشیو ۲۳ لاگ Pending | `Commit` | **علیرضا** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۱۴:۳۰<br>`2026-10-21T15:44:30.000Z` | شاخه arena/346044cf-escaperoom |
 | [`1405-07-29_19-14-30_alireza_push`](./logs/pending/1405-07-29_19-14-30_alireza_push.md) | پوش شاخه arena/346044cf-escaperoom — 8392597 | `Push` | **علیرضا** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۱۴:۳۰<br>`2026-10-21T15:44:30.000Z` | origin/arena/346044cf-escaperoom (origin/main..8392597) |
+| [`1405-07-29_19-13-26_amirali_push`](./logs/pending/1405-07-29_19-13-26_amirali_push.md) | پوش شاخه arena/9bbb79f7-escaperoom — bc405ea | `Push` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۱۳:۲۶<br>`2026-10-21T15:43:26.000Z` | origin/arena/9bbb79f7-escaperoom (origin/main..bc405ea) |
+| [`1405-07-29_18-57-53_amirali_push`](./logs/pending/1405-07-29_18-57-53_amirali_push.md) | پوش شاخه arena/9bbb79f7-escaperoom — 184cdae | `Push` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۷:۵۳<br>`2026-10-21T15:27:53.000Z` | origin/arena/9bbb79f7-escaperoom (origin/main..184cdae) |
+| [`1405-07-29_18-56-32_amirali_wave2-readable-shell`](./logs/pending/1405-07-29_18-56-32_amirali_wave2-readable-shell.md) | PR #32 — موج ۲ امیرعلی: پوستهٔ خوانا | `PR` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۶:۳۲<br>`2026-10-21T15:26:32.000Z` | PR #32 — arena/9bbb79f7-escaperoom ➔ main |
+| [`1405-07-29_18-56-15_amirali_push`](./logs/pending/1405-07-29_18-56-15_amirali_push.md) | پوش شاخه arena/9bbb79f7-escaperoom — 012eb02 | `Push` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۶:۱۵<br>`2026-10-21T15:26:15.000Z` | origin/arena/9bbb79f7-escaperoom (origin/main..012eb02) |
+| [`1405-07-29_18-56-06_amirali_wave2-readable-shell`](./logs/pending/1405-07-29_18-56-06_amirali_wave2-readable-shell.md) | موج ۲ — پوستهٔ خوانا، مقیاس تایپوگرافی و کنترل‌ها | `Commit` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۶:۰۶<br>`2026-10-21T15:26:06.000Z` | شاخه arena/9bbb79f7-escaperoom |
 <!-- WORKLOG:PENDING:END -->
 
 ---

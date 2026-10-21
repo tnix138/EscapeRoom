@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import '@fontsource-variable/vazirmatn';
 import './globals.css';
 
@@ -7,10 +7,20 @@ export const metadata: Metadata = {
   description: 'یک شب، یک تماشاخانهٔ خاموش و رازی که فقط با همکاری دوستانتان آشکار می‌شود.',
 };
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: '#120d10',
+  colorScheme: 'dark',
+};
+
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="fa" dir="rtl">
-      <body>{children}</body>
+      <body>
+        <a className="skip-link" href="#main-content">پرش به محتوای اصلی</a>
+        <div id="main-content" tabIndex={-1}>{children}</div>
+      </body>
     </html>
   );
 }
