@@ -10,7 +10,7 @@
 | نقطهٔ ورود و قوانین اجرا | ریشه | 3 |
 | مشخصات فعال محصول | `DOCS/` | 1 |
 | نقشهٔ عامل‌ها | `DOCS/agents/` | 4 |
-| موج‌های بازطراحی (REDESIGN-WAVE) | `DOCS/waves/redesign/` | 9 |
+| موج‌های بازطراحی (REDESIGN-WAVE) | `DOCS/waves/redesign/` | 10 |
 | کارت‌های وظیفهٔ موج (WAVE-N-OWNER) | `DOCS/waves/cards/` | 24 |
 | تصمیم‌های معماری (ADR) | `DOCS/adr/` | 1 |
 | اسناد قدیمی (فقط حفظ پیوند تاریخی) | `DOCS/legacy/` | 8 |
@@ -59,6 +59,7 @@
 - [`REDESIGN-WAVE-7.md`](waves/redesign/REDESIGN-WAVE-7.md)
 - [`REDESIGN-WAVE-8.md`](waves/redesign/REDESIGN-WAVE-8.md)
 - [`REDESIGN-WAVE-9.md`](waves/redesign/REDESIGN-WAVE-9.md)
+- [`REDESIGN-WAVE-10.md`](waves/redesign/REDESIGN-WAVE-10.md)
 
 <sub>مسیر: `DOCS/waves/redesign`</sub>
 
