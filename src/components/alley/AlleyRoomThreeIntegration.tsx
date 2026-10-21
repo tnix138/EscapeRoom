@@ -28,6 +28,8 @@ import { resolveOwnRevealedDigit } from './puzzle-rules';
 import WhisperChatPanel from '../hud/WhisperChatPanel';
 import TheaterCompanionHud from '../hud/TheaterCompanionHud';
 import MovementNotice from '../hud/MovementNotice';
+import ExplorationHud from '../hud/ExplorationHud';
+import type { ExplorationInput } from '../hud/exploration-hud';
 
 const AlleyThreeSceneCore = dynamic(() => Promise.resolve(ThreeCore), { ssr: false });
 
@@ -50,6 +52,8 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
   const [transition, setTransition] = useState<{ phase: TransitionPhase; progress: number } | null>(null);
   const [showPlaybill, setShowPlaybill] = useState(false);
   const [showRowChart, setShowRowChart] = useState(false);
+  const [visitedClues, setVisitedClues] = useState<string[]>([]);
+  const [chatOpen, setChatOpen] = useState(false);
 
   const initialTransform = resolveInitialTransform(room.roomCode, room.me.playerId, room.me.seatIndex);
 
@@ -110,12 +114,18 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
     };
   }, [engine]);
 
+  function openClue(kind: 'playbill' | 'rowChart') {
+    if (kind === 'playbill') setShowPlaybill((value) => !value);
+    else setShowRowChart((value) => !value);
+    setVisitedClues((previous) => (previous.includes(kind) ? previous : [...previous, kind]));
+  }
+
   // کلید E برای تعامل
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.code !== 'KeyE') return;
-      if (focusedAnchor === 'playbill') setShowPlaybill((v) => !v);
-      if (focusedAnchor === 'rowChart') setShowRowChart((v) => !v);
+      if (focusedAnchor === 'playbill') openClue('playbill');
+      if (focusedAnchor === 'rowChart') openClue('rowChart');
       if (focusedAnchor === 'theaterDoor') setDoorModalOpen(true);
     };
     window.addEventListener('keydown', onKey);
@@ -184,6 +194,34 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
     ? `کوپن من برای ${myTickets.companionStub.targetTeammateName}: نماد ${myTickets.companionStub.targetEmblem}؛ پردهٔ «${myTickets.companionStub.targetActSceneTitle}». ${myTickets.companionStub.whisperNote}`
     : '';
 
+  const explorationInput: ExplorationInput = {
+    phase: room.phase,
+    me: { playerName: room.me.playerName, seatIndex: room.me.seatIndex, ticketPunched: isTicketPunched },
+    players: room.players.map((player) => ({
+      playerName: player.playerName,
+      seatLabel: player.seatLabel,
+      seatIndex: player.seatIndex,
+      ticketPunched: player.ticketPunched,
+      isOnline: player.isOnline,
+    })),
+    alley: {
+      doorLockState: {
+        punchedCount: alleyView?.doorLockState?.punchedCount ?? room.players.filter((player) => player.ticketPunched).length,
+        requiredCount: room.playerCount,
+      },
+    },
+    messages: room.messages,
+    visitedClues,
+    doorUnlocked: room.phase !== 'alley_puzzle',
+    positionLabel: focusedAnchor === 'playbill'
+      ? 'نزدیک تابلوی اعلانات'
+      : focusedAnchor === 'rowChart'
+        ? 'نزدیک گیشهٔ برنجی'
+        : focusedAnchor === 'theaterDoor'
+          ? 'نزدیک درِ تماشاخانه'
+          : 'میان کوچه',
+  };
+
   return (
     <div style={{ width: '100%', height: '100%', position: 'relative', background: '#0a0a12' }}>
       <canvas
@@ -210,6 +248,8 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
         modalOpen={doorModalOpen || showPlaybill || showRowChart}
         pointerLocked={isPointerLocked}
       />
+
+      <ExplorationHud input={explorationInput} onOpenChat={() => setChatOpen(true)} />
 
       {/* HUD پایین */}
       <div style={{ position: 'absolute', bottom: 12, left: 12, right: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', pointerEvents: 'none', direction: 'rtl' }}>
@@ -290,7 +330,14 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
           </div>
         </div>
         <div style={{ pointerEvents: 'auto', flex: 1, maxWidth: 360 }}>
-          <WhisperChatPanel messages={room.messages} currentPlayerName={room.me.playerName} couponText={couponText} onSendWhisper={onSendWhisper} />
+          <WhisperChatPanel
+            messages={room.messages}
+            currentPlayerName={room.me.playerName}
+            couponText={couponText}
+            onSendWhisper={onSendWhisper}
+            open={chatOpen}
+            onOpenChange={setChatOpen}
+          />
         </div>
       </div>
 

@@ -153,8 +153,9 @@ describe('پنل خواندن سرنخ', () => {
 describe('اتصال پنل به هر دو نمای کوچه', () => {
   it('نمای کلاسیک دکمهٔ بررسی پوستر و گیشه با کلید E دارد', () => {
     expect(classicScene).toContain("from './ClueReadingPanel'");
-    expect(classicScene).toContain("setOpenClue('playbill')");
-    expect(classicScene).toContain("setOpenClue('rowChart')");
+    // موج ۹: بازکردن سرنخ حالا از تابع openCluePanel رد می‌شود تا بازدیدها ثبت شوند
+    expect(classicScene).toContain("openCluePanel('playbill')");
+    expect(classicScene).toContain("openCluePanel('rowChart')");
     expect(classicScene).toContain('clue-inspect-button');
     expect(classicScene).toContain("event.key.toLowerCase() === 'e'");
     expect(classicScene).toContain('<ClueReadingPanel');
