@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { HorrorPostProcessor } from '../../engine3d/horror/vignette';
 import { getCameraKeyframe } from '../../engine3d/cinema/camera-path';
+import { getStoryDialogueAt } from './story-script';
 import styles from './ThreeCutsceneView.module.css';
 
 export interface ThreeCutsceneViewProps {
@@ -36,6 +37,7 @@ export default function ThreeCutsceneView({ elapsedMs, yaw, onReady }: ThreeCuts
   elapsedRef.current = elapsedMs;
   yawRef.current = yaw;
   onReadyRef.current = onReady;
+  const storyDialogue = getStoryDialogueAt(elapsedMs);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -151,7 +153,14 @@ export default function ThreeCutsceneView({ elapsedMs, yaw, onReady }: ThreeCuts
         className={styles.canvas}
         aria-label="کات‌سین سه‌بعدی سینمایی تماشاخانه اُرفه‌ئو"
       />
-      <div className={styles.caption} aria-live="polite">{cutsceneCaption(elapsedMs)}</div>
+      <div className={styles.caption} aria-live="polite">
+        {storyDialogue ? (
+          <>
+            <span className={styles.speaker}>{storyDialogue.speaker}</span>
+            <span>{storyDialogue.textFa}</span>
+          </>
+        ) : cutsceneCaption(elapsedMs)}
+      </div>
     </div>
   );
 }

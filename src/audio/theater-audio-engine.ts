@@ -177,6 +177,8 @@ export class TheaterAudioEngine {
   private rumbleNodes: { source: AudioBufferSourceNode; gain: GainNode } | null = null;
 
   private currentBeat: CutsceneBeatId | null = null;
+  /** Beat actually applied to an initialized AudioContext (may lag currentBeat before unlock). */
+  private appliedBeat: CutsceneBeatId | null = null;
   private musicStateValue: TheaterMusicState = 'silent';
   private inversionTriggered = false;
 
@@ -245,6 +247,7 @@ export class TheaterAudioEngine {
       this.sfxBus = null;
       this.noiseBuffer = null;
       this.currentBeat = null;
+      this.appliedBeat = null;
       this.musicStateValue = 'silent';
     }
   }
@@ -607,6 +610,101 @@ export class TheaterAudioEngine {
       source.start(time + offset);
       source.stop(time + offset + 0.12);
     });
+  }
+
+  /** Low, hinged wooden creak for the old theatre doors. */
+  playStoryDoorCreak(delaySec = 0): void {
+    const ctx = this.ctx;
+    const noise = this.getNoiseBuffer();
+    const destination = this.panToSfx(0);
+    if (!this.ready() || !ctx || !noise || !destination) return;
+    const time = this.now() + Math.max(0, delaySec) + 0.02;
+    const source = ctx.createBufferSource();
+    source.buffer = noise;
+    const bandpass = ctx.createBiquadFilter();
+    bandpass.type = 'bandpass';
+    bandpass.frequency.setValueAtTime(150, time);
+    bandpass.frequency.linearRampToValueAtTime(410, time + 0.62);
+    bandpass.frequency.exponentialRampToValueAtTime(110, time + 1.55);
+    bandpass.Q.value = 1.4;
+    const envelope = ctx.createGain();
+    envelope.gain.setValueAtTime(0.0001, time);
+    envelope.gain.linearRampToValueAtTime(0.16, time + 0.32);
+    envelope.gain.exponentialRampToValueAtTime(0.0001, time + 1.65);
+    source.connect(bandpass);
+    bandpass.connect(envelope);
+    envelope.connect(destination);
+    source.start(time);
+    source.stop(time + 1.7);
+
+    const groan = ctx.createOscillator();
+    const groanGain = ctx.createGain();
+    groan.type = 'triangle';
+    groan.frequency.setValueAtTime(78, time);
+    groan.frequency.exponentialRampToValueAtTime(49, time + 1.2);
+    groanGain.gain.setValueAtTime(0.0001, time);
+    groanGain.gain.linearRampToValueAtTime(0.075, time + 0.24);
+    groanGain.gain.exponentialRampToValueAtTime(0.0001, time + 1.4);
+    groan.connect(groanGain);
+    groanGain.connect(destination);
+    groan.start(time);
+    groan.stop(time + 1.45);
+  }
+
+  /** Sweeping velvet/air texture used when the opera curtain opens. */
+  playStoryCurtainSweep(pan = 0, delaySec = 0): void {
+    const ctx = this.ctx;
+    const noise = this.getNoiseBuffer();
+    const destination = this.panToSfx(pan);
+    if (!this.ready() || !ctx || !noise || !destination) return;
+    const time = this.now() + Math.max(0, delaySec) + 0.02;
+    const duration = 1.9;
+    const source = ctx.createBufferSource();
+    source.buffer = noise;
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(260, time);
+    filter.frequency.exponentialRampToValueAtTime(2_600, time + 0.85);
+    filter.frequency.exponentialRampToValueAtTime(520, time + duration);
+    const envelope = ctx.createGain();
+    envelope.gain.setValueAtTime(0.0001, time);
+    envelope.gain.linearRampToValueAtTime(0.13, time + 0.65);
+    envelope.gain.exponentialRampToValueAtTime(0.0001, time + duration);
+    source.connect(filter);
+    filter.connect(envelope);
+    envelope.connect(destination);
+    source.start(time);
+    source.stop(time + duration + 0.02);
+  }
+
+  /** Breath-like nonverbal whisper, spatialized to the requested side of the stage. */
+  playStoryWhisper(pan = -0.5, durationSec = 1.8): void {
+    const ctx = this.ctx;
+    const noise = this.getNoiseBuffer();
+    const destination = this.panToSfx(pan);
+    if (!this.ready() || !ctx || !noise || !destination) return;
+    const time = this.now() + 0.03;
+    const duration = Math.min(4, Math.max(0.35, durationSec));
+    const source = ctx.createBufferSource();
+    source.buffer = noise;
+    const bandpass = ctx.createBiquadFilter();
+    bandpass.type = 'bandpass';
+    bandpass.frequency.value = 1_050;
+    bandpass.Q.value = 0.65;
+    const highpass = ctx.createBiquadFilter();
+    highpass.type = 'highpass';
+    highpass.frequency.value = 360;
+    const envelope = ctx.createGain();
+    envelope.gain.setValueAtTime(0.0001, time);
+    envelope.gain.linearRampToValueAtTime(0.085, time + Math.min(0.34, duration * 0.25));
+    envelope.gain.setValueAtTime(0.055, time + duration * 0.56);
+    envelope.gain.exponentialRampToValueAtTime(0.0001, time + duration);
+    source.connect(highpass);
+    highpass.connect(bandpass);
+    bandpass.connect(envelope);
+    envelope.connect(destination);
+    source.start(time);
+    source.stop(time + duration + 0.02);
   }
 
   /* =======================================================================
@@ -1116,9 +1214,11 @@ export class TheaterAudioEngine {
 
   /** ورود بیت جدید را اعلام می‌کند؛ لایه صوتی لازم را idempotent روشن/خاموش می‌کند */
   applyBeat(beat: CutsceneBeatId): void {
-    if (beat === this.currentBeat) return;
+    const changed = beat !== this.currentBeat;
     this.currentBeat = beat;
-    if (!this.ctx) return; // بیت ثبت شده؛ به‌محض init() از همین‌جا ادامه می‌دهد
+    if (!this.ctx) return; // beat is remembered and applied after the browser audio gesture unlocks.
+    if (!changed && this.appliedBeat === beat) return;
+    this.appliedBeat = beat;
 
     switch (beat) {
       case 'door_usher_collects_tickets':
@@ -1217,5 +1317,6 @@ export class TheaterAudioEngine {
     this.inversionTriggered = false;
     this.musicStateValue = 'silent';
     this.currentBeat = null;
+    this.appliedBeat = null;
   }
 }
