@@ -14,5 +14,7 @@ export * from './alley-geometry';
 export * from './spawn';
 export * from './transition';
 export * from './interaction';
+export * from './theater-geometry';
+export * from './performance';
 export { ThreeErrorBoundary } from './ThreeErrorBoundary';
 export { default as ThreeSceneBase } from './ThreeSceneBase';
