@@ -1,12 +1,14 @@
 'use client';
 // src/client-sdk/index.ts — اکسپورت‌های توحید طبق API-CONTRACT.md بخش ۴.۱
 // موج ۱: reserveRoomApi + createPreviewRoomState
-// (هوک کامل SSE و همگام‌سازی ۶۰ فریم در موج ۳ روی همین امضاها تکمیل می‌شود.)
+// موج ۳: هوک کامل useTheaterSession با SSE بلادرنگ و همگام‌سازی ۶۰ فریم ساعت سرور.
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { GameActionPayload } from '../contracts/actions';
 import type { ClientRoomView, HostReservationResult } from '../contracts/types';
+import { computeClockOffset, computeCutsceneElapsedMs } from './cutscene-clock';
 
 export { createPreviewRoomState, PREVIEW_PLAYER_NAMES } from './preview-fixtures';
+export { computeClockOffset, computeCutsceneElapsedMs } from './cutscene-clock';
 
 interface ApiOk<T> {
   ok: true;
@@ -51,7 +53,7 @@ export function useTheaterSession(
   roomRef.current = room;
 
   const applyView = useCallback((view: ClientRoomView) => {
-    clockOffsetRef.current = view.serverNow - Date.now();
+    clockOffsetRef.current = computeClockOffset(view.serverNow, Date.now());
     roomRef.current = view;
     setRoom(view);
   }, []);
@@ -87,18 +89,42 @@ export function useTheaterSession(
     };
   }, [roomCode, seatToken, applyView]);
 
-  // محاسبه زنده سپری‌شده کات‌سین بر پایه ساعت سرور (تکمیل ۶۰fps + SSE در موج ۳)
+  // موج ۳: استریم بلادرنگ SSE — هر تغییر نسخه اتاق و heartbeat ساعت سرور زنده می‌رسد.
+  // اگر SSE در شبکه‌ای قطع شود، EventSource خودش دوباره وصل می‌شود و وضعیت از سرور تازه می‌شود.
+  useEffect(() => {
+    if (!roomCode || !seatToken || typeof EventSource === 'undefined') return;
+    const url = `/api/rooms/${encodeURIComponent(roomCode)}/stream?token=${encodeURIComponent(seatToken)}&sinceVersion=${roomRef.current?.version ?? 0}`;
+    const source = new EventSource(url);
+    source.addEventListener('room_update', (event) => {
+      try {
+        const payload = JSON.parse((event as MessageEvent<string>).data) as {
+          roomView: ClientRoomView;
+        };
+        applyView(payload.roomView);
+        setLoading(false);
+      } catch {
+        // فریم ناقص نادیده گرفته می‌شود؛ فریم بعدی وضعیت کامل را می‌آورد
+      }
+    });
+    source.addEventListener('heartbeat', (event) => {
+      try {
+        const payload = JSON.parse((event as MessageEvent<string>).data) as { serverNow: number };
+        clockOffsetRef.current = computeClockOffset(payload.serverNow, Date.now());
+      } catch {
+        // heartbeat ناقص اثری ندارد
+      }
+    });
+    return () => source.close();
+  }, [roomCode, seatToken, applyView]);
+
+  // محاسبه زنده ۶۰ فریم‌برثانیه سپری‌شده کات‌سین بر پایه ساعت کالیبره‌شده سرور
   useEffect(() => {
     let raf = 0;
     const loop = () => {
       const view = roomRef.current;
-      if (view?.cutsceneStartedAt) {
-        setCutsceneElapsedMs(
-          Math.max(0, Date.now() + clockOffsetRef.current - view.cutsceneStartedAt),
-        );
-      } else {
-        setCutsceneElapsedMs(0);
-      }
+      setCutsceneElapsedMs(
+        computeCutsceneElapsedMs(view?.cutsceneStartedAt ?? null, clockOffsetRef.current, Date.now()),
+      );
       raf = requestAnimationFrame(loop);
     };
     raf = requestAnimationFrame(loop);
