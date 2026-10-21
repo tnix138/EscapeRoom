@@ -373,6 +373,80 @@
   padding: 1px 7px;
 }
 
+/* ---------- لایه‌های نیمه وحشت موج ۳ ---------- */
+
+.wallSide {
+  position: relative;
+  overflow: hidden;
+}
+
+/* لکه، دوده، ترک و پوسیدگی واژگونی روی دیوارها و دکور سِن‌ها */
+.grime {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+  background:
+    radial-gradient(circle at 18% 22%, rgba(8, 5, 2, 0.85) 0 6%, transparent 16%),
+    radial-gradient(circle at 78% 14%, rgba(10, 6, 2, 0.8) 0 5%, transparent 14%),
+    radial-gradient(circle at 62% 78%, rgba(6, 4, 2, 0.9) 0 7%, transparent 18%),
+    radial-gradient(circle at 30% 88%, rgba(12, 7, 2, 0.75) 0 5%, transparent 13%),
+    linear-gradient(115deg, transparent 46%, rgba(0, 0, 0, 0.55) 46.4%, transparent 47%),
+    linear-gradient(64deg, transparent 62%, rgba(0, 0, 0, 0.5) 62.3%, transparent 63%),
+    repeating-linear-gradient(178deg, rgba(0, 0, 0, 0.14) 0 3px, transparent 3px 17px);
+  mix-blend-mode: multiply;
+}
+
+/* شست‌وشوی نور سرخ خونی واژگونی روی کل سالن */
+.redWash {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  background:
+    radial-gradient(ellipse at 50% 42%, rgba(180, 16, 34, 0.55), rgba(70, 2, 12, 0.75) 78%);
+  mix-blend-mode: overlay;
+}
+
+/* پیکر زن در حال پرتاب میان فضای سالن */
+.victimWrap {
+  position: absolute;
+  width: min(13%, 150px);
+  z-index: 9;
+  pointer-events: none;
+  will-change: transform, left, top;
+  filter: drop-shadow(0 16px 22px rgba(0, 0, 0, 0.8)) brightness(0.82);
+}
+
+.chokeGlow {
+  position: absolute;
+  top: 16%;
+  left: 50%;
+  width: 46%;
+  aspect-ratio: 1;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 30, 50, 0.65), rgba(80, 0, 20, 0.25) 60%, transparent 72%);
+  mix-blend-mode: screen;
+}
+
+/* خرده‌کریستال‌های لوستر شکسته وسط زمین */
+.crystalShards {
+  position: absolute;
+  bottom: 1.5%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 8;
+  color: #ffeeb8;
+  font-size: clamp(13px, 2.2vw, 22px);
+  letter-spacing: 0.55em;
+  text-shadow:
+    0 0 12px rgba(255, 233, 168, 0.85),
+    0 3px 8px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
 /* زیرنویس سینمایی سالن */
 .caption {
   position: absolute;

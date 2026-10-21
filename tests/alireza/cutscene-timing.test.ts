@@ -6,6 +6,9 @@
 
 import { describe, expect, it } from 'vitest';
 import {
+  CHANDELIER_FALL_AT_MS,
+  HAND_REJECTION_AT_MS,
+  SLAM_IMPACTS,
   clamp01,
   easeInOutCubic,
   easeOutCubic,
@@ -13,6 +16,7 @@ import {
   getDoorTimeline,
   progressBetween,
   teammateSettleProgress,
+  victimPoseAt,
 } from '../../src/components/cinema/cutscene-timing';
 
 describe('ابزارهای پایه زمان‌بندی', () => {
@@ -167,5 +171,123 @@ describe('اجرای اپرا و مرد سیاه‌پوش — 21 تا 40 ثان�
       expect(tl.darkManBreath).toBeGreaterThanOrEqual(0);
       expect(tl.darkManBreath).toBeLessThanOrEqual(1);
     }
+  });
+});
+
+describe('نزدیک شدن مرد، دست زدن و پس زدن دست — 40 تا 50 ثانیه (موج ۳ بند ۱)', () => {
+  it('مرد بین ۴۰ تا ۴۶ ثانیه از سایه به پایین سِن می‌رسد و فقط در همان پنجره دست می‌زند', () => {
+    expect(getAuditoriumTimeline(40_000).manApproachProgress).toBe(0);
+    expect(getAuditoriumTimeline(46_000).manApproachProgress).toBe(1);
+    expect(getAuditoriumTimeline(42_000).manClapEnvelope).toBeGreaterThan(0.9);
+    expect(getAuditoriumTimeline(46_000).manClapEnvelope).toBe(0);
+    expect(Math.abs(getAuditoriumTimeline(42_500).manClapPhaseDeg)).toBeLessThanOrEqual(30);
+  });
+
+  it('دست مرد تا ۴۸.۵ ثانیه کامل دراز است و زن تا لحظه پس زدن آواز می‌خواند', () => {
+    expect(getAuditoriumTimeline(45_500).manHandExtendProgress).toBe(0);
+    expect(getAuditoriumTimeline(48_500).manHandExtendProgress).toBe(1);
+    expect(getAuditoriumTimeline(48_000).womanMouthOpen).toBeGreaterThan(0);
+    expect(getAuditoriumTimeline(50_000).womanMouthOpen).toBe(0);
+  });
+
+  it('پس زدن دست دقیقاً روی فریم قراردادی HAND_REJECTION_AT_MS شروع می‌شود', () => {
+    expect(HAND_REJECTION_AT_MS).toBeGreaterThan(49_000);
+    expect(HAND_REJECTION_AT_MS).toBeLessThan(50_000);
+    expect(getAuditoriumTimeline(HAND_REJECTION_AT_MS).handRejectionProgress).toBe(0);
+    expect(getAuditoriumTimeline(HAND_REJECTION_AT_MS + 500).handRejectionProgress).toBe(1);
+  });
+});
+
+describe('واژگونی و عقب راندن پلیرها — 50 تا 56 ثانیه (موج ۳ بند ۲)', () => {
+  it('واژگونی در ۵۰ ثانیه شروع و تا ۵۱.۵ کامل می‌شود و انرژی رقص را صفر می‌کند', () => {
+    expect(getAuditoriumTimeline(50_000).inversionProgress).toBe(0);
+    const after = getAuditoriumTimeline(51_500);
+    expect(after.inversionProgress).toBe(1);
+    expect(after.danceEnergy).toBe(0);
+    expect(getAuditoriumTimeline(52_000).dancerTravelX).toBe(0);
+    expect(getAuditoriumTimeline(54_500).stageGrimeProgress).toBe(1);
+    expect(getAuditoriumTimeline(53_000).womanFearProgress).toBe(1);
+  });
+
+  it('پالس عقب راندن پلیرها در میانه بازه ۵۳ تا ۵۶ ثانیه به اوج می‌رسد و دو سرش صفر است', () => {
+    expect(getAuditoriumTimeline(53_000).playerPushPulse).toBe(0);
+    expect(getAuditoriumTimeline(54_500).playerPushPulse).toBeCloseTo(1, 5);
+    expect(getAuditoriumTimeline(56_000).playerPushPulse).toBe(0);
+    expect(getAuditoriumTimeline(53_500).manGlareProgress).toBe(1);
+  });
+});
+
+describe('خفگی، کوبش‌ها، لرزش و سقوط لوستر — 56 تا 67 ثانیه (موج ۳ بند ۲)', () => {
+  it('ترتیب سطوح کوبش دقیقاً سناریو است: در، دیوار چپ، دیوار راست، زمین، سقف، زمین', () => {
+    expect(SLAM_IMPACTS.map((i) => i.surface)).toEqual([
+      'door',
+      'left-wall',
+      'right-wall',
+      'floor',
+      'ceiling',
+      'floor',
+    ]);
+    for (let i = 1; i < SLAM_IMPACTS.length; i++) {
+      expect(SLAM_IMPACTS[i].atMs).toBeGreaterThan(SLAM_IMPACTS[i - 1].atMs);
+    }
+    expect(SLAM_IMPACTS[0].atMs).toBeGreaterThan(56_000);
+    expect(CHANDELIER_FALL_AT_MS).toBeGreaterThan(SLAM_IMPACTS[SLAM_IMPACTS.length - 1].atMs);
+    expect(CHANDELIER_FALL_AT_MS).toBeLessThan(67_000);
+  });
+
+  it('مسیر پرتاب زن روی لحظه‌های کوبش دقیقاً به همان سطح می‌رسد و پیوسته است', () => {
+    expect(victimPoseAt(56_000).xPct).toBeCloseTo(50);
+    expect(victimPoseAt(59_200).xPct).toBeLessThan(15); // دیوار چپ
+    expect(victimPoseAt(60_600).xPct).toBeGreaterThan(85); // دیوار راست
+    expect(victimPoseAt(62_000).yPct).toBeGreaterThan(70); // زمین
+    expect(victimPoseAt(63_400).yPct).toBeLessThan(12); // سقف
+    expect(Math.abs(victimPoseAt(63_400).rotateDeg)).toBeGreaterThan(150); // وارونه زیر سقف
+    expect(victimPoseAt(50_000)).toEqual(victimPoseAt(56_000)); // قبل از خفگی ژست آغازین
+    let prev = victimPoseAt(56_000);
+    for (let t = 56_100; t <= 67_000; t += 100) {
+      const pose = victimPoseAt(t);
+      expect(Math.abs(pose.xPct - prev.xPct)).toBeLessThan(20); // بدون پرش مکانی
+      prev = pose;
+    }
+  });
+
+  it('لرزش سالن فقط در بازه وحشت فعال است و روی کوبش‌ها تقویت می‌شود', () => {
+    expect(getAuditoriumTimeline(45_000).cameraShakeX).toBe(0);
+    let maxShake = 0;
+    for (let t = 57_800; t <= 65_000; t += 50) {
+      maxShake = Math.max(maxShake, Math.abs(getAuditoriumTimeline(t).cameraShakeX));
+    }
+    expect(maxShake).toBeGreaterThan(3);
+    expect(getAuditoriumTimeline(70_000).cameraShakeX).toBe(0);
+    expect(getAuditoriumTimeline(70_000).cameraShakeY).toBe(0);
+  });
+
+  it('تابلوها از اولین کوبش کج می‌شوند و لوستر شتاب‌دار سقوط و بعد خرد می‌شود', () => {
+    expect(getAuditoriumTimeline(57_800).paintingsTiltProgress).toBe(0);
+    expect(getAuditoriumTimeline(65_000).paintingsTiltProgress).toBe(1);
+    expect(getAuditoriumTimeline(CHANDELIER_FALL_AT_MS).chandelierFallProgress).toBe(0);
+    expect(getAuditoriumTimeline(CHANDELIER_FALL_AT_MS + 350).chandelierFallProgress).toBeCloseTo(0.25, 2);
+    expect(getAuditoriumTimeline(CHANDELIER_FALL_AT_MS + 700).chandelierFallProgress).toBe(1);
+    expect(getAuditoriumTimeline(CHANDELIER_FALL_AT_MS + 1_300).chandelierShatteredProgress).toBe(1);
+  });
+});
+
+describe('غیب شدن و تاریکی ماندگار — 67 تا 74 ثانیه (موج ۳ بند ۳)', () => {
+  it('هر دو کاراکتر بین ۶۷ تا ۶۷.۷ ثانیه غیب می‌شوند و خاموشی در میانه آن اوج می‌گیرد', () => {
+    expect(getAuditoriumTimeline(67_000).vanishProgress).toBe(0);
+    expect(getAuditoriumTimeline(67_700).vanishProgress).toBe(1);
+    expect(getAuditoriumTimeline(66_800).blackoutPulse).toBeCloseTo(0, 5);
+    expect(getAuditoriumTimeline(67_700).blackoutPulse).toBeGreaterThan(0.99);
+    expect(getAuditoriumTimeline(68_600).blackoutPulse).toBeCloseTo(0, 5);
+  });
+
+  it('پس از غیب شدن، سالن تا پایان کات‌سین تاریک و واژگون می‌ماند', () => {
+    const end = getAuditoriumTimeline(74_000);
+    expect(end.finalDarknessProgress).toBe(1);
+    expect(end.inversionProgress).toBe(1);
+    expect(end.stageGrimeProgress).toBe(1);
+    expect(end.chandelierFallProgress).toBe(1);
+    expect(end.chandelierShatteredProgress).toBe(1);
+    expect(end.paintingsTiltProgress).toBe(1);
   });
 });

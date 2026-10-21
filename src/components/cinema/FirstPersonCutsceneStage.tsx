@@ -13,7 +13,8 @@
  *    فقط تا لحظه آزاد شدن صدای مرورگر دیده می‌شود و بعد برای همیشه ناپدید می‌شود.
  *
  * موج ۲: بخش تصویری ثانیه ۰ تا ۴۰ (دربان + ورود و نشستن + اجرای اپرا و مرد سیاه‌پوش).
- * موج ۳: نیمه وحشت ۴۰ تا ۷۴ روی همین استیج و داخل AuditoriumPerformanceView تکمیل می‌شود.
+ * موج ۳: نیمه وحشت ۴۰ تا ۷۴ + شلیک دقیق افکت‌های صوتی برخورد (پس زدن دست، کوبش‌ها و
+ * سقوط لوستر روی کی‌فریم‌های cutscene-timing) و خاموشی لحظه غیب شدن کاراکترها.
  */
 
 import { useEffect, useRef, useState } from 'react';
@@ -24,7 +25,12 @@ import {
 } from '../../contracts/types';
 import { TheaterAudioEngine } from '../../audio/theater-audio-engine';
 import { usePovHeadPan } from './usePovHeadPan';
-import { progressBetween } from './cutscene-timing';
+import {
+  CHANDELIER_FALL_AT_MS,
+  HAND_REJECTION_AT_MS,
+  SLAM_IMPACTS,
+  progressBetween,
+} from './cutscene-timing';
 import UsherDoorCutsceneView from './UsherDoorCutsceneView';
 import AuditoriumPerformanceView from './AuditoriumPerformanceView';
 import styles from './FirstPersonCutsceneStage.module.css';
@@ -98,22 +104,54 @@ export default function FirstPersonCutsceneStage({
     engineRef.current?.setMuted(muted);
   }, [muted]);
 
+  /* رویدادهای صوتی یک‌باره موج ۳ که زمان‌بندی شده‌اند (برای جلوگیری از شلیک دوباره در هر فریم) */
+  const scheduledOneShotsRef = useRef<Set<string>>(new Set());
+
   /* قلب همگام‌سازی صوتی: فقط elapsedMs سرور، بدون تایمر محلی */
   useEffect(() => {
     const engine = engineRef.current;
     if (!engine) return;
+    const prev = prevElapsedRef.current;
     // پرش به عقب فقط در اسکراب Preview رخ می‌دهد: لایه‌ها ریست و از بیت مقصد ادامه
-    if (clampedElapsed < prevElapsedRef.current - 300) {
+    if (clampedElapsed < prev - 300) {
       engine.stopAll();
+      scheduledOneShotsRef.current.clear();
     }
     prevElapsedRef.current = clampedElapsed;
     engine.syncToElapsedMs(clampedElapsed);
+
+    /* --- شلیک دقیق افکت‌های موج ۳ روی فریم انیمیشن متناظر --- */
+    // لحظه پس زدن دست مرد توسط زن (عبور رو به جلو از آستانه)
+    if (prev < HAND_REJECTION_AT_MS && clampedElapsed >= HAND_REJECTION_AT_MS) {
+      engine.playHandRejection();
+    }
+    // کوبش‌ها و سقوط لوستر با تأخیر صوتی دقیق نسبت به کی‌فریم برخورد تصویر
+    if (clampedElapsed >= 55_000 && clampedElapsed < 67_500) {
+      for (const impact of SLAM_IMPACTS) {
+        const key = `slam-${impact.atMs}`;
+        if (impact.atMs >= clampedElapsed && !scheduledOneShotsRef.current.has(key)) {
+          engine.playBodySlam(impact.surface, (impact.atMs - clampedElapsed) / 1000);
+          scheduledOneShotsRef.current.add(key);
+        }
+      }
+      if (
+        CHANDELIER_FALL_AT_MS >= clampedElapsed &&
+        !scheduledOneShotsRef.current.has('chandelier')
+      ) {
+        engine.playChandelierFall((CHANDELIER_FALL_AT_MS - clampedElapsed) / 1000);
+        scheduledOneShotsRef.current.add('chandelier');
+      }
+    }
   }, [clampedElapsed]);
 
   // فید سیاه سینمایی در مرز گذر از در به سالن (۱۰.۲ تا ۱۱.۹ ثانیه)
-  const blackFade = inDoorScene
+  const doorFade = inDoorScene
     ? progressBetween(clampedElapsed, 10_200, DOOR_CUTSCENE_DURATION_MS) * 0.92
     : (1 - progressBetween(clampedElapsed, DOOR_CUTSCENE_DURATION_MS, 11_900)) * 0.92;
+  // خاموشی لحظه‌ای غیب شدن هر دو کاراکتر (۶۶.۸ تا ۶۸.۶ ثانیه — موج ۳)
+  const vanishBlackout =
+    Math.sin(progressBetween(clampedElapsed, 66_800, 68_600) * Math.PI) * 0.96;
+  const blackFade = Math.max(doorFade, vanishBlackout);
 
   return (
     <section

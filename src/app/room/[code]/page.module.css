@@ -1,0 +1,45 @@
+/* page.module.css — قاب صفحه اتاق بازی؛ صحنه‌ها استایل اختصاصی خودشان را دارند */
+
+.page {
+  min-height: 100svh;
+  background: #07040a;
+  color: #f5ead9;
+}
+
+.center {
+  display: grid;
+  gap: 12px;
+  align-content: center;
+  justify-items: center;
+  min-height: 100svh;
+  padding: 24px;
+  text-align: center;
+}
+
+.title {
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+
+.text {
+  max-width: 520px;
+  color: #cdbf9f;
+  line-height: 1.9;
+}
+
+.errorNote {
+  max-width: 520px;
+  padding: 10px 14px;
+  border: 1px solid rgba(255, 140, 140, 0.45);
+  border-radius: 12px;
+  background: rgba(120, 20, 30, 0.35);
+  color: #ffd9d9;
+  line-height: 1.8;
+}
+
+.fullscreen {
+  display: grid;
+  place-items: center;
+  min-height: 100svh;
+  padding: clamp(8px, 2vw, 24px);
+}

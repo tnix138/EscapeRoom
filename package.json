@@ -12,6 +12,7 @@
     "test:tohid": "vitest run tests/tohid",
     "test:amirali": "vitest run tests/amirali",
     "test:alireza": "vitest run tests/alireza",
+    "test:e2e:alireza": "playwright test tests/alireza/multiplayer-theater.spec.ts",
     "worklog": "node scripts/worklog.mjs",
     "worklog:new": "node scripts/worklog.mjs new",
     "worklog:push": "node scripts/worklog.mjs push",
@@ -31,6 +32,7 @@
     "zod": "^3.24.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.64.1",
     "@types/node": "^22.0.0",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",

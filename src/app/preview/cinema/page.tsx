@@ -7,18 +7,21 @@
  * دربان دم در (۰ تا ۱۱ ثانیه) + ورود به سالن ۲۰ نفره، نشستن هم‌تیمی‌ها، باز شدن پرده،
  * رقص بانوی ایتالیایی و مرد سیاه‌پوش سمت چپ (۱۱ تا ۴۰ ثانیه) با صدای فضایی موج ۱.
  * نوار تست زمان، دکمه‌های پرش و انتخاب تعداد پلیر فقط مخصوص Preview هستند و در
- * بازی واقعی وجود ندارند (TASKS-ALIREZA.md). نیمه وحشت ۴۰ تا ۷۴ در موج ۳ تکمیل می‌شود.
+ * بازی واقعی وجود ندارند (TASKS-ALIREZA.md). نیمه وحشت ۴۰ تا ۷۴ (موج ۳) نیز کامل شده و ادامه سالن تاریک در /preview/auditorium است.
  */
 
 import { useEffect, useMemo, useState } from 'react';
 import { TOTAL_CUTSCENE_DURATION_MS } from '@/contracts/types';
+import { createPreviewRoomState } from '@/client-sdk';
 import FirstPersonCutsceneStage from '@/components/cinema/FirstPersonCutsceneStage';
 import {
   CUTSCENE_BEAT_WINDOWS,
   beatFromElapsedMs,
 } from '@/audio/theater-audio-engine';
-import { createPreviewCutsceneRoom } from './preview-room';
 import styles from './page.module.css';
+
+/** ترتیب نام‌ها طوری است که بازیکن «من» در فیکسچر رسمی توحید، علیرضا باشد */
+const ROTATED_NAMES = ['علیرضا', 'توحید', 'امیرعلی', 'سارا', 'مریم', 'نیما', 'لیلا', 'کیان'];
 
 function toFaDigits(value: string | number): string {
   return String(value).replace(/[0-9]/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[Number(d)]);
@@ -39,6 +42,13 @@ const JUMP_POINTS: Array<{ label: string; atMs: number }> = [
   { label: '💺 نشستن پلیرها', atMs: 19_000 },
   { label: '🦢 پرده و رقص بانو', atMs: 28_000 },
   { label: '🌑 مرد سیاه‌پوش در سایه', atMs: 35_500 },
+  { label: '👏 نزدیک شدن و دست زدن مرد', atMs: 41_500 },
+  { label: '✋ پس زدن دست', atMs: 49_300 },
+  { label: '🩸 واژگونی سالن', atMs: 51_000 },
+  { label: '💥 عقب راندن پلیرها', atMs: 53_800 },
+  { label: '🌪️ کوبش‌ها در سالن', atMs: 57_500 },
+  { label: '💎 سقوط لوستر', atMs: 65_200 },
+  { label: '👻 غیب شدن و تاریکی', atMs: 68_800 },
 ];
 
 export default function CinemaPreviewPage() {
@@ -49,7 +59,7 @@ export default function CinemaPreviewPage() {
   const [muted, setMuted] = useState(false);
 
   const room = useMemo(
-    () => createPreviewCutsceneRoom(playerCount),
+    () => createPreviewRoomState('theater_cutscene', playerCount, ROTATED_NAMES),
     [playerCount],
   );
 
@@ -78,12 +88,12 @@ export default function CinemaPreviewPage() {
     <main className={styles.page}>
       <header className={styles.header}>
         <div>
-          <p className={styles.kicker}>پرده سرخ: تماشاخانه اُرفه‌ئو — Preview علیرضا (موج ۲)</p>
+          <p className={styles.kicker}>پرده سرخ: تماشاخانه اُرفه‌ئو — Preview علیرضا (موج ۲ و ۳)</p>
           <h1 className={styles.title}>کات‌سین اول‌شخص: از دربان تماشاخانه تا اجرای اپرا</h1>
           <p className={styles.subtitle}>
-            تو «علیرضا» هستی، نشسته وسط ردیف دوم. با ماوس، انگشت یا کلیدهای جهت‌نما فقط سرت را
-            به چپ و راست بچرخان؛ هم‌تیمی‌هایت را کنار صندلی‌ات ببین و وقتی زیرنویس گفت، به سایه‌ی
-            سمت چپ صحنه خوب نگاه کن… 🎧 با هدفون تماشا کن.
+            تو «{room.me.playerName}» هستی — {room.me.seatLabel} (داده رسمی createPreviewRoomState توحید).
+            با ماوس، انگشت یا کلیدهای جهت‌نما فقط سرت را به چپ و راست بچرخان؛ هم‌تیمی‌هایت را کنار
+            صندلی‌ات ببین و کل سکانس ۷۴ ثانیه‌ای — از دربان تا واژگونی و غیب شدن — را با هدفون تماشا کن 🎧
           </p>
         </div>
         <div className={styles.countBox}>
@@ -125,8 +135,8 @@ export default function CinemaPreviewPage() {
           بیت جاری: <strong>{currentBeatWindow?.labelFa}</strong>{' '}
           <code dir="ltr">({currentBeat})</code> — زمان: {formatClock(elapsedMs)} از{' '}
           {formatClock(TOTAL_CUTSCENE_DURATION_MS)}
-          {elapsedMs > 40_000 && (
-            <> — ⚠️ از ثانیه ۴۰ به بعد بخش تصویری موج ۳ است؛ فعلاً صدا ادامه دارد و صحنه روی «اجرای زنده» می‌ماند.</>
+          {elapsedMs >= 40_000 && elapsedMs < TOTAL_CUTSCENE_DURATION_MS && (
+            <> — 🩸 نیمه وحشت موج ۳ در حال پخش است؛ برای ادامه در سالن تاریک به /preview/auditorium برو.</>
           )}
         </p>
         <input
@@ -183,18 +193,21 @@ export default function CinemaPreviewPage() {
       </section>
 
       <section className={styles.panel}>
-        <h2>🎬 در موج ۲ چه چیزی را باید ببینی؟</h2>
+        <h2>🎬 در کات‌سین کامل چه چیزی را باید ببینی؟</h2>
         <ul className={styles.checkList}>
           <li><strong>۰ تا ۱۱ ثانیه:</strong> دریچه چشمی و قفل سنگین در باز می‌شود، «سینیور مَتِئو» با فانوس ظاهر می‌شود، دست اول‌شخص تو بلیط پانچ‌شده با نام و صندلی خودت را تحویل می‌دهد، دربان سر تکان می‌دهد و هر دو لنگه در کاملاً باز می‌شود.</li>
           <li><strong>۱۱ تا ۲۱ ثانیه:</strong> وارد سالن ۲۰ نفره می‌شوی و روی صندلی خودت می‌نشینی؛ هم‌تیمی‌ها یکی‌یکی سر جایشان می‌نشینند و با چرخاندن سر به چپ و راست با برچسب نام دیده می‌شوند؛ روبه‌رو سه سِن با پرده قرمز، تابلوهای دو دیوار و لوستر کریستالی سقف است.</li>
           <li><strong>۲۱ تا ۴۰ ثانیه:</strong> سالن تاریک می‌شود، نورهای ضعیف روی پرده می‌افتد، پرده باز می‌شود و بانوی ایتالیایی می‌رقصد؛ از ثانیه ۳۱ مرد بلندقد سیاه‌پوش در سایه سمت چپ پیداست و هرچه بیشتر به چپ نگاه کنی چهره هولناکش نمایان‌تر می‌شود.</li>
+          <li><strong>۴۰ تا ۵۰ ثانیه (موج ۳):</strong> مرد از سایه به پایین سِن می‌آید، دست می‌زند و دستش را دراز می‌کند؛ بانو آواز می‌خواند و در ثانیه ۴۹.۶ دستش را پس می‌زند.</li>
+          <li><strong>۵۰ تا ۶۷ ثانیه (موج ۳):</strong> نور سرخ و صحنه کثیف و ترک‌خورده می‌شود، مرد به شما خیره می‌شود و همه روی صندلی به عقب رانده می‌شوید؛ بعد زن از گلو در هوا گرفته و به در، دو دیوار، زمین و سقف کوبیده می‌شود، سالن می‌لرزد، تابلوها کج می‌شوند و لوستر سقوط می‌کند و می‌شکند.</li>
+          <li><strong>۶۷ تا ۷۴ ثانیه (موج ۳):</strong> در خاموشی لحظه‌ای هر دو غیب می‌شوند؛ سالن تاریک و ویران می‌ماند و آهنگ ترسناک ادامه دارد — ادامه بازی در <strong>/preview/auditorium</strong>.</li>
           <li>در تمام مدت هیچ دکمه حرکت/زوم/Skip وجود ندارد — فقط چرخش سر بین ‎-۴۲°‎ تا ‎+۴۲°‎ و صدای استریویی که با سرت می‌چرخد.</li>
         </ul>
       </section>
 
       <footer className={styles.footer}>
         <p>
-          خروجی موج ۲ علیرضا: <code dir="ltr">FirstPersonCutsceneStage.tsx</code> +{' '}
+          خروجی موج‌های ۲ و ۳ علیرضا: <code dir="ltr">FirstPersonCutsceneStage.tsx</code> +{' '}
           <code dir="ltr">UsherDoorCutsceneView.tsx</code> +{' '}
           <code dir="ltr">AuditoriumPerformanceView.tsx</code> +{' '}
           <code dir="ltr">cutscene-timing.ts</code> (همه در <code dir="ltr">src/components/cinema</code>) —
