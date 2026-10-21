@@ -44,6 +44,23 @@ data: { "presences": [ ... ], "serverNow": 1792610264622 }
 
 پاک‌سازی: بازیکنی که ۳۰ ثانیه به‌روزرسانی نداشته باشد از HUD حذف می‌شود (`PRESENCE_OFFLINE_TIMEOUT_MS`). سقف نمایش ۳۲ نشانگر است.
 
+### پیاده‌سازی سرور (فاز ۰۳)
+
+| لایه | فایل | نقش |
+|---|---|---|
+| انبار | `src/server/realtime/presence-tracker.ts` | حافظه‌ای، پاک‌سازی ۳۰s، سقف ۳۲، اعتبارسنجی موقعیت و yaw |
+| سرویس | `src/server/services/presence-service.ts` | توکن صندلی، محدودهٔ صحنه، rate limit ۵۰/ث |
+| مسیر | `src/app/api/rooms/[code]/presence/route.ts` | `GET` برای probe و `POST` برای ارسال |
+| استریم | `src/app/api/rooms/[code]/stream/route.ts` | قاب `presence_update` هر ۲۵۰ms در صورت تغییر |
+
+پاسخ نمونهٔ `POST`:
+
+```json
+{ "ok": true, "data": { "presences": [ … ], "serverNow": 1792612855197 } }
+```
+
+خطاها: `401 INVALID_SEAT_TOKEN` · `404 ROOM_NOT_FOUND` · `400 VALIDATION_ERROR` (موقعیت خارج از محدوده) · `429 RATE_LIMITED`.
+
 ### fail-safe سرویس غایب
 
 `usePresenceFeed` پیش از هر اتصال دائمی، یک `GET` کوچک با مهلت ۳ ثانیه انجام می‌دهد:
@@ -89,4 +106,19 @@ GET /api/admin/session
 - مسیر `next` فقط وقتی ساخته می‌شود که مقصد یک مسیر داخلی `/admin/**` باشد؛ `https://…` و `//host/…` دور ریخته می‌شوند (open redirect).
 - صفحهٔ `/admin/login` خودش هرگز ریدایرکت نمی‌شود.
 - هیچ توکنی در `localStorage`/`document.cookie` نوشته نمی‌شود؛ کوکی `httpOnly` مال سمت سرور است.
-- نام مسیر در ثابت `ADMIN_SESSION_ENDPOINT` (فایل `src/app/admin/login/login-rules.ts`) متمرکز است. اگر امیر نام دیگری انتخاب کرد، **فقط همین یک خط** عوض می‌شود.
+- نام مسیر در ثابت `ADMIN_SESSION_ENDPOINT` (فایل `src/app/admin/login/login-rules.ts`) متمرکز است.
+
+### پیاده‌سازی سرور (فاز ۰۹-الف)
+
+| مسیر | بدنه/هدر | پاسخ |
+|---|---|---|
+| `POST /api/admin/login` | `{ username, password }` | `200` + `Set-Cookie: orf_admin_session=…; HttpOnly; SameSite=Lax` · `400` · `401` · `429` · `503` |
+| `POST /api/admin/logout` | — | `200` + کوکی `Max-Age=0` |
+| `GET /api/admin/session` | کوکی | `200 { ok, data: session }` · `401 UNAUTHORIZED` |
+
+- توکن: `header.payload.signature` با HMAC-SHA256 (`node:crypto`)، بدون وابستگی جدید؛ عمر ۸ ساعت.
+- اعتبارنامه از env: `ADMIN_USERNAME` + `ADMIN_PASSWORD_HASH` (یا `ADMIN_PASSWORD` فقط محلی) + `ADMIN_SESSION_SECRET`.
+- پیکربندی ناقص → **۵۰۳** و هرگز جلسهٔ بدون کلید صادر نمی‌شود (fail-closed).
+- مقایسهٔ نام کاربری و گذرواژه هر دو ثابت‌زمان است.
+- rate limit: ۵ تلاش در دقیقه برای هر IP (بر اساس `x-forwarded-for`).
+- صفحهٔ `/admin` در نبود جلسه ۳۰۷ به `/admin/login` می‌دهد و با جلسه، داشبورد حداقلی (نام/نقش/پایان جلسه/خروج) نشان می‌دهد — جایگزین موقت داشبورد فاز ۱۰.
