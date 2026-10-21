@@ -1,41 +1,300 @@
 {
   "$comment": "برنامهٔ یک‌بارهٔ چیدمان Issueها — توسط scripts/issue-sync.mjs و workflow issue-sync اجرا می‌شود. تکرارپذیر است.",
   "labels": [
-    { "name": "split", "color": "c2e0c6", "description": "زیرکار تک‌مالک از یک فاز دو-مالکی" },
-    { "name": "tracker", "color": "1d76db", "description": "مسیر کار یک عضو تیم" },
-    { "name": "guide", "color": "f9d0c4", "description": "راهنمای هماهنگی تیم" },
-    { "name": "contract", "color": "bfdadc", "description": "قرارداد مشترک بین اعضا" },
-    { "name": "status:done", "color": "0e8a16", "description": "پیاده‌سازی و تست شده" }
+    {
+      "name": "split",
+      "color": "c2e0c6",
+      "description": "زیرکار تک‌مالک از یک فاز دو-مالکی"
+    },
+    {
+      "name": "tracker",
+      "color": "1d76db",
+      "description": "مسیر کار یک عضو تیم"
+    },
+    {
+      "name": "guide",
+      "color": "f9d0c4",
+      "description": "راهنمای هماهنگی تیم"
+    },
+    {
+      "name": "contract",
+      "color": "bfdadc",
+      "description": "قرارداد مشترک بین اعضا"
+    },
+    {
+      "name": "status:done",
+      "color": "0e8a16",
+      "description": "پیاده‌سازی و تست شده"
+    }
   ],
   "issues": [
-    { "number": 74, "labels": ["phase", "owner:tohid", "priority:critical", "needs-decision"], "milestone": "هفته ۱ — مستندات و زیرساخت", "assignee": "tnix138" },
-    { "number": 75, "labels": ["phase", "owner:tohid", "priority:critical", "status:done"], "milestone": "هفته ۲ — CI، نورپردازی، ادمین، داستان", "assignee": "tnix138" },
-    { "number": 76, "labels": ["phase", "owner:tohid", "priority:high", "status:done"], "milestone": "هفته ۳ — حضور، مواد، آمار، HUD", "assignee": "tnix138" },
-    { "number": 77, "labels": ["phase", "owner:alireza", "priority:high"], "milestone": "هفته ۴ — کلاینت حضور، ترس، ابزارهای مدیریتی", "assignee": "alispy021" },
-    { "number": 78, "labels": ["phase", "owner:alireza", "priority:high"], "milestone": "هفته ۲ — CI، نورپردازی، ادمین، داستان", "assignee": "alispy021" },
-    { "number": 79, "labels": ["phase", "owner:alireza", "priority:medium"], "milestone": "هفته ۳ — حضور، مواد، آمار، HUD", "assignee": "alispy021" },
-    { "number": 80, "labels": ["phase", "owner:alireza", "owner:amirali", "priority:high"], "milestone": "هفته ۴ — کلاینت حضور، ترس، ابزارهای مدیریتی" },
-    { "number": 81, "labels": ["phase", "owner:alireza", "priority:medium"], "milestone": "هفته ۵ — کات‌سین و QA", "assignee": "alispy021" },
-    { "number": 82, "labels": ["phase", "owner:amir", "owner:amirali", "priority:medium"], "milestone": "هفته ۲ — CI، نورپردازی، ادمین، داستان" },
-    { "number": 83, "labels": ["phase", "owner:amir", "priority:medium"], "milestone": "هفته ۳ — حضور، مواد، آمار، HUD" },
-    { "number": 84, "labels": ["phase", "owner:alireza", "owner:nazanin", "priority:medium"], "milestone": "هفته ۲ — CI، نورپردازی، ادمین، داستان" },
-    { "number": 85, "labels": ["phase", "owner:amirali", "priority:medium"], "milestone": "هفته ۳ — حضور، مواد، آمار، HUD", "assignee": "amiralikj" },
-    { "number": 86, "labels": ["phase", "owner:amir", "priority:low"], "milestone": "هفته ۴ — کلاینت حضور، ترس، ابزارهای مدیریتی" },
-    { "number": 87, "labels": ["phase", "owner:nazanin", "priority:low"], "milestone": "هفته ۵ — کات‌سین و QA", "assignee": "nazanindavoodi" },
-    { "number": 88, "labels": ["phase", "owner:tohid", "priority:critical"], "milestone": "هفته ۶ — انتشار", "assignee": "tnix138" },
-    { "number": 90, "labels": ["split", "owner:alireza", "priority:high"], "milestone": "هفته ۴ — کلاینت حضور، ترس، ابزارهای مدیریتی", "assignee": "alispy021" },
-    { "number": 91, "labels": ["split", "owner:amirali", "priority:high"], "milestone": "هفته ۴ — کلاینت حضور، ترس، ابزارهای مدیریتی", "assignee": "amiralikj" },
-    { "number": 94, "labels": ["split", "owner:amir", "priority:medium"], "milestone": "هفته ۲ — CI، نورپردازی، ادمین، داستان", "assignee": "emirhamzehlou" },
-    { "number": 95, "labels": ["split", "owner:amirali", "priority:medium"], "milestone": "هفته ۲ — CI، نورپردازی، ادمین، داستان", "assignee": "amiralikj" },
-    { "number": 96, "labels": ["split", "owner:alireza", "priority:medium"], "milestone": "هفته ۲ — CI، نورپردازی، ادمین، داستان", "assignee": "alispy021" },
-    { "number": 97, "labels": ["split", "owner:nazanin", "priority:medium"], "milestone": "هفته ۲ — CI، نورپردازی، ادمین، داستان", "assignee": "nazanindavoodi" },
-    { "number": 98, "labels": ["tracker", "owner:tohid"], "assignee": "tnix138" },
-    { "number": 99, "labels": ["tracker", "owner:alireza"], "assignee": "alispy021", "bodyFile": "scripts/issue-bodies/99.md" },
-    { "number": 100, "labels": ["tracker", "owner:amirali"], "assignee": "amiralikj", "bodyFile": "scripts/issue-bodies/100.md" },
-    { "number": 101, "labels": ["tracker", "owner:amir"], "assignee": "emirhamzehlou" },
-    { "number": 102, "labels": ["tracker", "owner:nazanin"], "assignee": "nazanindavoodi" },
-    { "number": 103, "labels": ["guide"] },
-    { "number": 104, "labels": ["contract", "owner:tohid"], "assignee": "tnix138" }
+    {
+      "number": 74,
+      "labels": [
+        "phase",
+        "owner:tohid",
+        "priority:critical",
+        "needs-decision"
+      ],
+      "milestone": "هفته ۱ — مستندات و زیرساخت",
+      "assignee": "tnix138"
+    },
+    {
+      "number": 75,
+      "labels": [
+        "phase",
+        "owner:tohid",
+        "priority:critical",
+        "status:done"
+      ],
+      "milestone": "هفته ۲ — CI، نورپردازی، ادمین، داستان",
+      "assignee": "tnix138"
+    },
+    {
+      "number": 76,
+      "labels": [
+        "phase",
+        "owner:tohid",
+        "priority:high",
+        "status:done"
+      ],
+      "milestone": "هفته ۳ — حضور، مواد، آمار، HUD",
+      "assignee": "tnix138"
+    },
+    {
+      "number": 77,
+      "labels": [
+        "phase",
+        "owner:alireza",
+        "priority:high"
+      ],
+      "milestone": "هفته ۴ — کلاینت حضور، ترس، ابزارهای مدیریتی",
+      "assignee": "alispy021"
+    },
+    {
+      "number": 78,
+      "labels": [
+        "phase",
+        "owner:alireza",
+        "priority:high"
+      ],
+      "milestone": "هفته ۲ — CI، نورپردازی، ادمین، داستان",
+      "assignee": "alispy021"
+    },
+    {
+      "number": 79,
+      "labels": [
+        "phase",
+        "owner:alireza",
+        "priority:medium"
+      ],
+      "milestone": "هفته ۳ — حضور، مواد، آمار، HUD",
+      "assignee": "alispy021"
+    },
+    {
+      "number": 80,
+      "labels": [
+        "phase",
+        "owner:alireza",
+        "owner:amirali",
+        "priority:high"
+      ],
+      "milestone": "هفته ۴ — کلاینت حضور، ترس، ابزارهای مدیریتی"
+    },
+    {
+      "number": 81,
+      "labels": [
+        "phase",
+        "owner:alireza",
+        "priority:medium"
+      ],
+      "milestone": "هفته ۵ — کات‌سین و QA",
+      "assignee": "alispy021"
+    },
+    {
+      "number": 82,
+      "labels": [
+        "phase",
+        "owner:amir",
+        "owner:amirali",
+        "priority:medium"
+      ],
+      "milestone": "هفته ۲ — CI، نورپردازی، ادمین، داستان"
+    },
+    {
+      "number": 83,
+      "labels": [
+        "phase",
+        "owner:amir",
+        "priority:medium"
+      ],
+      "milestone": "هفته ۳ — حضور، مواد، آمار، HUD"
+    },
+    {
+      "number": 84,
+      "labels": [
+        "phase",
+        "owner:alireza",
+        "owner:nazanin",
+        "priority:medium"
+      ],
+      "milestone": "هفته ۲ — CI، نورپردازی، ادمین، داستان"
+    },
+    {
+      "number": 85,
+      "labels": [
+        "phase",
+        "owner:amirali",
+        "priority:medium"
+      ],
+      "milestone": "هفته ۳ — حضور، مواد، آمار، HUD",
+      "assignee": "amiralikj"
+    },
+    {
+      "number": 86,
+      "labels": [
+        "phase",
+        "owner:amir",
+        "priority:low"
+      ],
+      "milestone": "هفته ۴ — کلاینت حضور، ترس، ابزارهای مدیریتی"
+    },
+    {
+      "number": 87,
+      "labels": [
+        "phase",
+        "owner:nazanin",
+        "priority:low"
+      ],
+      "milestone": "هفته ۵ — کات‌سین و QA",
+      "assignee": "nazanindavoodi"
+    },
+    {
+      "number": 88,
+      "labels": [
+        "phase",
+        "owner:tohid",
+        "priority:critical"
+      ],
+      "milestone": "هفته ۶ — انتشار",
+      "assignee": "tnix138"
+    },
+    {
+      "number": 90,
+      "labels": [
+        "split",
+        "owner:alireza",
+        "priority:high"
+      ],
+      "milestone": "هفته ۴ — کلاینت حضور، ترس، ابزارهای مدیریتی",
+      "assignee": "alispy021"
+    },
+    {
+      "number": 91,
+      "labels": [
+        "split",
+        "owner:amirali",
+        "priority:high"
+      ],
+      "milestone": "هفته ۴ — کلاینت حضور، ترس، ابزارهای مدیریتی",
+      "assignee": "amiralikj"
+    },
+    {
+      "number": 94,
+      "labels": [
+        "split",
+        "owner:amir",
+        "priority:medium"
+      ],
+      "milestone": "هفته ۲ — CI، نورپردازی، ادمین، داستان",
+      "assignee": "emirhamzehlou"
+    },
+    {
+      "number": 95,
+      "labels": [
+        "split",
+        "owner:amirali",
+        "priority:medium"
+      ],
+      "milestone": "هفته ۲ — CI، نورپردازی، ادمین، داستان",
+      "assignee": "amiralikj"
+    },
+    {
+      "number": 96,
+      "labels": [
+        "split",
+        "owner:alireza",
+        "priority:medium"
+      ],
+      "milestone": "هفته ۲ — CI، نورپردازی، ادمین، داستان",
+      "assignee": "alispy021"
+    },
+    {
+      "number": 97,
+      "labels": [
+        "split",
+        "owner:nazanin",
+        "priority:medium"
+      ],
+      "milestone": "هفته ۲ — CI، نورپردازی، ادمین، داستان",
+      "assignee": "nazanindavoodi"
+    },
+    {
+      "number": 98,
+      "labels": [
+        "tracker",
+        "owner:tohid"
+      ],
+      "assignee": "tnix138"
+    },
+    {
+      "number": 99,
+      "labels": [
+        "tracker",
+        "owner:alireza"
+      ],
+      "assignee": "alispy021",
+      "bodyFile": "scripts/issue-bodies/99.md"
+    },
+    {
+      "number": 100,
+      "labels": [
+        "tracker",
+        "owner:amirali"
+      ],
+      "assignee": "amiralikj",
+      "bodyFile": "scripts/issue-bodies/100.md"
+    },
+    {
+      "number": 101,
+      "labels": [
+        "tracker",
+        "owner:amir"
+      ],
+      "assignee": "emirhamzehlou"
+    },
+    {
+      "number": 102,
+      "labels": [
+        "tracker",
+        "owner:nazanin"
+      ],
+      "assignee": "nazanindavoodi"
+    },
+    {
+      "number": 103,
+      "labels": [
+        "guide"
+      ]
+    },
+    {
+      "number": 104,
+      "labels": [
+        "contract",
+        "owner:tohid"
+      ],
+      "assignee": "tnix138"
+    }
   ],
   "comments": [
     {
@@ -82,6 +341,16 @@
       "number": 101,
       "marker": "<!-- issue-sync:input-from-tohid -->",
       "body": "<!-- issue-sync:input-from-tohid -->\n🔑 **داده‌های فاز ۱۰ و ۱۳ از توحید** (#98) می‌آید؛ خودت در `src/server/**` کد ننویس:\n\n```ts\nlistRoomSummaries(): Promise<RoomSummary[]>;\nlistAdminEvents(limit: number): Promise<AdminEvent[]>;\nrecordAdminEvent(event: AdminEvent): Promise<void>;\ndeleteSeat(roomCode: string, seatIndex: number): Promise<boolean>;\n```\n\nتا آماده شدنشان، APIهای `src/app/api/admin/**` خودت را با داده‌ی mock بساز و بعد فقط منبع داده را عوض کن."
+    },
+    {
+      "number": 94,
+      "marker": "<!-- issue-sync:amir-account-note -->",
+      "body": "<!-- issue-sync:amir-account-note -->\n⚠️ **این Issue مال امیر است، ولی نتوانستیم مسئول (assignee) بگذاریم.**\n\nحساب `emirhamzehlou` در فهرست اعضای ریپو هست، اما GitHub با خطای «Could not resolve to a User» آن را نمی‌شناسد (کاربر ۴۰۴ برمی‌گرداند) — احتمالاً نام کاربری تغییر کرده است.\n\n**لطفاً در همین Issue نام کاربری درست گیت‌هاب را کامنت کن** تا با یک بار اجرای workflow «Issue sync» مسئول هم ثبت شود.\n\nتا آن موقع، این Issue و #94 / #101 مال تو هستند."
+    },
+    {
+      "number": 101,
+      "marker": "<!-- issue-sync:amir-account-note -->",
+      "body": "<!-- issue-sync:amir-account-note -->\n⚠️ **این Issue مال امیر است، ولی نتوانستیم مسئول (assignee) بگذاریم.**\n\nحساب `emirhamzehlou` در فهرست اعضای ریپو هست، اما GitHub با خطای «Could not resolve to a User» آن را نمی‌شناسد (کاربر ۴۰۴ برمی‌گرداند) — احتمالاً نام کاربری تغییر کرده است.\n\n**لطفاً در همین Issue نام کاربری درست گیت‌هاب را کامنت کن** تا با یک بار اجرای workflow «Issue sync» مسئول هم ثبت شود.\n\nتا آن موقع، این Issue و #94 / #101 مال تو هستند."
     }
   ],
   "close": [
