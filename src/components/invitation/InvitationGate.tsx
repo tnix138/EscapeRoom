@@ -26,8 +26,14 @@ export default function InvitationGate({ code, seatToken, requestedName, request
 
   useEffect(() => {
     let cancelled = false;
-    sessionStorage.setItem(`orfeo:${code}:${seatToken}`, seatToken);
-    localStorage.setItem(`orfeo:${code}:${seatToken}`, seatToken);
+    try {
+      // The room route reads a per-tab token so separate invitees can share this browser.
+      sessionStorage.setItem(`seat:${code}`, seatToken);
+      sessionStorage.setItem(`orfeo:${code}:${seatToken}`, seatToken);
+      localStorage.setItem(`orfeo:${code}:${seatToken}`, seatToken);
+    } catch {
+      // Storage is a convenience; the current invitation still has its token in memory.
+    }
 
     async function loadSeat() {
       try {

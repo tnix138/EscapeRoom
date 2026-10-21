@@ -23,6 +23,7 @@ import { useTheaterSession } from '@/client-sdk/index';
 import AlleyFirstPersonScene from '@/components/alley/AlleyFirstPersonScene';
 import FirstPersonCutsceneStage from '@/components/cinema/FirstPersonCutsceneStage';
 import DarkAuditoriumScene from '@/components/auditorium/DarkAuditoriumScene';
+import { resolveRoomPhase } from '@/components/room/resolve-room-phase';
 import type { AuditoriumHotspotId } from '@/contracts/types';
 import styles from './page.module.css';
 
@@ -135,7 +136,11 @@ function RoomExperience({ roomCode }: { roomCode: string }) {
     );
   }
 
-  if (room.phase === 'in_theater') {
+  /* اگر اسنپ‌شات SSE سرور کمی عقب باشد، گذار فصل‌ها با ساعت کات‌سین هم جلو می‌رود
+     (resolveRoomPhase از PR #18 امیرعلی؛ وضعیت مرجع همچنان سرور است). */
+  const displayPhase = resolveRoomPhase(room.phase, cutsceneElapsedMs);
+
+  if (displayPhase === 'in_theater') {
     return (
       <main className={styles.page}>
         <DarkAuditoriumScene
@@ -151,7 +156,7 @@ function RoomExperience({ roomCode }: { roomCode: string }) {
     );
   }
 
-  if (room.phase === 'door_cutscene' || room.phase === 'theater_cutscene') {
+  if (displayPhase === 'door_cutscene' || displayPhase === 'theater_cutscene') {
     return (
       <main className={styles.page}>
         <div className={styles.fullscreen}>

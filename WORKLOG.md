@@ -121,7 +121,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۸** — ✅ Archive: **۳۲** — 🧾 مجموع: **۴۰** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۷:۱۱:۳۳ (`2026-10-21T13:41:33.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۱۳** — ✅ Archive: **۳۲** — 🧾 مجموع: **۴۵** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۷:۱۱:۴۵ (`2026-10-21T13:41:45.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -131,18 +131,18 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:EVENTS:START -->
 | 🕒 زمان (ایران / UTC) | رویداد | شناسه لاگ | توسط |
 | --- | --- | --- | --- |
+| ۱۴۰۵/۰۷/۲۹ — ۱۷:۱۱:۴۵<br>`2026-10-21T13:41:45.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_17-11-45_amirali_invitation-room-entry-pr18`](./logs/pending/1405-07-29_17-11-45_amirali_invitation-room-entry-pr18.md) | **امیرعلی** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۷:۱۱:۳۴<br>`2026-10-21T13:41:34.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_17-11-34_amirali_invitation-room-entry-pr18`](./logs/pending/1405-07-29_17-11-34_amirali_invitation-room-entry-pr18.md) | **امیرعلی** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۷:۱۱:۳۳<br>`2026-10-21T13:41:33.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_17-11-33_alireza_pr-19-wave3`](./logs/pending/1405-07-29_17-11-33_alireza_pr-19-wave3.md) | **علیرضا** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۷:۱۱:۲۹<br>`2026-10-21T13:41:29.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_17-11-29_amirali_pr18-log-record`](./logs/pending/1405-07-29_17-11-29_amirali_pr18-log-record.md) | **امیرعلی** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۷:۱۰:۵۹<br>`2026-10-21T13:40:59.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_17-10-59_alireza_push`](./logs/pending/1405-07-29_17-10-59_alireza_push.md) | **علیرضا** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۷:۱۰:۳۷<br>`2026-10-21T13:40:37.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_17-10-37_amirali_invitation-room-entry`](./logs/pending/1405-07-29_17-10-37_amirali_invitation-room-entry.md) | **امیرعلی** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۷:۱۰:۲۸<br>`2026-10-21T13:40:28.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_17-10-28_alireza_wave3-horror-dark-auditorium`](./logs/pending/1405-07-29_17-10-28_alireza_wave3-horror-dark-auditorium.md) | **علیرضا** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۷:۰۹:۱۹<br>`2026-10-21T13:39:19.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_17-09-19_amirali_invitation-room-entry`](./logs/pending/1405-07-29_17-09-19_amirali_invitation-room-entry.md) | **امیرعلی** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۶:۵۴:۵۷<br>`2026-10-21T13:24:57.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_16-54-57_arena-agent_push-after-main-merge`](./logs/pending/1405-07-29_16-54-57_arena-agent_push-after-main-merge.md) | **ایجنت Arena** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۶:۵۲:۴۳<br>`2026-10-21T13:22:43.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_16-52-43_arena-agent_pr-17-worklog-system`](./logs/pending/1405-07-29_16-52-43_arena-agent_pr-17-worklog-system.md) | **ایجنت Arena** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۶:۵۲:۱۶<br>`2026-10-21T13:22:16.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_16-52-16_arena-agent_push`](./logs/pending/1405-07-29_16-52-16_arena-agent_push.md) | **ایجنت Arena** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۶:۵۲:۰۵<br>`2026-10-21T13:22:05.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_16-52-05_arena-agent_worklog-lifecycle-system`](./logs/pending/1405-07-29_16-52-05_arena-agent_worklog-lifecycle-system.md) | **ایجنت Arena** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۶:۵۰:۴۸<br>`2026-10-21T13:20:48.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_16-46-02_amirali_archive-pr14-worklogs`](./logs/archive/1405-07-29_16-46-02_amirali_archive-pr14-worklogs.md) | **توحید** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۶:۵۰:۴۸<br>`2026-10-21T13:20:48.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_16-46-02_amirali_pr-archive-pr14-worklogs`](./logs/archive/1405-07-29_16-46-02_amirali_pr-archive-pr14-worklogs.md) | **توحید** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۶:۴۹:۰۵<br>`2026-10-21T13:19:05.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_16-35-38_alireza_pr-13_wave1-wave2`](./logs/archive/1405-07-29_16-35-38_alireza_pr-13_wave1-wave2.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۶:۴۹:۰۵<br>`2026-10-21T13:19:05.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_16-34-04_infra-agent_pr-12_wave4-deploy`](./logs/archive/1405-07-29_16-34-04_infra-agent_pr-12_wave4-deploy.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۶:۴۹:۰۵<br>`2026-10-21T13:19:05.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_16-32-30_infra-agent_wave4-tohid-final-deploy-and-alireza-preview`](./logs/archive/1405-07-29_16-32-30_infra-agent_wave4-tohid-final-deploy-and-alireza-preview.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 <!-- WORKLOG:EVENTS:END -->
 
 ---
@@ -154,9 +154,14 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:PENDING:START -->
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- |
+| [`1405-07-29_17-11-45_amirali_invitation-room-entry-pr18`](./logs/pending/1405-07-29_17-11-45_amirali_invitation-room-entry-pr18.md) | پوش شاخه arena/6cc17c27-escaperoom — 3af751f | `Push` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۱۷:۱۱:۴۵<br>`2026-10-21T13:41:45.000Z` | origin/arena/6cc17c27-escaperoom (origin/main..3af751f) |
+| [`1405-07-29_17-11-34_amirali_invitation-room-entry-pr18`](./logs/pending/1405-07-29_17-11-34_amirali_invitation-room-entry-pr18.md) | PR #18 — تکمیل جریان دعوت تا اتاق | `PR` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۱۷:۱۱:۳۴<br>`2026-10-21T13:41:34.000Z` | PR #18 — https://github.com/tnix138/EscapeRoom/pull/18 |
 | [`1405-07-29_17-11-33_alireza_pr-19-wave3`](./logs/pending/1405-07-29_17-11-33_alireza_pr-19-wave3.md) | PR #19 — تحویل موج ۳ علیرضا | `PR` | **علیرضا** | ۱۴۰۵/۰۷/۲۹ — ۱۷:۱۱:۳۳<br>`2026-10-21T13:41:33.000Z` | PR #19 — arena/f2303553-escaperoom ➔ main |
+| [`1405-07-29_17-11-29_amirali_pr18-log-record`](./logs/pending/1405-07-29_17-11-29_amirali_pr18-log-record.md) | ثبت لاگ مستقل PR شماره ۱۸ | `Commit` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۱۷:۱۱:۲۹<br>`2026-10-21T13:41:29.000Z` | PR #18 |
 | [`1405-07-29_17-10-59_alireza_push`](./logs/pending/1405-07-29_17-10-59_alireza_push.md) | پوش شاخه arena/f2303553-escaperoom — f4776bd | `Push` | **علیرضا** | ۱۴۰۵/۰۷/۲۹ — ۱۷:۱۰:۵۹<br>`2026-10-21T13:40:59.000Z` | origin/arena/f2303553-escaperoom (origin/main..f4776bd) |
+| [`1405-07-29_17-10-37_amirali_invitation-room-entry`](./logs/pending/1405-07-29_17-10-37_amirali_invitation-room-entry.md) | پوش شاخه arena/6cc17c27-escaperoom — 1a911b7 | `Push` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۱۷:۱۰:۳۷<br>`2026-10-21T13:40:37.000Z` | origin/arena/6cc17c27-escaperoom (origin/main..1a911b7) |
 | [`1405-07-29_17-10-28_alireza_wave3-horror-dark-auditorium`](./logs/pending/1405-07-29_17-10-28_alireza_wave3-horror-dark-auditorium.md) | موج ۳ علیرضا — نیمه وحشت کات‌سین، سالن تاریک و صفحه اتاق نهایی | `Commit` | **علیرضا** | ۱۴۰۵/۰۷/۲۹ — ۱۷:۱۰:۲۸<br>`2026-10-21T13:40:28.000Z` | شاخه arena/f2303553-escaperoom — موج ۳ علیرضا (TASKS-ALIREZA.md) |
+| [`1405-07-29_17-09-19_amirali_invitation-room-entry`](./logs/pending/1405-07-29_17-09-19_amirali_invitation-room-entry.md) | اتصال دعوت‌نامه به اتاق واقعی | `Commit` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۱۷:۰۹:۱۹<br>`2026-10-21T13:39:19.000Z` | شاخه arena/6cc17c27-escaperoom |
 | [`1405-07-29_16-54-57_arena-agent_push-after-main-merge`](./logs/pending/1405-07-29_16-54-57_arena-agent_push-after-main-merge.md) | پوش پس از ادغام main — مهاجرت لاگ‌های جدید و همگام‌سازی | `Push` | **ایجنت Arena** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۵۴:۵۷<br>`2026-10-21T13:24:57.000Z` | origin/arena/8e9aee3f-escaperoom (5fba304) |
 | [`1405-07-29_16-52-43_arena-agent_pr-17-worklog-system`](./logs/pending/1405-07-29_16-52-43_arena-agent_pr-17-worklog-system.md) | PR #17 — سیستم کامل لاگ با چرخه عمر Pending ➔ Archive | `PR` | **ایجنت Arena** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۵۲:۴۳<br>`2026-10-21T13:22:43.000Z` | PR #17 — arena/8e9aee3f-escaperoom ➔ main |
 | [`1405-07-29_16-52-16_arena-agent_push`](./logs/pending/1405-07-29_16-52-16_arena-agent_push.md) | پوش شاخه arena/8e9aee3f-escaperoom — 57f1c65 | `Push` | **ایجنت Arena** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۵۲:۱۶<br>`2026-10-21T13:22:16.000Z` | origin/arena/8e9aee3f-escaperoom (origin/main..57f1c65) |
