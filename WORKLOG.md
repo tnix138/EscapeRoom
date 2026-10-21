@@ -121,7 +121,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۵۴** — ✅ Archive: **۱۱۵** — 🧾 مجموع: **۱۶۹** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۳:۴۳ (`2026-10-21T16:43:43.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۵۶** — ✅ Archive: **۱۱۵** — 🧾 مجموع: **۱۷۱** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۳:۴۳ (`2026-10-21T16:43:43.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -134,15 +134,15 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۳:۴۳<br>`2026-10-21T16:43:43.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-13-43_tohid_pr-wave10-final-audit`](./logs/pending/1405-07-29_20-13-43_tohid_pr-wave10-final-audit.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۳:۳۰<br>`2026-10-21T16:43:30.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-13-30_tohid_push-wave10-final-audit`](./logs/pending/1405-07-29_20-13-30_tohid_push-wave10-final-audit.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۳:۲۷<br>`2026-10-21T16:43:27.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-13-27_tohid_wave10-final-audit`](./logs/pending/1405-07-29_20-13-27_tohid_wave10-final-audit.md) | **توحید** |
+| ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۳:۰۵<br>`2026-10-21T16:43:05.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-13-05_amirali_push`](./logs/pending/1405-07-29_20-13-05_amirali_push.md) | **امیرعلی** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۱:۵۴<br>`2026-10-21T16:41:54.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-11-54_tohid_pr-wave9-persistent-exploration`](./logs/pending/1405-07-29_20-11-54_tohid_pr-wave9-persistent-exploration.md) | **توحید** |
+| ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۱:۴۶<br>`2026-10-21T16:41:46.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-11-46_amirali_wave5-reservation-entry`](./logs/pending/1405-07-29_20-11-46_amirali_wave5-reservation-entry.md) | **امیرعلی** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۱:۴۲<br>`2026-10-21T16:41:42.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-11-42_tohid_push-wave9-persistence`](./logs/pending/1405-07-29_20-11-42_tohid_push-wave9-persistence.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۱:۳۸<br>`2026-10-21T16:41:38.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-11-38_tohid_wave9-persistent-exploration`](./logs/pending/1405-07-29_20-11-38_tohid_wave9-persistent-exploration.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۹:۱۸<br>`2026-10-21T16:39:18.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-09-18_tohid_pr-wave8-closeout`](./logs/pending/1405-07-29_20-09-18_tohid_pr-wave8-closeout.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۹:۰۶<br>`2026-10-21T16:39:06.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-09-06_tohid_push-wave8-closeout`](./logs/pending/1405-07-29_20-09-06_tohid_push-wave8-closeout.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۹:۰۱<br>`2026-10-21T16:39:01.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-09-01_tohid_wave8-cutscene-closeout`](./logs/pending/1405-07-29_20-09-01_tohid_wave8-cutscene-closeout.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۷:۳۰<br>`2026-10-21T16:37:30.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-07-30_tohid_pr-wave7-theater-transition`](./logs/pending/1405-07-29_20-07-30_tohid_pr-wave7-theater-transition.md) | **توحید** |
-| ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۷:۱۷<br>`2026-10-21T16:37:17.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-07-17_tohid_push-wave7-transition`](./logs/pending/1405-07-29_20-07-17_tohid_push-wave7-transition.md) | **توحید** |
-| ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۷:۱۳<br>`2026-10-21T16:37:13.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-07-13_tohid_wave7-theater-transition`](./logs/pending/1405-07-29_20-07-13_tohid_wave7-theater-transition.md) | **توحید** |
 <!-- WORKLOG:EVENTS:END -->
 
 ---
@@ -157,7 +157,9 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | [`1405-07-29_20-13-43_tohid_pr-wave10-final-audit`](./logs/pending/1405-07-29_20-13-43_tohid_pr-wave10-final-audit.md) | ثبت PR #57 — ممیزی نهایی ده موج توحید | `PR` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۳:۴۳<br>`2026-10-21T16:43:43.000Z` | https://github.com/tnix138/EscapeRoom/pull/57 |
 | [`1405-07-29_20-13-30_tohid_push-wave10-final-audit`](./logs/pending/1405-07-29_20-13-30_tohid_push-wave10-final-audit.md) | پوش ممیزی نهایی موج ۱۰ | `Push` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۳:۳۰<br>`2026-10-21T16:43:30.000Z` | origin/arena/bab0d18a-escaperoom (origin/main..4fe91b5) |
 | [`1405-07-29_20-13-27_tohid_wave10-final-audit`](./logs/pending/1405-07-29_20-13-27_tohid_wave10-final-audit.md) | بستن موج ۹ و ثبت ممیزی موج ۱۰ | `Commit` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۳:۲۷<br>`2026-10-21T16:43:27.000Z` | PR #55 merge 500be9f |
+| [`1405-07-29_20-13-05_amirali_push`](./logs/pending/1405-07-29_20-13-05_amirali_push.md) | پوش شاخه arena/27e693e0-escaperoom — 1c3c2d0 | `Push` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۳:۰۵<br>`2026-10-21T16:43:05.000Z` | origin/arena/27e693e0-escaperoom (origin/main..1c3c2d0) |
 | [`1405-07-29_20-11-54_tohid_pr-wave9-persistent-exploration`](./logs/pending/1405-07-29_20-11-54_tohid_pr-wave9-persistent-exploration.md) | ثبت PR #55 — کاوش پایدار سالن موج ۹ | `PR` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۱:۵۴<br>`2026-10-21T16:41:54.000Z` | https://github.com/tnix138/EscapeRoom/pull/55 |
+| [`1405-07-29_20-11-46_amirali_wave5-reservation-entry`](./logs/pending/1405-07-29_20-11-46_amirali_wave5-reservation-entry.md) | موج ۵ — رزرو تا ورود: فرم سه‌تا‌هشت‌نفره، خطای هر فیلد، کپی/اشتراک دعوت‌نامه‌ها و قرارداد ورود | `Commit` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۱:۴۶<br>`2026-10-21T16:41:46.000Z` | شاخه arena/27e693e0-escaperoom |
 | [`1405-07-29_20-11-42_tohid_push-wave9-persistence`](./logs/pending/1405-07-29_20-11-42_tohid_push-wave9-persistence.md) | پوش آزمون کاوش پایدار موج ۹ | `Push` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۱:۴۲<br>`2026-10-21T16:41:42.000Z` | origin/arena/bab0d18a-escaperoom (origin/main..b2d8385) |
 | [`1405-07-29_20-11-38_tohid_wave9-persistent-exploration`](./logs/pending/1405-07-29_20-11-38_tohid_wave9-persistent-exploration.md) | موج ۹ توحید — پایداری کاوش hotspotها | `Commit` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۱:۳۸<br>`2026-10-21T16:41:38.000Z` | شاخه arena/bab0d18a-escaperoom |
 | [`1405-07-29_20-09-18_tohid_pr-wave8-closeout`](./logs/pending/1405-07-29_20-09-18_tohid_pr-wave8-closeout.md) | ثبت PR #53 — بستن موج‌های ۷ و ۸ | `PR` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۹:۱۸<br>`2026-10-21T16:39:18.000Z` | https://github.com/tnix138/EscapeRoom/pull/53 |
