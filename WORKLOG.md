@@ -121,7 +121,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۲۶** — ✅ Archive: **۱۵۰** — 🧾 مجموع: **۱۷۶** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۸:۰۲ (`2026-10-21T16:48:02.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۲۴** — ✅ Archive: **۱۵۴** — 🧾 مجموع: **۱۷۸** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۹:۱۶ (`2026-10-21T16:49:16.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -131,18 +131,18 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:EVENTS:START -->
 | 🕒 زمان (ایران / UTC) | رویداد | شناسه لاگ | توسط |
 | --- | --- | --- | --- |
-| ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۸:۰۲<br>`2026-10-21T16:48:02.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-18-02_tohid_pr-59-tohid-final-hardening`](./logs/pending/1405-07-29_20-18-02_tohid_pr-59-tohid-final-hardening.md) | **توحید** |
-| ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۸:۰۲<br>`2026-10-21T16:48:02.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-18-02_tohid_push`](./logs/pending/1405-07-29_20-18-02_tohid_push.md) | **توحید** |
-| ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۷:۴۷<br>`2026-10-21T16:47:47.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-17-47_tohid_push`](./logs/pending/1405-07-29_20-17-47_tohid_push.md) | **توحید** |
-| ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۷:۴۷<br>`2026-10-21T16:47:47.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-17-47_tohid_wave8-10-hardening-and-archive`](./logs/pending/1405-07-29_20-17-47_tohid_wave8-10-hardening-and-archive.md) | **توحید** |
+| ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۹:۱۶<br>`2026-10-21T16:49:16.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-19-16_tohid_push`](./logs/pending/1405-07-29_20-19-16_tohid_push.md) | **توحید** |
+| ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۹:۱۵<br>`2026-10-21T16:49:15.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-19-15_tohid_final-archive-pr59`](./logs/pending/1405-07-29_20-19-15_tohid_final-archive-pr59.md) | **توحید** |
+| ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۹:۱۵<br>`2026-10-21T16:49:15.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_20-18-02_tohid_pr-59-tohid-final-hardening`](./logs/archive/1405-07-29_20-18-02_tohid_pr-59-tohid-final-hardening.md) | **توحید** |
+| ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۹:۱۵<br>`2026-10-21T16:49:15.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_20-18-02_tohid_push`](./logs/archive/1405-07-29_20-18-02_tohid_push.md) | **توحید** |
+| ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۹:۱۵<br>`2026-10-21T16:49:15.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_20-17-47_tohid_push`](./logs/archive/1405-07-29_20-17-47_tohid_push.md) | **توحید** |
+| ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۹:۱۵<br>`2026-10-21T16:49:15.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_20-17-47_tohid_wave8-10-hardening-and-archive`](./logs/archive/1405-07-29_20-17-47_tohid_wave8-10-hardening-and-archive.md) | **توحید** |
+| ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۸:۰۲<br>`2026-10-21T16:48:02.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-18-02_tohid_pr-59-tohid-final-hardening`](./logs/archive/1405-07-29_20-18-02_tohid_pr-59-tohid-final-hardening.md) | **توحید** |
+| ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۸:۰۲<br>`2026-10-21T16:48:02.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-18-02_tohid_push`](./logs/archive/1405-07-29_20-18-02_tohid_push.md) | **توحید** |
+| ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۷:۴۷<br>`2026-10-21T16:47:47.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-17-47_tohid_push`](./logs/archive/1405-07-29_20-17-47_tohid_push.md) | **توحید** |
+| ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۷:۴۷<br>`2026-10-21T16:47:47.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-17-47_tohid_wave8-10-hardening-and-archive`](./logs/archive/1405-07-29_20-17-47_tohid_wave8-10-hardening-and-archive.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۶:۴۹<br>`2026-10-21T16:46:49.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_20-13-43_tohid_pr-wave10-final-audit`](./logs/archive/1405-07-29_20-13-43_tohid_pr-wave10-final-audit.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۶:۴۸<br>`2026-10-21T16:46:48.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_20-13-30_tohid_push-wave10-final-audit`](./logs/archive/1405-07-29_20-13-30_tohid_push-wave10-final-audit.md) | **توحید** |
-| ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۶:۴۸<br>`2026-10-21T16:46:48.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_20-13-27_tohid_wave10-final-audit`](./logs/archive/1405-07-29_20-13-27_tohid_wave10-final-audit.md) | **توحید** |
-| ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۶:۴۸<br>`2026-10-21T16:46:48.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_20-11-54_tohid_pr-wave9-persistent-exploration`](./logs/archive/1405-07-29_20-11-54_tohid_pr-wave9-persistent-exploration.md) | **توحید** |
-| ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۶:۴۸<br>`2026-10-21T16:46:48.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_20-11-42_tohid_push-wave9-persistence`](./logs/archive/1405-07-29_20-11-42_tohid_push-wave9-persistence.md) | **توحید** |
-| ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۶:۴۸<br>`2026-10-21T16:46:48.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_20-11-38_tohid_wave9-persistent-exploration`](./logs/archive/1405-07-29_20-11-38_tohid_wave9-persistent-exploration.md) | **توحید** |
-| ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۶:۴۸<br>`2026-10-21T16:46:48.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_20-09-18_tohid_pr-wave8-closeout`](./logs/archive/1405-07-29_20-09-18_tohid_pr-wave8-closeout.md) | **توحید** |
-| ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۶:۴۸<br>`2026-10-21T16:46:48.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_20-09-06_tohid_push-wave8-closeout`](./logs/archive/1405-07-29_20-09-06_tohid_push-wave8-closeout.md) | **توحید** |
 <!-- WORKLOG:EVENTS:END -->
 
 ---
@@ -154,10 +154,8 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:PENDING:START -->
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- |
-| [`1405-07-29_20-18-02_tohid_pr-59-tohid-final-hardening`](./logs/pending/1405-07-29_20-18-02_tohid_pr-59-tohid-final-hardening.md) | ثبت PR #59 — سخت‌سازی سرور، ساعت/polling، تست Supabase و آرشیو ۳۵ لاگ توحید | `PR` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۸:۰۲<br>`2026-10-21T16:48:02.000Z` | https://github.com/tnix138/EscapeRoom/pull/59 |
-| [`1405-07-29_20-18-02_tohid_push`](./logs/pending/1405-07-29_20-18-02_tohid_push.md) | پوش شاخه arena/53ea6dd4-escaperoom — d3821f9 | `Push` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۸:۰۲<br>`2026-10-21T16:48:02.000Z` | origin/arena/53ea6dd4-escaperoom (origin/arena/53ea6dd4-escaperoom..d3821f9) |
-| [`1405-07-29_20-17-47_tohid_push`](./logs/pending/1405-07-29_20-17-47_tohid_push.md) | پوش شاخه arena/53ea6dd4-escaperoom — 34eae8c | `Push` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۷:۴۷<br>`2026-10-21T16:47:47.000Z` | origin/arena/53ea6dd4-escaperoom (origin/main..34eae8c) |
-| [`1405-07-29_20-17-47_tohid_wave8-10-hardening-and-archive`](./logs/pending/1405-07-29_20-17-47_tohid_wave8-10-hardening-and-archive.md) | سخت‌سازی سرور و ساعت کات‌سین، تست Supabase و آرشیو ۳۵ لاگ توحید | `Commit` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۷:۴۷<br>`2026-10-21T16:47:47.000Z` | شاخه arena/53ea6dd4-escaperoom |
+| [`1405-07-29_20-19-16_tohid_push`](./logs/pending/1405-07-29_20-19-16_tohid_push.md) | پوش شاخه arena/53ea6dd4-escaperoom — 9d17874 | `Push` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۹:۱۶<br>`2026-10-21T16:49:16.000Z` | origin/arena/53ea6dd4-escaperoom (origin/arena/53ea6dd4-escaperoom..9d17874) |
+| [`1405-07-29_20-19-15_tohid_final-archive-pr59`](./logs/pending/1405-07-29_20-19-15_tohid_final-archive-pr59.md) | آرشیو نهایی لاگ‌های PR #59 توحید | `Commit` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۹:۱۵<br>`2026-10-21T16:49:15.000Z` | PR #59 — شاخه arena/53ea6dd4-escaperoom |
 | [`1405-07-29_20-16-27_amirali_pr-56-wave5-reservation-entry`](./logs/pending/1405-07-29_20-16-27_amirali_pr-56-wave5-reservation-entry.md) | PR #56 — موج ۵ امیرعلی: رزرو تا ورود | `PR` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۶:۲۷<br>`2026-10-21T16:46:27.000Z` | PR #56 — arena/27e693e0-escaperoom ➔ main |
 | [`1405-07-29_20-13-05_amirali_push`](./logs/pending/1405-07-29_20-13-05_amirali_push.md) | پوش شاخه arena/27e693e0-escaperoom — 1c3c2d0 | `Push` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۳:۰۵<br>`2026-10-21T16:43:05.000Z` | origin/arena/27e693e0-escaperoom (origin/main..1c3c2d0) |
 | [`1405-07-29_20-11-46_amirali_wave5-reservation-entry`](./logs/pending/1405-07-29_20-11-46_amirali_wave5-reservation-entry.md) | موج ۵ — رزرو تا ورود: فرم سه‌تا‌هشت‌نفره، خطای هر فیلد، کپی/اشتراک دعوت‌نامه‌ها و قرارداد ورود | `Commit` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۱:۴۶<br>`2026-10-21T16:41:46.000Z` | شاخه arena/27e693e0-escaperoom |
@@ -191,6 +189,10 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:ARCHIVE:START -->
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | آرشیو شده توسط | زمان آرشیو (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- | --- | --- |
+| [`1405-07-29_20-18-02_tohid_pr-59-tohid-final-hardening`](./logs/archive/1405-07-29_20-18-02_tohid_pr-59-tohid-final-hardening.md) | ثبت PR #59 — سخت‌سازی سرور، ساعت/polling، تست Supabase و آرشیو ۳۵ لاگ توحید | `PR` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۸:۰۲<br>`2026-10-21T16:48:02.000Z` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۹:۱۵<br>`2026-10-21T16:49:15.000Z` | https://github.com/tnix138/EscapeRoom/pull/59 |
+| [`1405-07-29_20-18-02_tohid_push`](./logs/archive/1405-07-29_20-18-02_tohid_push.md) | پوش شاخه arena/53ea6dd4-escaperoom — d3821f9 | `Push` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۸:۰۲<br>`2026-10-21T16:48:02.000Z` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۹:۱۵<br>`2026-10-21T16:49:15.000Z` | origin/arena/53ea6dd4-escaperoom (origin/arena/53ea6dd4-escaperoom..d3821f9) |
+| [`1405-07-29_20-17-47_tohid_push`](./logs/archive/1405-07-29_20-17-47_tohid_push.md) | پوش شاخه arena/53ea6dd4-escaperoom — 34eae8c | `Push` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۷:۴۷<br>`2026-10-21T16:47:47.000Z` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۹:۱۵<br>`2026-10-21T16:49:15.000Z` | origin/arena/53ea6dd4-escaperoom (origin/main..34eae8c) |
+| [`1405-07-29_20-17-47_tohid_wave8-10-hardening-and-archive`](./logs/archive/1405-07-29_20-17-47_tohid_wave8-10-hardening-and-archive.md) | سخت‌سازی سرور و ساعت کات‌سین، تست Supabase و آرشیو ۳۵ لاگ توحید | `Commit` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۷:۴۷<br>`2026-10-21T16:47:47.000Z` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۹:۱۵<br>`2026-10-21T16:49:15.000Z` | شاخه arena/53ea6dd4-escaperoom |
 | [`1405-07-29_20-13-43_tohid_pr-wave10-final-audit`](./logs/archive/1405-07-29_20-13-43_tohid_pr-wave10-final-audit.md) | ثبت PR #57 — ممیزی نهایی ده موج توحید | `PR` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۳:۴۳<br>`2026-10-21T16:43:43.000Z` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۶:۴۹<br>`2026-10-21T16:46:49.000Z` | https://github.com/tnix138/EscapeRoom/pull/57 |
 | [`1405-07-29_20-13-30_tohid_push-wave10-final-audit`](./logs/archive/1405-07-29_20-13-30_tohid_push-wave10-final-audit.md) | پوش ممیزی نهایی موج ۱۰ | `Push` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۳:۳۰<br>`2026-10-21T16:43:30.000Z` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۶:۴۸<br>`2026-10-21T16:46:48.000Z` | origin/arena/bab0d18a-escaperoom (origin/main..4fe91b5) |
 | [`1405-07-29_20-13-27_tohid_wave10-final-audit`](./logs/archive/1405-07-29_20-13-27_tohid_wave10-final-audit.md) | بستن موج ۹ و ثبت ممیزی موج ۱۰ | `Commit` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۳:۲۷<br>`2026-10-21T16:43:27.000Z` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۶:۴۸<br>`2026-10-21T16:46:48.000Z` | PR #55 merge 500be9f |
