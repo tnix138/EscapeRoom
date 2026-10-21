@@ -4,6 +4,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterEach, afterAll, beforeEach, describe, expect, it } from 'vitest';
 import { resetRateLimits } from '../../src/server/auth/rate-limit';
+import { POST as presenceRoute } from '../../src/app/api/rooms/[code]/presence/route';
 import { SqliteRoomRepository } from '../../src/server/db/sqlite-repository';
 import {
   PRESENCE_MAX_PLAYERS,
@@ -196,6 +197,21 @@ describe('فاز ۰۳ — انبار حافظه‌ای حضور', () => {
     expect(calls).toBe(2);
   });
 
+  it('خطای یک شنونده، ثبت حضور و بقیهٔ شنونده‌ها را خراب نمی‌کند', () => {
+    let healthy = 0;
+    subscribePresence('ROOM07', () => {
+      throw new Error('listener boom');
+    });
+    subscribePresence('ROOM07', () => {
+      healthy += 1;
+    });
+    expect(() =>
+      publishPresence('ROOM07', sanitizePresenceInput(validInput(), identity, NOW)!),
+    ).not.toThrow();
+    expect(healthy).toBe(1);
+    expect(listPresence('ROOM07', NOW)).toHaveLength(1);
+  });
+
   it('امضای قاب با حرکت عوض می‌شود و برای فهرست خالی خالی است', () => {
     const first = listPresence('ROOM06', NOW);
     expect(presenceSignature(first)).toBe('');
@@ -335,6 +351,26 @@ describe('فاز ۰۳ — اتصال به استریم SSE', () => {
     expect(streamSource).toContain('if (unsubscribePresence) unsubscribePresence();');
     const occurrences = streamSource.split('unsubscribePresence()').length - 1;
     expect(occurrences).toBeGreaterThanOrEqual(2); // هم abort و هم cancel
+  });
+
+  it('بدنهٔ حجیم پیش از خواندن دیتابیس با ۴۱۳ رد می‌شود', async () => {
+    const huge = JSON.stringify({ position: { x: 0, y: 1, z: 0 }, yaw: 0, pad: 'x'.repeat(5_000) });
+    const response = await presenceRoute(
+      new Request('http://localhost/api/rooms/ABC123/presence', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', 'x-seat-token': 'x'.repeat(48) },
+        body: huge,
+      }),
+      { params: Promise.resolve({ code: 'ABC123' }) },
+    );
+    expect(response.status).toBe(413);
+    expect(response.headers.get('cache-control')).toBe('no-store');
+    expect((await response.json()).error.code).toBe('VALIDATION_ERROR');
+  });
+
+  it('پاسخ‌های حضور کش نمی‌شوند (موقعیت همیشه تازه است)', () => {
+    expect(routeSource).toContain("'Cache-Control': 'no-store'");
+    expect(routeSource).toContain('PRESENCE_MAX_BODY_BYTES');
   });
 
   it('مسیر حضور فقط GET و POST دارد و هویت را از هدر می‌خواند', () => {

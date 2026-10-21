@@ -32,6 +32,7 @@ import {
   clockOffsetFromFrame,
   mergePresenceFrames,
   presenceEndpoint,
+  presenceProbeRetryDelay,
   presenceStreamUrl,
   readPresenceFrame,
   serverClockNow,
@@ -235,34 +236,57 @@ export function usePresenceFeed({
     };
 
     // ۱) بررسی وجود سرویس (فاز ۰۳). در نبودش، HUD بی‌صدا می‌ماند.
-    const controller = typeof AbortController === 'function' ? new AbortController() : null;
-    const probeTimeout = setTimeout(() => controller?.abort(), PRESENCE_PROBE_TIMEOUT_MS);
+    //    خطای گذرا (ری‌استارت سرور) باعث خاموشی دائمی نمی‌شود: حداکثر سه
+    //    تلاش دوباره با فاصلهٔ ۵/۱۵/۳۰ ثانیه، بعد سکوت کامل.
+    let probeAttempt = 0;
+    let retryTimer: ReturnType<typeof setTimeout> | null = null;
+    let controller: AbortController | null = null;
 
-    fetch(`${presenceEndpoint(roomCode)}?token=${encodeURIComponent(token)}`, {
-      headers: { 'x-seat-token': token },
-      cache: 'no-store',
-      signal: controller?.signal,
-    })
-      .then((response) => {
-        clearTimeout(probeTimeout);
-        if (disposed) return;
-        // 404/501 یعنی فاز ۰۳ هنوز سوار نشده؛ 401/403 یعنی توکن معتبر نیست.
-        const usable = response.ok;
-        setState((previous) => ({ ...previous, available: usable }));
-        if (!usable) return;
-        startStreaming();
-        publishTimer = setInterval(sendPresence, PRESENCE_SEND_INTERVAL_MS);
-        pruneTimer = setInterval(prune, 1_000);
-        sendPresence();
+    const probe = () => {
+      if (disposed) return;
+      controller = typeof AbortController === 'function' ? new AbortController() : null;
+      const probeTimeout = setTimeout(() => controller?.abort(), PRESENCE_PROBE_TIMEOUT_MS);
+
+      fetch(`${presenceEndpoint(roomCode)}?token=${encodeURIComponent(token)}`, {
+        headers: { 'x-seat-token': token },
+        cache: 'no-store',
+        signal: controller?.signal,
       })
-      .catch(() => {
-        clearTimeout(probeTimeout);
-        if (!disposed) setState({ available: false, presences: [], serverNow: null });
-      });
+        .then((response) => {
+          clearTimeout(probeTimeout);
+          if (disposed) return;
+          // ۴۰۴/۵۰۱ یعنی سرویس حضور هنوز سوار نشده؛ ۴۰۱/۴۰۳ یعنی توکن معتبر نیست.
+          if (!response.ok) {
+            const delay = presenceProbeRetryDelay(probeAttempt);
+            probeAttempt += 1;
+            if (delay !== null) {
+              retryTimer = setTimeout(probe, delay);
+            } else {
+              setState({ available: false, presences: [], serverNow: null });
+            }
+            return;
+          }
+          setState((previous) => ({ ...previous, available: true }));
+          startStreaming();
+          publishTimer = setInterval(sendPresence, PRESENCE_SEND_INTERVAL_MS);
+          pruneTimer = setInterval(prune, 1_000);
+          sendPresence();
+        })
+        .catch(() => {
+          clearTimeout(probeTimeout);
+          if (disposed) return;
+          const delay = presenceProbeRetryDelay(probeAttempt);
+          probeAttempt += 1;
+          if (delay !== null) retryTimer = setTimeout(probe, delay);
+          else setState({ available: false, presences: [], serverNow: null });
+        });
+    };
+
+    probe();
 
     return () => {
       disposed = true;
-      clearTimeout(probeTimeout);
+      if (retryTimer) clearTimeout(retryTimer);
       controller?.abort();
       stopPublishing();
       if (pruneTimer) clearInterval(pruneTimer);

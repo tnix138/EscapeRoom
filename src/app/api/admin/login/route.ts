@@ -36,7 +36,10 @@ export async function POST(req: Request) {
         ok: false,
         error: {
           code: 'ADMIN_NOT_CONFIGURED',
-          message: 'ورود مدیریت پیکربندی نشده است؛ ADMIN_USERNAME و ADMIN_SESSION_SECRET را تنظیم کنید.',
+          message:
+            process.env.NODE_ENV === 'production'
+              ? 'ورود مدیریت پیکربندی نشده است.'
+              : 'ورود مدیریت پیکربندی نشده است؛ ADMIN_USERNAME و ADMIN_SESSION_SECRET را تنظیم کنید.',
         },
       },
       { status: 503 },

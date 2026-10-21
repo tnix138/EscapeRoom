@@ -15,6 +15,10 @@ import {
   yawRadiansToDegrees,
 } from '../../src/components/hud/presence/presence-contract';
 import {
+  presenceProbeRetryDelay,
+  PRESENCE_PROBE_RETRY_DELAYS_MS,
+} from '../../src/components/hud/presence/presence-contract';
+import {
   PRESENCE_COALESCE_MS,
   PRESENCE_KEEPALIVE_MS,
   PRESENCE_MAX_FAILURES,
@@ -199,8 +203,8 @@ describe('فاز ۱۲ — اتصال به نمای کوچه', () => {
 
   it('در نبود سرویس حضور، HUD بی‌صدا می‌ماند (بدون ۴۰۴ پشت‌سرهم)', () => {
     expect(feedSource).toContain('PRESENCE_PROBE_TIMEOUT_MS');
-    expect(feedSource).toContain("const usable = response.ok;");
-    expect(feedSource).toContain('if (!usable) return;');
+    expect(feedSource).toContain('if (!response.ok) {');
+    expect(feedSource).toContain('presenceProbeRetryDelay(probeAttempt)');
     expect(feedSource).not.toMatch(/setInterval\(\s*sendPresence\s*,\s*PRESENCE_SEND_INTERVAL_MS\s*\);\s*\/\/\s*always/);
     expect(PRESENCE_PROBE_TIMEOUT_MS).toBeGreaterThanOrEqual(1_000);
     expect(PRESENCE_MAX_FAILURES).toBeGreaterThan(1);
@@ -230,5 +234,26 @@ describe('فاز ۱۲ — اتصال به نمای کوچه', () => {
 
   it('خواندن توکن در محیط بدون window خطا نمی‌دهد', () => {
     expect(readStoredSeatToken('ABC123')).toBeNull();
+  });
+
+  it('در نبود موقت سرویس، probe تا سه بار با فاصلهٔ فزاینده تلاش می‌کند', () => {
+    expect(presenceProbeRetryDelay(0)).toBe(PRESENCE_PROBE_RETRY_DELAYS_MS[0]);
+    expect(presenceProbeRetryDelay(1)).toBe(PRESENCE_PROBE_RETRY_DELAYS_MS[1]);
+    expect(presenceProbeRetryDelay(2)).toBe(PRESENCE_PROBE_RETRY_DELAYS_MS[2]);
+    expect(presenceProbeRetryDelay(3)).toBeNull();
+    expect(presenceProbeRetryDelay(-1)).toBeNull();
+    expect(presenceProbeRetryDelay(Number.NaN)).toBeNull();
+    // فاصله‌ها باید صعودی باشند تا سیل درخواست نسازیم.
+    const delays = [...PRESENCE_PROBE_RETRY_DELAYS_MS];
+    expect(delays).toEqual([...delays].sort((a, b) => a - b));
+    expect(feedSource).toContain('presenceProbeRetryDelay(probeAttempt)');
+  });
+
+  it('چرخش منفی یا بیش از ۳۶۰ درجه به [۰, ۳۶۰) نرمال می‌شود', () => {
+    const withYaw = (yaw: number) =>
+      normalizeRemotePlayer({ playerId: 'p', position: { x: 0, y: 0, z: 0 }, yaw })!.yawDeg;
+    expect(withYaw(-Math.PI / 2)).toBeCloseTo(270, 6);
+    expect(withYaw(Math.PI * 4 + Math.PI / 2)).toBeCloseTo(90, 6);
+    expect(withYaw(0)).toBe(0);
   });
 });

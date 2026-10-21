@@ -185,3 +185,15 @@ export function clockOffsetFromFrame(serverNow: number | null, receivedAt: numbe
 export function serverClockNow(offset: number, clientNow = Date.now()): number {
   return clientNow + (Number.isFinite(offset) ? offset : 0);
 }
+
+/**
+ * تأخیر تلاش دوبارهٔ probe وقتی سرویس حضور موقتاً در دسترس نیست (ms).
+ * `null` یعنی تلاش دیگری نکن. سه تلاش با فاصلهٔ فزاینده کافی است تا یک
+ * ری‌استارت کوتاه سرور، HUD را برای کل جلسه خاموش نکند.
+ */
+export const PRESENCE_PROBE_RETRY_DELAYS_MS = [5_000, 15_000, 30_000] as const;
+
+export function presenceProbeRetryDelay(attempt: number): number | null {
+  if (!Number.isFinite(attempt) || attempt < 0) return null;
+  return PRESENCE_PROBE_RETRY_DELAYS_MS[Math.floor(attempt)] ?? null;
+}

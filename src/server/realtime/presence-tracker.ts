@@ -183,7 +183,15 @@ export function publishPresence(roomCode: string, record: PresenceRecord): void 
   room.set(record.playerId, record);
 
   const set = listeners.get(roomCode);
-  if (set) for (const listener of set) listener(roomCode);
+  if (set) {
+    for (const listener of set) {
+      try {
+        listener(roomCode);
+      } catch {
+        // خطای یک شنوندهٔ SSE نباید ثبت حضور بقیه را خراب کند.
+      }
+    }
+  }
 }
 
 /** فهرست زندهٔ اتاق، مرتب بر اساس صندلی؛ ورودی‌های کهنه حذف می‌شوند. */
