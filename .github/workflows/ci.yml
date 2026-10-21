@@ -1,0 +1,65 @@
+# CI — هر push به شاخهٔ ایجنت‌ها: typecheck، lint، تست و build
+# منبع: docs/AUTO.md و docs/RULES.md قانون ۵ و ۸
+name: CI
+
+on:
+  push:
+    branches:
+      - 'agent/**'
+      - 'arena/**'
+      - 'phase/**'
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: typecheck + lint + test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: نصب وابستگی‌ها
+        run: npm ci
+
+      - name: بررسی تایپ‌ها
+        run: npm run typecheck
+
+      - name: لینت
+        run: npm run lint
+
+      - name: تست‌ها
+        run: npm test
+
+  build:
+    name: build تولیدی
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: نصب وابستگی‌ها
+        run: npm ci
+
+      - name: ساخت نسخهٔ تولیدی
+        run: npm run build
+        env:
+          NEXT_TELEMETRY_DISABLED: '1'

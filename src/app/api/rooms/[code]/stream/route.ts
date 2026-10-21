@@ -4,6 +4,8 @@ import type { ClientRoomView } from '../../../../../contracts/types';
 import { projectRoomView } from '../../../../../engine/view-projector';
 import { subscribeRoom } from '../../../../../server/realtime/room-hub';
 import { shouldSendRoomViewUpdate } from '../../../../../server/realtime/presence';
+import { createPresenceCoalescer } from '../../../../../server/presence/presence-coalescer';
+import { getRoomPresence, subscribePresence } from '../../../../../server/presence/presence-store';
 import {
   GameServiceError,
   findSeatIndexByToken,
@@ -52,6 +54,8 @@ export async function GET(
   let unsubscribe: (() => void) | null = null;
   let heartbeat: ReturnType<typeof setInterval> | null = null;
   let presenceHeartbeat: ReturnType<typeof setInterval> | null = null;
+  let presenceCoalescer: ReturnType<typeof createPresenceCoalescer> | null = null;
+  let unsubscribePresence: (() => void) | null = null;
   let lastSentVersion = 0;
   let lastOnlineSignature = '';
 
@@ -74,6 +78,18 @@ export async function GET(
       // وضعیت فعلی بلافاصله ارسال می‌شود تا کلاینت بدون انتظار به‌روز شود
       lastSentVersion = initialView.version;
       sendRoomView(initialView);
+
+      // حضور هم‌تیمی‌ها: فوراً آخرین وضعیت، بعد از آن هر تغییر با هم‌جوشی ۵۰ms
+      presenceCoalescer = createPresenceCoalescer((presences) => {
+        send('presence_update', { presences, serverNow: Date.now() });
+      });
+      send('presence_update', {
+        presences: getRoomPresence(code, Date.now()),
+        serverNow: Date.now(),
+      });
+      unsubscribePresence = subscribePresence(code, (presences) => {
+        presenceCoalescer?.push(presences);
+      });
 
       unsubscribe = subscribeRoom(code, (state) => {
         if (state.version <= lastSentVersion) return;
@@ -123,8 +139,12 @@ export async function GET(
         if (heartbeat) clearInterval(heartbeat);
         if (presenceHeartbeat) clearInterval(presenceHeartbeat);
         if (unsubscribe) unsubscribe();
+        if (unsubscribePresence) unsubscribePresence();
+        presenceCoalescer?.dispose();
         heartbeat = null;
         presenceHeartbeat = null;
+        presenceCoalescer = null;
+        unsubscribePresence = null;
         unsubscribe = null;
       };
 
@@ -141,8 +161,12 @@ export async function GET(
       if (heartbeat) clearInterval(heartbeat);
       if (presenceHeartbeat) clearInterval(presenceHeartbeat);
       if (unsubscribe) unsubscribe();
+      if (unsubscribePresence) unsubscribePresence();
+      presenceCoalescer?.dispose();
       heartbeat = null;
       presenceHeartbeat = null;
+      presenceCoalescer = null;
+      unsubscribePresence = null;
       unsubscribe = null;
     },
   });
