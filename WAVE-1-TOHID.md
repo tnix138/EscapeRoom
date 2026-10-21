@@ -1,7 +1,7 @@
 ---
 agent: Tohid
 wave: 1
-status: READY_FOR_AGENT_REVIEW
+status: COMPLETE_AFTER_OWNER_APPROVAL
 audience: coding_agent_only
 code_changes: prohibited
 ---

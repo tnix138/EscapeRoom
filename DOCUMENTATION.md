@@ -43,8 +43,8 @@ legacy_docs:
   files: [PROJECT.md, ARCHITECTURE.md, API-CONTRACT.md, TEAM.md, TASKS-TOHID.md, TASKS-AMIRALI.md, TASKS-ALIREZA.md, TASKS-INFRA-AGENT.md]
   use: historical/context only; do not treat as active task instructions
 conflict_rule: this file + assigned wave file win over legacy docs
-current_phase: wave_1_owner_confirmation
-wave_1_status: consolidated_review_recorded_owner_confirmation_pending
+current_phase: wave_2_runtime_contract
+wave_1_status: accepted_after_owner_confirmation
 implementation_authorization: no_game_code_in_wave_1
 ```
 
