@@ -1,12 +1,20 @@
 'use client';
 
-import { FormEvent, useMemo, useState } from 'react';
+import { FormEvent, useMemo, useRef, useState } from 'react';
 import InviteLinksDeck, { HostReservationResult } from './InviteLinksDeck';
-import { validateGuestNames } from './validation';
+import {
+  MAX_NAME_LENGTH,
+  MAX_PLAYERS,
+  MIN_PLAYERS,
+  guestCountLabel,
+  normalizeGuestName,
+  seatLabelForIndex,
+  toPersianDigits,
+  validateReservation,
+} from './reservation-rules';
 
-const MIN_PLAYERS = 3;
-const MAX_PLAYERS = 8;
 const SAMPLE_NAMES = ['توحید', 'امیرعلی', 'علیرضا', 'سارا', 'آرمان', 'نورا', 'مانی', 'رها'];
+const COUNTS = Array.from({ length: MAX_PLAYERS - MIN_PLAYERS + 1 }, (_, offset) => MIN_PLAYERS + offset);
 
 function createPreviewReservation(names: string[]): HostReservationResult {
   const roomCode = Math.random().toString(36).slice(2, 8).toUpperCase();
@@ -17,52 +25,90 @@ function createPreviewReservation(names: string[]): HostReservationResult {
       const seatToken = typeof crypto !== 'undefined' && 'randomUUID' in crypto
         ? crypto.randomUUID().replaceAll('-', '')
         : Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
+      const seatLabel = seatLabelForIndex(seatIndex);
       return {
         seatIndex,
         playerName,
-        seatLabel: `صندلی ${String(seatIndex + 1).padStart(2, '۰')}`,
+        seatLabel,
         seatToken,
-        invitePath: `/invite/${roomCode}/${seatToken}?name=${encodeURIComponent(playerName)}&seat=${encodeURIComponent(`صندلی ${String(seatIndex + 1).padStart(2, '۰')}`)}&seatIndex=${seatIndex}`,
+        invitePath: `/invite/${roomCode}/${seatToken}?name=${encodeURIComponent(playerName)}&seat=${encodeURIComponent(seatLabel)}&seatIndex=${seatIndex}`,
       };
     }),
   };
 }
 
 export default function ReservationForm() {
-  const [playerCount, setPlayerCount] = useState(3);
-  const [names, setNames] = useState<string[]>(SAMPLE_NAMES.slice(0, 3));
+  const [playerCount, setPlayerCount] = useState(MIN_PLAYERS);
+  const [names, setNames] = useState<string[]>(SAMPLE_NAMES.slice(0, MIN_PLAYERS));
   const [reservation, setReservation] = useState<HostReservationResult | null>(null);
   const [isDemo, setIsDemo] = useState(false);
-  const [error, setError] = useState('');
+  const [serverError, setServerError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitAttempted, setSubmitAttempted] = useState(false);
 
-  const nameError = useMemo(() => validateGuestNames(names), [names]);
+  const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
+  const countRefs = useRef<Record<number, HTMLButtonElement | null>>({});
+
+  const validation = useMemo(() => validateReservation(names), [names]);
+  const showErrors = submitAttempted && !validation.ok;
+  const visibleMessage = serverError || (showErrors ? validation.message : null);
 
   function changeCount(count: number) {
     setPlayerCount(count);
     setNames((previous) => Array.from({ length: count }, (_, index) => previous[index] ?? ''));
-    setError('');
+    setServerError('');
+  }
+
+  function moveCount(count: number, delta: number) {
+    const next = Math.min(MAX_PLAYERS, Math.max(MIN_PLAYERS, count + delta));
+    if (next === count) return;
+    changeCount(next);
+    countRefs.current[next]?.focus();
+  }
+
+  function onCountKeyDown(event: React.KeyboardEvent<HTMLButtonElement>, count: number) {
+    // در RTL، چپ به عدد بزرگ‌تر و راست به عدد کوچک‌تر می‌رود.
+    const delta =
+      event.key === 'ArrowLeft' ? 1
+        : event.key === 'ArrowRight' ? -1
+          : event.key === 'ArrowUp' ? 1
+            : event.key === 'ArrowDown' ? -1
+              : 0;
+    if (!delta) return;
+    event.preventDefault();
+    moveCount(count, delta);
   }
 
   function fillSampleNames() {
     setNames(SAMPLE_NAMES.slice(0, playerCount));
-    setError('');
+    setServerError('');
   }
 
   function updateName(index: number, value: string) {
     setNames((previous) => previous.map((name, current) => current === index ? value : name));
-    setError('');
+    setServerError('');
+  }
+
+  function focusFirstProblem() {
+    if (validation.countError) {
+      countRefs.current[playerCount]?.focus();
+      return;
+    }
+    const index = validation.firstInvalidField;
+    if (index !== null) inputRefs.current[index]?.focus();
   }
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (nameError) {
-      setError(nameError);
+    setSubmitAttempted(true);
+    setServerError('');
+    if (!validation.ok) {
+      focusFirstProblem();
       return;
     }
-    setError('');
+
     setIsSubmitting(true);
-    const cleanNames = names.map((name) => name.trim().replace(/\s+/g, ' '));
+    const cleanNames = names.map((name) => normalizeGuestName(name));
     try {
       const response = await fetch('/api/rooms', {
         method: 'POST',
@@ -76,7 +122,7 @@ export default function ReservationForm() {
         setReservation(data as HostReservationResult);
         setIsDemo(false);
       } else if (response.status === 404) {
-        // Wave-one visual preview until Toheed's reservation API is merged.
+        // پیش‌نمایش بصری تا وقتی سرویس رزرو در دسترس نیست.
         setReservation(createPreviewReservation(cleanNames));
         setIsDemo(true);
       } else {
@@ -85,11 +131,11 @@ export default function ReservationForm() {
       }
     } catch (cause) {
       if (cause instanceof TypeError) {
-        // Keep the first-wave UI independently previewable before the API exists.
+        // شبکه در دسترس نیست؛ پیش‌نمایش باید کار کند.
         setReservation(createPreviewReservation(cleanNames));
         setIsDemo(true);
       } else {
-        setError(cause instanceof Error ? cause.message : 'خطایی پیش آمد. دوباره تلاش کنید.');
+        setServerError(cause instanceof Error ? cause.message : 'خطایی پیش آمد. دوباره تلاش کنید.');
       }
     } finally {
       setIsSubmitting(false);
@@ -97,39 +143,100 @@ export default function ReservationForm() {
   }
 
   if (reservation) {
-    return <InviteLinksDeck reservation={reservation} isDemo={isDemo} onReset={() => { setReservation(null); setIsDemo(false); setError(''); }} />;
+    return (
+      <InviteLinksDeck
+        reservation={reservation}
+        isDemo={isDemo}
+        onReset={() => {
+          setReservation(null);
+          setIsDemo(false);
+          setServerError('');
+          setSubmitAttempted(false);
+        }}
+      />
+    );
   }
 
   return (
     <div className="reservation-layout">
-      <form className="reservation-form" onSubmit={submit} noValidate>
-        <div className="form-topline"><span>ترکیب گروه</span><span className="count-label">{playerCount.toLocaleString('fa')} <small>نفر</small></span></div>
-        <fieldset className="count-picker" aria-label="تعداد مهمان‌ها">
-          <legend className="sr-only">تعداد بازیکنان را انتخاب کنید</legend>
-          {Array.from({ length: MAX_PLAYERS - MIN_PLAYERS + 1 }, (_, offset) => MIN_PLAYERS + offset).map((count) => (
-            <button key={count} type="button" className={`count-option ${playerCount === count ? 'selected' : ''}`} onClick={() => changeCount(count)} aria-pressed={playerCount === count}>
-              <span>{count.toLocaleString('fa')}</span><small>نفر</small>
+      <form
+        className="reservation-form"
+        onSubmit={submit}
+        noValidate
+        aria-busy={isSubmitting}
+      >
+        <div className="form-topline">
+          <span>ترکیب گروه</span>
+          <span className="count-label">{toPersianDigits(playerCount)} <small>نفر</small></span>
+        </div>
+
+        <fieldset className="count-picker" aria-describedby={showErrors && validation.countError ? 'count-error' : undefined}>
+          <legend className="sr-only">تعداد بازیکنان را انتخاب کنید؛ بین ۳ تا ۸ نفر</legend>
+          {COUNTS.map((count) => (
+            <button
+              key={count}
+              ref={(node) => { countRefs.current[count] = node; }}
+              type="button"
+              className={`count-option ${playerCount === count ? 'selected' : ''}`}
+              onClick={() => changeCount(count)}
+              onKeyDown={(event) => onCountKeyDown(event, count)}
+              aria-pressed={playerCount === count}
+              aria-label={`${toPersianDigits(count)} نفر`}
+            >
+              <span>{toPersianDigits(count)}</span><small>نفر</small>
             </button>
           ))}
         </fieldset>
+        {showErrors && validation.countError && (
+          <p className="field-error" id="count-error" role="alert">{validation.countError}</p>
+        )}
 
         <div className="guest-heading">
           <div><span className="gold-rule" /><h3>نام هم‌سفرها</h3></div>
           <button type="button" className="sample-button" onClick={fillSampleNames}>پر کردن نمونه</button>
         </div>
+
         <div className="guest-grid">
-          {names.map((name, index) => (
-            <label className="guest-field" key={index}>
-              <span className="guest-seat">صندلی {String(index + 1).padStart(2, '۰')}</span>
-              <span className="input-wrap"><span className="guest-icon" aria-hidden="true">♙</span><input value={name} onChange={(event) => updateName(index, event.target.value)} maxLength={32} placeholder={`نام مهمان ${(index + 1).toLocaleString('fa')}`} autoComplete="off" /></span>
-            </label>
-          ))}
+          {names.map((name, index) => {
+            const fieldError = showErrors ? validation.fieldErrors[index] : null;
+            const errorId = `guest-error-${index}`;
+            const label = seatLabelForIndex(index);
+            return (
+              <div className={`guest-field ${fieldError ? 'has-error' : ''}`} key={index}>
+                <label className="guest-seat" htmlFor={`guest-name-${index}`}>{label}</label>
+                <span className="input-wrap">
+                  <span className="guest-icon" aria-hidden="true">♙</span>
+                  <input
+                    id={`guest-name-${index}`}
+                    ref={(node) => { inputRefs.current[index] = node; }}
+                    value={name}
+                    onChange={(event) => updateName(index, event.target.value)}
+                    maxLength={MAX_NAME_LENGTH}
+                    placeholder={`نام مهمان ${toPersianDigits(index + 1)}`}
+                    autoComplete="off"
+                    aria-invalid={fieldError ? true : undefined}
+                    aria-describedby={fieldError ? errorId : undefined}
+                  />
+                </span>
+                {fieldError && <span className="field-error" id={errorId}>{fieldError}</span>}
+              </div>
+            );
+          })}
         </div>
-        {error && <p className="form-error" role="alert"><span>!</span>{error}</p>}
+
+        <p className="guest-count-note" aria-live="polite">
+          {guestCountLabel(names.length)} انتخاب شده؛ لینک هر صندلی منحصربه‌فرد است.
+        </p>
+
+        {visibleMessage && (
+          <p className="form-error" role="alert"><span aria-hidden="true">!</span>{visibleMessage}</p>
+        )}
+
         <div className="form-bottom">
-          <p><span>✦</span> لینک هر صندلی منحصربه‌فرد است؛ نام‌ها را دقیق وارد کنید.</p>
+          <p><span aria-hidden="true">✦</span> نام‌ها را دقیق وارد کنید؛ هر مهمان لینک اختصاصی خودش را می‌گیرد.</p>
           <button className="button button-gold reserve-button" type="submit" disabled={isSubmitting}>
-            <span>{isSubmitting ? 'در حال آماده‌سازی…' : 'رزرو و ساخت دعوت‌نامه‌ها'}</span><span className="button-arrow" aria-hidden="true">←</span>
+            <span>{isSubmitting ? 'در حال آماده‌سازی…' : 'رزرو و ساخت دعوت‌نامه‌ها'}</span>
+            <span className="button-arrow" aria-hidden="true">←</span>
           </button>
         </div>
       </form>
@@ -140,7 +247,11 @@ export default function ReservationForm() {
         <h3>هیچ‌کس تماشاگرِ تنها نیست.</h3>
         <p>هر بازیکن سرنخی منحصربه‌فرد در دست دارد. برای گشودن درِ تماشاخانه، به همهٔ دوستانتان نیاز خواهید داشت.</p>
         <div className="aside-divider"><span>✳</span></div>
-        <ul><li><span>۰۱</span> نام مهمان‌ها را ثبت کنید</li><li><span>۰۲</span> دعوت‌نامه‌ها را بفرستید</li><li><span>۰۳</span> کنار هم، پرده را بالا ببرید</li></ul>
+        <ul>
+          <li><span>۰۱</span> نام مهمان‌ها را ثبت کنید</li>
+          <li><span>۰۲</span> دعوت‌نامه‌ها را بفرستید</li>
+          <li><span>۰۳</span> کنار هم، پرده را بالا ببرید</li>
+        </ul>
         <span className="aside-footnote">یک تجربهٔ بهتر با هدفون</span>
       </aside>
     </div>
