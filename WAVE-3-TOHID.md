@@ -41,7 +41,7 @@ Projection contract test موجود همچنان شکل دقیق `ClientRoomView
 - `npm run typecheck` — موفق.
 - `npm run test:tohid` — ۶ فایل، ۴۱ تست موفق.
 - `npm test` — ۱۷ فایل، ۱۵۷ تست موفق (پس از همگام‌سازی آخرین main).
-- `npm run build` — موفق؛ ۱۴ مسیر.
+- `npm run build` — موفق؛ ۱۵ مسیر.
 
 ## محدودیت
 

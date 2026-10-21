@@ -1,7 +1,7 @@
 ---
 agent: Tohid
 wave: 5
-status: IMPLEMENTED_PENDING_REVIEW
+status: COMPLETE
 intended_audience: coding_agents_only
 ---
 
@@ -24,7 +24,7 @@ intended_audience: coding_agents_only
 - `npm run typecheck` — موفق.
 - `npm run test:tohid` — ۸ فایل، ۴۴ تست موفق.
 - `npm test` — ۱۹ فایل، ۱۶۰ تست موفق.
-- `npm run build` — موفق؛ ۱۴ مسیر.
+- `npm run build` — موفق؛ ۱۵ مسیر.
 - `npm run worklog:check` و `git diff --check` — موفق.
 
 ## پذیرش و محدودیت
@@ -33,3 +33,7 @@ intended_audience: coding_agents_only
 - تست سرتاسری Playwright چندبازیکنهٔ موجود متعلق به Alireza است؛ در این PR دوباره اجرا یا ادعای اجرای آن نمی‌شود.
 - منطق بازیابی token سمت UI به‌صورت کد بازبینی شد؛ تست browser/storage متعلق به مالک UI/Alireza است.
 - invite token خام فقط در پاسخ مجاز reservation است؛ در GET room view افشا نمی‌شود.
+
+## تکمیل
+
+PR #49 در main ادغام شد (merge commit `7cd6db9`).
