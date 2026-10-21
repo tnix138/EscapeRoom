@@ -2,15 +2,15 @@
 
 **تاریخ:** ۱۴۰۵/۰۷/۲۹ (۲۰۲۶-۱۰-۲۱)
 **شاخه کاری:** `arena/3cf79cfd-escaperoom`
-**وضعیت کلی:** تمام ۱۰ موج تعریف‌شده در `AGENT-INFRA.md` و `DOCUMENTATION.md` به‌صورت تک‌به‌تک در فایل‌های مستقل `WAVE-1-INFRA.md` تا `WAVE-10-INFRA.md` با رعایت کامل سه قانون سخت `AGENTS.md`، جداسازی کامل کلیدهای محرمانه (Zero-Secret Exposure) و تست‌های زنده روی محیط محلی (`SQLite`)، محیط پیش‌نمایش (`Vercel Preview`) و محیط عملیاتی (`Vercel Production` + `Supabase PostgreSQL`) تکمیل و پس از ادغام موج‌های ۱ تا ۱۰ توحید (`PR #60`) و موج ۵ امیرعلی (`PR #58`) روی Production مستقر و تأیید شد.
+**وضعیت کلی:** تمام ۱۰ موج تعریف‌شده در `DOCS/agents/AGENT-INFRA.md` و `DOCS/DOCUMENTATION.md` به‌صورت تک‌به‌تک در فایل‌های مستقل `DOCS/waves/cards/WAVE-1-INFRA.md` تا `DOCS/waves/cards/WAVE-10-INFRA.md` با رعایت کامل سه قانون سخت `AGENTS.md`، جداسازی کامل کلیدهای محرمانه (Zero-Secret Exposure) و تست‌های زنده روی محیط محلی (`SQLite`)، محیط پیش‌نمایش (`Vercel Preview`) و محیط عملیاتی (`Vercel Production` + `Supabase PostgreSQL`) تکمیل و پس از ادغام موج‌های ۱ تا ۱۰ توحید (`PR #60`) و موج ۵ امیرعلی (`PR #58`) روی Production مستقر و تأیید شد.
 
 ---
 
-## خلاصه تحویل ۱۰ موج زیرساخت (`AGENT-INFRA.md`)
+## خلاصه تحویل ۱۰ موج زیرساخت (`DOCS/agents/AGENT-INFRA.md`)
 
-| موج | موضوع طبق `AGENT-INFRA.md` | شواهد، فایل‌ها و شناسه‌های عملیاتی | وضعیت |
+| موج | موضوع طبق `DOCS/agents/AGENT-INFRA.md` | شواهد، فایل‌ها و شناسه‌های عملیاتی | وضعیت |
 | --- | --- | --- | --- |
-| **موج ۱** | ممیزی محدودیت‌های بیلد، دیپلوی، باندل WebGL و تنظیمات محیطی | ثبت در `REDESIGN-WAVE-1.md` (PR #40 — `ca375fc`): بررسی `package.json`، `next.config.mjs` (`allowedDevOrigins: ['*.e2b.app']`)، `vercel.json` (`maxDuration: 60` + هدرهای SSE) و `.env.example` بدون تغییر ابری در فاز ممیزی | ✅ کامل |
+| **موج ۱** | ممیزی محدودیت‌های بیلد، دیپلوی، باندل WebGL و تنظیمات محیطی | ثبت در `DOCS/waves/redesign/REDESIGN-WAVE-1.md` (PR #40 — `ca375fc`): بررسی `package.json`، `next.config.mjs` (`allowedDevOrigins: ['*.e2b.app']`)، `vercel.json` (`maxDuration: 60` + هدرهای SSE) و `.env.example` بدون تغییر ابری در فاز ممیزی | ✅ کامل |
 | **موج ۲** | بررسی Runtime Preview، باندل کلاینت WebGL، پاسخ دارایی‌ها و Origin/Cache | دیپلوی Preview `dpl_kQYaCHXKijotMZRifboVkHxG5s9e` (`READY` / `STAGED` در ۴۲.۲ ثانیه) روی `escaperoom-orfeo-iaslbqy6g-tnix138.vercel.app`؛ بررسی بیلد ۱۵ مسیر (`First Load JS` پایه `103 kB` و `/room/[code]` برابر `139 kB`) | ✅ کامل |
 | **موج ۳** | ماتریس مرورگر/موبایل، سیاست ورودی/بوم (Canvas/Pointer Lock) و هدرها | تأیید سیاست ورودی در `/preview/alley` و `/room/[code]`: Pointer Lock دسکتاپ + جایگزین Drag ماوس، کلیدهای `W/A/S/D`، `Shift`، `E`، `Esc`، `H` و راهنمای لمس/کیبورد (`ControlsHelpOverlay` موج ۳ امیرعلی در PR #39 و PR #44) + Fallback فارسی WebGL | ✅ کامل |
 | **موج ۴** | ممیزی دارایی‌های کوچه (حجم، MIME/Cache/CORS و متادیتای لایسنس) | تأیید صفر بودن فایل‌های باینری حجیم (`.glb`/`.gltf`/تکسچر/صوت خام) در مخزن؛ هندسه کاملاً رویه‌ای کوچه (`src/engine3d/alley-scene.ts`) با `three@^0.186.1` (MIT) و فونت `@fontsource-variable/vazirmatn@^5.3.0` (OFL) | ✅ کامل |
@@ -28,7 +28,7 @@
 | بستر هدف | وضعیت رندر سه‌بعدی | سیاست ورودی و کنترل | رفتار جایگزین (Fallback) |
 | --- | --- | --- | --- |
 | **دسکتاپ (Chrome / Edge / Firefox / Safari — Zoom 100%)** | `WebGL2` / `WebGL1` با `devicePixelRatio` محدودشده به حداکثر `2` و `powerPreference: 'high-performance'` | حرکت واقعی `W/A/S/D` و کلیدهای جهت‌نما، دویدن با `Shift`، تعامل با `E`، راهنما با `H`، چرخش دید با Pointer Lock یا Drag ماوس | در صورت رد شدن Pointer Lock، چرخش با Drag ماوس و کلیدهای `←` / `→` بدون خطا فعال می‌ماند |
-| **موبایل و تبلت (نمایشگرهای لمسی)** | رندر بوم سه‌بعدی واکنش‌گرا + چیدمان ستونی پنل بلیط/کوپن در عرض‌های باریک | راهنمای لمس در `ControlsHelpOverlay` (`REDESIGN-WAVE-3.md`)، دکمه‌های تعاملی حداقل `44px` و قابلیت جابه‌جایی به نمای کلاسیک | دکمه تغییر حالت به «🎨 نمای کلاسیک CSS» در نوار بالای صحنه همیشه در دسترس است |
+| **موبایل و تبلت (نمایشگرهای لمسی)** | رندر بوم سه‌بعدی واکنش‌گرا + چیدمان ستونی پنل بلیط/کوپن در عرض‌های باریک | راهنمای لمس در `ControlsHelpOverlay` (`DOCS/waves/redesign/REDESIGN-WAVE-3.md`)، دکمه‌های تعاملی حداقل `44px` و قابلیت جابه‌جایی به نمای کلاسیک | دکمه تغییر حالت به «🎨 نمای کلاسیک CSS» در نوار بالای صحنه همیشه در دسترس است |
 | **مرورگر بدون WebGL یا Context Loss** | تشخیص خودکار با `detectWebGLSupport()` و مدیریت `webglcontextlost` / `webglcontextrestored` | نمایش پیام راهنمای فارسی در `WebGLErrorBoundary` بدون کرش صفحه | سوئیچ خودکار/دستی به نمای کلاسیک CSS با حفظ کامل وضعیت معما و اتاق روی سرور |
 
 ---
@@ -71,7 +71,7 @@
   - امنیت سطح ردیف (RLS): `rls_enabled = true` و `public_policy_count = 0` (هیچ دسترسی مستقیم کلاینتی وجود ندارد؛ تمام تراکنش‌ها صرفاً از طریق سرور Next.js و متغیر محیطی رمزنگاری‌شده در Vercel انجام می‌شوند).
 - **مسیر بازیابی و Rollback (Restore & Rollback Plan):**
   1. **لایه اپلیکیشن (Vercel):** دیپلوی قبلی کاملاً پایدار (`dpl_w6wdyEKqCrGJpasSK81vXgQy4seV` و پیش از آن `dpl_4c76AhbvtbXi4SAHf3cYFYTWMPre`) روی Vercel حفظ شده‌اند و در صورت بروز هرگونه خطای رگرسیون، در کمتر از چند ثانیه قابل بازگردانی (Instant Rollback / Alias Reassign) به دامنه `escaperoom-orfeo.vercel.app` هستند.
-  2. **لایه دیتابیس (Supabase / SQLite):** از آنجا که در موج‌های ۱ تا ۱۰ بازطراحی سه‌بعدی هیچ تغییر مخربی در اسکیما (`public.rooms`) رخ نداده و قرارداد سرور (`ClientRoomView` و `InternalRoomState`) سازگار با عقب نگه داشته شده است (`WAVE-2-TOHID.md`)، ریسک مایگریشن صفر (`Zero Schema Drift`) است. در صورت نیاز به بازنشانی محیط تست، فایل `supabase/migrations/001_initial_schema.sql` به‌صورت Idempotent (`create table if not exists` / `create index if not exists`) آمادهٔ اجراست.
+  2. **لایه دیتابیس (Supabase / SQLite):** از آنجا که در موج‌های ۱ تا ۱۰ بازطراحی سه‌بعدی هیچ تغییر مخربی در اسکیما (`public.rooms`) رخ نداده و قرارداد سرور (`ClientRoomView` و `InternalRoomState`) سازگار با عقب نگه داشته شده است (`DOCS/waves/cards/WAVE-2-TOHID.md`)، ریسک مایگریشن صفر (`Zero Schema Drift`) است. در صورت نیاز به بازنشانی محیط تست، فایل `supabase/migrations/001_initial_schema.sql` به‌صورت Idempotent (`create table if not exists` / `create index if not exists`) آمادهٔ اجراست.
 
 ---
 

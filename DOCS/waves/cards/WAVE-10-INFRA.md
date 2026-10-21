@@ -30,16 +30,16 @@ intended_audience: coding_agents_only
 
 ## فهرست گزارش‌های تک‌موج زیرساخت
 
-- `WAVE-1-INFRA.md` — موج ۱: ممیزی خط پایهٔ Vercel، Supabase و متغیرهای محیطی.
-- `WAVE-2-INFRA.md` — موج ۲: بررسی Runtime Preview و باندل کلاینت WebGL.
-- `WAVE-3-INFRA.md` — موج ۳: ماتریس تست دستگاه‌ها و ورودی‌های حرکت (`Keyboard/Mouse/Touch`).
-- `WAVE-4-INFRA.md` — موج ۴: بررسی دارایی‌های کوچه، کش و بارگذاری در Preview.
-- `WAVE-5-INFRA.md` — موج ۵: Smoke Test بلیت و کوپن یکپارچه و پیوستن چند کاربر.
-- `WAVE-6-INFRA.md` — موج ۶: بررسی پایداری API معمای کوچه و عدم نیاز به مایگریشن تازه.
-- `WAVE-7-INFRA.md` — موج ۷: بررسی دارایی‌های صحنهٔ سالن و بارگذاری در Preview.
-- `WAVE-8-INFRA.md` — موج ۸: بررسی کات‌سین، هدرهای SSE، عدم بافرینگ و رفتار Timeout.
-- `WAVE-9-INFRA.md` — موج ۹: بررسی مسیرهای ذخیره‌سازی و بازخوانی کاوش سالن و تخته سرنخ‌ها.
-- `WAVE-10-INFRA.md` و `WAVE-10-INFRA-FINAL.md` — موج ۱۰: انتشار نهایی Production، Smoke Test، ممیزی شاخه‌ها و آرشیو لاگ‌ها.
+- `DOCS/waves/cards/WAVE-1-INFRA.md` — موج ۱: ممیزی خط پایهٔ Vercel، Supabase و متغیرهای محیطی.
+- `DOCS/waves/cards/WAVE-2-INFRA.md` — موج ۲: بررسی Runtime Preview و باندل کلاینت WebGL.
+- `DOCS/waves/cards/WAVE-3-INFRA.md` — موج ۳: ماتریس تست دستگاه‌ها و ورودی‌های حرکت (`Keyboard/Mouse/Touch`).
+- `DOCS/waves/cards/WAVE-4-INFRA.md` — موج ۴: بررسی دارایی‌های کوچه، کش و بارگذاری در Preview.
+- `DOCS/waves/cards/WAVE-5-INFRA.md` — موج ۵: Smoke Test بلیت و کوپن یکپارچه و پیوستن چند کاربر.
+- `DOCS/waves/cards/WAVE-6-INFRA.md` — موج ۶: بررسی پایداری API معمای کوچه و عدم نیاز به مایگریشن تازه.
+- `DOCS/waves/cards/WAVE-7-INFRA.md` — موج ۷: بررسی دارایی‌های صحنهٔ سالن و بارگذاری در Preview.
+- `DOCS/waves/cards/WAVE-8-INFRA.md` — موج ۸: بررسی کات‌سین، هدرهای SSE، عدم بافرینگ و رفتار Timeout.
+- `DOCS/waves/cards/WAVE-9-INFRA.md` — موج ۹: بررسی مسیرهای ذخیره‌سازی و بازخوانی کاوش سالن و تخته سرنخ‌ها.
+- `DOCS/waves/cards/WAVE-10-INFRA.md` و `DOCS/waves/cards/WAVE-10-INFRA-FINAL.md` — موج ۱۰: انتشار نهایی Production، Smoke Test، ممیزی شاخه‌ها و آرشیو لاگ‌ها.
 
 ## اعتبارسنجی نهایی
 

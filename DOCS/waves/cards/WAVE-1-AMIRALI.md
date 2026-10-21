@@ -8,7 +8,7 @@ code_changes: prohibited
 
 # Amirali — WAVE 1 task
 
-> Agent task file. Follow `AGENTS.md`, `DOCUMENTATION.md` and `WORKLOG.md`. Do not treat legacy docs as competing instructions.
+> Agent task file. Follow `AGENTS.md`, `DOCS/DOCUMENTATION.md` and `WORKLOG.md`. Do not treat legacy docs as competing instructions.
 
 ## Assignment
 
@@ -20,7 +20,7 @@ Audit the current reservation, invitation, alley, ticket and chat experience for
 2. Identify font-size rules below the new readability thresholds and the screens/components affected. The current target is desktop browser Zoom 100%, no forced Zoom-in.
 3. Apply these design targets in the audit: primary text ≥16px, secondary text ≥14px, noncritical detail ≥12px; preserve RTL, adequate contrast, line height, focus and mobile usability.
 4. Confirm that the ticket/clue/door/chat interactions need to stay accessible while their presentation is moved into a real 3D world by the responsible owner.
-5. Add only Amirali's findings to `REDESIGN-WAVE-1.md` if corrections are needed. Otherwise report “confirmed; no change.”
+5. Add only Amirali's findings to `DOCS/waves/redesign/REDESIGN-WAVE-1.md` if corrections are needed. Otherwise report “confirmed; no change.”
 
 ## Deliverable
 

@@ -9,7 +9,7 @@ intended_audience: coding_agents_only
 
 ## Gate
 
-Wave 1 owner confirmation was reported by the user in this conversation. The team gate is recorded as accepted in `REDESIGN-WAVE-1.md` and `DOCUMENTATION.md`.
+Wave 1 owner confirmation was reported by the user in this conversation. The team gate is recorded as accepted in `DOCS/waves/redesign/REDESIGN-WAVE-1.md` and `DOCS/DOCUMENTATION.md`.
 
 ## Scope reviewed
 

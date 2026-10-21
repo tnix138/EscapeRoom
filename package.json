@@ -22,7 +22,9 @@
     "worklog:attach": "node scripts/worklog.mjs attach",
     "worklog:list": "node scripts/worklog.mjs list",
     "worklog:hooks": "node scripts/worklog.mjs hooks",
-    "test:worklog": "vitest run tests/worklog"
+    "test:worklog": "vitest run tests/worklog",
+    "docs:index": "node scripts/docs.mjs index",
+    "docs:check": "node scripts/docs.mjs check"
   },
   "dependencies": {
     "@fontsource-variable/vazirmatn": "^5.3.0",

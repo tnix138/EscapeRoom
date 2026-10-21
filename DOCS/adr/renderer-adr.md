@@ -5,7 +5,7 @@
 ## تصمیم
 **Three.js r160+** به عنوان رندرر اصلی انتخاب شد. Babylon.js به عنوان جایگزین دوم ارزیابی شد و کنار گذاشته شد.
 
-## معیارهای ارزیابی (طبق DOCUMENTATION.md §1 و WAVE-1-ALIREZA.md)
+## معیارهای ارزیابی (طبق DOCS/DOCUMENTATION.md §1 و DOCS/waves/cards/WAVE-1-ALIREZA.md)
 
 | معیار | Three.js | Babylon.js | PlayCanvas |
 |---|---|---|---|

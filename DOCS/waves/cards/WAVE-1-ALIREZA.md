@@ -8,7 +8,7 @@ code_changes: prohibited
 
 # Alireza — WAVE 1 task
 
-> Agent task file. Follow `AGENTS.md`, `DOCUMENTATION.md` and `WORKLOG.md`. Do not treat legacy docs as competing instructions.
+> Agent task file. Follow `AGENTS.md`, `DOCS/DOCUMENTATION.md` and `WORKLOG.md`. Do not treat legacy docs as competing instructions.
 
 ## Assignment
 
@@ -21,7 +21,7 @@ Audit the current game scenes, camera and animation implementation against the r
 3. Record Wave 2 renderer selection criteria: Next.js client integration, asset pipeline/licensing, bundle size, WebGL availability, target-device performance and graceful failure.
 4. Define acceptance for real movement: forward, backward, left/right strafe, camera look, collision/bounds, and return to full control after narrative cutscenes.
 5. Record mature character requirements: adult, believable proportions/costumes/animation; not childlike/cartoon-styled.
-6. Add only Alireza's findings to `REDESIGN-WAVE-1.md` if corrections are needed. Otherwise report “confirmed; no change.”
+6. Add only Alireza's findings to `DOCS/waves/redesign/REDESIGN-WAVE-1.md` if corrections are needed. Otherwise report “confirmed; no change.”
 
 ## Deliverable
 

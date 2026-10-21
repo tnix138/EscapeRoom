@@ -134,7 +134,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۳** — ✅ Archive: **۲۱۱** — 🧾 مجموع: **۲۱۴** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۲۱:۲۲:۲۲ (`2026-10-21T17:52:22.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۲** — ✅ Archive: **۲۱۵** — 🧾 مجموع: **۲۱۷** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۲۱:۲۷:۲۶ (`2026-10-21T17:57:26.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -144,18 +144,18 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:EVENTS:START -->
 | 🕒 زمان (ایران / UTC) | رویداد | شناسه لاگ | توسط |
 | --- | --- | --- | --- |
+| ۱۴۰۵/۰۷/۲۹ — ۲۱:۲۷:۲۶<br>`2026-10-21T17:57:26.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_21-22-21_arena-agent_docs-reorg-sync-main`](./logs/archive/1405-07-29_21-22-21_arena-agent_docs-reorg-sync-main.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
+| ۱۴۰۵/۰۷/۲۹ — ۲۱:۲۷:۲۶<br>`2026-10-21T17:57:26.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_21-20-40_arena-agent_docs-reorg-pr`](./logs/archive/1405-07-29_21-20-40_arena-agent_docs-reorg-pr.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
+| ۱۴۰۵/۰۷/۲۹ — ۲۱:۲۷:۲۶<br>`2026-10-21T17:57:26.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_21-19-16_arena-agent_docs-reorg`](./logs/archive/1405-07-29_21-19-16_arena-agent_docs-reorg.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
+| ۱۴۰۵/۰۷/۲۹ — ۲۱:۲۷:۲۶<br>`2026-10-21T17:57:26.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_21-13-46_arena-agent_docs-collect`](./logs/archive/1405-07-29_21-13-46_arena-agent_docs-collect.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۱:۲۲:۲۲<br>`2026-10-21T17:52:22.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_21-22-22_infra-agent_pr72-final-wave10-deploy-and-archive`](./logs/pending/1405-07-29_21-22-22_infra-agent_pr72-final-wave10-deploy-and-archive.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
-| ۱۴۰۵/۰۷/۲۹ — ۲۱:۲۲:۲۲<br>`2026-10-21T17:52:22.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_21-22-22_infra-agent_push`](./logs/pending/1405-07-29_21-22-22_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
+| ۱۴۰۵/۰۷/۲۹ — ۲۱:۲۲:۲۱<br>`2026-10-21T17:52:21.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_21-22-21_arena-agent_docs-reorg-sync-main`](./logs/archive/1405-07-29_21-22-21_arena-agent_docs-reorg-sync-main.md) | **ایجنت Arena** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۱:۲۲:۰۲<br>`2026-10-21T17:52:02.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_21-22-02_infra-agent_final-wave10-production-deploy-all-agents-pr71`](./logs/pending/1405-07-29_21-22-02_infra-agent_final-wave10-production-deploy-all-agents-pr71.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
+| ۱۴۰۵/۰۷/۲۹ — ۲۱:۲۰:۴۰<br>`2026-10-21T17:50:40.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_21-20-40_arena-agent_docs-reorg-pr`](./logs/archive/1405-07-29_21-20-40_arena-agent_docs-reorg-pr.md) | **ایجنت Arena** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۱:۲۰:۲۵<br>`2026-10-21T17:50:25.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_21-14-37_amirali_pr-71-wave10-experience-qa`](./logs/archive/1405-07-29_21-14-37_amirali_pr-71-wave10-experience-qa.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۱:۲۰:۲۵<br>`2026-10-21T17:50:25.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_21-14-23_amirali_push`](./logs/archive/1405-07-29_21-14-23_amirali_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۱:۲۰:۲۵<br>`2026-10-21T17:50:25.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_21-14-20_amirali_wave10-experience-qa`](./logs/archive/1405-07-29_21-14-20_amirali_wave10-experience-qa.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۱:۲۰:۲۵<br>`2026-10-21T17:50:25.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_21-07-46_infra-agent_pr70-deploy-wave8-wave9-and-archive`](./logs/archive/1405-07-29_21-07-46_infra-agent_pr70-deploy-wave8-wave9-and-archive.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
-| ۱۴۰۵/۰۷/۲۹ — ۲۱:۲۰:۲۵<br>`2026-10-21T17:50:25.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_21-07-46_infra-agent_push`](./logs/archive/1405-07-29_21-07-46_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
-| ۱۴۰۵/۰۷/۲۹ — ۲۱:۲۰:۲۵<br>`2026-10-21T17:50:25.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_21-07-15_infra-agent_deploy-wave8-wave9-and-archive-pending`](./logs/archive/1405-07-29_21-07-15_infra-agent_deploy-wave8-wave9-and-archive-pending.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
-| ۱۴۰۵/۰۷/۲۹ — ۲۱:۱۴:۳۷<br>`2026-10-21T17:44:37.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_21-14-37_amirali_pr-71-wave10-experience-qa`](./logs/archive/1405-07-29_21-14-37_amirali_pr-71-wave10-experience-qa.md) | **امیرعلی** |
-| ۱۴۰۵/۰۷/۲۹ — ۲۱:۱۴:۲۳<br>`2026-10-21T17:44:23.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_21-14-23_amirali_push`](./logs/archive/1405-07-29_21-14-23_amirali_push.md) | **امیرعلی** |
-| ۱۴۰۵/۰۷/۲۹ — ۲۱:۱۴:۲۰<br>`2026-10-21T17:44:20.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_21-14-20_amirali_wave10-experience-qa`](./logs/archive/1405-07-29_21-14-20_amirali_wave10-experience-qa.md) | **امیرعلی** |
 <!-- WORKLOG:EVENTS:END -->
 
 ---
@@ -168,7 +168,6 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- |
 | [`1405-07-29_21-22-22_infra-agent_pr72-final-wave10-deploy-and-archive`](./logs/pending/1405-07-29_21-22-22_infra-agent_pr72-final-wave10-deploy-and-archive.md) | ایجاد PR #72 — استقرار نهایی موج ۱۰ هر ۴ ایجنت روی Vercel Production و آرشیو لاگ‌های PR #70 و PR #71 | `PR` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۲۱:۲۲:۲۲<br>`2026-10-21T17:52:22.000Z` | PR #72 (https://github.com/tnix138/EscapeRoom/pull/72) |
-| [`1405-07-29_21-22-22_infra-agent_push`](./logs/pending/1405-07-29_21-22-22_infra-agent_push.md) | پوش شاخه arena/09720ff5-escaperoom — 6f3c80f | `Push` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۲۱:۲۲:۲۲<br>`2026-10-21T17:52:22.000Z` | origin/arena/09720ff5-escaperoom (origin/arena/09720ff5-escaperoom..6f3c80f) |
 | [`1405-07-29_21-22-02_infra-agent_final-wave10-production-deploy-all-agents-pr71`](./logs/pending/1405-07-29_21-22-02_infra-agent_final-wave10-production-deploy-all-agents-pr71.md) | استقرار نهایی موج ۱۰ تمام ۴ ایجنت روی Vercel Production (dpl_DqNszUJSo1f9P9Qfva2stEMgofGh) و آرشیو لاگ‌های PR #70 و PR #71 | `Infra-FullDeploy` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۲۱:۲۲:۰۲<br>`2026-10-21T17:52:02.000Z` | dpl_DqNszUJSo1f9P9Qfva2stEMgofGh (escaperoom-orfeo.vercel.app) |
 <!-- WORKLOG:PENDING:END -->
 
@@ -181,6 +180,10 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:ARCHIVE:START -->
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | آرشیو شده توسط | زمان آرشیو (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- | --- | --- |
+| [`1405-07-29_21-22-21_arena-agent_docs-reorg-sync-main`](./logs/archive/1405-07-29_21-22-21_arena-agent_docs-reorg-sync-main.md) | همگام‌سازی PR #72 با main پس از PR #71 | `Commit` | **ایجنت Arena** | ۱۴۰۵/۰۷/۲۹ — ۲۱:۲۲:۲۱<br>`2026-10-21T17:52:21.000Z` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۲۱:۲۷:۲۶<br>`2026-10-21T17:57:26.000Z` | PR #72 |
+| [`1405-07-29_21-20-40_arena-agent_docs-reorg-pr`](./logs/archive/1405-07-29_21-20-40_arena-agent_docs-reorg-pr.md) | PR #72 — مرتب‌سازی مستندات در DOCS | `PR` | **ایجنت Arena** | ۱۴۰۵/۰۷/۲۹ — ۲۱:۲۰:۴۰<br>`2026-10-21T17:50:40.000Z` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۲۱:۲۷:۲۶<br>`2026-10-21T17:57:26.000Z` | PR #72 |
+| [`1405-07-29_21-19-16_arena-agent_docs-reorg`](./logs/archive/1405-07-29_21-19-16_arena-agent_docs-reorg.md) | مرتب‌سازی مستندات در DOCS و حفظ همهٔ پیوندها | `Commit` | **ایجنت Arena** | ۱۴۰۵/۰۷/۲۹ — ۲۱:۱۹:۱۶<br>`2026-10-21T17:49:16.000Z` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۲۱:۲۷:۲۶<br>`2026-10-21T17:57:26.000Z` | شاخه arena/edd3d027-escaperoom |
+| [`1405-07-29_21-13-46_arena-agent_docs-collect`](./logs/archive/1405-07-29_21-13-46_arena-agent_docs-collect.md) | پوشه DOCS — آینه‌سازی همهٔ اسناد Markdown با حفظ ساختار | `Commit` | **ایجنت Arena** | ۱۴۰۵/۰۷/۲۹ — ۲۱:۱۳:۴۶<br>`2026-10-21T17:43:46.000Z` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۲۱:۲۷:۲۶<br>`2026-10-21T17:57:26.000Z` | شاخه arena/edd3d027-escaperoom |
 | [`1405-07-29_21-14-37_amirali_pr-71-wave10-experience-qa`](./logs/archive/1405-07-29_21-14-37_amirali_pr-71-wave10-experience-qa.md) | PR #71 — موج ۱۰ امیرعلی: QA تجربه | `PR` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۲۱:۱۴:۳۷<br>`2026-10-21T17:44:37.000Z` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۲۱:۲۰:۲۵<br>`2026-10-21T17:50:25.000Z` | PR #71 — arena/65cb18fa-escaperoom ➔ main |
 | [`1405-07-29_21-14-23_amirali_push`](./logs/archive/1405-07-29_21-14-23_amirali_push.md) | پوش شاخه arena/65cb18fa-escaperoom — a0b1877 | `Push` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۲۱:۱۴:۲۳<br>`2026-10-21T17:44:23.000Z` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۲۱:۲۰:۲۵<br>`2026-10-21T17:50:25.000Z` | origin/arena/65cb18fa-escaperoom (origin/main..a0b1877) |
 | [`1405-07-29_21-14-20_amirali_wave10-experience-qa`](./logs/archive/1405-07-29_21-14-20_amirali_wave10-experience-qa.md) | موج ۱۰ — QA تجربه: ۳۲۰px، زوم ۲۰۰٪، صفحه‌کلید و کنتراست | `Commit` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۲۱:۱۴:۲۰<br>`2026-10-21T17:44:20.000Z` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۲۱:۲۰:۲۵<br>`2026-10-21T17:50:25.000Z` | شاخه arena/65cb18fa-escaperoom |
@@ -488,6 +491,7 @@ tags: null
 
 ## 📚 مراجع مرتبط
 
-- [`DOCUMENTATION.md` §۷](./DOCUMENTATION.md) — ضوابط اجرای ایجنت‌ها، مالکیت و چرخه کار
+- [`DOCS/DOCUMENTATION.md` §۷](./DOCS/DOCUMENTATION.md) — ضوابط اجرای ایجنت‌ها، مالکیت و چرخه کار
 - [`AGENTS.md`](./AGENTS.md) — خلاصه قوانین کامیت فارسی و لاگ‌گذاری
 - [`README.md`](./README.md) — مرور کلی پروژه و راه‌اندازی
+- [`DOCS/INDEX.md`](./DOCS/INDEX.md) — نقشهٔ کامل مستندات و مسیر هر سند

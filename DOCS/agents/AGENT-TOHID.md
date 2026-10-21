@@ -5,12 +5,12 @@ role: backend_data_sync
 status: active_plan
 intended_audience: coding_agents_only
 human_reading: not_required
-plan: DOCUMENTATION.md
+plan: DOCS/DOCUMENTATION.md
 ---
 
 # Agent plan — توحید
 
-> **عامل کدنویس بخواند؛ متن برای کاربر نهایی نیست.** پیش از هر موج `AGENTS.md`، `DOCUMENTATION.md`، این فایل و `WORKLOG.md` را بخوان. برای شروع هر موج فقط کارت همان موج را اجرا کن؛ جلوتر نرو تا گیت موج قبلی تأیید شود.
+> **عامل کدنویس بخواند؛ متن برای کاربر نهایی نیست.** پیش از هر موج `AGENTS.md`، `DOCS/DOCUMENTATION.md`، این فایل و `WORKLOG.md` را بخوان. برای شروع هر موج فقط کارت همان موج را اجرا کن؛ جلوتر نرو تا گیت موج قبلی تأیید شود.
 
 ## هویت و محدوده مالکیت
 
@@ -23,7 +23,7 @@ plan: DOCUMENTATION.md
 
 | موج | کارهای دقیق | تحویل و معیار پذیرش |
 |---|---|---|
-| **۱ — ممیزی سرور** | وضعیت فعلی `ClientRoomView`، فازها، APIها، توکن، ذخیره‌سازی و SSE را بررسی کن؛ مشخص کن world position کجا وجود ندارد؛ پیشنهاد بده چه state حداقلی برای تجربهٔ چندنفره لازم است. | یادداشت در `REDESIGN-WAVE-1.md`; بدون کد/تغییر قرارداد/مهاجرت. تأیید مالک هنوز لازم است. |
+| **۱ — ممیزی سرور** | وضعیت فعلی `ClientRoomView`، فازها، APIها، توکن، ذخیره‌سازی و SSE را بررسی کن؛ مشخص کن world position کجا وجود ندارد؛ پیشنهاد بده چه state حداقلی برای تجربهٔ چندنفره لازم است. | یادداشت در `DOCS/waves/redesign/REDESIGN-WAVE-1.md`; بدون کد/تغییر قرارداد/مهاجرت. تأیید مالک هنوز لازم است. |
 | **۲ — قرارداد runtime** | با علیرضا دربارهٔ نیازهای scene ID، spawn/return location و رخدادهای بازی توافق کن؛ مدل داده را از renderer جدا نگه دار؛ فقط قراردادهای ضروری را با تأیید تیم تغییر بده. | قرارداد کوچک و versionable؛ تست projection؛ هیچ movement endpoint بدون تصمیم رسمی. |
 | **۳ — حضور و حرکت چندنفره** | طبق تصمیم موج ۱/۲، presence، reconnect و در صورت تصویب transformهای محدود/نرخ‌محدود را پیاده کن؛ validate bounds/rate, reject malformed values؛ هیچ raw key event ذخیره نشود. | تست rate limit، reconnect، چند کلاینت و قرارداد منطبق؛ اگر همگام‌سازی transform لازم نیست، مستند کن و endpoint نساز. |
 | **۴ — state صحنهٔ کوچه** | شناسهٔ فاز/صحنه و دادهٔ لازم برای spawn/reset/refresh را اضافه کن؛ از ذخیرهٔ جزئیات renderer خودداری کن. | ورود/بازگشت به صحنه در refresh پایدار؛ migration فقط در صورت نیاز واقعی. |

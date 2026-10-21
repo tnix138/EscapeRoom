@@ -25,7 +25,7 @@ status: COMPLETED
 
 ## فایل‌های تحویل‌شده (مالکیت علیرضا)
 
-- `src/engine3d/renderer-adr.md` — ADR انتخاب Three.js (MIT، bundle ~150kb gz)
+- `DOCS/adr/renderer-adr.md` — ADR انتخاب Three.js (MIT، bundle ~150kb gz)
 - `src/engine3d/three-engine.ts` — lifecycle امن SSR، resize، dispose
 - `src/engine3d/player-controller.ts` — forward/back/strafe + delta-time
 - `src/engine3d/collision.ts` — مرزها و موانع AABB
@@ -61,4 +61,4 @@ status: COMPLETED
 - صدا Web Audio رویه‌ای اورجینال
 - Vazirmatn OFL
 
-**وضعیت نهایی:** تمام وظایف علیرضا طبق `AGENT-ALIREZA.md` و `DOCUMENTATION.md` انجام و بارگذاری شد.
+**وضعیت نهایی:** تمام وظایف علیرضا طبق `DOCS/agents/AGENT-ALIREZA.md` و `DOCS/DOCUMENTATION.md` انجام و بارگذاری شد.

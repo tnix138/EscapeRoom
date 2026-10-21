@@ -24,7 +24,7 @@ agent_identity_map:
   Infrastructure: [ایجنت زیرساخت, Infrastructure, Infra]
 startup:
   - identify_self_from_user_greeting
-  - read: [AGENTS.md, DOCUMENTATION.md, AGENT_<SELF>.md, WORKLOG.md]
+  - read: [AGENTS.md, DOCS/DOCUMENTATION.md, AGENT_<SELF>.md, WORKLOG.md]
   - read_full_role_plan
   - determine_earliest_incomplete_wave_from_plan_and_worklog
   - execute_that_wave_and_only_owned_paths
@@ -40,7 +40,7 @@ priority:
   - AGENTS.md: git and worklog procedure
   - WORKLOG.md: log lifecycle and validation
 legacy_docs:
-  files: [PROJECT.md, ARCHITECTURE.md, API-CONTRACT.md, TEAM.md, TASKS-TOHID.md, TASKS-AMIRALI.md, TASKS-ALIREZA.md, TASKS-INFRA-AGENT.md]
+  files: [DOCS/legacy/PROJECT.md, DOCS/legacy/ARCHITECTURE.md, DOCS/legacy/API-CONTRACT.md, DOCS/legacy/TEAM.md, DOCS/legacy/TASKS-TOHID.md, DOCS/legacy/TASKS-AMIRALI.md, DOCS/legacy/TASKS-ALIREZA.md, DOCS/legacy/TASKS-INFRA-AGENT.md]
   use: historical/context only; do not treat as active task instructions
 conflict_rule: this file + assigned wave file win over legacy docs
 current_phase: wave_10_security_integration
@@ -199,13 +199,13 @@ Wave 1 is complete when all four tracks have recorded the following:
 - Alireza: confirm current alley/cinema are CSS/DOM baseline; define world translation/collision/mature-visual criteria; renderer selection deferred to Wave 2.
 - Infrastructure: inspect package/config/build/Preview constraints; no deployment, migration or secret change in audit.
 
-Evidence file: `REDESIGN-WAVE-1.md`. Agent-specific execution requests: `WAVE-1-TOHID.md`, `WAVE-1-AMIRALI.md`, `WAVE-1-ALIREZA.md`, `WAVE-1-INFRA.md`.
+Evidence file: `DOCS/waves/redesign/REDESIGN-WAVE-1.md`. Agent-specific execution requests: `DOCS/waves/cards/WAVE-1-TOHID.md`, `DOCS/waves/cards/WAVE-1-AMIRALI.md`, `DOCS/waves/cards/WAVE-1-ALIREZA.md`, `DOCS/waves/cards/WAVE-1-INFRA.md`.
 
 ## 7. Agent execution protocol
 
 ```yaml
 scope:
-  - read: [AGENTS.md, DOCUMENTATION.md, assigned_wave_file, WORKLOG.md]
+  - read: [AGENTS.md, DOCS/DOCUMENTATION.md, assigned_wave_file, WORKLOG.md]
   - edit: assigned_owner_files_only
   - shared_contracts: coordinate_before_change
 cadence:
