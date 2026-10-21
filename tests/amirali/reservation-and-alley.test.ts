@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { validateGuestNames } from '../../src/components/reservation/validation';
 import { isCorrectTicketSelection, normalizeDoorCode } from '../../src/components/alley/puzzle';
+import { resolveRoomPhase } from '../../src/components/room/resolve-room-phase';
 
 describe('guest reservation validation', () => {
   it('accepts groups of three to eight guests with distinct names', () => {
@@ -20,6 +21,22 @@ describe('guest reservation validation', () => {
 
   it('limits a guest name to 32 characters', () => {
     expect(validateGuestNames(['آ'.repeat(33), 'دو', 'سه'])).toContain('۳۲');
+  });
+});
+
+describe('invitation room phase routing', () => {
+  it('keeps the alley until its puzzle phase is complete', () => {
+    expect(resolveRoomPhase('alley_puzzle', 80_000)).toBe('alley_puzzle');
+  });
+
+  it('advances from the door chapter to the theater chapter at the contract boundary', () => {
+    expect(resolveRoomPhase('door_cutscene', 10_999)).toBe('door_cutscene');
+    expect(resolveRoomPhase('door_cutscene', 11_000)).toBe('theater_cutscene');
+  });
+
+  it('moves into the auditorium after the complete cutscene, without waiting for another SSE snapshot', () => {
+    expect(resolveRoomPhase('door_cutscene', 74_000)).toBe('in_theater');
+    expect(resolveRoomPhase('theater_cutscene', 74_000)).toBe('in_theater');
   });
 });
 
