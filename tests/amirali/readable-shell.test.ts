@@ -146,6 +146,14 @@ describe('دسترس‌پذیری و چیدمان پوسته', () => {
     expect(mobileTickets?.declarations['grid-template-columns']).toBe('1fr');
   });
 
+  it('در قاب‌های باریک سه‌بعدی بلیط‌ها را با container query تک‌ستونی و اسکرول‌پذیر می‌کند', () => {
+    expect(css).toContain('container-type: inline-size');
+    expect(css).toContain('@container (max-width: 560px)');
+    expect(css).toContain('.held-tickets-scroll');
+    const drawer = read('../../src/components/alley/HeldTicketsDrawer.tsx');
+    expect(drawer).toContain('held-tickets-scroll');
+  });
+
   it('لینک پرش به محتوا و تنظیمات ویوپورت را در ریشهٔ برنامه دارد', () => {
     expect(layout).toContain('dir="rtl"');
     expect(layout).toContain('lang="fa"');
