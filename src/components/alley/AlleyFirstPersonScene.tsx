@@ -4,6 +4,7 @@ import { KeyboardEvent, PointerEvent, useEffect, useMemo, useRef, useState } fro
 import HeldTicketsDrawer from './HeldTicketsDrawer';
 import TheaterDoorLockModal from './TheaterDoorLockModal';
 import WhisperChatPanel from '../hud/WhisperChatPanel';
+import TheaterCompanionHud from '../hud/TheaterCompanionHud';
 import ClueReadingPanel from './ClueReadingPanel';
 import { inspectHint, type ClueKind } from './clue-reading-data';
 import { resolveOwnRevealedDigit } from './puzzle-rules';
@@ -109,6 +110,13 @@ export default function AlleyFirstPersonScene({ room, onPunchTicket, onUnlockDoo
         <div className="alley-room-badge"><span className="room-live-dot" /> اتاق <strong dir="ltr">{room.roomCode}</strong><i /> {room.playerCount.toLocaleString('fa')} هم‌سفر</div>
         <div className="alley-top-actions"><button className="alley-head-button" type="button" onClick={onReplayInvitation}>بازپخش دعوت‌نامه</button><span className="alley-phase-label">فصل اول · بیرونِ تماشاخانه</span></div>
       </header>
+
+      <TheaterCompanionHud
+        players={room.players}
+        meId={room.me.playerId}
+        phase={room.phase}
+        punchedCount={players.filter((player) => player.ticketPunched).length}
+      />
 
       <section className={`alley-panorama view-${activeView} ${isDragging ? 'is-dragging' : ''}`} onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerEnd} onPointerCancel={onPointerEnd} aria-label="نمای اول‌شخص از کوچه؛ برای چرخاندن دوربین بکشید">
         <div className="alley-sky" />
