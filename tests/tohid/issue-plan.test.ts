@@ -123,10 +123,19 @@ describe('چیدمان Issueها — یکپارچگی طرح', () => {
   });
 
   it('Issueهای انجام‌شده در طرح به‌عنوان بسته‌شدنی مشخص شده‌اند', () => {
-    expect(plan.close.map((item) => item.number).sort()).toEqual([75, 76]);
+    expect(plan.close.map((item) => item.number).sort((a, b) => a - b)).toEqual([
+      74, 75, 76, 98,
+    ]);
     for (const item of plan.close) {
+      if (item.number === 74 || item.number === 98) continue;
       expect(item.body).toContain('2d72c6b');
     }
+    // فقط Issue منسوخ با not_planned بسته می‌شود
+    const reasons = plan.close
+      .filter((item) => (item as { reason?: string }).reason === 'not_planned')
+      .map((item) => item.number);
+    expect(reasons).toEqual([74]);
+    expect((plan.close[0] as { reason?: string }).reason).toBeUndefined();
     const done = plan.issues.filter((issue) => issue.labels?.includes('status:done'));
     expect(done.map((issue) => issue.number).sort()).toEqual([75, 76]);
   });

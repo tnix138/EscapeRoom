@@ -17,7 +17,9 @@
     "docs:check": "node scripts/docs.mjs check",
     "lint": "node scripts/lint.mjs",
     "ci": "npm run typecheck && npm run lint && npm test",
-    "auto-merge": "node scripts/auto-merge.mjs"
+    "auto-merge": "node scripts/auto-merge.mjs",
+    "smoke": "node scripts/smoke-test.mjs",
+    "hash:admin": "node scripts/hash-admin-password.mjs"
   },
   "dependencies": {
     "@fontsource-variable/vazirmatn": "^5.3.0",

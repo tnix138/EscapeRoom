@@ -57,7 +57,7 @@ jobs:
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
           NEXT_TELEMETRY_DISABLED: '1'
 
-      - name: اسمک‌تست آدرس سلامت (اگر PRODUCTION_URL تنظیم شده باشد)
+      - name: اسمک‌تست مسیر اصلی بازی (اگر PRODUCTION_URL تنظیم شده باشد)
         run: |
           if [ -z "$PRODUCTION_URL" ]; then
             echo "PRODUCTION_URL تنظیم نشده است؛ اسمک‌تست رد شد."
@@ -65,13 +65,15 @@ jobs:
           fi
           for i in 1 2 3 4 5; do
             if curl -fsS "$PRODUCTION_URL/api/health" > /dev/null; then
-              echo "✅ اسمک‌تست سلامت موفق بود."
-              exit 0
+              break
             fi
-            echo "تلاش $i ناموفق؛ ۱۰ ثانیه صبر..."
+            echo "تلاش $i برای سلامت ناموفق؛ ۱۰ ثانیه صبر..."
             sleep 10
+            if [ "$i" = "5" ]; then
+              echo "❌ سرور بعد از انتشار بالا نیامد."
+              exit 1
+            fi
           done
-          echo "❌ اسمک‌تست سلامت ناموفق بود."
-          exit 1
+          node scripts/smoke-test.mjs
         env:
-          PRODUCTION_URL: ${{ secrets.PRODUCTION_URL }}
+          BASE_URL: ${{ secrets.PRODUCTION_URL }}

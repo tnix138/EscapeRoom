@@ -1,10 +1,28 @@
 // src/server/db/supabase-repository.ts — پیاده‌سازی ابری با PostgREST + کنترل همزمانی (version)
 // کلید سرویس فقط از env خوانده می‌شود و هرگز در Git نوشته نمی‌شود (اجرای ابری با ایجنت چهارم است).
+import type { AdminEvent } from '../../contracts/admin';
 import type { InternalRoomState } from '../../engine/index';
-import type { RoomRepository } from './repository';
+import type { ListAdminEventsOptions, RoomRepository } from './repository';
 
 interface RoomRow {
   state_json: string;
+}
+
+interface AdminEventRow {
+  id: string;
+  type: string;
+  room_code: string | null;
+  player_id: string | null;
+  payload: Record<string, unknown> | null;
+  created_at: number;
+}
+
+const DEFAULT_EVENT_LIMIT = 100;
+const MAX_EVENT_LIMIT = 500;
+const MAX_DELETE_ATTEMPTS = 3;
+
+function clampLimit(limit: number | undefined): number {
+  return Math.max(1, Math.min(limit ?? DEFAULT_EVENT_LIMIT, MAX_EVENT_LIMIT));
 }
 
 export class SupabaseRoomRepository implements RoomRepository {
@@ -80,6 +98,84 @@ export class SupabaseRoomRepository implements RoomRepository {
       state.version = next.version;
       state.updatedAt = next.updatedAt;
       return true;
+    }
+    return false;
+  }
+
+  // --- فاز ۱۰ و ۱۳: خواندن برای پنل ادمین ---
+
+  async listRooms(limit = DEFAULT_EVENT_LIMIT): Promise<InternalRoomState[]> {
+    const res = await fetch(
+      `${this.url}/rest/v1/rooms?select=state_json&order=updated_at.desc&limit=${clampLimit(limit)}`,
+      { headers: this.headers() },
+    );
+    if (!res.ok) throw new Error(`Supabase listRooms failed: ${res.status} ${await res.text()}`);
+    const rows = (await res.json()) as RoomRow[];
+    return rows.map((row) => JSON.parse(row.state_json) as InternalRoomState);
+  }
+
+  async recordAdminEvent(event: AdminEvent): Promise<void> {
+    const res = await fetch(`${this.url}/rest/v1/admin_events`, {
+      method: 'POST',
+      headers: this.headers({ Prefer: 'return=minimal' }),
+      body: JSON.stringify({
+        id: event.id,
+        type: event.type,
+        room_code: event.roomCode,
+        player_id: event.playerId,
+        payload: event.payload ?? {},
+        created_at: event.createdAt,
+      }),
+    });
+    if (!res.ok) {
+      throw new Error(`Supabase recordAdminEvent failed: ${res.status} ${await res.text()}`);
+    }
+  }
+
+  async listAdminEvents(options: ListAdminEventsOptions = {}): Promise<AdminEvent[]> {
+    const filters: string[] = ['select=*', 'order=created_at.desc,id.desc', `limit=${clampLimit(options.limit)}`];
+    if (options.roomCode) {
+      filters.push(`room_code=eq.${encodeURIComponent(options.roomCode.toUpperCase())}`);
+    }
+    if (options.type) filters.push(`type=eq.${encodeURIComponent(options.type)}`);
+
+    const res = await fetch(`${this.url}/rest/v1/admin_events?${filters.join('&')}`, {
+      headers: this.headers(),
+    });
+    if (!res.ok) {
+      throw new Error(`Supabase listAdminEvents failed: ${res.status} ${await res.text()}`);
+    }
+    const rows = (await res.json()) as AdminEventRow[];
+    return rows.map((row) => ({
+      id: row.id,
+      type: row.type as AdminEvent['type'],
+      roomCode: row.room_code,
+      playerId: row.player_id,
+      payload: row.payload ?? {},
+      createdAt: row.created_at,
+    }));
+  }
+
+  async deleteSeat(roomCode: string, seatIndex: number): Promise<boolean> {
+    const code = roomCode.toUpperCase();
+    for (let attempt = 0; attempt < MAX_DELETE_ATTEMPTS; attempt++) {
+      const state = await this.getRoom(code);
+      if (!state) return false;
+
+      const seat = state.seats[seatIndex];
+      if (!seat) return false;
+
+      seat.seatTokenHash = '';
+      seat.playerName = `صندلی ${seatIndex + 1}`;
+      seat.joined = false;
+      seat.isOnline = false;
+      seat.hasWatchedInvitation = false;
+      seat.ticketPunched = false;
+      seat.selectedPunch = null;
+      seat.lastSeenAt = null;
+      state.updatedAt = Date.now();
+
+      if (await this.saveRoomIfVersion(state, state.version)) return true;
     }
     return false;
   }

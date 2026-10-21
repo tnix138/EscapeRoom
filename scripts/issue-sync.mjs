@@ -151,7 +151,7 @@ async function addComment({ number, body, marker }) {
   console.log(`   #${number} کامنت اضافه شد`);
 }
 
-async function closeIssue({ number, body, marker }) {
+async function closeIssue({ number, body, marker, reason = 'completed' }) {
   const issue = await api('GET', `/repos/${REPO}/issues/${number}`);
   if (issue.state === 'closed') {
     console.log(`   #${number} از قبل بسته است`);
@@ -162,7 +162,12 @@ async function closeIssue({ number, body, marker }) {
     await api('POST', `/repos/${REPO}/issues/${number}/comments`, { body });
     summary.comments++;
   }
-  await api('PATCH', `/repos/${REPO}/issues/${number}`, { state: 'closed', state_reason: 'completed' });
+  // فقط دو مقدار مجاز GitHub: completed | not_planned
+  const stateReason = reason === 'not_planned' ? 'not_planned' : 'completed';
+  await api('PATCH', `/repos/${REPO}/issues/${number}`, {
+    state: 'closed',
+    state_reason: stateReason,
+  });
   summary.closed++;
   console.log(`   #${number} بسته شد ✅`);
 }

@@ -351,6 +351,31 @@
       "number": 101,
       "marker": "<!-- issue-sync:amir-account-note -->",
       "body": "<!-- issue-sync:amir-account-note -->\n⚠️ **این Issue مال امیر است، ولی نتوانستیم مسئول (assignee) بگذاریم.**\n\nحساب `emirhamzehlou` در فهرست اعضای ریپو هست، اما GitHub با خطای «Could not resolve to a User» آن را نمی‌شناسد (کاربر ۴۰۴ برمی‌گرداند) — احتمالاً نام کاربری تغییر کرده است.\n\n**لطفاً در همین Issue نام کاربری درست گیت‌هاب را کامنت کن** تا با یک بار اجرای workflow «Issue sync» مسئول هم ثبت شود.\n\nتا آن موقع، این Issue و #94 / #101 مال تو هستند."
+    },
+    {
+      "number": 90,
+      "marker": "<!-- issue-sync:horror-contract-ready -->",
+      "body": "<!-- issue-sync:horror-contract-ready -->\n✅ **قرارداد ترس آماده و تست شده است** — `src/contracts/horror.ts` (توحید)\n\n```ts\nexport type HorrorIntensity = 'calm' | 'tense' | 'panic';\nexport interface HorrorSignal { level: HorrorIntensity; at: number }\n\nhorrorLevelFromThreat(threat01: number): HorrorIntensity   // ۰.۴ → tense، ۰.۷۵ → panic\nhorrorLevelFromDistance(distanceM: number, { nearM = 4, farM = 16 }): HorrorIntensity\nmaxHorrorIntensity(a, b): HorrorIntensity                   // ترکیب چند منبع ترس\nparseHorrorSignal(input: unknown): HorrorSignal | null      // ورودی نامطمئن/شبکه\n```\n\n- آستانه‌ها در `HORROR_THRESHOLDS` و بازهٔ فاصله در `HORROR_DISTANCE` قابل تنظیم‌اند.\n- ۹ تست در `tests/tohid/horror-contract.test.ts` سبز است.\n- این فایل مال توحید است؛ تغییرش را از طریق Issue #98 بخواه."
+    },
+    {
+      "number": 91,
+      "marker": "<!-- issue-sync:horror-contract-ready -->",
+      "body": "<!-- issue-sync:horror-contract-ready -->\n✅ **قرارداد ترس آماده و تست شده است** — `src/contracts/horror.ts` (توحید)\n\nبرای HUD فقط همین‌ها لازم است:\n\n```ts\nexport type HorrorIntensity = 'calm' | 'tense' | 'panic';\nnormalizeHorrorIntensity(value: unknown): HorrorIntensity  // ورودی نامعتبر → 'calm'\nisHorrorIntensity(value: unknown): value is HorrorIntensity\n```\n\nکامپوننت HUD ترس فقط یک prop `level: HorrorIntensity` بگیرد. هیچ importی از `src/engine3d/**` لازم نیست."
+    },
+    {
+      "number": 94,
+      "marker": "<!-- issue-sync:admin-secrets-ready -->",
+      "body": "<!-- issue-sync:admin-secrets-ready -->\n🔑 **ابزار و نام متغیرهای محیطی آماده است.**\n\nهش رمز را با این دستور بساز (خروجی را در env بگذار، رمز خام را کامیت نکن):\n\n```bash\nnpm run hash:admin -- 'رمز-دلخواه'\n# ADMIN_PASSWORD_HASH='scrypt$<salt>$<hash>'\n```\n\nمتغیرها: `ADMIN_USERNAME`، `ADMIN_PASSWORD_HASH` (و اختیاری `ADMIN_SESSION_SECRET`).\nنمونه در `.env.example` هست. الگوریتم: scrypt با salt تصادفی ۱۶ بایتی و کلید ۶۴ بایتی؛ برای بررسی رمز از `verifyAdminPassword` در `scripts/hash-admin-password.mjs` تقلید کن (مقایسهٔ constant-time)."
+    },
+    {
+      "number": 101,
+      "marker": "<!-- issue-sync:admin-data-ready -->",
+      "body": "<!-- issue-sync:admin-data-ready -->\n✅ **مدل دادهٔ پنل ادمین آماده و تست شده است** (فاز ۱۰ و ۱۳ — توحید)\n\n```ts\n// src/contracts/admin.ts\nexport interface RoomSummary {\n  code: string; phase: GamePhase; playerCount: number;\n  occupiedSeats: number; onlineCount: number; version: number;\n  createdAt: number; updatedAt: number; hasAuditoriumRestart: boolean;\n}\nexport interface AdminEvent { id; type; roomCode; playerId; payload; createdAt }\nexport interface AdminSession { adminId; username; role; createdAt; expiresAt }  // قرارداد ۵\nexport type AdminRole = 'superadmin' | 'moderator' | 'viewer';\ncanModerate(role): boolean   // فقط superadmin و moderator اجازهٔ مدیریت دارند\n```\n\nمتدهای ریپازیتوری (هر دو درایور SQLite و Supabase):\n\n```ts\nlistRooms(limit?: number): Promise<InternalRoomState[]>\nrecordAdminEvent(event: AdminEvent): Promise<void>\nlistAdminEvents({ limit?, roomCode?, type? }): Promise<AdminEvent[]>\ndeleteSeat(roomCode: string, seatIndex: number): Promise<boolean>\n```\n\nهمچنین:\n- `src/server/admin/room-summary.ts` → `summarizeRoom`، `summarizeRooms`، `buildAdminStats` (آمار آماده برای داشبورد)\n- `supabase/migrations/002_admin_events.sql` → جدول `admin_events` با ایندکس و RLS\n- ۱۹ تست در `tests/tohid/admin-*.test.ts` سبز\n\nدر API خودت (`src/app/api/admin/**`) از `getRoomRepository()` استفاده کن؛ نیازی به کد زدن در `src/server/**` نداری."
+    },
+    {
+      "number": 88,
+      "marker": "<!-- issue-sync:release-prep -->",
+      "body": "<!-- issue-sync:release-prep -->\n🧰 **آماده‌سازی انتشار انجام شده (توحید)**\n\n- [x] `npm run build` سبز\n- [x] `npm run smoke` → ۸ مرحله (سلامت، صفحهٔ اصلی، ساخت اتاق، توکن معتبر/نامعتبر، حضور، محدوده، SSE)\n- [x] اسمک‌تست به‌صورت خودکار بعد از deploy روی `PRODUCTION_URL` در `deploy.yml`\n- [x] `CHANGELOG.md` نوشته شد\n- [x] `npm run hash:admin` برای ساخت هش رمز ادمین\n\n**مسدود تا تکمیل این‌ها:**\n- [ ] تنظیم secrets ریپو: `VERCEL_TOKEN`، `VERCEL_ORG_ID`، `VERCEL_PROJECT_ID`، `PRODUCTION_URL`\n- [ ] `STORAGE_DRIVER=supabase` + `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` روی production\n- [ ] اجرای `supabase/migrations/001_initial_schema.sql` و `002_admin_events.sql`\n- [ ] اولین merge به `main` تا زنجیرهٔ CI → Auto-merge → Deploy فعال شود\n- [ ] پایان فازهای ۰۴ تا ۱۴ (وابستگی فاز ۱۵ طبق `docs/PHASE.md`)\n\n> تا این‌ها انجام نشود، انتشار production عمداً انجام نمی‌شود."
     }
   ],
   "close": [
@@ -363,6 +388,17 @@
       "number": 76,
       "marker": "<!-- issue-sync:done-03 -->",
       "body": "<!-- issue-sync:done-03 -->\n✅ **یک پیاده‌سازی و تست شده است** — کامیت `2d72c6b`\n\n- `src/contracts/presence.ts` — `PresenceSnapshot` طبق قرارداد ۲، محدودهٔ کوچه/سالن، نرمال‌سازی `yaw`\n- `src/server/presence/` — store (فقط آخرین snapshot، انقضای ۳۰ ثانیه)، سرویس (احراز صندلی + ۵۰ درخواست در ثانیه)، هم‌جوشی ارسال ۵۰ms\n- `POST|GET /api/rooms/[code]/presence` با هویت از توکن صندلی (جلوگیری از جعل هویت هم‌تیمی)\n- رویداد `presence_update` در استریم SSE (تأخیر اندازه‌گیری‌شده ۵۱ms)\n- ۲۱ تست در `tests/tohid/presence-*.test.ts`\n\n**مرجع مصرف برای علیرضا (#77) و امیرعلی (#85):** #104"
+    },
+    {
+      "number": 74,
+      "marker": "<!-- issue-sync:decision-01 -->",
+      "reason": "not_planned",
+      "body": "<!-- issue-sync:decision-01 -->\n🧭 **تصمیم تیم: این فاز منسوخ شد و انجام نمی‌شود.**\n\nمستندات فعلی در پوشهٔ `docs/` **جدیدترین نسخه** و مرجع پروژه‌اند؛ ساختن `docs-v2/` و حذف `docs/` لازم نیست.\n\nنتیجه:\n- `docs/` دست‌نخورده می‌ماند و تنها مرجع است.\n- ارجاع‌های قدیمی به `docs-v2/` در `docs/AGENTS.md` و `docs/PHASE.md` (برای فازهای ۰۱ و ۱۱ و ۱۴) از نظر مسیر منقضی‌اند؛ محتوای فازها همان است و مرجع، همین `docs/` است.\n- کارهای واقعی باقی‌مانده (CI، حضور، ادمین، انتشار) در Issueهای خودشان پیگیری می‌شوند."
+    },
+    {
+      "number": 98,
+      "marker": "<!-- issue-sync:tracker-tohid-done -->",
+      "body": "<!-- issue-sync:tracker-tohid-done -->\n✅ **همهٔ کارهای این مسیر انجام شد؛ Issue بسته می‌شود.**\n\n| کار | نتیجه |\n|---|---|\n| قرارداد ترس برای فاز ۰۷ | `src/contracts/horror.ts` + ۹ تست → #90 و #91 آنبلاک شدند |\n| مدل دادهٔ پنل ادمین | `src/contracts/admin.ts`، متدهای هر دو درایور، `002_admin_events.sql`، ۱۹ تست → #101 آماده کار |\n| ابزار رمز ادمین | `npm run hash:admin` + `.env.example` → #94 |\n| تصمیم مستندات | #74 منسوخ و بسته شد |\n| ابزار انتشار | `npm run smoke` و اتصال به `deploy.yml`، `CHANGELOG.md` → #88 |\n\n**باقی‌مانده‌هایی که نیاز به دسترسی بیرونی دارند** (در #88 پیگیری می‌شوند): تنظیم secrets وریسل/Supabase، اولین merge به `main`، و انتشار نهایی بعد از تکمیل فازهای ۰۴ تا ۱۴."
     }
   ]
 }

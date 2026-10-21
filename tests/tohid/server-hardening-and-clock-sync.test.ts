@@ -99,6 +99,11 @@ describe('سخت‌سازی کات‌سین و مسیر خواندن اتاق (�
           }
           return sqlite.saveRoomIfVersion(s, expectedVersion);
         },
+        // متدهای پنل ادمین (فاز ۱۰/۱۳) به این تست ربطی ندارند؛ به ریپازیتوری واقعی واگذار می‌شوند
+        listRooms: (limit) => sqlite.listRooms(limit),
+        recordAdminEvent: (event) => sqlite.recordAdminEvent(event),
+        listAdminEvents: (options) => sqlite.listAdminEvents(options),
+        deleteSeat: (roomCode, seatIndex) => sqlite.deleteSeat(roomCode, seatIndex),
       };
 
       nowSpy.mockReturnValue(start + DOOR_CUTSCENE_DURATION_MS + 50);
