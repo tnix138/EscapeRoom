@@ -29,10 +29,10 @@ export class ThreeEngine {
     options: ThreeEngineOptions = {},
   ) {
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0x0a0a12);
-    this.scene.fog = new THREE.Fog(0x0a0a12, 12, 32);
+    this.scene.background = new THREE.Color(0x0b101c);
+    this.scene.fog = new THREE.FogExp2(0x0b101c, 0.021);
 
-    this.camera = new THREE.PerspectiveCamera(68, 1, 0.1, 100);
+    this.camera = new THREE.PerspectiveCamera(68, 1, 0.1, 140);
     this.camera.position.set(0, 1.65, 6);
 
     this.renderer = new THREE.WebGLRenderer({
@@ -46,7 +46,7 @@ export class ThreeEngine {
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1.1;
+    this.renderer.toneMappingExposure = 1.08;
 
     this.clock = new THREE.Clock();
   }

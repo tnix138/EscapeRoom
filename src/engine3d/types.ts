@@ -55,8 +55,8 @@ export const DEFAULT_MOVEMENT_CONFIG: MovementConfig = {
   walkSpeed: 2.8,
   sprintMultiplier: 1.7,
   mouseSensitivity: 0.12,
-  minPitchDeg: -18,
-  maxPitchDeg: 28,
+  minPitchDeg: -58,
+  maxPitchDeg: 68,
 };
 
 export const DEFAULT_ALLEY_BOUNDS: WorldBounds = {

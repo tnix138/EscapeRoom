@@ -9,7 +9,6 @@
  */
 
 import { useEffect, useRef } from 'react';
-import * as THREE from 'three';
 import { useThreeEngine } from './useThreeEngine';
 import { ThreeErrorBoundary } from './ThreeErrorBoundary';
 import { createAlleyGeometry } from './alley-geometry';
@@ -23,38 +22,32 @@ export interface ThreeSceneBaseProps {
 }
 
 function SceneContent({ onTransformChange }: { onTransformChange?: (t: PlayerTransform) => void }) {
+  void onTransformChange;
   const { canvasRef, engine, isWebGLAvailable, error } = useThreeEngine();
   const alleyRef = useRef<ReturnType<typeof createAlleyGeometry> | null>(null);
 
   useEffect(() => {
     if (!engine) return;
 
-    // ساخت هندسه کوچه
     const alley = createAlleyGeometry();
     alleyRef.current = alley;
+    engine.scene.environment = alley.environmentMap;
     engine.scene.add(alley.group);
 
-    // دوربین اولیه
     engine.camera.position.set(0, 1.65, 6);
-    engine.camera.lookAt(0, 1.65, -4);
+    engine.camera.lookAt(0, 1.85, -14);
 
-    // نور مه از scene اصلی میاد
-
-    // لوپ ساده: فقط رندر، حرکت در هوک بالاتر کنترل میشه
-    engine.setTick(() => {
-      // در موج ۴ فقط چرخش ملایم لوستر نمایشی
-      const t = performance.now() * 0.0003;
-      const door = engine.scene.getObjectByName('TheaterDoor') as THREE.Mesh | undefined;
-      if (door) {
-        door.rotation.y = Math.sin(t) * 0.02;
-      }
+    engine.setTick((delta, elapsed) => {
+      alley.update(delta, elapsed);
     });
     engine.start();
 
     return () => {
+      engine.setTick(() => {});
       engine.stop();
       if (alleyRef.current) {
         engine.scene.remove(alleyRef.current.group);
+        engine.scene.environment = null;
         alleyRef.current.dispose();
         alleyRef.current = null;
       }
@@ -72,7 +65,7 @@ function SceneContent({ onTransformChange }: { onTransformChange?: (t: PlayerTra
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          background: '#0a0a12',
+          background: '#0b101c',
           color: '#e8dcc8',
           padding: 24,
           textAlign: 'center',
@@ -97,7 +90,7 @@ function SceneContent({ onTransformChange }: { onTransformChange?: (t: PlayerTra
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          background: '#0a0a12',
+          background: '#0b101c',
           color: '#ff8a8a',
           padding: 24,
         }}
@@ -127,7 +120,7 @@ export default function ThreeSceneBase(props: ThreeSceneBaseProps) {
           height: '100%',
           minHeight: 480,
           position: 'relative',
-          background: '#0a0a12',
+          background: '#0b101c',
           overflow: 'hidden',
           direction: 'ltr',
         }}

@@ -4,10 +4,10 @@
  * AlleyRoomThreeIntegration — اتصال کوچه سه‌بعدی واقعی به داده‌های سرور (علیرضا — موج ۵/۶)
  * - دریافت room از سرور (ClientRoomView)
  * - اسپاون بر اساس seatIndex + ذخیره موقعیت برای reconnect
- * - تشخیص لنگر نزدیک (playbill / rowChart / theaterDoor) با فاصله
- * - نمایش UI امیرعلی به صورت overlay فارسی در کنار صحنه سه‌بعدی
+ * - رندر متن واقعی و باکیفیت مستقیم روی تابلوی اعلانات و جدول گیشه در جهان سه‌بعدی
+ *   (بدون نیاز به زدن کلید E برای خواندن متن روی تابلوها؛ ثبت خودکار بازدید سرنخ با نزدیک شدن)
+ * - نورپردازی سوسوزن تیرهای چراغ برق، آسمان شب ابری، کف سنگ‌فرش خیس، ساختمان‌ها و جعبه‌ها
  * - گذار در → کات‌سین با فید سیاه
- * - بدون تغییر منطق پازل سرور — فقط درخواست‌های توافق‌شده
  */
 
 import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
@@ -16,16 +16,15 @@ import { useThreeEngine } from '@/engine3d/useThreeEngine';
 import { usePlayerControls } from '@/engine3d/usePlayerControls';
 import { createAlleyGeometry } from '@/engine3d/alley-geometry';
 import { resolveInitialTransform, saveTransform } from '@/engine3d/spawn';
-import { createTransitionState, type TransitionPhase } from '@/engine3d/transition';
+import { type TransitionPhase } from '@/engine3d/transition';
 import { RemotePlayerManager } from '@/engine3d/presence/RemotePlayerManager';
 import { FearResponsiveFog } from '@/engine3d/horror/fear-fog';
 import { HorrorAudio } from '@/audio/horror/horror-audio';
 import { horrorLevelIntensity } from '../hud/horror/horror-signal';
 import { toPresenceSnapshots } from '@/client-sdk/presence-avatars';
 import { ThreeErrorBoundary } from '@/engine3d/ThreeErrorBoundary';
-import type { PlayerTransform } from '@/engine3d/types';
 import type { ClientRoomView } from '@/contracts/types';
-import type { TheaterEmblemId, PlayActNumber, RowRomanCode } from '@/components/alley/contracts';
+import type { TheaterEmblemId, PlayActNumber, RowRomanCode, AlleyRoomView } from '@/components/alley/contracts';
 import HeldTicketsDrawer from './HeldTicketsDrawer';
 import ClueReadingPanel from './ClueReadingPanel';
 import TheaterDoorLockModal from './TheaterDoorLockModal';
@@ -68,18 +67,35 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
 
   const { transform, isPointerLocked, requestPointerLock } = usePlayerControls({
     engine,
-    enabled: true,
+    enabled: !doorModalOpen && !showPlaybill && !showRowChart,
     initialTransform,
   });
+
+  // داده‌های سرنخ اتاق از سرور برای رندر واقعی روی تابلوهای سه‌بعدی کوچه
+  const playbill = room.alley?.leftWallPlaybill ?? [];
+  const rowChart = room.alley?.rightWallRowChart ?? [];
+  const isTicketPunched = room.me.ticketPunched || room.myHeldTickets?.mainTicket?.isValidated || localPunched;
+  const playersWithLocal = useMemo(
+    () =>
+      room.players.map((p) =>
+        p.playerId === room.me.playerId && isTicketPunched ? { ...p, ticketPunched: true } : p,
+      ),
+    [room.players, room.me.playerId, isTicketPunched],
+  );
+  const punchedCount = Math.max(
+    room.alley?.doorLockState?.punchedCount ?? 0,
+    playersWithLocal.filter((p) => p.ticketPunched).length,
+  );
 
   // حضور هم‌تیمی‌ها — قرارداد #104. در نبود سرویس (فاز ۰۳) بی‌صدا خاموش می‌ماند.
   const presence = usePresenceFeed({
     roomCode: room.roomCode,
-    seatToken: null, // از همان کلیدهای صفحهٔ اتاق خوانده می‌شود
+    seatToken: null,
     playerId: room.me.playerId,
     transform,
     phase: room.phase,
   });
+
   // سیگنال ترس فاز ۰۷-ب: در گشودن در (گذار به کات‌سین) «دلواپس»، وگرنه «آرام».
   const horrorLevel = useMemo<HorrorIntensity>(() => {
     if (transition?.phase === 'door_opening') return 'tense';
@@ -101,7 +117,7 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
     return () => clearTimeout(id);
   }, [transform, room.roomCode, room.me.playerId]);
 
-  // تشخیص لنگر نزدیک
+  // تشخیص لنگر نزدیک + ثبت خودکار بازدید سرنخ به محض خواندن مستقیم روی تابلوی سه‌بعدی
   useEffect(() => {
     if (!alleyRef.current) return;
     const anchors = alleyRef.current.anchors;
@@ -111,7 +127,7 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
     const dDoor = dist({ x: anchors.theaterDoor.x, z: anchors.theaterDoor.z });
 
     let nearest: typeof focusedAnchor = null;
-    let min = 2.8;
+    let min = 3.2;
     if (dPlaybill < min) {
       min = dPlaybill;
       nearest = 'playbill';
@@ -125,27 +141,54 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
       nearest = 'theaterDoor';
     }
     if (nearest !== focusedAnchor) setFocusedAnchor(nearest);
+
+    if (nearest === 'playbill' || nearest === 'rowChart') {
+      setVisitedClues((previous) => (previous.includes(nearest) ? previous : [...previous, nearest]));
+    }
   }, [transform, focusedAnchor]);
 
-  // ساخت صحنه
+  // ساخت صحنهٔ کامل سه‌بعدی کوچه همراه با متن واقعی روی تابلوها
   useEffect(() => {
     if (!engine) return;
-    const alley = createAlleyGeometry();
+    const alley = createAlleyGeometry({
+      clues: {
+        playbill,
+        rowChart,
+        punchedCount,
+        requiredCount: room.playerCount,
+      },
+      players: playersWithLocal,
+    });
     alleyRef.current = alley;
+    engine.scene.environment = alley.environmentMap;
     engine.scene.add(alley.group);
     engine.start();
     return () => {
       engine.stop();
       if (alleyRef.current) {
         engine.scene.remove(alleyRef.current.group);
+        engine.scene.environment = null;
         alleyRef.current.dispose();
         alleyRef.current = null;
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [engine]);
 
-  // آواتار هم‌تیمی‌ها در صحنه (فاز ۰۴ / قرارداد #104): قاب حضور HUD به snapshot
-  // موتور تبدیل و در `RemotePlayerManager` هم‌گام می‌شود؛ هر فریم آواتارها درون‌یابی می‌شوند.
+  // همگام‌سازی زندهٔ متن تابلوهای سه‌بعدی و چراغ‌های بالای در با وضعیت جدید سرور
+  useEffect(() => {
+    alleyRef.current?.updateClues(
+      {
+        playbill,
+        rowChart,
+        punchedCount,
+        requiredCount: room.playerCount,
+      },
+      playersWithLocal,
+    );
+  }, [playbill, rowChart, punchedCount, room.playerCount, playersWithLocal]);
+
+  // آواتار هم‌تیمی‌ها در صحنه (فاز ۰۴ / قرارداد #104)
   const remotePlayersRef = useRef<RemotePlayerManager | null>(null);
   useEffect(() => {
     const manager = new RemotePlayerManager();
@@ -171,14 +214,19 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
     manager.sync(toPresenceSnapshots(presence.presences, room.me.playerId), Date.now(), room.me.playerId);
   }, [presence.presences, room.me.playerId]);
 
-  // اتمسفر ترس فاز ۰۷-الف: مه متناسب با سطح ترس (چگال‌تر در «دلواپس»/«وحشت»).
-  // آواتارها و مه در همان حلقهٔ رندر موتور به‌روز می‌شوند.
+  // اتمسفر ترس فاز ۰۷-الف + انیمیشن سوسوزدن تیرهای چراغ برق و آسمان ابری
   const fogRef = useRef<FearResponsiveFog | null>(null);
   useEffect(() => {
     if (!engine) return;
-    const fog = new FearResponsiveFog(engine.scene, { initialFear: 0 });
+    const fog = new FearResponsiveFog(engine.scene, {
+      color: 0x0b101c,
+      minDensity: 0.017,
+      maxDensity: 0.045,
+      initialFear: 0,
+    });
     fogRef.current = fog;
-    engine.setTick((delta) => {
+    engine.setTick((delta, elapsed) => {
+      alleyRef.current?.update(delta, elapsed);
       remotePlayersRef.current?.update(delta);
       fog.update(delta);
     });
@@ -218,19 +266,15 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
     horrorAudioRef.current?.setFearLevel(horrorLevelIntensity(horrorLevel));
   }, [horrorLevel]);
 
-  function openClue(kind: 'playbill' | 'rowChart') {
-    if (kind === 'playbill') setShowPlaybill((value) => !value);
-    else setShowRowChart((value) => !value);
-    setVisitedClues((previous) => (previous.includes(kind) ? previous : [...previous, kind]));
-  }
-
-  // کلید E برای تعامل
+  // کلید E فقط برای باز کردن قفل درِ تماشاخانه (تابلوها متن واقعی سه‌بعدی دارند)
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.code !== 'KeyE') return;
-      if (focusedAnchor === 'playbill') openClue('playbill');
-      if (focusedAnchor === 'rowChart') openClue('rowChart');
-      if (focusedAnchor === 'theaterDoor') setDoorModalOpen(true);
+      if (e.target instanceof HTMLElement && ['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON'].includes(e.target.tagName)) {
+        return;
+      }
+      if (e.code === 'KeyE' && focusedAnchor === 'theaterDoor') {
+        setDoorModalOpen(true);
+      }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -249,7 +293,7 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
         setIsPunching(false);
       }
     },
-    [isPunching, onPunchTicket, room.me.revealedDoorDigit],
+    [isPunching, onPunchTicket],
   );
 
   const handleUnlock = useCallback(
@@ -283,25 +327,31 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
     );
   }
 
-  // داده‌های alley از سرور
-  const alleyView = (room as unknown as { alley?: { leftWallPlaybill: unknown[]; rightWallRowChart: unknown[]; doorLockState: { punchedCount: number; requiredCount: number; attempts: number; lastAttemptFeedback: string | null } } }).alley;
-  const playbill = (alleyView?.leftWallPlaybill as Array<{ actNumber: number; sceneTitle: string; description: string }>) ?? [];
-  const rowChart = (alleyView?.rightWallRowChart as Array<{ rowTitle: string; romanCode: string }>) ?? [];
-
-  const isTicketPunched = room.me.ticketPunched || localPunched;
   // رقم فقط از view سرور؛ حدس محلی حذف شد (موج ۶).
   const revealedDigit = resolveOwnRevealedDigit(room.me.revealedDoorDigit, room.myHeldTickets?.mainTicket?.revealedGoldenDigit);
 
-  // coupon text از room.myHeldTickets
-  const myTickets = (room as unknown as { myHeldTickets?: { companionStub?: { targetTeammateName: string; targetEmblem: string; targetActSceneTitle: string; whisperNote: string } } }).myHeldTickets;
-  const couponText = myTickets?.companionStub
-    ? `کوپن من برای ${myTickets.companionStub.targetTeammateName}: نماد ${myTickets.companionStub.targetEmblem}؛ پردهٔ «${myTickets.companionStub.targetActSceneTitle}». ${myTickets.companionStub.whisperNote}`
+  const mainTicket = room.myHeldTickets?.mainTicket;
+  const companionStub = room.myHeldTickets?.companionStub;
+  const couponText = companionStub
+    ? `کوپن من برای ${companionStub.targetTeammateName}: نماد ${companionStub.targetEmblem}؛ پردهٔ «${companionStub.targetActSceneTitle}». ${companionStub.whisperNote}`
     : '';
+
+  const roomWithLocalState: AlleyRoomView = {
+    ...room,
+    players: playersWithLocal,
+    alley: {
+      ...room.alley,
+      doorLockState: {
+        ...room.alley.doorLockState,
+        punchedCount,
+      },
+    },
+  };
 
   const explorationInput: ExplorationInput = {
     phase: room.phase,
     me: { playerName: room.me.playerName, seatIndex: room.me.seatIndex, ticketPunched: isTicketPunched },
-    players: room.players.map((player) => ({
+    players: playersWithLocal.map((player) => ({
       playerName: player.playerName,
       seatLabel: player.seatLabel,
       seatIndex: player.seatIndex,
@@ -310,7 +360,7 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
     })),
     alley: {
       doorLockState: {
-        punchedCount: alleyView?.doorLockState?.punchedCount ?? room.players.filter((player) => player.ticketPunched).length,
+        punchedCount,
         requiredCount: room.playerCount,
       },
     },
@@ -318,21 +368,22 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
     visitedClues,
     doorUnlocked: room.phase !== 'alley_puzzle',
     positionLabel: focusedAnchor === 'playbill'
-      ? 'نزدیک تابلوی اعلانات'
+      ? 'مقابل تابلوی اعلانات (دیوار چپ)'
       : focusedAnchor === 'rowChart'
-        ? 'نزدیک گیشهٔ برنجی'
+        ? 'مقابل گیشهٔ برنجی (دیوار راست)'
         : focusedAnchor === 'theaterDoor'
           ? 'نزدیک درِ تماشاخانه'
-          : 'میان کوچه',
+          : 'میان کوچهٔ اُرفه‌ئو',
   };
 
   return (
-    <div style={{ width: '100%', height: '100%', position: 'relative', background: '#0a0a12' }}>
+    <div style={{ width: '100%', height: '100%', position: 'relative', background: '#0b101c' }}>
       <canvas
         ref={canvasRef}
         style={{ width: '100%', height: '100%', display: 'block' }}
         tabIndex={0}
-        aria-label="کوچه سه‌بعدی — W/A/S/D حرکت، ماوس نگاه، E تعامل"
+        aria-label="کوچه سه‌بعدی — W/A/S/D حرکت، ماوس نگاه، E باز کردن قفل در"
+        onClick={() => canvasRef.current?.focus()}
       />
 
       {/* کراس‌هیر */}
@@ -342,10 +393,10 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
       </div>
 
       <TheaterCompanionHud
-        players={room.players}
+        players={playersWithLocal}
         meId={room.me.playerId}
         phase={room.phase}
-        punchedCount={room.players.filter((player) => player.ticketPunched).length}
+        punchedCount={punchedCount}
       />
 
       <MovementNotice
@@ -357,7 +408,7 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
 
       <HorrorSignalHud level={horrorLevel} showBadge={false} />
 
-      {/* نام و جهت هم‌تیمی‌ها در جهان سه‌بعدی — تا سرویس حضور آماده نشود خالی می‌ماند. */}
+      {/* نام و جهت هم‌تیمی‌ها در جهان سه‌بعدی */}
       <PresenceHud
         local={{ position: transform, yawDeg: transform.yawDeg, pitchDeg: transform.pitchDeg }}
         players={presence.presences}
@@ -368,33 +419,38 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
 
       {/* HUD پایین */}
       <div style={{ position: 'absolute', bottom: 12, left: 12, right: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', pointerEvents: 'none', direction: 'rtl' }}>
-        <div style={{ background: 'rgba(0,0,0,0.65)', color: '#e8dcc8', padding: '8px 12px', borderRadius: 8, fontSize: 12, lineHeight: 1.6, pointerEvents: 'auto', fontFamily: 'Vazirmatn' }}>
-          <div>🎮 W/A/S/D + Shift — حرکت | ماوس درگ — نگاه | E — تعامل</div>
-          <div>📍 {transform.x.toFixed(1)}, {transform.z.toFixed(1)} — {transform.yawDeg.toFixed(0)}° {isPointerLocked ? '🔒' : ''}</div>
-          {focusedAnchor && (
-            <div style={{ color: '#c9a86a', marginTop: 4 }}>
-              {focusedAnchor === 'playbill' && '🎭 نزدیک تابلوی اعلانات — E برای نمایش پوستر'}
-              {focusedAnchor === 'rowChart' && '📋 نزدیک گیشه — E برای جدول ردیف‌ها'}
-              {focusedAnchor === 'theaterDoor' && '🚪 نزدیک در تئاتر — E برای قفل'}
+        <div style={{ background: 'rgba(8,11,18,0.76)', color: '#e8dcc8', padding: '8px 14px', borderRadius: 8, border: '1px solid rgba(201,168,106,0.28)', fontSize: 12, lineHeight: 1.65, pointerEvents: 'auto', fontFamily: 'Vazirmatn' }}>
+          <div>🎮 W/A/S/D + Shift — پیاده‌روی و دویدن در کوچه | درگ ماوس — نگاه به اطراف و بالا</div>
+          <div>📍 موقعیت: {transform.x.toFixed(1)}, {transform.z.toFixed(1)} — زاویه {transform.yawDeg.toFixed(0)}° {isPointerLocked ? '🔒' : ''}</div>
+          {focusedAnchor === 'theaterDoor' && (
+            <div style={{ color: '#f0cc84', marginTop: 4, display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span>🚪 مقابل درِ تماشاخانه — کلید E برای وارد کردن رمز قفل</span>
+              <button
+                type="button"
+                onClick={() => setDoorModalOpen(true)}
+                style={{ padding: '2px 10px', borderRadius: 5, border: '1px solid #c9a86a', background: 'rgba(60,34,20,0.85)', color: '#fff3da', cursor: 'pointer', fontSize: 12 }}
+              >
+                باز کردن قفل
+              </button>
             </div>
           )}
           {ticketFeedback && <div style={{ marginTop: 6, color: isTicketPunched ? '#8aff8a' : '#ffd080' }}>{ticketFeedback}</div>}
         </div>
         <div style={{ display: 'flex', gap: 8, pointerEvents: 'auto' }}>
-          <button type="button" onClick={() => { void startHorrorAudio(); requestPointerLock(); }} style={{ padding: '8px 12px', borderRadius: 8, border: '1px solid #c9a86a', background: 'rgba(26,26,46,0.9)', color: '#e8dcc8', cursor: 'pointer', fontSize: 12 }}>
+          <button type="button" onClick={() => { void startHorrorAudio(); requestPointerLock(); }} style={{ padding: '8px 12px', borderRadius: 8, border: '1px solid #c9a86a', background: 'rgba(18,22,36,0.92)', color: '#e8dcc8', cursor: 'pointer', fontSize: 12 }}>
             {isPointerLocked ? '🔓 خروج (Esc)' : '🔒 قفل ماوس'}
           </button>
         </div>
       </div>
 
-      {/* حالت خواندن سرنخ — مشترک با نمای کلاسیک (موج ۴) */}
+      {/* پنل دسترس‌پذیری خواندن سرنخ */}
       {showPlaybill && (
         <ClueReadingPanel
           kind="playbill"
           open
           playbill={playbill}
           rowChart={rowChart}
-          punchedCount={room.players.filter((p) => p.ticketPunched).length}
+          punchedCount={punchedCount}
           playerCount={room.playerCount}
           onClose={() => setShowPlaybill(false)}
         />
@@ -406,32 +462,31 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
           open
           playbill={playbill}
           rowChart={rowChart}
-          punchedCount={room.players.filter((p) => p.ticketPunched).length}
+          punchedCount={punchedCount}
           playerCount={room.playerCount}
           onClose={() => setShowRowChart(false)}
         />
       )}
 
       {/* بلیط و چت */}
-      <div style={{ position: 'absolute', bottom: 80, left: 12, right: 12, display: 'flex', gap: 12, pointerEvents: 'none', direction: 'rtl' }}>
+      <div style={{ position: 'absolute', bottom: 84, left: 12, right: 12, display: 'flex', gap: 12, pointerEvents: 'none', direction: 'rtl' }}>
         <div style={{ pointerEvents: 'auto', flex: 1, maxWidth: 380 }}>
-          {/* HeldTicketsDrawer از امیرعلی — موج ۶ */}
-          <div style={{ background: 'rgba(0,0,0,0.6)', borderRadius: 8, padding: 8 }}>
+          <div style={{ background: 'rgba(8,11,18,0.72)', borderRadius: 8, padding: 8, border: '1px solid rgba(201,168,106,0.22)' }}>
             <div style={{ color: '#e8dcc8', fontSize: 14, marginBottom: 6 }}>
               🎟️ بلیط {room.me.playerName} — {room.me.seatLabel} {isTicketPunched && revealedDigit != null ? `— رقم: ${revealedDigit}` : ''}
             </div>
             <HeldTicketsDrawer
-              ownerName={room.me.playerName}
-              seatLabel={room.me.seatLabel}
-              playTitle="اجرای محرمانه امشب"
-              alleyRowHintName="ردیف سرخ"
+              ownerName={mainTicket?.ownerName || room.me.playerName}
+              seatLabel={mainTicket?.seatLabel || room.me.seatLabel}
+              playTitle={mainTicket?.playTitle ?? 'اجرای محرمانهٔ امشب'}
+              alleyRowHintName={mainTicket?.alleyRowHintName ?? 'ردیف طلاییِ پیشین'}
               companionStub={{
-                targetTeammateName: myTickets?.companionStub?.targetTeammateName ?? 'هم‌تیمی',
-                targetEmblem: (myTickets?.companionStub?.targetEmblem as TheaterEmblemId) ?? 'mask',
-                targetActSceneTitle: myTickets?.companionStub?.targetActSceneTitle ?? 'پرده اول',
-                whisperNote: myTickets?.companionStub?.whisperNote ?? '',
+                targetTeammateName: companionStub?.targetTeammateName ?? 'هم‌تیمی',
+                targetEmblem: (companionStub?.targetEmblem as TheaterEmblemId) ?? 'mask',
+                targetActSceneTitle: companionStub?.targetActSceneTitle ?? 'پرده اول',
+                whisperNote: companionStub?.whisperNote ?? '',
               }}
-              initialSelection={null}
+              initialSelection={mainTicket?.selectedPunch ?? null}
               isValidated={isTicketPunched}
               revealedDigit={revealedDigit ?? null}
               isPunching={isPunching}
@@ -458,21 +513,7 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
 
       {/* مودال قفل در */}
       <TheaterDoorLockModal
-        room={{
-          roomCode: room.roomCode,
-          playerCount: room.playerCount,
-          players: room.players as unknown as { playerId: string; playerName: string; ticketPunched: boolean }[],
-          alley: {
-            doorLockState: {
-              punchedCount: room.players.filter((p) => p.ticketPunched).length,
-              requiredCount: room.playerCount,
-              attempts: 0,
-              lastAttemptFeedback: null,
-            },
-            leftWallPlaybill: [],
-            rightWallRowChart: [],
-          },
-        } as unknown as import('@/components/alley/contracts').AlleyRoomView}
+        room={roomWithLocalState}
         open={doorModalOpen}
         onClose={() => setDoorModalOpen(false)}
         onUnlock={handleUnlock}
@@ -497,7 +538,7 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
 export default function AlleyRoomThreeIntegration(props: ThreeCoreProps) {
   return (
     <ThreeErrorBoundary>
-      <div style={{ width: '100%', height: '100%', minHeight: 600, background: '#0a0a12', position: 'relative' }}>
+      <div style={{ width: '100%', height: '100%', minHeight: 600, background: '#0b101c', position: 'relative' }}>
         <AlleyThreeSceneCore {...props} />
       </div>
     </ThreeErrorBoundary>
