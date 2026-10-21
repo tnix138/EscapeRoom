@@ -121,7 +121,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۱۰** — ✅ Archive: **۶۹** — 🧾 مجموع: **۷۹** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۶:۳۲ (`2026-10-21T15:26:32.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۱۱** — ✅ Archive: **۶۹** — 🧾 مجموع: **۸۰** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۷:۵۳ (`2026-10-21T15:27:53.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -131,6 +131,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:EVENTS:START -->
 | 🕒 زمان (ایران / UTC) | رویداد | شناسه لاگ | توسط |
 | --- | --- | --- | --- |
+| ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۷:۵۳<br>`2026-10-21T15:27:53.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-57-53_amirali_push`](./logs/pending/1405-07-29_18-57-53_amirali_push.md) | **امیرعلی** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۶:۳۲<br>`2026-10-21T15:26:32.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-56-32_amirali_wave2-readable-shell`](./logs/pending/1405-07-29_18-56-32_amirali_wave2-readable-shell.md) | **امیرعلی** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۶:۱۵<br>`2026-10-21T15:26:15.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-56-15_amirali_push`](./logs/pending/1405-07-29_18-56-15_amirali_push.md) | **امیرعلی** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۶:۰۶<br>`2026-10-21T15:26:06.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-56-06_amirali_wave2-readable-shell`](./logs/pending/1405-07-29_18-56-06_amirali_wave2-readable-shell.md) | **امیرعلی** |
@@ -142,7 +143,6 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۳:۱۸<br>`2026-10-21T15:23:18.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-53-18_alireza_wave10-final-archive`](./logs/archive/1405-07-29_18-53-18_alireza_wave10-final-archive.md) | **علیرضا** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۳:۱۷<br>`2026-10-21T15:23:17.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_18-53-03_alireza_wave10-pr`](./logs/archive/1405-07-29_18-53-03_alireza_wave10-pr.md) | **علیرضا** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۳:۱۷<br>`2026-10-21T15:23:17.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_18-52-59_alireza_push`](./logs/archive/1405-07-29_18-52-59_alireza_push.md) | **علیرضا** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۳:۱۷<br>`2026-10-21T15:23:17.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_18-52-55_alireza_wave10-performance`](./logs/archive/1405-07-29_18-52-55_alireza_wave10-performance.md) | **علیرضا** |
 <!-- WORKLOG:EVENTS:END -->
 
 ---
@@ -154,6 +154,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:PENDING:START -->
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- |
+| [`1405-07-29_18-57-53_amirali_push`](./logs/pending/1405-07-29_18-57-53_amirali_push.md) | پوش شاخه arena/9bbb79f7-escaperoom — 184cdae | `Push` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۷:۵۳<br>`2026-10-21T15:27:53.000Z` | origin/arena/9bbb79f7-escaperoom (origin/main..184cdae) |
 | [`1405-07-29_18-56-32_amirali_wave2-readable-shell`](./logs/pending/1405-07-29_18-56-32_amirali_wave2-readable-shell.md) | PR #32 — موج ۲ امیرعلی: پوستهٔ خوانا | `PR` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۶:۳۲<br>`2026-10-21T15:26:32.000Z` | PR #32 — arena/9bbb79f7-escaperoom ➔ main |
 | [`1405-07-29_18-56-15_amirali_push`](./logs/pending/1405-07-29_18-56-15_amirali_push.md) | پوش شاخه arena/9bbb79f7-escaperoom — 012eb02 | `Push` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۶:۱۵<br>`2026-10-21T15:26:15.000Z` | origin/arena/9bbb79f7-escaperoom (origin/main..012eb02) |
 | [`1405-07-29_18-56-06_amirali_wave2-readable-shell`](./logs/pending/1405-07-29_18-56-06_amirali_wave2-readable-shell.md) | موج ۲ — پوستهٔ خوانا، مقیاس تایپوگرافی و کنترل‌ها | `Commit` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۶:۰۶<br>`2026-10-21T15:26:06.000Z` | شاخه arena/9bbb79f7-escaperoom |
