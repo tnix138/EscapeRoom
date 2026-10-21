@@ -121,7 +121,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۱۰** — ✅ Archive: **۱۰۳** — 🧾 مجموع: **۱۱۳** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۶:۲۷ (`2026-10-21T15:56:27.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۱۱** — ✅ Archive: **۱۰۳** — 🧾 مجموع: **۱۱۴** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۷:۳۲ (`2026-10-21T15:57:32.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -131,6 +131,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:EVENTS:START -->
 | 🕒 زمان (ایران / UTC) | رویداد | شناسه لاگ | توسط |
 | --- | --- | --- | --- |
+| ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۷:۳۲<br>`2026-10-21T15:57:32.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-27-32_amirali_push`](./logs/pending/1405-07-29_19-27-32_amirali_push.md) | **امیرعلی** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۶:۲۷<br>`2026-10-21T15:56:27.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-26-27_amirali_wave2-b3-ticket-container`](./logs/pending/1405-07-29_19-26-27_amirali_wave2-b3-ticket-container.md) | **امیرعلی** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۶:۱۶<br>`2026-10-21T15:56:16.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-26-16_amirali_push`](./logs/pending/1405-07-29_19-26-16_amirali_push.md) | **امیرعلی** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۶:۰۷<br>`2026-10-21T15:56:07.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-26-07_infra-agent_push`](./logs/pending/1405-07-29_19-26-07_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
@@ -142,7 +143,6 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۲:۳۳<br>`2026-10-21T15:52:33.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-22-33_amirali_push`](./logs/pending/1405-07-29_19-22-33_amirali_push.md) | **امیرعلی** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۱:۵۱<br>`2026-10-21T15:51:51.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-21-51_amirali_wave3-controls-help`](./logs/pending/1405-07-29_19-21-51_amirali_wave3-controls-help.md) | **امیرعلی** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۱۶:۴۶<br>`2026-10-21T15:46:46.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_19-13-26_amirali_push`](./logs/archive/1405-07-29_19-13-26_amirali_push.md) | **علیرضا** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۹:۱۶:۴۶<br>`2026-10-21T15:46:46.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_18-57-53_amirali_push`](./logs/archive/1405-07-29_18-57-53_amirali_push.md) | **علیرضا** |
 <!-- WORKLOG:EVENTS:END -->
 
 ---
@@ -154,6 +154,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:PENDING:START -->
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- |
+| [`1405-07-29_19-27-32_amirali_push`](./logs/pending/1405-07-29_19-27-32_amirali_push.md) | پوش شاخه arena/9bbb79f7-escaperoom — 4e99d05 | `Push` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۷:۳۲<br>`2026-10-21T15:57:32.000Z` | origin/arena/9bbb79f7-escaperoom (origin/main..4e99d05) |
 | [`1405-07-29_19-26-27_amirali_wave2-b3-ticket-container`](./logs/pending/1405-07-29_19-26-27_amirali_wave2-b3-ticket-container.md) | PR #41 — خوانایی بلیط در قاب باریک سه‌بعدی | `PR` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۶:۲۷<br>`2026-10-21T15:56:27.000Z` | PR #41 — arena/9bbb79f7-escaperoom ➔ main |
 | [`1405-07-29_19-26-16_amirali_push`](./logs/pending/1405-07-29_19-26-16_amirali_push.md) | پوش شاخه arena/9bbb79f7-escaperoom — 1f69d93 | `Push` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۶:۱۶<br>`2026-10-21T15:56:16.000Z` | origin/arena/9bbb79f7-escaperoom (origin/main..1f69d93) |
 | [`1405-07-29_19-26-07_infra-agent_push`](./logs/pending/1405-07-29_19-26-07_infra-agent_push.md) | پوش شاخه arena/5f12b76c-escaperoom — de5c6ec | `Push` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۶:۰۷<br>`2026-10-21T15:56:07.000Z` | origin/arena/5f12b76c-escaperoom (origin/arena/5f12b76c-escaperoom..de5c6ec) |
