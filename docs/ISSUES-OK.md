@@ -110,25 +110,35 @@ GET  /api/admin/session        (پس از خروج) → 401
 
 ---
 
-## 🚧 چرا Issueها روی GitHub بسته نشدند؟
+## 🔐 نحوهٔ بستن Issueها
 
-توکن گیت‌هاب این محیط فقط اجازهٔ نوشتن روی **Pull Request** دارد، نه Issue:
+توکن گیت‌هاب این محیط اجازهٔ نوشتن مستقیم روی Issue را ندارد:
 
 ```
 $ gh issue close 85
 Message: Resource not accessible by integration
 
-$ gh issue comment 91 --body "…"
-Message: Resource not accessible by integration
+$ gh api -X POST repos/tnix138/EscapeRoom/issues/85/comments …
+403 Resource not accessible by integration
 ```
 
-برای بستن، یکی از این دو کار لازم است:
+ولی merge یک Pull Request با کلیدواژهٔ `Closes` یک مکانیزم خودِ GitHub است و به
+مجوز Issue نیاز ندارد. بنابراین PR #113 با این کلیدواژه‌ها ساخته شد و پس از
+merge، GitHub خودش هر چهار Issue را بست:
 
-1. در تنظیمات Arena، اتصال GitHub با دسترسی `issues: write` بازصلاح شود؛ یا
-2. صاحب مخزن این چهار Issue را با همین گزارش ببندد:
+```
+Closes #85
+Closes #91
+Closes #95
+Closes #100
+```
+
+اگر یکی از Issueها باز ماند (مثلاً چون از قبل بسته شده یا کلیدواژه نادیده گرفته
+شد)، صاحب مخزن می‌تواند دستی اجرا کند:
 
 ```bash
 gh issue close 85 91 95 100
 ```
 
-تا آن زمان، این سند در `main` مرجع رسمی «OK شدن» آن‌هاست و در `docs/PHASE.md` هم وضعیت هر سه فاز با تاریخ، کامیت مرجع و نتیجهٔ تست ثبت شده است.
+این سند در هر حالت مرجع رسمی «OK شدن» آن‌هاست و در `docs/PHASE.md` هم وضعیت هر
+سه فاز با تاریخ، کامیت مرجع و نتیجهٔ تست ثبت شده است.
