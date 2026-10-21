@@ -7,6 +7,7 @@ import {
   canPublishPresence,
   PRESENCE_OFFLINE_TIMEOUT_MS,
   PRESENCE_SEND_INTERVAL_MS,
+  parsePresenceFrame,
   type PresenceSnapshot,
   type PresenceTransport,
 } from './types';
@@ -16,6 +17,7 @@ export interface UsePresenceOptions {
   seatToken: string;
   playerId: string;
   transform: PlayerTransform | null;
+  phase?: string;
   enabled?: boolean;
   /** Override for tests or a different realtime transport. */
   transport?: PresenceTransport;
@@ -33,37 +35,57 @@ export interface UsePresenceResult {
 export function createPresenceHttpTransport(roomCode: string, seatToken: string): PresenceTransport {
   const roomPath = `/api/rooms/${encodeURIComponent(roomCode)}`;
   return {
-    async publish(snapshot) {
+    async publish(snapshot, phase = snapshot.phase ?? 'alley_puzzle') {
       const response = await fetch(`${roomPath}/presence`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'X-Seat-Token': seatToken,
         },
-        body: JSON.stringify(snapshot),
+        body: JSON.stringify({
+          position: {
+            x: snapshot.transform.x,
+            y: snapshot.transform.y,
+            z: snapshot.transform.z,
+          },
+          // The room API stores yaw in radians while Three.js transforms use degrees.
+          yaw: snapshot.transform.yawDeg * (Math.PI / 180),
+          phase,
+        }),
       });
       if (!response.ok) throw new Error(`Presence publish failed (${response.status})`);
     },
     subscribe(onSnapshots) {
-      if (typeof EventSource === 'undefined') return () => undefined;
+      let closed = false;
+      const headers = { 'X-Seat-Token': seatToken };
+      // Bootstrap a newly joined player from the authenticated snapshot endpoint.
+      void fetch(`${roomPath}/presence`, { headers })
+        .then(async (response) => {
+          if (!response.ok) return;
+          const body: unknown = await response.json();
+          const frame = body && typeof body === 'object' && 'data' in body
+            ? (body as { data: unknown }).data
+            : body;
+          const snapshots = parsePresenceFrame(frame);
+          if (!closed && snapshots.length) onSnapshots(snapshots);
+        })
+        .catch(() => undefined);
+
+      if (typeof EventSource === 'undefined') return () => { closed = true; };
       const source = new EventSource(
         `${roomPath}/stream?token=${encodeURIComponent(seatToken)}`,
       );
       const onPresence = (event: MessageEvent<string>) => {
         try {
-          const payload: unknown = JSON.parse(event.data);
-          if (Array.isArray(payload)) {
-            onSnapshots(payload as PresenceSnapshot[]);
-          } else if (payload && typeof payload === 'object') {
-            const snapshots = (payload as { snapshots?: unknown }).snapshots;
-            if (Array.isArray(snapshots)) onSnapshots(snapshots as PresenceSnapshot[]);
-          }
+          const snapshots = parsePresenceFrame(JSON.parse(event.data) as unknown);
+          if (snapshots.length) onSnapshots(snapshots);
         } catch {
           // Ignore malformed realtime frames; the next complete snapshot repairs state.
         }
       };
       source.addEventListener('presence_update', onPresence as EventListener);
       return () => {
+        closed = true;
         source.removeEventListener('presence_update', onPresence as EventListener);
         source.close();
       };
@@ -76,6 +98,7 @@ export function usePresence({
   seatToken,
   playerId,
   transform,
+  phase = 'alley_puzzle',
   enabled = true,
   transport,
 }: UsePresenceOptions): UsePresenceResult {
@@ -130,9 +153,10 @@ export function usePresence({
         playerId,
         transform: { ...currentTransform },
         updatedAt: now,
+        phase,
       };
       try {
-        await activeTransport.publish(snapshot);
+        await activeTransport.publish(snapshot, phase);
       } catch {
         // A temporary network error must not stop later 10Hz updates.
       } finally {
@@ -153,7 +177,7 @@ export function usePresence({
       unsubscribe();
       tracker.clear();
     };
-  }, [enabled, roomCode, seatToken, playerId, transport]);
+  }, [enabled, roomCode, seatToken, playerId, phase, transport]);
 
   return { remotePlayers };
 }

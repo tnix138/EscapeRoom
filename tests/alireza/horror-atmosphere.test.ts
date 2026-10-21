@@ -1,6 +1,11 @@
 import { describe, expect, it, vi } from 'vitest';
 import * as THREE from 'three';
-import { heartbeatIntervalMs, HorrorAudio } from '../../src/audio/horror/horror-audio';
+import {
+  fearLevelFromThreatDistance,
+  heartbeatIntervalMs,
+  HorrorAudio,
+} from '../../src/audio/horror/horror-audio';
+import { fearFogDensity, FearResponsiveFog } from '../../src/engine3d/horror/fear-fog';
 import { JumpScare, findActiveCue, type JumpScareCue } from '../../src/engine3d/horror/jump-scare';
 import {
   HORROR_POST_FRAGMENT_SHADER,
@@ -93,6 +98,38 @@ describe('فاز ۰۷ — صدای محیطی و ضربان قلب رویه‌ا
     }).not.toThrow();
     expect(audio.fear).toBe(0.9);
     expect(audio.isMuted).toBe(true);
+    expect(() => audio.setFearLevel(Number.NaN)).toThrow(RangeError);
     await audio.dispose();
+  });
+
+  it('فاصلهٔ تهدید به سطح ترس و ضربان متناسب تبدیل می‌شود', () => {
+    expect(fearLevelFromThreatDistance(2)).toBe(1);
+    expect(fearLevelFromThreatDistance(10)).toBeCloseTo(0.5);
+    expect(fearLevelFromThreatDistance(22)).toBe(0);
+    expect(heartbeatIntervalMs(fearLevelFromThreatDistance(2)))
+      .toBeLessThan(heartbeatIntervalMs(fearLevelFromThreatDistance(10)));
+    expect(() => fearLevelFromThreatDistance(Number.NaN)).toThrow(RangeError);
+    expect(() => fearLevelFromThreatDistance(3, 5, 5)).toThrow(RangeError);
+
+    const audio = new HorrorAudio();
+    expect(audio.setThreatDistance(2)).toBe(1);
+    expect(audio.fear).toBe(1);
+  });
+
+  it('مه نمایی با ترس به‌نرمی غلیظ و هنگام dispose بازیابی می‌شود', () => {
+    const scene = new THREE.Scene();
+    const previousFog = new THREE.Fog(0xffffff, 1, 20);
+    scene.fog = previousFog;
+    const fog = new FearResponsiveFog(scene, { minDensity: 0.004, maxDensity: 0.04 });
+    expect(scene.fog).toBe(fog.fog);
+    const calmDensity = fog.fog.density;
+    expect(fog.setFearLevel(1)).toBeCloseTo(0.04);
+    const easedDensity = fog.update(0.2);
+    expect(easedDensity).toBeGreaterThan(calmDensity);
+    expect(easedDensity).toBeLessThan(0.04);
+    expect(fearFogDensity(0.5)).toBeGreaterThan(calmDensity);
+    fog.dispose();
+    expect(scene.fog).toBe(previousFog);
+    expect(() => fearFogDensity(Number.NaN)).toThrow(RangeError);
   });
 });
