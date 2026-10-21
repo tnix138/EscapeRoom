@@ -134,7 +134,7 @@ const HELP = `
     --by توحید --note "PR #13 بررسی و ادغام شد"
   npm run worklog:check
 
-راهنما: WORKLOG.md و TEAM.md §۴
+راهنما: WORKLOG.md، AGENTS.md و DOCUMENTATION.md §۷
 `.trim();
 
 export function run(argv, root = ROOT) {
