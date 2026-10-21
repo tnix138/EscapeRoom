@@ -1,0 +1,22 @@
+/* ⚠️ گام ۰ مشترک تیم — Placeholder حداقلی
+   مالک نهایی این فایل طبق TEAM.md: امیرعلی (Amirali) — تم گوتیک + Tailwind/Vazirmatn جایگزین می‌شود. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: #07030a;
+  color: #f3e9dc;
+  font-family:
+    Vazirmatn,
+    "Segoe UI",
+    Tahoma,
+    Arial,
+    sans-serif;
+}

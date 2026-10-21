@@ -1,0 +1,160 @@
+/* پیش‌نمایش موج ۲ علیرضا — سینمای تست کات‌سین */
+
+.page {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 20px 16px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.kicker {
+  color: #d4af37;
+  font-size: 13px;
+  margin: 0 0 6px;
+}
+
+.title {
+  margin: 0 0 8px;
+  font-size: clamp(20px, 3.4vw, 30px);
+  color: #f7e8c9;
+}
+
+.subtitle {
+  margin: 0;
+  max-width: 680px;
+  color: #cdbfa8;
+  line-height: 1.9;
+  font-size: 14px;
+}
+
+.countBox {
+  border: 1px solid #4a3560;
+  background: #140c1e;
+  border-radius: 14px;
+  padding: 12px 14px;
+  color: #f3e9dc;
+  font-size: 13.5px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.countBox small {
+  color: #9c8b73;
+  line-height: 1.8;
+}
+
+.countRow {
+  display: flex;
+  gap: 6px;
+}
+
+.countActive {
+  border-radius: 9px;
+  padding: 7px 13px;
+  font-family: inherit;
+  cursor: pointer;
+  background: linear-gradient(180deg, #8c1d2f, #5d1120);
+  border: 1px solid #d4af37;
+  color: #ffe9a8;
+  font-weight: 700;
+}
+
+/* قاب سینمایی استیج */
+.stageWrap {
+  height: min(76vh, 660px);
+  min-height: 430px;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid #6d1f2c;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.75), 0 0 0 4px rgba(201, 162, 39, 0.08);
+}
+
+.panel {
+  border: 1px solid #4a3560;
+  background: linear-gradient(180deg, #140c1e, #0b0512);
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.panel h2 {
+  margin: 0 0 8px;
+  font-size: 18px;
+  color: #f7e8c9;
+}
+
+.panelHint {
+  margin: 0 0 10px;
+  color: #cdbfa8;
+  line-height: 2;
+  font-size: 14px;
+}
+
+.scrubber {
+  width: 100%;
+  accent-color: #d4af37;
+}
+
+.buttonRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.button,
+.buttonPrimary {
+  border-radius: 10px;
+  padding: 9px 14px;
+  font-size: 13.5px;
+  font-family: inherit;
+  cursor: pointer;
+  border: 1px solid #6b4f8a;
+  background: #211631;
+  color: #f3e9dc;
+  transition: transform 0.08s ease, background 0.15s ease;
+}
+
+.button:hover,
+.buttonPrimary:hover {
+  transform: translateY(-1px);
+}
+
+.buttonPrimary {
+  background: linear-gradient(180deg, #8c1d2f, #5d1120);
+  border-color: #d4af37;
+  color: #ffe9a8;
+  font-weight: 700;
+}
+
+.checkList {
+  margin: 0;
+  padding-inline-start: 20px;
+  color: #cdbfa8;
+  line-height: 2.1;
+  font-size: 14px;
+}
+
+.checkList strong {
+  color: #ffe9a8;
+}
+
+.footer {
+  color: #9c8b73;
+  font-size: 13px;
+  line-height: 2;
+}
+
+.footer code {
+  color: #d4af37;
+}
