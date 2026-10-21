@@ -1,7 +1,7 @@
 ---
 agent: Tohid
 wave: 9
-status: IMPLEMENTED_PENDING_REVIEW
+status: COMPLETE
 intended_audience: coding_agents_only
 ---
 
@@ -29,3 +29,7 @@ intended_audience: coding_agents_only
 ## مرز دامنه
 
 Hotspot state authority در سرور است؛ مختصات بازیکنان یا transform renderer به اشتراک گذاشته یا ذخیره نمی‌شود. Endpoint حرکت یا transform-sync اضافه نمی‌شود.
+
+## تکمیل
+
+PR #55 در main ادغام شد (merge commit `500be9f`).
