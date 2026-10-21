@@ -247,6 +247,12 @@ describe('فاز ۰۲ — هم‌خوانی با docs/AUTO.md', () => {
     expect(deploy).toContain("github.actor == 'tnix138'");
     expect(deploy).toContain('secrets.VERCEL_TOKEN');
     expect(deploy).toContain('/api/health');
+    // پیش‌بررسی secretها باید قبل از نصب/ساخت اجرا شود تا پیام خطا روشن باشد
+    expect(deploy).toContain('بررسی secretهای انتشار');
+    expect(deploy.indexOf('بررسی secretهای انتشار')).toBeLessThan(
+      deploy.indexOf('npm ci'),
+    );
+    expect(deploy).toContain('VERCEL_PROJECT_ID');
   });
 
   it('اسکریپت‌های package.json اسکریپت‌های مستندشده را دارند', () => {
