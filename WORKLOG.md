@@ -121,7 +121,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۳۵** — ✅ Archive: **۱۵۸** — 🧾 مجموع: **۱۹۳** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۲:۵۵ (`2026-10-21T16:52:55.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۳۶** — ✅ Archive: **۱۵۸** — 🧾 مجموع: **۱۹۴** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۲:۵۶ (`2026-10-21T16:52:56.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -131,6 +131,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:EVENTS:START -->
 | 🕒 زمان (ایران / UTC) | رویداد | شناسه لاگ | توسط |
 | --- | --- | --- | --- |
+| ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۲:۵۶<br>`2026-10-21T16:52:56.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-22-56_infra-agent_pr54-wave5-infra`](./logs/pending/1405-07-29_20-22-56_infra-agent_pr54-wave5-infra.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۲:۵۵<br>`2026-10-21T16:52:55.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-22-55_infra-agent_push`](./logs/pending/1405-07-29_20-22-55_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۲:۵۴<br>`2026-10-21T16:52:54.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-22-54_infra-agent_wave5-invitation-multiuser-smoke`](./logs/pending/1405-07-29_20-22-54_infra-agent_wave5-invitation-multiuser-smoke.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۲:۱۵<br>`2026-10-21T16:52:15.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-22-15_infra-agent_pr54-wave4-infra`](./logs/pending/1405-07-29_20-22-15_infra-agent_pr54-wave4-infra.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
@@ -142,7 +143,6 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۹:۱۶<br>`2026-10-21T16:49:16.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-19-16_tohid_push`](./logs/pending/1405-07-29_20-19-16_tohid_push.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۹:۱۵<br>`2026-10-21T16:49:15.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-19-15_tohid_final-archive-pr59`](./logs/pending/1405-07-29_20-19-15_tohid_final-archive-pr59.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۹:۱۵<br>`2026-10-21T16:49:15.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_20-18-02_tohid_pr-59-tohid-final-hardening`](./logs/archive/1405-07-29_20-18-02_tohid_pr-59-tohid-final-hardening.md) | **توحید** |
-| ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۹:۱۵<br>`2026-10-21T16:49:15.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_20-18-02_tohid_push`](./logs/archive/1405-07-29_20-18-02_tohid_push.md) | **توحید** |
 <!-- WORKLOG:EVENTS:END -->
 
 ---
@@ -154,6 +154,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:PENDING:START -->
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- |
+| [`1405-07-29_20-22-56_infra-agent_pr54-wave5-infra`](./logs/pending/1405-07-29_20-22-56_infra-agent_pr54-wave5-infra.md) | به‌روزرسانی PR #54 با موج ۵ زیرساخت (WAVE-5-INFRA.md) | `PR` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۲:۵۶<br>`2026-10-21T16:52:56.000Z` | PR #54 (WAVE-5-INFRA.md) |
 | [`1405-07-29_20-22-55_infra-agent_push`](./logs/pending/1405-07-29_20-22-55_infra-agent_push.md) | پوش شاخه arena/3cf79cfd-escaperoom — aa61797 | `Push` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۲:۵۵<br>`2026-10-21T16:52:55.000Z` | origin/arena/3cf79cfd-escaperoom (origin/arena/3cf79cfd-escaperoom..aa61797) |
 | [`1405-07-29_20-22-54_infra-agent_wave5-invitation-multiuser-smoke`](./logs/pending/1405-07-29_20-22-54_infra-agent_wave5-invitation-multiuser-smoke.md) | موج ۵ زیرساخت — Smoke Test مسیر دعوت‌نامه، کوپن یکپارچه و پیوستن چند کاربر | `Infra-Supabase` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۲:۵۴<br>`2026-10-21T16:52:54.000Z` | WAVE-5-INFRA.md / yavwoaqxhptzufmjckwz |
 | [`1405-07-29_20-22-15_infra-agent_pr54-wave4-infra`](./logs/pending/1405-07-29_20-22-15_infra-agent_pr54-wave4-infra.md) | به‌روزرسانی PR #54 با موج ۴ زیرساخت (WAVE-4-INFRA.md) | `PR` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۲:۱۵<br>`2026-10-21T16:52:15.000Z` | PR #54 (WAVE-4-INFRA.md) |
