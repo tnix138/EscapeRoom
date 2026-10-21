@@ -13,9 +13,6 @@
     "test:amirali": "vitest run tests/amirali",
     "test:alireza": "vitest run tests/alireza",
     "test:e2e:alireza": "playwright test tests/alireza/multiplayer-theater.spec.ts",
-<<<<<<< HEAD
-    "test:e2e:alireza": "playwright test tests/alireza/multiplayer-theater.spec.ts"
-=======
     "worklog": "node scripts/worklog.mjs",
     "worklog:new": "node scripts/worklog.mjs new",
     "worklog:push": "node scripts/worklog.mjs push",
@@ -26,7 +23,6 @@
     "worklog:list": "node scripts/worklog.mjs list",
     "worklog:hooks": "node scripts/worklog.mjs hooks",
     "test:worklog": "vitest run tests/worklog"
->>>>>>> origin/main
   },
   "dependencies": {
     "@fontsource-variable/vazirmatn": "^5.3.0",
@@ -43,12 +39,9 @@
     "typescript": "^5.8.0",
     "vitest": "^5.0.5"
   },
-<<<<<<< HEAD
-=======
   "overrides": {
     "postcss": "^8.5.31"
   },
->>>>>>> origin/main
   "engines": {
     "node": ">=22"
   }
