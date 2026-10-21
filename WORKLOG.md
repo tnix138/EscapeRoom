@@ -121,7 +121,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۲۰** — ✅ Archive: **۱۰۷** — 🧾 مجموع: **۱۲۷** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۹:۳۲:۲۳ (`2026-10-21T16:02:23.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۲۳** — ✅ Archive: **۱۰۷** — 🧾 مجموع: **۱۳۰** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۹:۳۹:۵۳ (`2026-10-21T16:09:53.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -131,6 +131,9 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:EVENTS:START -->
 | 🕒 زمان (ایران / UTC) | رویداد | شناسه لاگ | توسط |
 | --- | --- | --- | --- |
+| ۱۴۰۵/۰۷/۲۹ — ۱۹:۳۹:۵۳<br>`2026-10-21T16:09:53.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-39-53_amirali_wave3-controls-help`](./logs/pending/1405-07-29_19-39-53_amirali_wave3-controls-help.md) | **امیرعلی** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۹:۳۹:۳۹<br>`2026-10-21T16:09:39.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-39-39_amirali_push`](./logs/pending/1405-07-29_19-39-39_amirali_push.md) | **امیرعلی** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۹:۳۹:۳۱<br>`2026-10-21T16:09:31.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-39-31_amirali_wave3-controls-help`](./logs/pending/1405-07-29_19-39-31_amirali_wave3-controls-help.md) | **امیرعلی** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۳۲:۲۳<br>`2026-10-21T16:02:23.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-32-23_infra-agent_push`](./logs/pending/1405-07-29_19-32-23_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۳۱:۵۲<br>`2026-10-21T16:01:52.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-31-52_infra-agent_pr43-production-deploy-3d`](./logs/pending/1405-07-29_19-31-52_infra-agent_pr43-production-deploy-3d.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۳۱:۲۹<br>`2026-10-21T16:01:29.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-31-29_infra-agent_push`](./logs/pending/1405-07-29_19-31-29_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
@@ -140,9 +143,6 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۳۰:۵۰<br>`2026-10-21T16:00:50.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_19-24-00_infra-agent_push`](./logs/archive/1405-07-29_19-24-00_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۳۰:۵۰<br>`2026-10-21T16:00:50.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_19-23-06_infra-agent_wave1-infra-build-audit`](./logs/archive/1405-07-29_19-23-06_infra-agent_wave1-infra-build-audit.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۹:۰۸<br>`2026-10-21T15:59:08.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-29-08_tohid_push-sync-pr41-pr42`](./logs/pending/1405-07-29_19-29-08_tohid_push-sync-pr41-pr42.md) | **توحید** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۸:۵۴<br>`2026-10-21T15:58:54.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-28-54_tohid_sync-main-pr41-tickets`](./logs/pending/1405-07-29_19-28-54_tohid_sync-main-pr41-tickets.md) | **توحید** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۸:۰۳<br>`2026-10-21T15:58:03.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-28-03_tohid_push-sync-pr40-pr42`](./logs/pending/1405-07-29_19-28-03_tohid_push-sync-pr40-pr42.md) | **توحید** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۷:۵۰<br>`2026-10-21T15:57:50.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-27-50_tohid_sync-main-pr40-infra`](./logs/pending/1405-07-29_19-27-50_tohid_sync-main-pr40-infra.md) | **توحید** |
 <!-- WORKLOG:EVENTS:END -->
 
 ---
@@ -154,6 +154,9 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:PENDING:START -->
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- |
+| [`1405-07-29_19-39-53_amirali_wave3-controls-help`](./logs/pending/1405-07-29_19-39-53_amirali_wave3-controls-help.md) | PR #44 — تکمیل موج ۳: راهنمای کنترل‌ها | `PR` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۳۹:۵۳<br>`2026-10-21T16:09:53.000Z` | PR #44 — arena/f70fac20-escaperoom ➔ main |
+| [`1405-07-29_19-39-39_amirali_push`](./logs/pending/1405-07-29_19-39-39_amirali_push.md) | پوش شاخه arena/f70fac20-escaperoom — cea5c75 | `Push` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۳۹:۳۹<br>`2026-10-21T16:09:39.000Z` | origin/arena/f70fac20-escaperoom (origin/main..cea5c75) |
+| [`1405-07-29_19-39-31_amirali_wave3-controls-help`](./logs/pending/1405-07-29_19-39-31_amirali_wave3-controls-help.md) | تکمیل موج ۳ — فوکوس، راهنمای لمس و عدم مزاحمت | `Commit` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۳۹:۳۱<br>`2026-10-21T16:09:31.000Z` | شاخه arena/f70fac20-escaperoom |
 | [`1405-07-29_19-32-23_infra-agent_push`](./logs/pending/1405-07-29_19-32-23_infra-agent_push.md) | پوش شاخه arena/5f12b76c-escaperoom — d2fe085 | `Push` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۳۲:۲۳<br>`2026-10-21T16:02:23.000Z` | origin/arena/5f12b76c-escaperoom (origin/arena/5f12b76c-escaperoom..d2fe085) |
 | [`1405-07-29_19-31-52_infra-agent_pr43-production-deploy-3d`](./logs/pending/1405-07-29_19-31-52_infra-agent_pr43-production-deploy-3d.md) | PR #43 — دیپلوی Production نسخه سه‌بعدی روی Vercel، بررسی سلامت Supabase و آرشیو لاگ‌های PR #40 | `PR` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۳۱:۵۲<br>`2026-10-21T16:01:52.000Z` | PR #43 (arena/5f12b76c-escaperoom → main) |
 | [`1405-07-29_19-31-29_infra-agent_push`](./logs/pending/1405-07-29_19-31-29_infra-agent_push.md) | پوش شاخه arena/5f12b76c-escaperoom — fc10bfc | `Push` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۳۱:۲۹<br>`2026-10-21T16:01:29.000Z` | origin/arena/5f12b76c-escaperoom (origin/arena/5f12b76c-escaperoom..fc10bfc) |
