@@ -121,7 +121,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۴۸** — ✅ Archive: **۱۱۵** — 🧾 مجموع: **۱۶۳** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۹:۱۸ (`2026-10-21T16:39:18.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۴۹** — ✅ Archive: **۱۱۵** — 🧾 مجموع: **۱۶۴** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۱:۳۸ (`2026-10-21T16:41:38.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -131,6 +131,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:EVENTS:START -->
 | 🕒 زمان (ایران / UTC) | رویداد | شناسه لاگ | توسط |
 | --- | --- | --- | --- |
+| ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۱:۳۸<br>`2026-10-21T16:41:38.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-11-38_tohid_wave9-persistent-exploration`](./logs/pending/1405-07-29_20-11-38_tohid_wave9-persistent-exploration.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۹:۱۸<br>`2026-10-21T16:39:18.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-09-18_tohid_pr-wave8-closeout`](./logs/pending/1405-07-29_20-09-18_tohid_pr-wave8-closeout.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۹:۰۶<br>`2026-10-21T16:39:06.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-09-06_tohid_push-wave8-closeout`](./logs/pending/1405-07-29_20-09-06_tohid_push-wave8-closeout.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۹:۰۱<br>`2026-10-21T16:39:01.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-09-01_tohid_wave8-cutscene-closeout`](./logs/pending/1405-07-29_20-09-01_tohid_wave8-cutscene-closeout.md) | **توحید** |
@@ -142,7 +143,6 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۳:۵۸<br>`2026-10-21T16:33:58.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-03-58_tohid_sync-pr50-wave6-alley-security`](./logs/pending/1405-07-29_20-03-58_tohid_sync-pr50-wave6-alley-security.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۱:۴۴<br>`2026-10-21T16:31:44.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-01-44_amirali_push`](./logs/pending/1405-07-29_20-01-44_amirali_push.md) | **امیرعلی** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۰:۰۹<br>`2026-10-21T16:30:09.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-00-09_amirali_push`](./logs/pending/1405-07-29_20-00-09_amirali_push.md) | **امیرعلی** |
-| ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۰:۰۹<br>`2026-10-21T16:30:09.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-00-09_tohid_push-sync-pr48-wave5`](./logs/pending/1405-07-29_20-00-09_tohid_push-sync-pr48-wave5.md) | **توحید** |
 <!-- WORKLOG:EVENTS:END -->
 
 ---
@@ -154,6 +154,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:PENDING:START -->
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- |
+| [`1405-07-29_20-11-38_tohid_wave9-persistent-exploration`](./logs/pending/1405-07-29_20-11-38_tohid_wave9-persistent-exploration.md) | موج ۹ توحید — پایداری کاوش hotspotها | `Commit` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۱:۳۸<br>`2026-10-21T16:41:38.000Z` | شاخه arena/bab0d18a-escaperoom |
 | [`1405-07-29_20-09-18_tohid_pr-wave8-closeout`](./logs/pending/1405-07-29_20-09-18_tohid_pr-wave8-closeout.md) | ثبت PR #53 — بستن موج‌های ۷ و ۸ | `PR` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۹:۱۸<br>`2026-10-21T16:39:18.000Z` | https://github.com/tnix138/EscapeRoom/pull/53 |
 | [`1405-07-29_20-09-06_tohid_push-wave8-closeout`](./logs/pending/1405-07-29_20-09-06_tohid_push-wave8-closeout.md) | پوش بستن موج‌های ۷ و ۸ | `Push` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۹:۰۶<br>`2026-10-21T16:39:06.000Z` | origin/arena/bab0d18a-escaperoom (origin/main..30bbc6d) |
 | [`1405-07-29_20-09-01_tohid_wave8-cutscene-closeout`](./logs/pending/1405-07-29_20-09-01_tohid_wave8-cutscene-closeout.md) | بستن موج ۷ و ثبت پوشش clock موج ۸ | `Commit` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۹:۰۱<br>`2026-10-21T16:39:01.000Z` | PR #52 merge 6ac69c2 |
