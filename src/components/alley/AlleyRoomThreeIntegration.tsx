@@ -27,6 +27,7 @@ import TheaterDoorLockModal from './TheaterDoorLockModal';
 import { resolveOwnRevealedDigit } from './puzzle-rules';
 import WhisperChatPanel from '../hud/WhisperChatPanel';
 import TheaterCompanionHud from '../hud/TheaterCompanionHud';
+import MovementNotice from '../hud/MovementNotice';
 
 const AlleyThreeSceneCore = dynamic(() => Promise.resolve(ThreeCore), { ssr: false });
 
@@ -203,6 +204,11 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
         meId={room.me.playerId}
         phase={room.phase}
         punchedCount={room.players.filter((player) => player.ticketPunched).length}
+      />
+
+      <MovementNotice
+        modalOpen={doorModalOpen || showPlaybill || showRowChart}
+        pointerLocked={isPointerLocked}
       />
 
       {/* HUD پایین */}

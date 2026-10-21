@@ -5,6 +5,7 @@ import HeldTicketsDrawer from './HeldTicketsDrawer';
 import TheaterDoorLockModal from './TheaterDoorLockModal';
 import WhisperChatPanel from '../hud/WhisperChatPanel';
 import TheaterCompanionHud from '../hud/TheaterCompanionHud';
+import MovementNotice from '../hud/MovementNotice';
 import ClueReadingPanel from './ClueReadingPanel';
 import { inspectHint, type ClueKind } from './clue-reading-data';
 import { resolveOwnRevealedDigit } from './puzzle-rules';
@@ -117,6 +118,8 @@ export default function AlleyFirstPersonScene({ room, onPunchTicket, onUnlockDoo
         phase={room.phase}
         punchedCount={players.filter((player) => player.ticketPunched).length}
       />
+
+      <MovementNotice modalOpen={doorOpen || openClue !== null} />
 
       <section className={`alley-panorama view-${activeView} ${isDragging ? 'is-dragging' : ''}`} onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerEnd} onPointerCancel={onPointerEnd} aria-label="نمای اول‌شخص از کوچه؛ برای چرخاندن دوربین بکشید">
         <div className="alley-sky" />
