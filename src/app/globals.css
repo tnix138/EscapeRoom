@@ -7002,3 +7002,437 @@ button:disabled {
     font-size: var(--text-sm);
   }
 }
+
+/* ==========================================================================
+   موج ۹ — HUD کاوش: اهداف، یادداشت‌های بررسی، مسیر بازیکن و میان‌بر گفتگو
+   قاعده: پیش‌فرض بسته، بدون پوشاندن مرکز صحنه، همهٔ متن‌ها ≥۱۲px (برچسب‌ها ≥۱۴px)
+   ========================================================================== */
+
+.exploration-hud {
+  position: fixed;
+  z-index: 13;
+  /* پایین-چپ، بالاتر از نوار کنترل‌ها؛ مرکز صحنه، نجوای گروهی (بالا-چپ)،
+     اعلان حرکت (بالا-وسط) و HUD همراهان (بالا-راست) دست‌نخورده می‌مانند. */
+  bottom: 96px;
+  left: clamp(12px, 2vw, 22px);
+  width: min(380px, calc(100vw - 32px));
+  display: flex;
+  /* دکمهٔ جمع‌شده پایین می‌ماند و پنل به سمت بالا باز می‌شود. */
+  flex-direction: column-reverse;
+  align-items: stretch;
+  gap: 6px;
+  pointer-events: none;
+}
+
+.exploration-toggle {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  min-height: 44px;
+  padding: 6px 12px;
+  border: 1px solid rgba(212, 175, 99, 0.28);
+  background: rgba(16, 11, 14, 0.9);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.36);
+  color: #ecdfc9;
+  text-align: right;
+  cursor: pointer;
+  pointer-events: auto;
+  backdrop-filter: blur(7px);
+}
+
+.exploration-toggle:hover {
+  border-color: rgba(212, 175, 99, 0.55);
+}
+
+.exploration-toggle-mark {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid rgba(212, 175, 99, 0.38);
+  border-radius: 50%;
+  color: #d6b77c;
+  font-size: var(--text-sm);
+}
+
+.exploration-toggle-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.exploration-toggle-text strong {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  line-height: 1.5;
+  color: #f2e6d0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.exploration-toggle-text small {
+  font-size: var(--text-xs);
+  line-height: 1.5;
+  color: #a8988a;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.exploration-toggle-progress {
+  flex: none;
+  padding: 2px 7px;
+  border: 1px solid rgba(212, 175, 99, 0.34);
+  color: #e3c98f;
+  font-size: var(--text-xs);
+  white-space: nowrap;
+}
+
+.exploration-toggle-chevron {
+  flex: none;
+  color: #b09264;
+  font-size: var(--text-sm);
+  transition: transform 0.2s;
+}
+
+.exploration-toggle-chevron.turned {
+  transform: rotate(180deg);
+}
+
+.exploration-panel {
+  max-height: min(64vh, 540px);
+  overflow: auto;
+  padding: 10px 12px 12px;
+  border: 1px solid rgba(212, 175, 99, 0.3);
+  background: rgba(16, 11, 14, 0.96);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(9px);
+  color: #e6d7c0;
+  pointer-events: auto;
+  scrollbar-color: #6a4c34 transparent;
+  scrollbar-width: thin;
+}
+
+.exploration-progress {
+  height: 4px;
+  margin-bottom: 9px;
+  background: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+
+.exploration-progress span {
+  display: block;
+  height: 100%;
+  transform-origin: right center;
+  background: linear-gradient(90deg, #c9a86a, #e8d09a);
+  transition: transform 0.35s ease;
+}
+
+.exploration-position {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 0 9px;
+  padding: 5px 8px;
+  border: 1px dashed rgba(212, 175, 99, 0.3);
+  color: #cdbb9f;
+  font-size: var(--text-sm);
+  line-height: 1.6;
+}
+
+.exploration-position > span:first-child {
+  color: #d6b77c;
+}
+
+.exploration-section {
+  margin-top: 10px;
+}
+
+.exploration-section h3,
+.exploration-chat h3 {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0 0 6px;
+  color: #c9a86a;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.exploration-count {
+  color: #a8988a;
+  font-size: var(--text-xs);
+}
+
+.exploration-objectives,
+.exploration-notes,
+.exploration-trail {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.exploration-objective,
+.exploration-note {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 7px;
+  padding: 6px 7px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.exploration-objective.is-done {
+  border-color: rgba(166, 189, 133, 0.36);
+  background: rgba(166, 189, 133, 0.08);
+}
+
+.exploration-objective.is-lead {
+  border-style: dashed;
+  border-color: rgba(212, 175, 99, 0.32);
+}
+
+.objective-mark,
+.note-mark {
+  color: #b9a083;
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  text-align: center;
+}
+
+.exploration-objective.is-done .objective-mark,
+.exploration-note.is-inspected .note-mark {
+  color: #b8d095;
+}
+
+.exploration-objective.is-lead .objective-mark {
+  color: #d6b77c;
+}
+
+.objective-body,
+.note-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.objective-body strong,
+.note-body strong {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  line-height: 1.55;
+  color: #eaddc7;
+}
+
+.objective-body small,
+.note-body small {
+  font-size: var(--text-xs);
+  line-height: 1.65;
+  color: #a2937f;
+}
+
+.objective-body em {
+  margin-top: 2px;
+  font-style: normal;
+  font-size: var(--text-xs);
+  line-height: 1.7;
+  color: #8f8272;
+}
+
+.objective-state,
+.note-state {
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  white-space: nowrap;
+  color: #9c8d7c;
+}
+
+.exploration-objective.is-done .objective-state {
+  color: #b8d095;
+}
+
+.exploration-objective.is-lead .objective-state {
+  color: #cbb184;
+}
+
+.note-state {
+  max-width: 14ch;
+  white-space: normal;
+  text-align: left;
+}
+
+.exploration-note.is-inspected .note-state {
+  color: #b8d095;
+}
+
+.trail-step {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 7px;
+  color: #9c9084;
+  font-size: var(--text-sm);
+  line-height: 1.6;
+}
+
+.trail-step.is-done {
+  color: #b9c9a3;
+}
+
+.trail-step.is-current {
+  border: 1px solid rgba(212, 175, 99, 0.4);
+  background: rgba(212, 175, 99, 0.08);
+  color: #f0e3cc;
+}
+
+.trail-mark {
+  text-align: center;
+  font-size: var(--text-sm);
+}
+
+.trail-state {
+  font-size: var(--text-sm);
+  color: #8f8272;
+}
+
+.trail-step.is-done .trail-state {
+  color: #9fb488;
+}
+
+.trail-step.is-current .trail-state {
+  color: #d6b77c;
+}
+
+.exploration-chat {
+  margin-top: 12px;
+  padding-top: 9px;
+  border-top: 1px solid rgba(212, 175, 99, 0.16);
+}
+
+.exploration-chat-last {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0 0 8px;
+  padding: 6px 8px;
+  background: rgba(255, 255, 255, 0.03);
+  font-size: var(--text-sm);
+  line-height: 1.7;
+  color: #cdbda8;
+}
+
+.exploration-chat-last strong {
+  color: #e3c98f;
+  font-weight: 500;
+  font-size: var(--text-sm);
+}
+
+.exploration-chat-last span {
+  overflow-wrap: anywhere;
+}
+
+.exploration-chat-last small {
+  color: #8f8272;
+  font-size: var(--text-xs);
+}
+
+.exploration-chat-empty {
+  margin: 0 0 8px;
+  color: #8f8272;
+  font-size: var(--text-sm);
+  line-height: 1.7;
+}
+
+.exploration-chat-button,
+.exploration-hide {
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid rgba(212, 175, 99, 0.34);
+  background: rgba(33, 23, 26, 0.9);
+  color: #eadcc2;
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+
+.exploration-chat-button:hover,
+.exploration-hide:hover {
+  border-color: rgba(212, 175, 99, 0.62);
+}
+
+.exploration-hide {
+  margin-top: 10px;
+  border-style: dashed;
+  background: transparent;
+  color: #bfae97;
+}
+
+/* حالت پنهان: فقط یک دکمهٔ کوچک تا دید صحنه کاملاً آزاد بماند. */
+.exploration-hud.is-hidden {
+  width: auto;
+  align-items: flex-start;
+}
+
+.exploration-restore {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 4px 11px;
+  border: 1px solid rgba(212, 175, 99, 0.34);
+  border-radius: 22px;
+  background: rgba(16, 11, 14, 0.9);
+  color: #d6b77c;
+  font-size: var(--text-sm);
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.exploration-restore-count {
+  font-size: var(--text-xs);
+  color: #c7b393;
+  white-space: nowrap;
+}
+
+@media (max-width: 720px) {
+  .exploration-hud {
+    /* بالاتر از کنترل دوربین/نوار پایین هر دو پوستهٔ کوچه می‌نشیند. */
+    bottom: 104px;
+    left: 10px;
+    right: auto;
+    width: auto;
+    align-items: flex-start;
+  }
+
+  .exploration-toggle {
+    width: auto;
+    max-width: calc(100vw - 20px);
+    padding: 6px 10px;
+  }
+
+  .exploration-toggle-text strong {
+    max-width: 42vw;
+  }
+
+  .exploration-toggle-text small {
+    max-width: 42vw;
+  }
+
+  .exploration-panel {
+    width: min(420px, calc(100vw - 20px));
+    max-height: min(56svh, 420px);
+    padding: 9px 10px 10px;
+  }
+}
