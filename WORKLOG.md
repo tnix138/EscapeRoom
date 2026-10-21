@@ -121,7 +121,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۳** — ✅ Archive: **۱۰۳** — 🧾 مجموع: **۱۰۶** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۲:۵۳ (`2026-10-21T15:52:53.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۷** — ✅ Archive: **۱۰۳** — 🧾 مجموع: **۱۱۰** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۶:۰۷ (`2026-10-21T15:56:07.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -131,6 +131,10 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:EVENTS:START -->
 | 🕒 زمان (ایران / UTC) | رویداد | شناسه لاگ | توسط |
 | --- | --- | --- | --- |
+| ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۶:۰۷<br>`2026-10-21T15:56:07.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-26-07_infra-agent_push`](./logs/pending/1405-07-29_19-26-07_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۵:۴۳<br>`2026-10-21T15:55:43.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-25-43_infra-agent_pr40-wave1-infra-audit`](./logs/pending/1405-07-29_19-25-43_infra-agent_pr40-wave1-infra-audit.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۴:۰۰<br>`2026-10-21T15:54:00.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-24-00_infra-agent_push`](./logs/pending/1405-07-29_19-24-00_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۳:۰۶<br>`2026-10-21T15:53:06.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-23-06_infra-agent_wave1-infra-build-audit`](./logs/pending/1405-07-29_19-23-06_infra-agent_wave1-infra-build-audit.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۲:۵۳<br>`2026-10-21T15:52:53.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-22-53_amirali_wave3-controls-help`](./logs/pending/1405-07-29_19-22-53_amirali_wave3-controls-help.md) | **امیرعلی** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۲:۳۳<br>`2026-10-21T15:52:33.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-22-33_amirali_push`](./logs/pending/1405-07-29_19-22-33_amirali_push.md) | **امیرعلی** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۱:۵۱<br>`2026-10-21T15:51:51.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-21-51_amirali_wave3-controls-help`](./logs/pending/1405-07-29_19-21-51_amirali_wave3-controls-help.md) | **امیرعلی** |
@@ -139,10 +143,6 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۱۶:۴۶<br>`2026-10-21T15:46:46.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_18-56-32_amirali_wave2-readable-shell`](./logs/archive/1405-07-29_18-56-32_amirali_wave2-readable-shell.md) | **علیرضا** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۱۶:۴۶<br>`2026-10-21T15:46:46.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_18-56-15_amirali_push`](./logs/archive/1405-07-29_18-56-15_amirali_push.md) | **علیرضا** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۱۶:۴۵<br>`2026-10-21T15:46:45.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_18-56-06_amirali_wave2-readable-shell`](./logs/archive/1405-07-29_18-56-06_amirali_wave2-readable-shell.md) | **علیرضا** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۹:۱۶:۳۰<br>`2026-10-21T15:46:30.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_19-14-36_alireza_fix-conflict-pr`](./logs/archive/1405-07-29_19-14-36_alireza_fix-conflict-pr.md) | **علیرضا** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۹:۱۶:۳۰<br>`2026-10-21T15:46:30.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_19-14-30_alireza_fix-conflict-archive`](./logs/archive/1405-07-29_19-14-30_alireza_fix-conflict-archive.md) | **علیرضا** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۹:۱۶:۳۰<br>`2026-10-21T15:46:30.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_19-14-30_alireza_push`](./logs/archive/1405-07-29_19-14-30_alireza_push.md) | **علیرضا** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۹:۱۴:۳۶<br>`2026-10-21T15:44:36.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-14-36_alireza_fix-conflict-pr`](./logs/archive/1405-07-29_19-14-36_alireza_fix-conflict-pr.md) | **علیرضا** |
 <!-- WORKLOG:EVENTS:END -->
 
 ---
@@ -154,6 +154,10 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:PENDING:START -->
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- |
+| [`1405-07-29_19-26-07_infra-agent_push`](./logs/pending/1405-07-29_19-26-07_infra-agent_push.md) | پوش شاخه arena/5f12b76c-escaperoom — de5c6ec | `Push` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۶:۰۷<br>`2026-10-21T15:56:07.000Z` | origin/arena/5f12b76c-escaperoom (origin/arena/5f12b76c-escaperoom..de5c6ec) |
+| [`1405-07-29_19-25-43_infra-agent_pr40-wave1-infra-audit`](./logs/pending/1405-07-29_19-25-43_infra-agent_pr40-wave1-infra-audit.md) | PR #40 — ممیزی موج اول ایجنت چهارم زیرساخت: محدودیت‌های بیلد، باندل WebGL و تنظیمات دیپلوی | `PR` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۵:۴۳<br>`2026-10-21T15:55:43.000Z` | PR #40 (arena/5f12b76c-escaperoom → main) |
+| [`1405-07-29_19-24-00_infra-agent_push`](./logs/pending/1405-07-29_19-24-00_infra-agent_push.md) | پوش شاخه arena/5f12b76c-escaperoom — cfd3dd9 | `Push` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۴:۰۰<br>`2026-10-21T15:54:00.000Z` | origin/arena/5f12b76c-escaperoom (origin/main..cfd3dd9) |
+| [`1405-07-29_19-23-06_infra-agent_wave1-infra-build-audit`](./logs/pending/1405-07-29_19-23-06_infra-agent_wave1-infra-build-audit.md) | ممیزی موج اول زیرساخت — محدودیت‌های بیلد، باندل سه‌بعدی و تنظیمات دیپلوی | `Commit` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۳:۰۶<br>`2026-10-21T15:53:06.000Z` | شاخه arena/5f12b76c-escaperoom |
 | [`1405-07-29_19-22-53_amirali_wave3-controls-help`](./logs/pending/1405-07-29_19-22-53_amirali_wave3-controls-help.md) | PR #39 — موج ۳ امیرعلی: راهنمای کنترل‌ها | `PR` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۲:۵۳<br>`2026-10-21T15:52:53.000Z` | PR #39 — arena/9bbb79f7-escaperoom ➔ main |
 | [`1405-07-29_19-22-33_amirali_push`](./logs/pending/1405-07-29_19-22-33_amirali_push.md) | پوش شاخه arena/9bbb79f7-escaperoom — 364dff3 | `Push` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۲:۳۳<br>`2026-10-21T15:52:33.000Z` | origin/arena/9bbb79f7-escaperoom (origin/main..364dff3) |
 | [`1405-07-29_19-21-51_amirali_wave3-controls-help`](./logs/pending/1405-07-29_19-21-51_amirali_wave3-controls-help.md) | موج ۳ — راهنمای کنترل‌ها و آغاز آگاهانه | `Commit` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۱:۵۱<br>`2026-10-21T15:51:51.000Z` | شاخه arena/9bbb79f7-escaperoom |
