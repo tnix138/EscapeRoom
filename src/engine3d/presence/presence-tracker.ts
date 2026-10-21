@@ -16,8 +16,7 @@ export class PresenceTracker {
     const previous = this.snapshots.get(input.playerId);
     if (!acceptSnapshot(previous, input)) return false;
     this.snapshots.set(input.playerId, {
-      playerId: input.playerId,
-      updatedAt: input.updatedAt,
+      ...input,
       transform: { ...input.transform },
     });
     return true;

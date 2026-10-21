@@ -6,10 +6,24 @@ export function heartbeatIntervalMs(fearLevel: number): number {
   return 60_000 / beatsPerMinute;
 }
 
+/** Convert threat distance to fear: near threats approach 1, distant threats approach 0. */
+export function fearLevelFromThreatDistance(
+  distanceM: number,
+  nearM = 4,
+  farM = 16,
+): number {
+  if (!Number.isFinite(distanceM) || !Number.isFinite(nearM) || !Number.isFinite(farM) ||
+    nearM < 0 || farM <= nearM) {
+    throw new RangeError('Threat distance must be finite and farM must be greater than nearM >= 0.');
+  }
+  return 1 - clamp((distanceM - nearM) / (farM - nearM), 0, 1);
+}
+
 export interface HorrorAudioOptions {
   masterVolume?: number;
   windVolume?: number;
   heartbeatVolume?: number;
+  audienceVolume?: number;
 }
 
 export class HorrorAudio {
@@ -17,8 +31,11 @@ export class HorrorAudio {
   private masterGain: GainNode | null = null;
   private windGain: GainNode | null = null;
   private heartbeatGain: GainNode | null = null;
+  private audienceGain: GainNode | null = null;
   private windSource: AudioBufferSourceNode | null = null;
   private windFilter: BiquadFilterNode | null = null;
+  private audienceSource: AudioBufferSourceNode | null = null;
+  private audienceFilter: BiquadFilterNode | null = null;
   private heartbeatTimer: ReturnType<typeof setTimeout> | null = null;
   private heartbeatActive = false;
   private disposed = false;
@@ -27,11 +44,13 @@ export class HorrorAudio {
   private readonly masterVolume: number;
   private readonly windVolume: number;
   private readonly heartbeatVolume: number;
+  private readonly audienceVolume: number;
 
   constructor(options: HorrorAudioOptions = {}) {
     this.masterVolume = clamp(options.masterVolume ?? 0.75, 0, 1);
     this.windVolume = clamp(options.windVolume ?? 0.28, 0, 1);
     this.heartbeatVolume = clamp(options.heartbeatVolume ?? 0.72, 0, 1);
+    this.audienceVolume = clamp(options.audienceVolume ?? 0.045, 0, 0.2);
   }
 
   get isInitialized(): boolean {
@@ -85,15 +104,50 @@ export class HorrorAudio {
       this.windSource = source;
       this.windFilter = filter;
     }
+    this.startAudienceAmbience();
     this.startHeartbeat();
   }
 
+  private startAudienceAmbience(): void {
+    const context = this.context;
+    if (!context || !this.audienceGain || this.audienceSource || this.disposed) return;
+    const source = context.createBufferSource();
+    const filter = context.createBiquadFilter();
+    const buffer = context.createBuffer(1, context.sampleRate * 3, context.sampleRate);
+    const channel = buffer.getChannelData(0);
+    for (let index = 0; index < channel.length; index++) {
+      // Whisper-quiet filtered noise suggests a distant, indistinct audience without words.
+      channel[index] = (Math.random() * 2 - 1) * (0.55 + 0.45 * Math.sin(index * 0.00021));
+    }
+    source.buffer = buffer;
+    source.loop = true;
+    filter.type = 'bandpass';
+    filter.frequency.value = 520;
+    filter.Q.value = 0.42;
+    source.connect(filter);
+    filter.connect(this.audienceGain);
+    source.start();
+    this.audienceFilter = filter;
+    this.audienceSource = source;
+  }
+
   setFearLevel(level: number): void {
+    if (!Number.isFinite(level)) throw new RangeError('Fear level must be a finite number.');
     this.fearLevel = clamp(level, 0, 1);
     const now = this.context?.currentTime ?? 0;
     this.windFilter?.frequency.setTargetAtTime(280 + this.fearLevel * 420, now, 0.18);
     this.windGain?.gain.setTargetAtTime(this.muted ? 0 : this.windVolume * (0.65 + this.fearLevel * 0.5), now, 0.12);
+    this.audienceGain?.gain.setTargetAtTime(
+      this.muted ? 0 : this.audienceVolume * (1 - this.fearLevel * 0.55), now, 0.35,
+    );
     // The next beat reads the latest fear level; do not reset its timer on every state update.
+  }
+
+  /** Update fear and heartbeat from the nearest active threat distance. */
+  setThreatDistance(distanceM: number, nearM = 4, farM = 16): number {
+    const level = fearLevelFromThreatDistance(distanceM, nearM, farM);
+    this.setFearLevel(level);
+    return level;
   }
 
   /** One immediate double-thump; safe to call before init (no-op). */
@@ -134,6 +188,17 @@ export class HorrorAudio {
     }
     this.windFilter?.disconnect();
     this.windFilter = null;
+    if (this.audienceSource) {
+      try {
+        this.audienceSource.stop();
+      } catch {
+        // Already stopped.
+      }
+      this.audienceSource.disconnect();
+      this.audienceSource = null;
+    }
+    this.audienceFilter?.disconnect();
+    this.audienceFilter = null;
   }
 
   async dispose(): Promise<void> {
@@ -146,6 +211,7 @@ export class HorrorAudio {
       this.masterGain = null;
       this.windGain = null;
       this.heartbeatGain = null;
+      this.audienceGain = null;
     }
   }
 
@@ -168,6 +234,10 @@ export class HorrorAudio {
     this.heartbeatGain = context.createGain();
     this.heartbeatGain.gain.value = this.heartbeatVolume;
     this.heartbeatGain.connect(this.masterGain);
+
+    this.audienceGain = context.createGain();
+    this.audienceGain.gain.value = this.audienceVolume * (1 - this.fearLevel * 0.55);
+    this.audienceGain.connect(this.masterGain);
   }
 
   private scheduleNextHeartbeat(delayMs: number): void {
