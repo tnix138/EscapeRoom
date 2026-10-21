@@ -9,6 +9,10 @@ export function isRateLimited(key: string, limit: number, windowMs: number, now 
   const bucket = buckets.get(key);
   if (!bucket) return false;
   bucket.hits = bucket.hits.filter((t) => now - t < windowMs);
+  if (bucket.hits.length === 0) {
+    buckets.delete(key);
+    return false;
+  }
   return bucket.hits.length >= limit;
 }
 

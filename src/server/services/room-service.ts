@@ -33,13 +33,13 @@ export function generateRoomCode(length = 6): string {
   return code;
 }
 
-/** پاک‌سازی XSS و نرمال‌سازی نام بازیکن: حذف تگ/کاراکتر کنترلی و فشردن فاصله‌ها */
+/** پاک‌سازی XSS، نویسه‌های مخفی/جعل جهت و نرمال‌سازی نام بازیکن (با حفظ نیم‌فاصله فارسی \u200C) */
 export function sanitizePlayerName(raw: string): string {
   return raw
     .replace(/<[^>]*>/g, '')
     .replace(/[<>"'`]/g, '')
     // eslint-disable-next-line no-control-regex
-    .replace(/[\u0000-\u001F\u007F]/g, '')
+    .replace(/[\u0000-\u001F\u007F\u200B\u200E\u200F\u202A-\u202E\u2066-\u2069\uFEFF]/g, '')
     .replace(/\s+/g, ' ')
     .trim();
 }
@@ -169,9 +169,15 @@ export async function loadRoom(
 ): Promise<InternalRoomState | null> {
   const state = await repo.getRoom(code);
   if (!state) return null;
-  // پیشبرد فاز بر اساس ساعت سرور هنگام خواندن نیز ماندگار می‌شود
+  // پیشبرد فاز بر اساس ساعت سرور هنگام خواندن نیز ماندگار و به همه شنونده‌های اتاق منتشر می‌شود
   if (tickPhaseByClock(state, Date.now())) {
-    await repo.saveRoomIfVersion(state, state.version).catch(() => false);
+    const saved = await repo.saveRoomIfVersion(state, state.version).catch(() => false);
+    if (saved) {
+      publishRoomUpdate(state);
+    } else {
+      const fresh = await repo.getRoom(code);
+      if (fresh) return fresh;
+    }
   }
   return state;
 }
@@ -249,6 +255,36 @@ export async function getRoomViewForSeat(
     }
     throw err;
   }
+}
+
+/** دریافت نمای شرطی برای polling با sinceVersion بدون افزایش بی‌مورد نسخه در پنجره حضور */
+export async function getRoomViewConditional(
+  code: string,
+  seatToken: string,
+  sinceVersion: number,
+  repo: RoomRepository = getRoomRepository(),
+): Promise<
+  | { unchanged: true; version: number; serverNow: number }
+  | { unchanged: false; roomView: ClientRoomView }
+> {
+  if (Number.isFinite(sinceVersion) && sinceVersion > 0) {
+    const state = await loadRoom(code, repo);
+    if (!state) {
+      throw new GameServiceError('ROOM_NOT_FOUND', 'اتاق پیدا نشد.', 404);
+    }
+    const seatIndex = requireSeat(state, seatToken);
+    const seat = state.seats[seatIndex] as (typeof state.seats)[number];
+    const now = Date.now();
+    const leaseFresh =
+      seat.joined &&
+      seat.lastSeenAt !== null &&
+      now - seat.lastSeenAt < PRESENCE_REFRESH_INTERVAL_MS;
+    if (leaseFresh && state.version === sinceVersion) {
+      return { unchanged: true, version: state.version, serverNow: now };
+    }
+  }
+  const roomView = await getRoomViewForSeat(code, seatToken, repo);
+  return { unchanged: false, roomView };
 }
 
 /** SSE lease cadence. Keep below the projector's 30-second online window. */
@@ -411,6 +447,9 @@ const chatSchema = z.object({
   shareStub: z.boolean().optional(),
 });
 
+export const CHAT_RATE_LIMIT_MAX = 20;
+export const CHAT_RATE_LIMIT_WINDOW_MS = 10_000;
+
 export async function sendChatMessage(
   code: string,
   seatToken: string,
@@ -422,14 +461,23 @@ export async function sendChatMessage(
     code,
     (s, now) => {
       const seatIndex = requireSeat(s, seatToken);
+      if (!checkAndRecord(`chat:${s.code}:${seatIndex}`, CHAT_RATE_LIMIT_MAX, CHAT_RATE_LIMIT_WINDOW_MS, now)) {
+        throw new GameServiceError(
+          'RATE_LIMITED',
+          'ارسال پیام بیش از حد سریع است؛ چند لحظه صبر کنید.',
+          429,
+        );
+      }
       const seat = s.seats[seatIndex] as (typeof s.seats)[number];
+      seat.joined = true;
+      seat.isOnline = true;
       seat.lastSeenAt = now;
       if (shareStub) {
         const nextIndex = (seatIndex + 1) % s.playerCount;
         const nextSeat = s.seats[nextIndex] as (typeof s.seats)[number];
         const nextTarget = s.targets[nextIndex] as (typeof s.targets)[number];
         s.messages.push({
-          id: `msg-${now}-${seatIndex}-stub`,
+          id: `msg-${s.version}-${now}-${seatIndex}-stub`,
           senderName: seat.playerName,
           type: 'ticket_share',
           text: `کوپن دست من برای بلیط «${nextSeat.playerName}»: نماد «${nextTarget.targetEmblem}»، پردهٔ «${actSceneTitle(nextTarget.targetAct)}»`,
@@ -437,7 +485,7 @@ export async function sendChatMessage(
         });
       }
       s.messages.push({
-        id: `msg-${now}-${seatIndex}`,
+        id: `msg-${s.version}-${now}-${seatIndex}`,
         senderName: seat.playerName,
         type: 'whisper',
         text,
