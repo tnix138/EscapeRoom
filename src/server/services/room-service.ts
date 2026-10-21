@@ -116,15 +116,22 @@ export function findSeatIndexByToken(state: InternalRoomState, seatToken: string
 }
 
 /**
+ * سقف تلاش‌های OCC: در بدترین حالت هر ۸ بازیکن دقیقاً در یک لحظه پانچ می‌کنند
+ * و در هر دور فقط یکی برنده می‌شود؛ پس سقف باید از حداکثر تعداد بازیکن (۸) بیشتر باشد
+ * تا هیچ پانچی گم نشود.
+ */
+export const MAX_OCC_ATTEMPTS = 16;
+
+/**
  * اجرای یک تغییر روی اتاق با حلقه OCC (خواندن -> tick ساعت -> تغییر -> ذخیره مشروط -> انتشار).
- * اگر ۶ بار پشت سر هم تداخل نسخه رخ دهد، خطای CONFLICT_RETRY_EXHAUSTED پرتاب می‌شود.
+ * اگر همه تلاش‌ها با تداخل نسخه روبه‌رو شوند، خطای CONFLICT_RETRY_EXHAUSTED پرتاب می‌شود.
  */
 export async function mutateRoom<T>(
   code: string,
   mutator: (state: InternalRoomState, now: number) => T,
   repo: RoomRepository = getRoomRepository(),
 ): Promise<{ result: T; state: InternalRoomState }> {
-  for (let attempt = 0; attempt < 6; attempt++) {
+  for (let attempt = 0; attempt < MAX_OCC_ATTEMPTS; attempt++) {
     const state = await repo.getRoom(code);
     if (!state) {
       const err = new Error('ROOM_NOT_FOUND') as Error & { code?: string };
@@ -133,10 +140,18 @@ export async function mutateRoom<T>(
     }
     const now = Date.now();
     const ticked = tickPhaseByClock(state, now);
-    const result = mutator(state, now);
-    const changed = ticked || (state as unknown as { __dirty?: boolean }).__dirty === true;
-    // mutatorها با تغییر مستقیم فیلدها کار می‌کنند؛ برای سادگی موج ۱ همیشه ذخیره مشروط انجام می‌شود
-    void changed;
+    let result: T;
+    try {
+      result = mutator(state, now);
+    } catch (err) {
+      // حتی اگر اکشن رد شود (مثلاً CUTSCENE_LOCKED)، گذار فازِ تیک ساعت نباید گم شود:
+      // ابتدا گذار را ماندگار می‌کنیم، بعد خطا را پرتاب می‌کنیم.
+      if (ticked) {
+        const saved = await repo.saveRoomIfVersion(state, state.version).catch(() => false);
+        if (saved) publishRoomUpdate(state);
+      }
+      throw err;
+    }
     const saved = await repo.saveRoomIfVersion(state, state.version);
     if (saved) {
       publishRoomUpdate(state);
