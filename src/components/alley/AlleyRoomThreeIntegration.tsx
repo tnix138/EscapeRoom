@@ -24,6 +24,7 @@ import type { TheaterEmblemId, PlayActNumber, RowRomanCode } from '@/components/
 import HeldTicketsDrawer from './HeldTicketsDrawer';
 import ClueReadingPanel from './ClueReadingPanel';
 import TheaterDoorLockModal from './TheaterDoorLockModal';
+import { resolveOwnRevealedDigit } from './puzzle-rules';
 import WhisperChatPanel from '../hud/WhisperChatPanel';
 
 const AlleyThreeSceneCore = dynamic(() => Promise.resolve(ThreeCore), { ssr: false });
@@ -43,7 +44,6 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
   const [doorModalOpen, setDoorModalOpen] = useState(false);
   const [ticketFeedback, setTicketFeedback] = useState('');
   const [localPunched, setLocalPunched] = useState(false);
-  const [localDigit, setLocalDigit] = useState<number | null>(null);
   const [isPunching, setIsPunching] = useState(false);
   const [transition, setTransition] = useState<{ phase: TransitionPhase; progress: number } | null>(null);
   const [showPlaybill, setShowPlaybill] = useState(false);
@@ -127,11 +127,7 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
       try {
         const res = await onPunchTicket(emblem, actNumber, rowCode);
         setTicketFeedback(res.message);
-        if (res.accepted) {
-          setLocalPunched(true);
-          const digit = room.me.revealedDoorDigit ?? Math.floor(Math.random() * 10);
-          setLocalDigit(digit);
-        }
+        if (res.accepted) setLocalPunched(true);
         return res;
       } finally {
         setIsPunching(false);
@@ -177,7 +173,8 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
   const rowChart = (alleyView?.rightWallRowChart as Array<{ rowTitle: string; romanCode: string }>) ?? [];
 
   const isTicketPunched = room.me.ticketPunched || localPunched;
-  const revealedDigit = room.me.revealedDoorDigit ?? localDigit;
+  // رقم فقط از view سرور؛ حدس محلی حذف شد (موج ۶).
+  const revealedDigit = resolveOwnRevealedDigit(room.me.revealedDoorDigit, room.myHeldTickets?.mainTicket?.revealedGoldenDigit);
 
   // coupon text از room.myHeldTickets
   const myTickets = (room as unknown as { myHeldTickets?: { companionStub?: { targetTeammateName: string; targetEmblem: string; targetActSceneTitle: string; whisperNote: string } } }).myHeldTickets;
@@ -249,9 +246,9 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
       {/* بلیط و چت */}
       <div style={{ position: 'absolute', bottom: 80, left: 12, right: 12, display: 'flex', gap: 12, pointerEvents: 'none', direction: 'rtl' }}>
         <div style={{ pointerEvents: 'auto', flex: 1, maxWidth: 380 }}>
-          {/* HeldTicketsDrawer از امیرعلی — props اصلی */}
+          {/* HeldTicketsDrawer از امیرعلی — موج ۶ */}
           <div style={{ background: 'rgba(0,0,0,0.6)', borderRadius: 8, padding: 8 }}>
-            <div style={{ color: '#e8dcc8', fontSize: 12, marginBottom: 6 }}>
+            <div style={{ color: '#e8dcc8', fontSize: 14, marginBottom: 6 }}>
               🎟️ بلیط {room.me.playerName} — {room.me.seatLabel} {isTicketPunched && revealedDigit != null ? `— رقم: ${revealedDigit}` : ''}
             </div>
             <HeldTicketsDrawer

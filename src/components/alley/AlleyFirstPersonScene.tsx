@@ -6,6 +6,7 @@ import TheaterDoorLockModal from './TheaterDoorLockModal';
 import WhisperChatPanel from '../hud/WhisperChatPanel';
 import ClueReadingPanel from './ClueReadingPanel';
 import { inspectHint, type ClueKind } from './clue-reading-data';
+import { resolveOwnRevealedDigit } from './puzzle-rules';
 import { AlleyRoomView, PlayActNumber, RowRomanCode, THEATER_EMBLEMS, TheaterEmblemId, TicketPunchSelection } from './contracts';
 
 export interface AlleyFirstPersonSceneProps {
@@ -24,7 +25,6 @@ export default function AlleyFirstPersonScene({ room, onPunchTicket, onUnlockDoo
   const [doorOpen, setDoorOpen] = useState(false);
   const [isPunching, setIsPunching] = useState(false);
   const [localPunched, setLocalPunched] = useState(false);
-  const [localDigit, setLocalDigit] = useState<number | null>(null);
   const [ticketFeedback, setTicketFeedback] = useState('');
   const [doorUnlocked, setDoorUnlocked] = useState(false);
   const [openClue, setOpenClue] = useState<ClueKind | null>(null);
@@ -33,9 +33,10 @@ export default function AlleyFirstPersonScene({ room, onPunchTicket, onUnlockDoo
   const currentEmblem = THEATER_EMBLEMS.find((item) => item.id === room.myHeldTickets.companionStub.targetEmblem);
   const mainTicket = room.myHeldTickets.mainTicket;
   const isTicketPunched = room.me.ticketPunched || mainTicket.isValidated || localPunched;
-  const revealedDigit = room.me.revealedDoorDigit ?? mainTicket.revealedGoldenDigit ?? localDigit;
+  // رقم فقط از view سرور؛ هیچ حدس یا محاسبهٔ محلی مجاز نیست.
+  const revealedDigit = resolveOwnRevealedDigit(room.me.revealedDoorDigit, mainTicket.revealedGoldenDigit);
   const players = room.players.map((player) => player.playerId === room.me.playerId && isTicketPunched
-    ? { ...player, ticketPunched: true, revealedDoorDigit: revealedDigit }
+    ? { ...player, ticketPunched: true }
     : player);
   const roomWithLocalState: AlleyRoomView = {
     ...room,
@@ -49,7 +50,6 @@ export default function AlleyFirstPersonScene({ room, onPunchTicket, onUnlockDoo
 
   useEffect(() => {
     setLocalPunched(false);
-    setLocalDigit(null);
     setTicketFeedback('');
     setIsPunching(false);
     setDoorUnlocked(false);
@@ -58,6 +58,8 @@ export default function AlleyFirstPersonScene({ room, onPunchTicket, onUnlockDoo
   useEffect(() => {
     function onKey(event: KeyboardEvent | globalThis.KeyboardEvent) {
       if (event.target instanceof HTMLElement && ['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON'].includes(event.target.tagName)) return;
+      // وقتی مودال قفل یا پنل سرنخ باز است، دوربین نباید زیر آن بچرخد.
+      if (doorOpen || openClue) return;
       if (event.key === 'ArrowLeft' || event.key.toLowerCase() === 'a') { event.preventDefault(); setYaw((value) => clamp(value - 9, -42, 42)); }
       if (event.key === 'ArrowRight' || event.key.toLowerCase() === 'd') { event.preventDefault(); setYaw((value) => clamp(value + 9, -42, 42)); }
       if (event.key.toLowerCase() === 'e' && !event.metaKey && !event.ctrlKey && !event.altKey) {
@@ -69,7 +71,7 @@ export default function AlleyFirstPersonScene({ room, onPunchTicket, onUnlockDoo
     }
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [activeView]);
+  }, [activeView, doorOpen, openClue]);
 
   function onPointerDown(event: PointerEvent<HTMLElement>) {
     if ((event.target as HTMLElement).closest('.pan-ignore')) return;
@@ -92,11 +94,7 @@ export default function AlleyFirstPersonScene({ room, onPunchTicket, onUnlockDoo
     try {
       const result = await onPunchTicket(selection.emblem, selection.actNumber, selection.rowCode);
       setTicketFeedback(result.message);
-      if (result.accepted) {
-        const digit = room.me.revealedDoorDigit ?? (4 + (room.me.seatIndex * 3)) % 10;
-        setLocalDigit(digit);
-        setLocalPunched(true);
-      }
+      if (result.accepted) setLocalPunched(true);
     } catch (cause) {
       setTicketFeedback(cause instanceof Error ? cause.message : 'پانچ‌گر از کار افتاد؛ دوباره امتحان کنید.');
     } finally {
