@@ -121,7 +121,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۱۳** — ✅ Archive: **۱۰۳** — 🧾 مجموع: **۱۱۶** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۷:۵۰ (`2026-10-21T15:57:50.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۱۴** — ✅ Archive: **۱۰۳** — 🧾 مجموع: **۱۱۷** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۸:۰۳ (`2026-10-21T15:58:03.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -131,6 +131,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:EVENTS:START -->
 | 🕒 زمان (ایران / UTC) | رویداد | شناسه لاگ | توسط |
 | --- | --- | --- | --- |
+| ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۸:۰۳<br>`2026-10-21T15:58:03.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-28-03_tohid_push-sync-pr40-pr42`](./logs/pending/1405-07-29_19-28-03_tohid_push-sync-pr40-pr42.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۷:۵۰<br>`2026-10-21T15:57:50.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-27-50_tohid_sync-main-pr40-infra`](./logs/pending/1405-07-29_19-27-50_tohid_sync-main-pr40-infra.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۶:۴۱<br>`2026-10-21T15:56:41.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-26-41_tohid_pr-wave2-runtime-boundary`](./logs/pending/1405-07-29_19-26-41_tohid_pr-wave2-runtime-boundary.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۶:۱۸<br>`2026-10-21T15:56:18.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-26-18_tohid_push-sync-pr39`](./logs/pending/1405-07-29_19-26-18_tohid_push-sync-pr39.md) | **توحید** |
@@ -142,7 +143,6 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۴:۰۰<br>`2026-10-21T15:54:00.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-24-00_infra-agent_push`](./logs/pending/1405-07-29_19-24-00_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۳:۰۶<br>`2026-10-21T15:53:06.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-23-06_infra-agent_wave1-infra-build-audit`](./logs/pending/1405-07-29_19-23-06_infra-agent_wave1-infra-build-audit.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۲:۵۳<br>`2026-10-21T15:52:53.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-22-53_amirali_wave3-controls-help`](./logs/pending/1405-07-29_19-22-53_amirali_wave3-controls-help.md) | **امیرعلی** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۲:۳۳<br>`2026-10-21T15:52:33.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-22-33_amirali_push`](./logs/pending/1405-07-29_19-22-33_amirali_push.md) | **امیرعلی** |
 <!-- WORKLOG:EVENTS:END -->
 
 ---
@@ -154,6 +154,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:PENDING:START -->
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- |
+| [`1405-07-29_19-28-03_tohid_push-sync-pr40-pr42`](./logs/pending/1405-07-29_19-28-03_tohid_push-sync-pr40-pr42.md) | ارسال رفع تعارض PR #42 | `Push` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۸:۰۳<br>`2026-10-21T15:58:03.000Z` | origin/arena/ca5ca2d8-escaperoom (origin/main..0201a7a) |
 | [`1405-07-29_19-27-50_tohid_sync-main-pr40-infra`](./logs/pending/1405-07-29_19-27-50_tohid_sync-main-pr40-infra.md) | همگام‌سازی main — ثبت ممیزی زیرساخت موج اول | `Commit` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۷:۵۰<br>`2026-10-21T15:57:50.000Z` | origin/main ca375fc → arena/ca5ca2d8-escaperoom |
 | [`1405-07-29_19-26-41_tohid_pr-wave2-runtime-boundary`](./logs/pending/1405-07-29_19-26-41_tohid_pr-wave2-runtime-boundary.md) | ثبت PR #42 برای مرز قرارداد موج دوم | `PR` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۶:۴۱<br>`2026-10-21T15:56:41.000Z` | https://github.com/tnix138/EscapeRoom/pull/42 |
 | [`1405-07-29_19-26-18_tohid_push-sync-pr39`](./logs/pending/1405-07-29_19-26-18_tohid_push-sync-pr39.md) | ارسال همگام‌سازی تازه با main | `Push` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۶:۱۸<br>`2026-10-21T15:56:18.000Z` | origin/arena/ca5ca2d8-escaperoom (origin/main..b698fb0) |
