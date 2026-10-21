@@ -42,6 +42,26 @@
 
 ---
 
+## 🔧 اتصال سه فاز ۰۷ / ۰۹ / ۱۲ — گزارش یک‌جا
+
+سه فاز UI که تا حالا «آماده ولی وصل‌نشده» بودند، در یک به‌روزرسانی به مسیر واقعی بازی وصل شدند:
+
+| فاز | قبل | بعد |
+|---|---|---|
+| ۰۷ | HUD ترس ساخته شده بود ولی در هیچ صحنه‌ای نبود | `HorrorSignalHud` سه‌سطحی در `AlleyRoomThreeIntegration` mount شد و از وضعیت در/قفل تغذیه می‌شود |
+| ۰۹ | صفحهٔ ورود بود، ولی هیچ محافظی جلسه را نمی‌سنجید | `AdminSessionGate` در چیدمان `/admin` یک بار جلسه را می‌سنجد و فقط روی ۴۰۱/۴۰۳ ریدایرکت می‌کند |
+| ۱۲ | `PresenceHud` ساخته شده بود ولی در هیچ صحنه‌ای نبود | `PresenceHud` + `usePresenceFeed` (قرارداد #104) در نمای کوچه mount شدند |
+
+اصل مشترک هر سه: **اگر سرویس بالادستی آماده نیست، خاموش و بی‌صدا** — نه خطای کنسول، نه ریدایرکت، نه حلقه. با آمدن سرویس، بدون تغییر کد روشن می‌شوند.
+
+### مسدودکننده‌های باقی‌مانده (خارج از محدودهٔ فایل امیرعلی)
+
+1. **سرور حضور وجود ندارد.** Issue #104 و #76 ادعا می‌کنند فاز ۰۳ پیاده شده، ولی `src/app/api/rooms/[code]/presence/route.ts` و `src/contracts/presence.ts` در هیچ کامیتی از مخزن نیستند و `stream/route.ts` رویداد `presence_update` نمی‌فرستد. → مالک: توحید (فاز ۰۳). کلاینت آماده است.
+2. **API پنل ادمین وجود ندارد.** `/api/admin/login`، `/api/admin/logout` و `/api/admin/session` نیستند و `src/components/admin/` خالی است. → مالک: امیر (فاز ۰۹-الف).
+3. **`package.json` با BOM ذخیره شده** و `next build/dev` را با `SyntaxError: Unexpected token '\uFEFF'` می‌شکند. → مالک: توحید (زیرساخت). فایل را کامیت نکنید.
+
+---
+
 # 📋 فاز ۰۱ — پاک‌سازی مستندات و ساخت `docs-v2/`
 
 **مالک:** توحید
@@ -303,10 +323,16 @@ Materialهای PBR با normal map، roughness map، AO map رویه‌ای. س�
 
 ## وضعیت
 
-- 🟡 در حال انجام
-- 📝 سهم امیرعلی (HUD) تکمیل شد: `src/components/hud/horror/**` + `tests/amirali/horror-phase07.test.ts` (۲۱ تست سبز)
-- 🔗 کامیت مرجع: 3abe980
-- ⏳ باقی‌مانده: سهم علیرضا (صدای ضربان قلب، post-processing و mount کردن `HorrorHud` در نمای سالن) — پس از تحویل، وصل می‌شود و فاز بسته می‌شود.
+- ✅ تکمیل شد (سمت امیرعلی — HUD ترس)
+- 📝 سهم علیرضا در مخزن موجود است: `src/engine3d/horror/**` (vignette، jump-scare، post-processing) و `src/audio/horror/**` (ضربان قلب)
+- 📝 سهم امیرعلی: `src/components/hud/horror/**` — `HorrorHud` (فاز ۰۷-الف)، `JumpScareOverlay`، و `HorrorSignalHud` سه‌سطحی (فاز ۰۷-ب، تصمیم #91)
+- 🔗 مرجع: 3abe980 (HUD اولیه) + به‌روزرسانی اتصال
+- ✅ **قرارداد سه‌سطحی `calm | tense | panic`**: هر مقدار ناشناخته/خالی/عددی → «آرام» (بازیکن هرگز در وحشت گیر نمی‌افتد)
+- ✅ برچسب‌های فارسی «آرام / دلواپس / وحشت»، اعلان `role="status"` فقط هنگام تغییر سطح، لایهٔ `aria-hidden` با `pointer-events: none`
+- ✅ `prefers-reduced-motion` → تپش و لرزش متوقف، لبهٔ قرمز می‌ماند
+- ✅ در `AlleyRoomThreeIntegration` mount شد: باز شدن در → «دلواپس»، دو بار تلاش ناموفق قفل → «دلواپس»، در غیر این صورت «آرام»
+- ⚠️ شدت واقعی ترس (فاز علیرضا) فعلاً فقط از وضعیت اتاق مشتق می‌شود؛ با اضافه شدن `fearLevel` در snapshot، `horrorLevelFromFear()` نقطهٔ اتصال آماده است.
+- 📊 تست: `tests/amirali/horror-phase07.test.ts` + `horror-signal-phase07.test.ts` (۲۹ تست سبز)
 
 # 📋 فاز ۰۸ — کات‌سین سینمایی (Three.js)
 
@@ -384,9 +410,14 @@ Materialهای PBR با normal map، roughness map، AO map رویه‌ای. س�
 
 ## وضعیت
 
-- 🟡 در حال انجام
-- 📝 سهم امیرعلی تکمیل شد: `src/app/admin/layout.tsx` و `src/app/admin/login/page.tsx` + `tests/amirali/admin-login-phase09.test.ts` (۲۲ تست سبز)
-- ⏳ باقی‌مانده: سهم امیر (`/api/admin/login`، `/api/admin/logout`، `LoginForm`، `AdminSidebar`، تست‌های `tests/amir`)
+- 🟡 در حال انجام (سمت امیرعلی ✅)
+- 📝 سهم امیرعلی: `src/app/admin/layout.tsx`، `src/app/admin/login/page.tsx`، `src/app/admin/login/login-rules.ts` و محافظ جلسهٔ `AdminSessionGate`
+- 🔗 تست‌ها: `tests/amirali/admin-login-phase09.test.ts` (۲۲) + `admin-gate-phase09.test.ts` (۸) — ۳۰ تست سبز
+- ✅ **محافظ جلسه**: در `src/app/admin/layout.tsx` یک بار `GET /api/admin/session` می‌سنجد؛
+  ۴۰۱/۴۰۳ → `/admin/login?next=…`؛ ۴۰۴/۵۰۰/خطای شبکه → **هیچ ریدایرکتی** (بدون حلقهٔ ریدایرکت تا آماده شدن سرویس)
+- ✅ مسیر `next` فقط برای مسیرهای داخلی `/admin/**` ساخته می‌شود؛ ورودی خارجی/پروتکل‌نسبی دور ریخته می‌شود (جلوگیری از open redirect)
+- ⏳ باقی‌مانده (امیر): `/api/admin/login`، `/api/admin/logout`، `/api/admin/session`، `LoginForm`، `AdminSidebar`
+- 🔌 اتصال: نام `ADMIN_SESSION_ENDPOINT` در `login-rules.ts` تنها جایی است که با آمدن سرویس امیر ممکن است عوض شود.
 
 # 📋 فاز ۱۰ — پنل ادمین: آمار و مشاهده
 
@@ -503,10 +534,14 @@ Materialهای PBR با normal map، roughness map، AO map رویه‌ای. س�
 
 - ✅ تکمیل شد
 - 📝 تاریخ: ۱۴۰۵/۰۸/۰۱
-- 🔗 کامیت مرجع: 127a542
-- 📦 خروجی: `src/components/hud/presence/**` (مدل خالص + `PresenceHud`) و `tests/amirali/presence-phase12.test.ts` — ۳۲ تست سبز
+- 🔗 کامیت مرجع: 127a542 (HUD) + aaa6d0c (merge) + به‌روزرسانی اتصال
+- 📦 خروجی: `src/components/hud/presence/**` (مدل خالص + `PresenceHud` + `presence-contract` + `usePresenceFeed`) — ۵۱ تست سبز
 - ✅ فلش جهت هم‌تیمی بیرون از دید و پشت سر، نام و فاصله روی سرِ هم‌تیمی در دید، حذف بعد از ۳۰ ثانیه (قرارداد ۲)
-- ⏳ اتصال به نمای سالن پس از آماده شدن `POST /api/rooms/[code]/presence` (فاز ۰۳ — توحید) در یک به‌روزرسانی کوچک انجام می‌شود؛ HUD هر دو شکل snapshot را می‌خواند و به قرارداد گره نخورده است.
+- ✅ **اتصال به صحنه انجام شد**: `PresenceHud` + `usePresenceFeed` در `AlleyRoomThreeIntegration` mount شدند و از `room.players` نام هم‌تیمی‌ها را می‌گیرند.
+- ✅ **لایهٔ قرارداد** در `presence-contract.ts`: `POST /api/rooms/{code}/presence` با `x-seat-token` و بدنهٔ `{position, yaw(rad), phase}` (بدون `playerId`/`seatIndex` — هویت از توکن)، دریافت `presence_update` = `{presences, serverNow}`، یاو رادیان↔درجه، هم‌جوشی ۵۰ms، throttle ۱۰Hz، `keepalive` ۱s.
+- ✅ **fail-safe سرویس غایب**: probe اولیه با `AbortSignal.timeout(3000)`؛ اگر سرویس حضور وجود نداشت (۴۰۴/۴۰۵)، hook یک بار بررسی می‌کند و **بی‌صدا خاموش** می‌ماند — نه ۴۰۴ پشت‌سرهم، نه EventSource دوم. پس از ۵ خطای پیاپی هم ارسال متوقف می‌شود.
+- ⚠️ **شکاف واقعی (باید به #76 گزارش شود)**: `src/app/api/rooms/[code]/presence/route.ts` و `src/contracts/presence.ts` در هیچ کامیتی از مخزن نیستند و `stream/route.ts` رویداد `presence_update` نمی‌فرستد. کلاینت آماده است؛ با اضافه شدن سرور بدون تغییر کلاینت روشن می‌شود.
+- 📊 تست: `tests/amirali/presence-phase12.test.ts` (۳۲) + `presence-contract.test.ts` (۱۹)
 
 # 📋 فاز ۱۳ — ابزارهای مدیریتی
 

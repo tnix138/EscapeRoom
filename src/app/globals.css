@@ -8002,3 +8002,172 @@ button:disabled {
     animation: none !important;
   }
 }
+
+/* ==========================================================================
+   فاز ۰۷-ب — نشانگر سیگنال ترس سه‌سطحی (calm / tense / panic) — امیرعلی
+   قاعده: لایه فقط نمایشی است (pointer-events: none)، هیچ کنترل بازی را
+   نمی‌پوشاند و رنگ تنها حامل معنا نیست (برچسب فارسی همیشه هست). در
+   prefers-reduced-motion تپش و لرزش متوقف می‌شوند ولی لبهٔ قرمز می‌ماند.
+   ========================================================================== */
+
+.horror-signal {
+  position: fixed;
+  inset: 0;
+  z-index: 43;
+  width: 100%;
+  max-width: 100vw;
+  height: 100%;
+  max-height: 100svh;
+  overflow: hidden;
+  pointer-events: none;
+  --horror-signal-pulse: 0.08;
+  --horror-signal-vignette: 0.16;
+  --horror-signal-grain: 0.05;
+  --horror-signal-shake: 0px;
+  --horror-signal-heartbeat: 1400ms;
+}
+
+.horror-signal > span {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.horror-signal-vignette {
+  opacity: var(--horror-signal-vignette);
+  background: radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(20, 4, 8, 0.55) 78%, rgba(4, 1, 2, 0.9) 100%);
+  transform: translate3d(var(--horror-signal-shake), calc(var(--horror-signal-shake) * -0.6), 0);
+}
+
+.horror-signal-pulse {
+  opacity: var(--horror-signal-pulse);
+  background: radial-gradient(ellipse at 50% 50%, transparent 46%, rgba(126, 12, 28, 0.5) 84%, rgba(92, 4, 16, 0.85) 100%);
+  animation: horror-signal-heartbeat var(--horror-signal-heartbeat) ease-in-out infinite;
+}
+
+.horror-signal-grain {
+  opacity: var(--horror-signal-grain);
+  background-image:
+    radial-gradient(circle at 30% 40%, rgba(243, 234, 216, 0.14) 0 1px, transparent 1px),
+    radial-gradient(circle at 68% 62%, rgba(0, 0, 0, 0.5) 0 1px, transparent 1px);
+  background-size: 3px 3px, 4px 4px;
+  mix-blend-mode: overlay;
+}
+
+.horror-signal[data-level='tense'] .horror-signal-vignette,
+.horror-signal[data-level='panic'] .horror-signal-vignette {
+  transform: translate3d(var(--horror-signal-shake), calc(var(--horror-signal-shake) * -0.6), 0);
+}
+
+.horror-signal-badge {
+  position: absolute;
+  top: calc(env(safe-area-inset-top, 0px) + 10px);
+  left: calc(env(safe-area-inset-left, 0px) + 10px);
+  inset: auto;
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+  width: max-content;
+  max-width: calc(100vw - 20px);
+  padding: 4px 10px;
+  font-size: var(--text-xs);
+  line-height: 1.6;
+  color: var(--text-secondary);
+  background: rgba(18, 13, 16, 0.74);
+  border: 1px solid rgba(212, 175, 99, 0.24);
+  border-radius: 999px;
+}
+
+.horror-signal-dot {
+  display: inline-block;
+  position: static;
+  inset: auto;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--gold);
+}
+
+.horror-signal[data-level='tense'] .horror-signal-dot {
+  background: #d98a5c;
+}
+
+.horror-signal[data-level='panic'] .horror-signal-dot {
+  background: #e0574f;
+  animation: horror-signal-dot 900ms ease-in-out infinite;
+}
+
+@keyframes horror-signal-heartbeat {
+  0%,
+  100% {
+    opacity: calc(var(--horror-signal-pulse) * 0.55);
+  }
+  18% {
+    opacity: var(--horror-signal-pulse);
+  }
+  40% {
+    opacity: calc(var(--horror-signal-pulse) * 0.7);
+  }
+  56% {
+    opacity: calc(var(--horror-signal-pulse) * 0.95);
+  }
+}
+
+@keyframes horror-signal-dot {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .horror-signal,
+  .horror-signal * {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .horror-signal-vignette {
+    transform: none !important;
+  }
+}
+
+/* فاز ۰۹-ب — «ورود موفق، ولی داشبورد هنوز ساخته نشده» (به‌جای ۴۰۴) */
+.admin-login-pending {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 12px 14px;
+  font-size: var(--text-sm);
+  line-height: 1.9;
+  color: var(--text-secondary);
+  text-align: start;
+  background: rgba(201, 168, 106, 0.08);
+  border: 1px solid rgba(201, 168, 106, 0.28);
+  border-radius: 10px;
+}
+
+.admin-login-pending p {
+  margin: 0;
+}
+
+.admin-login-pending-path {
+  font-size: var(--text-xs);
+  color: var(--gold);
+  opacity: 0.85;
+}
+
+.admin-login-pending-link {
+  justify-self: start;
+  color: var(--gold);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  font-size: var(--text-sm);
+}
+
+.admin-login-pending-link:hover {
+  color: var(--text-primary);
+}
