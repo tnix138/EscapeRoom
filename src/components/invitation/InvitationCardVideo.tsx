@@ -1,6 +1,9 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import NarrationLayer from '../hud/NarrationLayer';
+import { INVITATION_CUES, INVITATION_DURATION_MS } from '../hud/narration/narration-track';
+import { readPreferences, writePreferences } from '../hud/narration/audio-preferences';
 
 export interface InvitationCardVideoProps {
   playerName: string;
@@ -8,12 +11,14 @@ export interface InvitationCardVideoProps {
   onComplete: () => void;
 }
 
-const DURATION_MS = 16_000;
+const DURATION_MS = INVITATION_DURATION_MS;
 
 export default function InvitationCardVideo({ playerName, seatLabel, onComplete }: InvitationCardVideoProps) {
   const [elapsed, setElapsed] = useState(0);
   const [musicOn, setMusicOn] = useState(false);
+  const [volume, setVolume] = useState(0.7);
   const audioRef = useRef<AudioContext | null>(null);
+  const masterRef = useRef<GainNode | null>(null);
   const progress = Math.min(elapsed / DURATION_MS, 1);
   const scene = elapsed < 4_000 ? 'envelope' : elapsed < 11_000 ? 'card' : 'tickets';
 
@@ -22,6 +27,16 @@ export default function InvitationCardVideo({ playerName, seatLabel, onComplete 
     const timer = window.setInterval(() => setElapsed(performance.now() - startedAt), 80);
     return () => window.clearInterval(timer);
   }, []);
+
+  // بلندی صدای انتخاب‌شده بعد از mount از مرورگر خوانده می‌شود (بدون اختلاف hydration).
+  useEffect(() => {
+    setVolume(readPreferences(window.localStorage).volume);
+  }, []);
+
+  useEffect(() => {
+    if (!musicOn) return;
+    writePreferences(window.localStorage, { ...readPreferences(window.localStorage), muted: false, volume });
+  }, [musicOn, volume]);
 
   useEffect(() => {
     if (!musicOn) {
@@ -34,7 +49,8 @@ export default function InvitationCardVideo({ playerName, seatLabel, onComplete 
     const context = new AudioContextClass();
     audioRef.current = context;
     const master = context.createGain();
-    master.gain.value = 0.018;
+    master.gain.value = 0.018 * volume;
+    masterRef.current = master;
     master.connect(context.destination);
     [110, 164.81, 220].forEach((frequency, index) => {
       const oscillator = context.createOscillator();
@@ -49,8 +65,15 @@ export default function InvitationCardVideo({ playerName, seatLabel, onComplete 
     return () => {
       context.close().catch(() => undefined);
       if (audioRef.current === context) audioRef.current = null;
+      if (masterRef.current === master) masterRef.current = null;
     };
+    // ساخت موتور فقط با روشن/خاموش شدن موسیقی؛ تغییر بلندی جداگانه اعمال می‌شود.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [musicOn]);
+
+  useEffect(() => {
+    if (masterRef.current) masterRef.current.gain.value = 0.018 * volume;
+  }, [volume]);
 
   const secondsLeft = Math.max(0, Math.ceil((DURATION_MS - elapsed) / 1000));
   const phaseLabel = scene === 'envelope' ? 'پاکتی از جنس مخمل' : scene === 'card' ? 'اجرای امشب در اُرفه‌ئو' : 'بلیط‌های شما آماده‌اند';
@@ -97,6 +120,18 @@ export default function InvitationCardVideo({ playerName, seatLabel, onComplete 
         </div>
         <div className="invitation-floor" aria-hidden="true" />
       </section>
+
+      <NarrationLayer
+        elapsedMs={elapsed}
+        track={INVITATION_CUES}
+        durationMs={DURATION_MS}
+        muted={!musicOn}
+        onToggleMute={() => setMusicOn((value) => !value)}
+        volume={volume}
+        onVolumeChange={setVolume}
+        persistPreferences={false}
+        className="invitation-narration"
+      />
 
       <footer className="invitation-controls">
         <div className="sequence-status"><span className="sequence-number">۰{scene === 'envelope' ? '۱' : scene === 'card' ? '۲' : '۳'}</span><span><strong>{phaseLabel}</strong><small>{elapsed >= DURATION_MS ? 'پیش‌درآمد به پایان رسید' : `ادامهٔ پیش‌درآمد تا ${secondsLeft} ثانیهٔ دیگر`}</small></span></div>
