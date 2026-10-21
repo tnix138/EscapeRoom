@@ -8,11 +8,19 @@
  *  - Refresh وسط کات‌سین، صحنه را از همان میلی‌ثانیه ادامه می‌دهد؛
  *  - کل منطق زمان‌بندی بدون مرورگر، با تست واحد قابل‌اثبات است (tests/alireza).
  *
- * موج ۲ این فایل ثانیه‌های ۰ تا ۴۰ را پوشش می‌دهد؛ فیلدهای وحشت ثانیه ۴۰ تا ۷۴
- * در موج ۳ علیرضا به همین ساختار اضافه می‌شوند (مقادیر موج ۲ بعد از ثانیه ۴۰ ثابت و نگه داشته می‌شوند).
+ * موج ۲ ثانیه‌های ۰ تا ۴۰ (دربان، ورود و نشستن، اجرای اپرا) و موج ۳ ثانیه‌های
+ * ۴۰ تا ۷۴ (نیمه وحشت: نزدیک شدن مرد، پس زدن دست، واژگونی، عقب راندن پلیرها،
+ * کوبش‌ها، سقوط لوستر و غیب شدن) را پوشش می‌دهد؛ لحظه‌های دقیق کوبش (SLAM_IMPACTS)
+ * و سقوط لوستر از همین فایل خوانده می‌شوند تا صدا و تصویر میلی‌ثانیه‌ای قفل شوند.
  */
 
 import { DOOR_CUTSCENE_DURATION_MS } from '../../contracts/types';
+import type { SlamSurface } from '../../audio/theater-audio-engine';
+
+/** پاک کردن غبار اعشاری (مثل -0 یا sin(π)≈1e-19) تا مقادیر «صفر واقعی» تمیز برگردند */
+function zeroIfTiny(value: number): number {
+  return Math.abs(value) < 1e-9 ? 0 : value;
+}
 
 /** محدود کردن عدد به بازه [0, 1] — ورودی نامعتبر 0 می‌شود */
 export function clamp01(value: number): number {
@@ -137,12 +145,74 @@ export interface AuditoriumTimelineState {
   darkManHeadTiltDeg: number;
   /** تاب خوردن بسیار ملایم لوستر (درجه) */
   chandelierSwayDeg: number;
+
+  /* ---------------- فیلدهای نیمه وحشت موج ۳ (۴۰ تا ۷۴ ثانیه) ---------------- */
+
+  /** انرژی اجرای شاد (۱ یعنی رقص و نور ملایم؛ با واژگونی در ۵۰ ثانیه به ۰ فرو می‌ریزد) */
+  danceEnergy: number;
+  /** نزدیک شدن مرد از سایه چپ به پایین سِن (۴۰ تا ۴۶ ثانیه) */
+  manApproachProgress: number;
+  /** پنجره فعال دست زدن مرد (حدود ۴۰.۳ تا ۴۴ ثانیه هم‌فاز با افکت صوتی) */
+  manClapEnvelope: number;
+  /** باز و بسته شدن دست‌های مرد هنگام دست زدن (۰ تا حدود ۳۰ درجه) */
+  manClapPhaseDeg: number;
+  /** دراز شدن دست مرد به سوی زن برای بردن او (۴۵.۵ تا ۴۸.۵ ثانیه) */
+  manHandExtendProgress: number;
+  /** پس زده شدن دست مرد توسط زن (از HAND_REJECTION_AT_MS) */
+  handRejectionProgress: number;
+  /** باز بودن دهان زن هنگام آواز اپرا در بازه [0,1] (۴۶ تا لحظه پس زدن دست) */
+  womanMouthOpen: number;
+  /** واژگونی نور و فضا: قرمز تیره و تاریک شدن (۵۰ تا ۵۱.۵ ثانیه، سریع) */
+  inversionProgress: number;
+  /** کثیف و پوسیده شدن تدریجی دکور صحنه و سالن (۵۰ تا ۵۴.۵ ثانیه) */
+  stageGrimeProgress: number;
+  /** ترسیدن زن پس از واژگونی (لرزش و چهره وحشت) */
+  womanFearProgress: number;
+  /** چرخش نگاه مرد به سمت پلیرها (از ۵۲.۸ ثانیه) */
+  manGlareProgress: number;
+  /** پالس عقب رانده شدن همه پلیرها روی صندلی (۵۳ تا ۵۶ ثانیه؛ اوج در میانه) */
+  playerPushPulse: number;
+  /** بلند شدن زن از گلو در هوا (۵۶ تا ۵۷.۲ ثانیه) */
+  chokeLiftProgress: number;
+  /** لرزش افقی دوربین سالن (پیکسل) — هنگام کوبش‌ها تقویت می‌شود */
+  cameraShakeX: number;
+  /** لرزش عمودی دوربین سالن (پیکسل) */
+  cameraShakeY: number;
+  /** کج شدن تابلوهای دیوارهای چپ و راست بر اثر کوبش‌ها (از ۵۷.۸ ثانیه) */
+  paintingsTiltProgress: number;
+  /** سقوط شتاب‌دار لوستر از سقف (از CHANDELIER_FALL_AT_MS) */
+  chandelierFallProgress: number;
+  /** خرد شدن لوستر روی زمین پس از برخورد */
+  chandelierShatteredProgress: number;
+  /** غیب شدن ناگهانی زن و مرد (۶۷ تا ۶۷.۷ ثانیه) */
+  vanishProgress: number;
+  /** خاموشی لحظه‌ای سالن هنگام غیب شدن (پالس ۶۶.۸ تا ۶۸.۶ ثانیه) */
+  blackoutPulse: number;
+  /** تاریکی و ویرانی ماندگار پایانی تا شروع مجدد بازی در سالن (از ۶۷ ثانیه) */
+  finalDarknessProgress: number;
 }
 
 export function getAuditoriumTimeline(elapsedMs: number): AuditoriumTimelineState {
   const t = Math.max(DOOR_CUTSCENE_DURATION_MS, elapsedMs);
   const dancerReveal = easeOutCubic(progressBetween(t, 26_000, 29_500));
   const houseDimProgress = progressBetween(t, 15_000, 21_000);
+
+  /* ---- نیمه وحشت موج ۳: همه مقادیر همچنان فقط تابع t هستند ---- */
+  const inversionProgress = easeOutCubic(progressBetween(t, 50_000, 51_500));
+  const danceEnergy = 1 - inversionProgress;
+  const playerPushPulse = zeroIfTiny(
+    Math.pow(Math.sin(progressBetween(t, 53_000, 56_000) * Math.PI), 1.2),
+  );
+  const shakeEnvelope =
+    progressBetween(t, 56_000, 56_600) * (1 - progressBetween(t, 66_200, 67_200));
+  const shakeAmplitude = playerPushPulse * 2.5 + shakeEnvelope * (5 + impactShakeBoost(t));
+  const chandelierFallRaw = progressBetween(t, CHANDELIER_FALL_AT_MS, CHANDELIER_FALL_AT_MS + 700);
+  const clapEnvelope =
+    progressBetween(t, 40_000, 40_500) * (1 - progressBetween(t, 43_800, 44_500));
+  const singEnvelope =
+    progressBetween(t, 46_000, 46_800) *
+    (1 - progressBetween(t, HAND_REJECTION_AT_MS - 200, HAND_REJECTION_AT_MS + 400));
+
   return {
     entryProgress: easeInOutCubic(progressBetween(t, 11_000, 17_000)),
     seatedProgress: easeInOutCubic(progressBetween(t, 16_000, 21_000)),
@@ -152,15 +222,42 @@ export function getAuditoriumTimeline(elapsedMs: number): AuditoriumTimelineStat
     curtainOpenProgress: easeInOutCubic(progressBetween(t, 24_000, 31_000)),
     stageGlowProgress: progressBetween(t, 23_500, 31_000),
     dancerReveal,
-    dancerTravelX: Math.sin((t - 26_000) * 0.00045) * dancerReveal,
-    dancerSwayDeg: Math.sin(t * 0.0021) * 4,
-    dancerArmDeg: Math.sin(t * 0.0016) * 28,
-    dancerSkirtFlare: 1 + 0.09 * Math.sin(t * 0.0032),
-    dancerBob: 0.5 + 0.5 * Math.sin(t * 0.004),
+    dancerTravelX: zeroIfTiny(Math.sin((t - 26_000) * 0.00045) * dancerReveal * danceEnergy),
+    dancerSwayDeg: Math.sin(t * 0.0021) * 4 * danceEnergy,
+    dancerArmDeg: Math.sin(t * 0.0016) * 28 * danceEnergy,
+    dancerSkirtFlare: 1 + 0.09 * Math.sin(t * 0.0032) * danceEnergy,
+    dancerBob: 0.5 + 0.5 * Math.sin(t * 0.004) * danceEnergy,
     darkManReveal: easeOutCubic(progressBetween(t, 31_000, 36_000)),
     darkManBreath: 0.5 + 0.5 * Math.sin(t * 0.0009),
     darkManHeadTiltDeg: -6 + Math.sin(t * 0.0005) * 2,
     chandelierSwayDeg: Math.sin(t * 0.0006) * 1.6,
+
+    danceEnergy,
+    manApproachProgress: easeInOutCubic(progressBetween(t, 40_000, 46_000)),
+    manClapEnvelope: clapEnvelope,
+    manClapPhaseDeg:
+      clapEnvelope * (0.5 + 0.5 * Math.sin((t - 40_300) * ((2 * Math.PI) / 950))) * 30,
+    manHandExtendProgress: easeInOutCubic(progressBetween(t, 45_500, 48_500)),
+    handRejectionProgress: easeOutCubic(
+      progressBetween(t, HAND_REJECTION_AT_MS, HAND_REJECTION_AT_MS + 500),
+    ),
+    womanMouthOpen: singEnvelope * (0.55 + 0.45 * Math.sin(t * 0.006)),
+    inversionProgress,
+    stageGrimeProgress: progressBetween(t, 50_000, 54_500),
+    womanFearProgress: easeOutCubic(progressBetween(t, 50_200, 53_000)),
+    manGlareProgress: easeOutCubic(progressBetween(t, 52_800, 53_500)),
+    playerPushPulse,
+    chokeLiftProgress: easeOutCubic(progressBetween(t, 56_000, 57_200)),
+    cameraShakeX: zeroIfTiny(Math.sin(t * 0.105) * shakeAmplitude),
+    cameraShakeY: zeroIfTiny(Math.cos(t * 0.132) * shakeAmplitude * 0.62),
+    paintingsTiltProgress: easeOutCubic(progressBetween(t, 57_800, 65_000)),
+    chandelierFallProgress: chandelierFallRaw * chandelierFallRaw,
+    chandelierShatteredProgress: easeOutCubic(
+      progressBetween(t, CHANDELIER_FALL_AT_MS + 700, CHANDELIER_FALL_AT_MS + 1_300),
+    ),
+    vanishProgress: easeOutCubic(progressBetween(t, 67_000, 67_700)),
+    blackoutPulse: Math.sin(progressBetween(t, 66_800, 68_600) * Math.PI),
+    finalDarknessProgress: progressBetween(t, 67_000, 69_500),
   };
 }
 
@@ -171,4 +268,93 @@ export function getAuditoriumTimeline(elapsedMs: number): AuditoriumTimelineStat
 export function teammateSettleProgress(seatIndex: number, elapsedMs: number): number {
   const start = 11_800 + Math.max(0, seatIndex) * 650;
   return easeOutCubic(progressBetween(elapsedMs, start, start + 2_200));
+}
+
+/* ====================================================================================
+ * نیمه وحشت موج ۳ — لحظه‌های دقیق برخورد و مسیر پرواز زن در سالن (۵۶ تا ۶۷ ثانیه)
+ * این ثابت‌ها مرجع واحد قفل شدن صدا (playBodySlam/playChandelierFall) و تصویرند.
+ * ==================================================================================== */
+
+/** فریم دقیق پس زدن دست مرد توسط زن (محرک صوتی playHandRejection) */
+export const HAND_REJECTION_AT_MS = 49_600;
+
+/** لحظه شروع سقوط لوستر (صدای شکستن ۶۲۰ms بعد در موتور صدا زمان‌بندی داخلی دارد) */
+export const CHANDELIER_FALL_AT_MS = 65_500;
+
+/** توالی کوبیده شدن زن به سطوح سالن به ترتیب سناریو: در ← دیوارها ← زمین ← سقف ← زمین */
+export const SLAM_IMPACTS: ReadonlyArray<{ atMs: number; surface: SlamSurface }> = [
+  { atMs: 57_800, surface: 'door' },
+  { atMs: 59_200, surface: 'left-wall' },
+  { atMs: 60_600, surface: 'right-wall' },
+  { atMs: 62_000, surface: 'floor' },
+  { atMs: 63_400, surface: 'ceiling' },
+  { atMs: 64_800, surface: 'floor' },
+];
+
+/** ژست لحظه‌ای زن هنگام پرتاب در سالن (مختصات درصدی نسبت به کل پانورامای سالن) */
+export interface VictimPose {
+  /** موقعیت افقی مرکز بدن (درصد عرض پانوراما؛ ۵۰ یعنی مرکز سِن اصلی) */
+  xPct: number;
+  /** موقعیت عمودی مرکز بدن (درصد ارتفاع پانوراما؛ عدد کوچک‌تر یعنی بالاتر) */
+  yPct: number;
+  /** چرخش بدن (درجه) */
+  rotateDeg: number;
+  /** مقیاس بدن (نزدیکی به دوربین اول‌شخص) */
+  scale: number;
+}
+
+const VICTIM_KEYFRAMES: ReadonlyArray<{ atMs: number } & VictimPose> = [
+  { atMs: 56_000, xPct: 50, yPct: 56, rotateDeg: 0, scale: 1 },
+  { atMs: 57_200, xPct: 50, yPct: 32, rotateDeg: -8, scale: 1 },
+  { atMs: 57_800, xPct: 50, yPct: 44, rotateDeg: 7, scale: 0.8 },
+  { atMs: 58_500, xPct: 50, yPct: 28, rotateDeg: -10, scale: 1 },
+  { atMs: 59_200, xPct: 11, yPct: 38, rotateDeg: -68, scale: 1.06 },
+  { atMs: 59_900, xPct: 50, yPct: 26, rotateDeg: 8, scale: 1 },
+  { atMs: 60_600, xPct: 89, yPct: 38, rotateDeg: 68, scale: 1.06 },
+  { atMs: 61_300, xPct: 50, yPct: 24, rotateDeg: -6, scale: 1 },
+  { atMs: 62_000, xPct: 50, yPct: 74, rotateDeg: 82, scale: 1.12 },
+  { atMs: 62_700, xPct: 50, yPct: 30, rotateDeg: 12, scale: 1 },
+  { atMs: 63_400, xPct: 50, yPct: 9, rotateDeg: 168, scale: 0.98 },
+  { atMs: 64_100, xPct: 50, yPct: 34, rotateDeg: -14, scale: 1 },
+  { atMs: 64_800, xPct: 50, yPct: 76, rotateDeg: -80, scale: 1.12 },
+  { atMs: 66_200, xPct: 50, yPct: 78, rotateDeg: -76, scale: 1.05 },
+  { atMs: 67_000, xPct: 50, yPct: 78, rotateDeg: -76, scale: 1.05 },
+];
+
+/**
+ * مسیر پرواز زن از روی کی‌فریم‌های کوبش — درونیابی نرم بین فریم‌های برخورد.
+ * قبل از ۵۶ ثانیه ژست ایستاده وسط صحنه و بعد از ۶۷ ثانیه ژست افتاده نهایی برگردانده می‌شود.
+ */
+export function victimPoseAt(elapsedMs: number): VictimPose {
+  const t = elapsedMs;
+  const first = VICTIM_KEYFRAMES[0];
+  const last = VICTIM_KEYFRAMES[VICTIM_KEYFRAMES.length - 1];
+  if (t <= first.atMs) return { xPct: first.xPct, yPct: first.yPct, rotateDeg: first.rotateDeg, scale: first.scale };
+  if (t >= last.atMs) return { xPct: last.xPct, yPct: last.yPct, rotateDeg: last.rotateDeg, scale: last.scale };
+  for (let i = 1; i < VICTIM_KEYFRAMES.length; i++) {
+    const b = VICTIM_KEYFRAMES[i];
+    if (t <= b.atMs) {
+      const a = VICTIM_KEYFRAMES[i - 1];
+      const p = easeInOutCubic(progressBetween(t, a.atMs, b.atMs));
+      return {
+        xPct: a.xPct + (b.xPct - a.xPct) * p,
+        yPct: a.yPct + (b.yPct - a.yPct) * p,
+        rotateDeg: a.rotateDeg + (b.rotateDeg - a.rotateDeg) * p,
+        scale: a.scale + (b.scale - a.scale) * p,
+      };
+    }
+  }
+  return { xPct: last.xPct, yPct: last.yPct, rotateDeg: last.rotateDeg, scale: last.scale };
+}
+
+/** تقویت لرزش دوربین دقیقاً روی لحظه‌های برخورد (پالس نمایی ۵۰۰ میلی‌ثانیه‌ای پس از هر کوبش) */
+function impactShakeBoost(elapsedMs: number): number {
+  let boost = 0;
+  for (const impact of SLAM_IMPACTS) {
+    const dt = elapsedMs - impact.atMs;
+    if (dt >= 0 && dt <= 500) boost += (1 - dt / 500) * 5;
+  }
+  const chandelierDt = elapsedMs - (CHANDELIER_FALL_AT_MS + 620);
+  if (chandelierDt >= 0 && chandelierDt <= 650) boost += (1 - chandelierDt / 650) * 6;
+  return boost;
 }

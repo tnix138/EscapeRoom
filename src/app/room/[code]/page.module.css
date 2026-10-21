@@ -1,0 +1,249 @@
+/* صفحه اتاق بازی — علیرضا، موج ۳ (سوئیچر فازها + فال‌بک موقت کوچه) */
+
+.fullscreenStage {
+  position: fixed;
+  inset: 0;
+  background: #020103;
+}
+
+.centerState {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: radial-gradient(ellipse at 50% 35%, #241631, #07030a 72%);
+  color: #f3e9dc;
+  text-align: center;
+  line-height: 2;
+}
+
+.stateCard {
+  max-width: 480px;
+  border: 1px solid #c9a227;
+  background: linear-gradient(180deg, #1a0f26, #0b0512);
+  border-radius: 18px;
+  padding: 28px 24px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7);
+}
+
+.stateCard h1 {
+  margin: 8px 0;
+  font-size: 22px;
+  color: #ffe9a8;
+}
+
+.stateIcon {
+  font-size: 44px;
+}
+
+/* ---------- فال‌بک موقت کوچه ---------- */
+
+.alleyPage {
+  min-height: 100dvh;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(58, 36, 84, 0.5), transparent 55%),
+    linear-gradient(180deg, #0d0817, #07030a);
+  padding: 22px 16px 90px;
+}
+
+.alleyRoot {
+  max-width: 1120px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  color: #f3e9dc;
+}
+
+.alleyHeader h1 {
+  margin: 0 0 6px;
+  font-size: clamp(20px, 3.4vw, 29px);
+  color: #f7e8c9;
+}
+
+.alleyHeader p {
+  margin: 3px 0;
+  color: #cdbfa8;
+  line-height: 1.9;
+}
+
+.fallbackNote {
+  font-size: 12.5px;
+  color: #ffd9a0;
+  background: rgba(122, 22, 38, 0.3);
+  border: 1px solid rgba(164, 55, 63, 0.8);
+  border-radius: 10px;
+  padding: 7px 12px;
+  line-height: 1.9;
+}
+
+.alleyGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  border: 1px solid #4a3560;
+  background: linear-gradient(180deg, #160d22, #0b0512);
+  border-radius: 16px;
+  padding: 16px 18px;
+  line-height: 1.95;
+  font-size: 14px;
+}
+
+.card h2 {
+  margin: 0 0 8px;
+  font-size: 16.5px;
+  color: #ffe9a8;
+}
+
+.card label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 10px;
+  color: #cdbfa8;
+  font-size: 13px;
+}
+
+.card select,
+.card input {
+  border-radius: 9px;
+  border: 1px solid #6b4f8a;
+  background: #211631;
+  color: #f3e9dc;
+  padding: 9px 11px;
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.stubList {
+  margin: 6px 0 12px;
+  padding-inline-start: 19px;
+  color: #d9cdb4;
+}
+
+.validated {
+  background: rgba(46, 107, 52, 0.3);
+  border: 1px solid #57e389;
+  border-radius: 10px;
+  padding: 9px 13px;
+  color: #b8f4cd;
+}
+
+.validated strong {
+  color: #ffe9a8;
+  font-size: 18px;
+}
+
+.unlockRow {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.unlockRow input {
+  flex: 1;
+  min-width: 150px;
+  text-align: center;
+  letter-spacing: 0.3em;
+  font-size: 17px;
+}
+
+.hint {
+  color: #9c8b73;
+  font-size: 12.5px;
+}
+
+.feedback {
+  color: #ffd9a0;
+}
+
+.feedbackBar {
+  position: sticky;
+  bottom: 12px;
+  margin: 0;
+  text-align: center;
+  background: rgba(20, 10, 30, 0.95);
+  border: 1px solid #d4af37;
+  color: #ffe9a8;
+  border-radius: 12px;
+  padding: 11px 16px;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.65);
+  line-height: 1.9;
+}
+
+.primaryButton,
+.button {
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-family: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  border: 1px solid #6b4f8a;
+  background: #211631;
+  color: #f3e9dc;
+}
+
+.primaryButton {
+  background: linear-gradient(180deg, #8c1d2f, #5d1120);
+  border-color: #d4af37;
+  color: #ffe9a8;
+  font-weight: 700;
+}
+
+.primaryButton:disabled,
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.messages {
+  max-height: 130px;
+  overflow-y: auto;
+  margin-bottom: 9px;
+}
+
+.messageLine {
+  margin: 2px 0;
+  font-size: 13px;
+  color: #d9cdb4;
+}
+
+.messageLine strong {
+  color: #ffe9a8;
+}
+
+.whisperForm {
+  display: flex;
+  gap: 8px;
+}
+
+.whisperForm input {
+  flex: 1;
+}
+
+/* کارت دعوت موقت */
+.invitationCard {
+  max-width: 560px;
+  margin: 8vh auto 0;
+  text-align: center;
+  border: 1.5px solid #d4af37;
+  background: linear-gradient(165deg, #2b0f1c, #160a24 60%, #0b0512);
+  border-radius: 20px;
+  padding: 34px 26px;
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.8);
+  line-height: 2.05;
+}
+
+.invitationCard h1 {
+  color: #ffe9a8;
+  font-size: 24px;
+  margin: 10px 0;
+}
+
+.envelope {
+  font-size: 54px;
+}
