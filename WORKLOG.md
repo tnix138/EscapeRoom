@@ -121,7 +121,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۳۱** — ✅ Archive: **۱۱۱** — 🧾 مجموع: **۱۴۲** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۸:۱۲ (`2026-10-21T16:28:12.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۳۲** — ✅ Archive: **۱۱۱** — 🧾 مجموع: **۱۴۳** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۸:۳۲ (`2026-10-21T16:28:32.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -131,6 +131,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:EVENTS:START -->
 | 🕒 زمان (ایران / UTC) | رویداد | شناسه لاگ | توسط |
 | --- | --- | --- | --- |
+| ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۸:۳۲<br>`2026-10-21T16:28:32.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-58-32_tohid_pr-wave5-reservation-recovery`](./logs/pending/1405-07-29_19-58-32_tohid_pr-wave5-reservation-recovery.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۸:۱۲<br>`2026-10-21T16:28:12.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-58-12_tohid_push-wave5-recovery`](./logs/pending/1405-07-29_19-58-12_tohid_push-wave5-recovery.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۸:۰۲<br>`2026-10-21T16:28:02.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-58-02_tohid_wave5-reservation-recovery`](./logs/pending/1405-07-29_19-58-02_tohid_wave5-reservation-recovery.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۴:۲۷<br>`2026-10-21T16:24:27.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-54-27_tohid_pr-wave4-scene-state`](./logs/pending/1405-07-29_19-54-27_tohid_pr-wave4-scene-state.md) | **توحید** |
@@ -142,7 +143,6 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۴۴:۳۶<br>`2026-10-21T16:14:36.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-44-36_infra-agent_push`](./logs/pending/1405-07-29_19-44-36_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۴۴:۰۴<br>`2026-10-21T16:14:04.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-44-04_infra-agent_pr45-wave10-infra-final`](./logs/pending/1405-07-29_19-44-04_infra-agent_pr45-wave10-infra-final.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۴۳:۳۴<br>`2026-10-21T16:13:34.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-43-34_infra-agent_push`](./logs/pending/1405-07-29_19-43-34_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۹:۴۳:۰۵<br>`2026-10-21T16:13:05.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-43-05_infra-agent_wave10-infra-final-completion`](./logs/pending/1405-07-29_19-43-05_infra-agent_wave10-infra-final-completion.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 <!-- WORKLOG:EVENTS:END -->
 
 ---
@@ -154,6 +154,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:PENDING:START -->
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- |
+| [`1405-07-29_19-58-32_tohid_pr-wave5-reservation-recovery`](./logs/pending/1405-07-29_19-58-32_tohid_pr-wave5-reservation-recovery.md) | ثبت PR #49 — رزرو و بازیابی نشست موج ۵ | `PR` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۸:۳۲<br>`2026-10-21T16:28:32.000Z` | https://github.com/tnix138/EscapeRoom/pull/49 |
 | [`1405-07-29_19-58-12_tohid_push-wave5-recovery`](./logs/pending/1405-07-29_19-58-12_tohid_push-wave5-recovery.md) | پوش موج ۵ — رزرو و بازیابی نشست | `Push` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۸:۱۲<br>`2026-10-21T16:28:12.000Z` | origin/arena/bab0d18a-escaperoom (origin/main..aa0ba82) |
 | [`1405-07-29_19-58-02_tohid_wave5-reservation-recovery`](./logs/pending/1405-07-29_19-58-02_tohid_wave5-reservation-recovery.md) | موج ۵ توحید — رزرو، دعوت و بازیابی نشست | `Commit` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۸:۰۲<br>`2026-10-21T16:28:02.000Z` | شاخه arena/bab0d18a-escaperoom |
 | [`1405-07-29_19-54-27_tohid_pr-wave4-scene-state`](./logs/pending/1405-07-29_19-54-27_tohid_pr-wave4-scene-state.md) | ثبت PR #47 — state صحنه و refresh موج ۴ | `PR` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۴:۲۷<br>`2026-10-21T16:24:27.000Z` | https://github.com/tnix138/EscapeRoom/pull/47 |
