@@ -35,3 +35,33 @@
 - [ ] Vercel production deploy شد.
 - [ ] Smoke test روی production سبز است.
 - [ ] لینک نهایی به تیم داده شد.
+---
+
+## 📋 وضعیت بازبینی (۱۴۰۵/۰۸/۰۱)
+
+این بخش وضعیت **واقعی و تأییدشده** را ثبت می‌کند؛ کادرهای بالا دست‌نخورده می‌مانند تا
+هر کدام فقط با شاهد واقعی تیک بخورند.
+
+| مورد | وضعیت | شاهد |
+|---|---|---|
+| `npm run build` | ✅ سبز | `next build` روی شاخهٔ ادغام |
+| `npm run typecheck` + `npm run lint` | ✅ سبز | اجرای محلی معادل CI |
+| `npm test` | ✅ ۵۹۳ تست در ۵۶ فایل | `vitest run` |
+| مسیر کامل بازی | ✅ تست شده | `tests/qa/game-path.test.ts` |
+| روایت و صدا | ✅ تست شده | `tests/qa/story-narrative.test.ts`، `story-cue-timing.test.ts` |
+| `/api/health` روی production | ✅ سالم (`storageDriver=supabase`) | درخواست زنده |
+| پنل ادمین روی production | ❌ `/admin/login` هنوز ۴۰۴ | production کهنه است |
+| smoke کامل production | ❌ انجام نشده | نیازمند deploy تازه |
+| FPS دسکتاپ ۶۰ / موبایل ۳۰+ | ⏳ اندازه‌گیری نشده | نیازمند دستگاه واقعی |
+| هیچ خطای کنسولی | ⏳ بررسی دستی نشده | نیازمند باز کردن بازی در مرورگر |
+| تیم ۴ نفره ۳۰ دقیقه | ⏳ انجام نشده | نیازمند بازی واقعی |
+
+## 🎯 روش اندازه‌گیری FPS (باقی‌ماندهٔ دستی)
+
+1. `npm run build && npm start` روی دستگاه هدف (یا نسخهٔ production).
+2. یک اتاق سه‌نفره بساز: `curl -s -X POST localhost:3000/api/rooms -H 'content-type: application/json' -d '{"playerCount":3,"playerNames":["الف","ب","ج"]}'`
+3. هر سه لینک دعوت را در سه تب باز کن و وارد کوچهٔ سه‌بعدی شو.
+4. در کنسول، `PerformanceMonitor` هر ثانیه `[Performance] FPS …` چاپ می‌کند.
+5. ۳۰ ثانیه در کوچه، ۳۰ ثانیه در کات‌سین و ۳۰ ثانیه در سالن تاریک حرکت کن و
+   کمینهٔ FPS را ثبت کن؛ در موبایل همان کار را با throttling شبکهٔ ۴G تکرار کن.
+6. نتیجه (دستگاه، مرورگر، کمینهٔ FPS، تعداد draw call) را در همین فایل و Issue #87 ثبت کن.
