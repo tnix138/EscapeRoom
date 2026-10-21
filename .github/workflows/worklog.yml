@@ -25,6 +25,9 @@ jobs:
       - name: اعتبارسنجی لاگ‌ها و WORKLOG
         run: node scripts/worklog.mjs check
 
+      - name: بررسی پیوندها و فهرست مستندات
+        run: node scripts/docs.mjs check
+
       - name: نصب وابستگی‌ها
         run: npm ci
 

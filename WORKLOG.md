@@ -134,7 +134,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۶** — ✅ Archive: **۲۰۵** — 🧾 مجموع: **۲۱۱** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۲۱:۱۴:۳۷ (`2026-10-21T17:44:37.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۱۰** — ✅ Archive: **۲۰۵** — 🧾 مجموع: **۲۱۵** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۲۱:۲۲:۲۱ (`2026-10-21T17:52:21.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -144,18 +144,18 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:EVENTS:START -->
 | 🕒 زمان (ایران / UTC) | رویداد | شناسه لاگ | توسط |
 | --- | --- | --- | --- |
+| ۱۴۰۵/۰۷/۲۹ — ۲۱:۲۲:۲۱<br>`2026-10-21T17:52:21.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_21-22-21_arena-agent_docs-reorg-sync-main`](./logs/pending/1405-07-29_21-22-21_arena-agent_docs-reorg-sync-main.md) | **ایجنت Arena** |
+| ۱۴۰۵/۰۷/۲۹ — ۲۱:۲۰:۴۰<br>`2026-10-21T17:50:40.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_21-20-40_arena-agent_docs-reorg-pr`](./logs/pending/1405-07-29_21-20-40_arena-agent_docs-reorg-pr.md) | **ایجنت Arena** |
+| ۱۴۰۵/۰۷/۲۹ — ۲۱:۱۹:۱۶<br>`2026-10-21T17:49:16.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_21-19-16_arena-agent_docs-reorg`](./logs/pending/1405-07-29_21-19-16_arena-agent_docs-reorg.md) | **ایجنت Arena** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۱:۱۴:۳۷<br>`2026-10-21T17:44:37.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_21-14-37_amirali_pr-71-wave10-experience-qa`](./logs/pending/1405-07-29_21-14-37_amirali_pr-71-wave10-experience-qa.md) | **امیرعلی** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۱:۱۴:۲۳<br>`2026-10-21T17:44:23.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_21-14-23_amirali_push`](./logs/pending/1405-07-29_21-14-23_amirali_push.md) | **امیرعلی** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۱:۱۴:۲۰<br>`2026-10-21T17:44:20.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_21-14-20_amirali_wave10-experience-qa`](./logs/pending/1405-07-29_21-14-20_amirali_wave10-experience-qa.md) | **امیرعلی** |
+| ۱۴۰۵/۰۷/۲۹ — ۲۱:۱۳:۴۶<br>`2026-10-21T17:43:46.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_21-13-46_arena-agent_docs-collect`](./logs/pending/1405-07-29_21-13-46_arena-agent_docs-collect.md) | **ایجنت Arena** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۱:۰۷:۴۶<br>`2026-10-21T17:37:46.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_21-07-46_infra-agent_pr70-deploy-wave8-wave9-and-archive`](./logs/pending/1405-07-29_21-07-46_infra-agent_pr70-deploy-wave8-wave9-and-archive.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۱:۰۷:۴۶<br>`2026-10-21T17:37:46.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_21-07-46_infra-agent_push`](./logs/pending/1405-07-29_21-07-46_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۱:۰۷:۱۵<br>`2026-10-21T17:37:15.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_21-07-15_infra-agent_deploy-wave8-wave9-and-archive-pending`](./logs/pending/1405-07-29_21-07-15_infra-agent_deploy-wave8-wave9-and-archive-pending.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۱:۰۵:۵۰<br>`2026-10-21T17:35:50.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_21-04-24_amirali_pr-69-wave9-exploration`](./logs/archive/1405-07-29_21-04-24_amirali_pr-69-wave9-exploration.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۱:۰۵:۵۰<br>`2026-10-21T17:35:50.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_21-04-09_amirali_push`](./logs/archive/1405-07-29_21-04-09_amirali_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
-| ۱۴۰۵/۰۷/۲۹ — ۲۱:۰۵:۵۰<br>`2026-10-21T17:35:50.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_20-59-05_amirali_wave9-exploration-hud`](./logs/archive/1405-07-29_20-59-05_amirali_wave9-exploration-hud.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
-| ۱۴۰۵/۰۷/۲۹ — ۲۱:۰۵:۵۰<br>`2026-10-21T17:35:50.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_20-52-04_amirali_pr-67-wave8-narration`](./logs/archive/1405-07-29_20-52-04_amirali_pr-67-wave8-narration.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
-| ۱۴۰۵/۰۷/۲۹ — ۲۱:۰۵:۵۰<br>`2026-10-21T17:35:50.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_20-49-07_amirali_push`](./logs/archive/1405-07-29_20-49-07_amirali_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
-| ۱۴۰۵/۰۷/۲۹ — ۲۱:۰۵:۵۰<br>`2026-10-21T17:35:50.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_20-48-47_amirali_wave8-narration-captions`](./logs/archive/1405-07-29_20-48-47_amirali_wave8-narration-captions.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 <!-- WORKLOG:EVENTS:END -->
 
 ---
@@ -167,9 +167,13 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:PENDING:START -->
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- |
+| [`1405-07-29_21-22-21_arena-agent_docs-reorg-sync-main`](./logs/pending/1405-07-29_21-22-21_arena-agent_docs-reorg-sync-main.md) | همگام‌سازی PR #72 با main پس از PR #71 | `Commit` | **ایجنت Arena** | ۱۴۰۵/۰۷/۲۹ — ۲۱:۲۲:۲۱<br>`2026-10-21T17:52:21.000Z` | PR #72 |
+| [`1405-07-29_21-20-40_arena-agent_docs-reorg-pr`](./logs/pending/1405-07-29_21-20-40_arena-agent_docs-reorg-pr.md) | PR #72 — مرتب‌سازی مستندات در DOCS | `PR` | **ایجنت Arena** | ۱۴۰۵/۰۷/۲۹ — ۲۱:۲۰:۴۰<br>`2026-10-21T17:50:40.000Z` | PR #72 |
+| [`1405-07-29_21-19-16_arena-agent_docs-reorg`](./logs/pending/1405-07-29_21-19-16_arena-agent_docs-reorg.md) | مرتب‌سازی مستندات در DOCS و حفظ همهٔ پیوندها | `Commit` | **ایجنت Arena** | ۱۴۰۵/۰۷/۲۹ — ۲۱:۱۹:۱۶<br>`2026-10-21T17:49:16.000Z` | شاخه arena/edd3d027-escaperoom |
 | [`1405-07-29_21-14-37_amirali_pr-71-wave10-experience-qa`](./logs/pending/1405-07-29_21-14-37_amirali_pr-71-wave10-experience-qa.md) | PR #71 — موج ۱۰ امیرعلی: QA تجربه | `PR` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۲۱:۱۴:۳۷<br>`2026-10-21T17:44:37.000Z` | PR #71 — arena/65cb18fa-escaperoom ➔ main |
 | [`1405-07-29_21-14-23_amirali_push`](./logs/pending/1405-07-29_21-14-23_amirali_push.md) | پوش شاخه arena/65cb18fa-escaperoom — a0b1877 | `Push` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۲۱:۱۴:۲۳<br>`2026-10-21T17:44:23.000Z` | origin/arena/65cb18fa-escaperoom (origin/main..a0b1877) |
 | [`1405-07-29_21-14-20_amirali_wave10-experience-qa`](./logs/pending/1405-07-29_21-14-20_amirali_wave10-experience-qa.md) | موج ۱۰ — QA تجربه: ۳۲۰px، زوم ۲۰۰٪، صفحه‌کلید و کنتراست | `Commit` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۲۱:۱۴:۲۰<br>`2026-10-21T17:44:20.000Z` | شاخه arena/65cb18fa-escaperoom |
+| [`1405-07-29_21-13-46_arena-agent_docs-collect`](./logs/pending/1405-07-29_21-13-46_arena-agent_docs-collect.md) | پوشه DOCS — آینه‌سازی همهٔ اسناد Markdown با حفظ ساختار | `Commit` | **ایجنت Arena** | ۱۴۰۵/۰۷/۲۹ — ۲۱:۱۳:۴۶<br>`2026-10-21T17:43:46.000Z` | شاخه arena/edd3d027-escaperoom |
 | [`1405-07-29_21-07-46_infra-agent_pr70-deploy-wave8-wave9-and-archive`](./logs/pending/1405-07-29_21-07-46_infra-agent_pr70-deploy-wave8-wave9-and-archive.md) | ایجاد PR #70 — استقرار Production موج‌های ۸ و ۹ امیرعلی و آرشیو ۹ لاگ Pending | `PR` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۲۱:۰۷:۴۶<br>`2026-10-21T17:37:46.000Z` | PR #70 (https://github.com/tnix138/EscapeRoom/pull/70) |
 | [`1405-07-29_21-07-46_infra-agent_push`](./logs/pending/1405-07-29_21-07-46_infra-agent_push.md) | پوش شاخه arena/b2f3de5d-escaperoom — 6acd032 | `Push` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۲۱:۰۷:۴۶<br>`2026-10-21T17:37:46.000Z` | origin/arena/b2f3de5d-escaperoom (origin/arena/b2f3de5d-escaperoom..6acd032) |
 | [`1405-07-29_21-07-15_infra-agent_deploy-wave8-wave9-and-archive-pending`](./logs/pending/1405-07-29_21-07-15_infra-agent_deploy-wave8-wave9-and-archive-pending.md) | استقرار موج‌های ۸ و ۹ امیرعلی روی Vercel Production (dpl_2HTchzK9wjGkaSKsLzuBXyupxDFL و dpl_92YBE2abGq9ebZLzNcixLBzzchrc) و آرشیو ۹ لاگ Pending | `Infra-FullDeploy` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۲۱:۰۷:۱۵<br>`2026-10-21T17:37:15.000Z` | dpl_2HTchzK9wjGkaSKsLzuBXyupxDFL, dpl_92YBE2abGq9ebZLzNcixLBzzchrc (escaperoom-orfeo.vercel.app) |
@@ -485,6 +489,7 @@ tags: null
 
 ## 📚 مراجع مرتبط
 
-- [`DOCUMENTATION.md` §۷](./DOCUMENTATION.md) — ضوابط اجرای ایجنت‌ها، مالکیت و چرخه کار
+- [`DOCS/DOCUMENTATION.md` §۷](./DOCS/DOCUMENTATION.md) — ضوابط اجرای ایجنت‌ها، مالکیت و چرخه کار
 - [`AGENTS.md`](./AGENTS.md) — خلاصه قوانین کامیت فارسی و لاگ‌گذاری
 - [`README.md`](./README.md) — مرور کلی پروژه و راه‌اندازی
+- [`DOCS/INDEX.md`](./DOCS/INDEX.md) — نقشهٔ کامل مستندات و مسیر هر سند

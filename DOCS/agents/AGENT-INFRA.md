@@ -6,12 +6,12 @@ role: cloud_build_deploy
 status: active_plan
 intended_audience: coding_agents_only
 human_reading: not_required
-plan: DOCUMENTATION.md
+plan: DOCS/DOCUMENTATION.md
 ---
 
 # Agent plan — زیرساخت (ایجنت چهارم)
 
-> **عامل زیرساخت بخواند؛ متن برای کاربر نهایی نیست.** پیش از هر موج `AGENTS.md`، `DOCUMENTATION.md`، این فایل و `WORKLOG.md` را بخوان. GitHub-only feature agents do not receive cloud credentials.
+> **عامل زیرساخت بخواند؛ متن برای کاربر نهایی نیست.** پیش از هر موج `AGENTS.md`، `DOCS/DOCUMENTATION.md`، این فایل و `WORKLOG.md` را بخوان. GitHub-only feature agents do not receive cloud credentials.
 
 ## مالکیت و خطوط قرمز
 
@@ -24,7 +24,7 @@ plan: DOCUMENTATION.md
 
 | موج | کارهای دقیق زیرساخت | تحویل و شرط |
 |---|---|---|
-| **۱ — ممیزی** | package/config/build/Preview/WebGL/asset constraints را بخوان؛ `vercel.json` و `.env.example` را بررسی کن؛ هیچ cloud action انجام نده. | یافتهٔ محدودیت build/deploy در `REDESIGN-WAVE-1.md`; no changes. |
+| **۱ — ممیزی** | package/config/build/Preview/WebGL/asset constraints را بخوان؛ `vercel.json` و `.env.example` را بررسی کن؛ هیچ cloud action انجام نده. | یافتهٔ محدودیت build/deploy در `DOCS/waves/redesign/REDESIGN-WAVE-1.md`; no changes. |
 | **۲ — runtime preview** | پس از درخواست Pending، preview build شاخهٔ مربوط را بررسی کن؛ WebGL client bundle, asset response, allowed origins/cache را smoke-test کن. | Preview URL/status/log excerpt بدون secret؛ موارد کدی به علیرضا/امیرعلی ارجاع. |
 | **۳ — حرکت و دستگاه** | Preview browser/mobile target را برای input/canvas policy, origin, headers و console errors قابل تست کن. | نتیجه matrix دستگاه/browser و لینک Preview ثبت‌شده در log. |
 | **۴ — دارایی کوچه** | asset hosting/cache/MIME/CORS, file size, licensing metadata را بررسی کن؛ large files را بدون storage plan به Git وارد نکن. | asset policy یا actionable error. |

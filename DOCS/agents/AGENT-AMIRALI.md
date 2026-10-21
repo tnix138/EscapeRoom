@@ -5,12 +5,12 @@ role: player_experience_ui
 status: active_plan
 intended_audience: coding_agents_only
 human_reading: not_required
-plan: DOCUMENTATION.md
+plan: DOCS/DOCUMENTATION.md
 ---
 
 # Agent plan — امیرعلی
 
-> **عامل کدنویس بخواند؛ متن برای کاربر نهایی نیست.** پیش از هر موج `AGENTS.md`، `DOCUMENTATION.md`، این فایل و `WORKLOG.md` را بخوان. هر موج را مستقل و فقط در محدودهٔ خودت اجرا کن.
+> **عامل کدنویس بخواند؛ متن برای کاربر نهایی نیست.** پیش از هر موج `AGENTS.md`، `DOCS/DOCUMENTATION.md`، این فایل و `WORKLOG.md` را بخوان. هر موج را مستقل و فقط در محدودهٔ خودت اجرا کن.
 
 ## هویت و محدوده مالکیت
 
@@ -22,7 +22,7 @@ plan: DOCUMENTATION.md
 
 | موج | کارهای دقیق | تحویل و معیار پذیرش |
 |---|---|---|
-| **۱ — ممیزی رابط** | رزرو، invite, alley, ticket, lock و chat را بررسی کن؛ کوچک‌ترین font rules و صفحه‌های مشکل‌دار را فهرست کن؛ معیار دسکتاپ/موبایل را ثبت کن. | گزارش/چک‌لیست در `REDESIGN-WAVE-1.md`; بدون CSS/UI code. |
+| **۱ — ممیزی رابط** | رزرو، invite, alley, ticket, lock و chat را بررسی کن؛ کوچک‌ترین font rules و صفحه‌های مشکل‌دار را فهرست کن؛ معیار دسکتاپ/موبایل را ثبت کن. | گزارش/چک‌لیست در `DOCS/waves/redesign/REDESIGN-WAVE-1.md`; بدون CSS/UI code. |
 | **۲ — پوستهٔ خوانا** | `globals.css`, root layout و design tokens را بازبینی کن؛ type scale, spacing, contrast, focus, button/input sizing را اجرا کن؛ typography باید در desktop 100% خوانا باشد. | desktop screenshot/visual check، RTL سالم، موبایل بدون overflow؛ هیچ متن ضروری <14px و متن اصلی ≥16px. |
 | **۳ — راهنمای کنترل** | onboarding/help for WASD/arrows + mouse look و strafe؛ controls overlay، sensitivity hints و clear focus/keyboard support بساز؛ با علیرضا روی names/props هماهنگ شو. | کنترل‌ها قابل کشف، dismissible و UI غیرمزاحم؛ فقط overlay خودت، نه camera/controller code. |
 | **۴ — محتوای کوچه** | پوستر/جدول ردیف/برچسب‌های سرنخ را برای خواندن در فاصلهٔ بازی طراحی کن؛ stateهای inspect/close و scale متن را برای سطح واقعی تعریف کن. | UI سرنخ در فاصله/اندازه‌های هدف خواناست؛ scene placement و mesh را به علیرضا بسپار. |

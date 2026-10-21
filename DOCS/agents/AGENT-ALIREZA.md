@@ -5,12 +5,12 @@ role: 3d_world_and_audio
 status: active_plan
 intended_audience: coding_agents_only
 human_reading: not_required
-plan: DOCUMENTATION.md
+plan: DOCS/DOCUMENTATION.md
 ---
 
 # Agent plan — علیرضا
 
-> **عامل کدنویس بخواند؛ متن برای کاربر نهایی نیست.** پیش از هر موج `AGENTS.md`، `DOCUMENTATION.md`، این فایل و `WORKLOG.md` را بخوان. برای هر موج فقط خروجی تعیین‌شده را بساز.
+> **عامل کدنویس بخواند؛ متن برای کاربر نهایی نیست.** پیش از هر موج `AGENTS.md`، `DOCS/DOCUMENTATION.md`، این فایل و `WORKLOG.md` را بخوان. برای هر موج فقط خروجی تعیین‌شده را بساز.
 
 ## هویت و محدوده مالکیت
 
@@ -23,7 +23,7 @@ plan: DOCUMENTATION.md
 
 | موج | کارهای دقیق | تحویل و معیار پذیرش |
 |---|---|---|
-| **۱ — ممیزی رندر** | alley/cinema/auditorium/room route را بررسی کن؛ CSS/DOM perspective را از mesh/WebGL واقعی تفکیک کن؛ movement/collision gap و device constraints را ثبت کن. | findings در `REDESIGN-WAVE-1.md`; بدون renderer/dependency/code. |
+| **۱ — ممیزی رندر** | alley/cinema/auditorium/room route را بررسی کن؛ CSS/DOM perspective را از mesh/WebGL واقعی تفکیک کن؛ movement/collision gap و device constraints را ثبت کن. | findings در `DOCS/waves/redesign/REDESIGN-WAVE-1.md`; بدون renderer/dependency/code. |
 | **۲ — هسته سه‌بعدی** | گزینه‌های renderer را از نظر Next client lifecycle, license, bundle, WebGL, assets, target devices بسنج؛ یک مورد را با ADR کوتاه انتخاب کن؛ runtime lifecycle, disposal, resize, error boundary و صحنهٔ پایه در `src/engine3d/**` بساز. | صحنه با meshes/depth/light/camera واقعی؛ SSR امن؛ renderer dispose/resize درست؛ bundle/perf اندازه‌گیری. |
 | **۳ — کنترل و حرکت** | player controller: forward/back/left/right strafe، mouse look، سرعت قابل تنظیم، delta-time, collision/bounds, pointer-lock fallback, keyboard focus management؛ touch controls در صورت target موبایل. | بازی جابه‌جایی واقعی world-space دارد؛ cannot walk through walls/fall through ground؛ tests/helper + manual QA. |
 | **۴ — کوچهٔ سه‌بعدی** | modular alley geometry, scale, lighting, collision, spawn points, playbill/row chart/door anchors را بساز و UI/props امیرعلی را از قرارداد هماهنگ وصل کن. | walkable 3D route, front/left/right clues discoverable at actual distances, no fixed panorama dependency. |

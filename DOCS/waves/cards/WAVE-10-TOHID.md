@@ -22,7 +22,7 @@ intended_audience: coding_agents_only
 3. **حذف نشت حافظه در محدودکننده نرخ (`src/server/auth/rate-limit.ts`):**
    - باکت‌های منقضی‌شده به محض خالی شدن آرایه `hits` از `Map` پاک می‌شوند.
 4. **انتشار گذار فاز در `loadRoom`، اصلاح polling شرطی `sinceVersion`، مقاوم‌سازی ساعت کات‌سین و کپی دفاعی `inspectedHotspots`/`messages`:**
-   - تشریح کامل در `WAVE-8-TOHID.md` و `WAVE-9-TOHID.md`.
+   - تشریح کامل در `DOCS/waves/cards/WAVE-8-TOHID.md` و `DOCS/waves/cards/WAVE-9-TOHID.md`.
 5. **آزمون هم‌ارزی `SupabaseRoomRepository` و اسکیمای `001_initial_schema.sql` (`tests/tohid/supabase-driver-and-schema-parity.test.ts`):**
    - عملیات `createRoom`، `getRoom`، کنترل همزمانی خوش‌بینانه `PATCH ...?code=eq...&version=eq...`، هدرهای احراز سرویس، تشخیص درایور و ساختار SQL مایگریشن (قید هر ۴ فاز، ایندکس‌ها، فعال‌بودن RLS و نبود کلید محرمانه) به‌طور کامل تست شدند.
 6. **تکمیل چرخه عمر لاگ‌های توحید (`WORKLOG.md`):**
