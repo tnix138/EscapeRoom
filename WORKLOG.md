@@ -121,7 +121,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۴۷** — ✅ Archive: **۱۱۹** — 🧾 مجموع: **۱۶۶** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۰:۰۲ (`2026-10-21T16:40:02.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۴۸** — ✅ Archive: **۱۱۹** — 🧾 مجموع: **۱۶۷** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۰:۳۱ (`2026-10-21T16:40:31.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -131,6 +131,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:EVENTS:START -->
 | 🕒 زمان (ایران / UTC) | رویداد | شناسه لاگ | توسط |
 | --- | --- | --- | --- |
+| ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۰:۳۱<br>`2026-10-21T16:40:31.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-10-31_infra-agent_push`](./logs/pending/1405-07-29_20-10-31_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۰:۰۲<br>`2026-10-21T16:40:02.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-10-02_infra-agent_pr54-wave2-infra`](./logs/pending/1405-07-29_20-10-02_infra-agent_pr54-wave2-infra.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۹:۲۸<br>`2026-10-21T16:39:28.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-09-28_infra-agent_push`](./logs/pending/1405-07-29_20-09-28_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۹:۱۸<br>`2026-10-21T16:39:18.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-09-18_tohid_pr-wave8-closeout`](./logs/pending/1405-07-29_20-09-18_tohid_pr-wave8-closeout.md) | **توحید** |
@@ -142,7 +143,6 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۹:۰۳<br>`2026-10-21T16:39:03.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_19-56-53_infra-agent_production-deploy-after-pr46-pr47`](./logs/archive/1405-07-29_19-56-53_infra-agent_production-deploy-after-pr46-pr47.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۹:۰۱<br>`2026-10-21T16:39:01.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-09-01_tohid_wave8-cutscene-closeout`](./logs/pending/1405-07-29_20-09-01_tohid_wave8-cutscene-closeout.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۷:۳۰<br>`2026-10-21T16:37:30.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-07-30_tohid_pr-wave7-theater-transition`](./logs/pending/1405-07-29_20-07-30_tohid_pr-wave7-theater-transition.md) | **توحید** |
-| ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۷:۱۷<br>`2026-10-21T16:37:17.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-07-17_tohid_push-wave7-transition`](./logs/pending/1405-07-29_20-07-17_tohid_push-wave7-transition.md) | **توحید** |
 <!-- WORKLOG:EVENTS:END -->
 
 ---
@@ -154,6 +154,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:PENDING:START -->
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- |
+| [`1405-07-29_20-10-31_infra-agent_push`](./logs/pending/1405-07-29_20-10-31_infra-agent_push.md) | پوش شاخه arena/3cf79cfd-escaperoom — 15993f6 | `Push` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۰:۳۱<br>`2026-10-21T16:40:31.000Z` | origin/arena/3cf79cfd-escaperoom (origin/arena/3cf79cfd-escaperoom..15993f6) |
 | [`1405-07-29_20-10-02_infra-agent_pr54-wave2-infra`](./logs/pending/1405-07-29_20-10-02_infra-agent_pr54-wave2-infra.md) | ایجاد PR #54 برای موج ۲ زیرساخت (WAVE-2-INFRA.md) | `PR` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۰:۰۲<br>`2026-10-21T16:40:02.000Z` | PR #54 (arena/3cf79cfd-escaperoom -> main) |
 | [`1405-07-29_20-09-28_infra-agent_push`](./logs/pending/1405-07-29_20-09-28_infra-agent_push.md) | پوش شاخه arena/3cf79cfd-escaperoom — 771bea8 | `Push` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۹:۲۸<br>`2026-10-21T16:39:28.000Z` | origin/arena/3cf79cfd-escaperoom (origin/main..771bea8) |
 | [`1405-07-29_20-09-18_tohid_pr-wave8-closeout`](./logs/pending/1405-07-29_20-09-18_tohid_pr-wave8-closeout.md) | ثبت PR #53 — بستن موج‌های ۷ و ۸ | `PR` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۹:۱۸<br>`2026-10-21T16:39:18.000Z` | https://github.com/tnix138/EscapeRoom/pull/53 |
