@@ -11,5 +11,8 @@ export * from './player-controller';
 export * from './useThreeEngine';
 export * from './usePlayerControls';
 export * from './alley-geometry';
+export * from './spawn';
+export * from './transition';
+export * from './interaction';
 export { ThreeErrorBoundary } from './ThreeErrorBoundary';
 export { default as ThreeSceneBase } from './ThreeSceneBase';
