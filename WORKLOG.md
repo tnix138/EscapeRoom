@@ -121,7 +121,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۷** — ✅ Archive: **۳۲** — 🧾 مجموع: **۳۹** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۷:۱۰:۳۷ (`2026-10-21T13:40:37.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۹** — ✅ Archive: **۳۲** — 🧾 مجموع: **۴۱** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۷:۱۱:۳۴ (`2026-10-21T13:41:34.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -131,6 +131,8 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:EVENTS:START -->
 | 🕒 زمان (ایران / UTC) | رویداد | شناسه لاگ | توسط |
 | --- | --- | --- | --- |
+| ۱۴۰۵/۰۷/۲۹ — ۱۷:۱۱:۳۴<br>`2026-10-21T13:41:34.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_17-11-34_amirali_invitation-room-entry-pr18`](./logs/pending/1405-07-29_17-11-34_amirali_invitation-room-entry-pr18.md) | **امیرعلی** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۷:۱۱:۲۹<br>`2026-10-21T13:41:29.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_17-11-29_amirali_pr18-log-record`](./logs/pending/1405-07-29_17-11-29_amirali_pr18-log-record.md) | **امیرعلی** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۷:۱۰:۳۷<br>`2026-10-21T13:40:37.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_17-10-37_amirali_invitation-room-entry`](./logs/pending/1405-07-29_17-10-37_amirali_invitation-room-entry.md) | **امیرعلی** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۷:۰۹:۱۹<br>`2026-10-21T13:39:19.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_17-09-19_amirali_invitation-room-entry`](./logs/pending/1405-07-29_17-09-19_amirali_invitation-room-entry.md) | **امیرعلی** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۶:۵۴:۵۷<br>`2026-10-21T13:24:57.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_16-54-57_arena-agent_push-after-main-merge`](./logs/pending/1405-07-29_16-54-57_arena-agent_push-after-main-merge.md) | **ایجنت Arena** |
@@ -141,8 +143,6 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | ۱۴۰۵/۰۷/۲۹ — ۱۶:۵۰:۴۸<br>`2026-10-21T13:20:48.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_16-46-02_amirali_pr-archive-pr14-worklogs`](./logs/archive/1405-07-29_16-46-02_amirali_pr-archive-pr14-worklogs.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۶:۴۹:۰۵<br>`2026-10-21T13:19:05.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_16-35-38_alireza_pr-13_wave1-wave2`](./logs/archive/1405-07-29_16-35-38_alireza_pr-13_wave1-wave2.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۶:۴۹:۰۵<br>`2026-10-21T13:19:05.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_16-34-04_infra-agent_pr-12_wave4-deploy`](./logs/archive/1405-07-29_16-34-04_infra-agent_pr-12_wave4-deploy.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۶:۴۹:۰۵<br>`2026-10-21T13:19:05.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_16-32-30_infra-agent_wave4-tohid-final-deploy-and-alireza-preview`](./logs/archive/1405-07-29_16-32-30_infra-agent_wave4-tohid-final-deploy-and-alireza-preview.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۶:۴۹:۰۵<br>`2026-10-21T13:19:05.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_16-27-16_alireza_wave2-door-auditorium`](./logs/archive/1405-07-29_16-27-16_alireza_wave2-door-auditorium.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 <!-- WORKLOG:EVENTS:END -->
 
 ---
@@ -154,6 +154,8 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:PENDING:START -->
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- |
+| [`1405-07-29_17-11-34_amirali_invitation-room-entry-pr18`](./logs/pending/1405-07-29_17-11-34_amirali_invitation-room-entry-pr18.md) | PR #18 — تکمیل جریان دعوت تا اتاق | `PR` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۱۷:۱۱:۳۴<br>`2026-10-21T13:41:34.000Z` | PR #18 — https://github.com/tnix138/EscapeRoom/pull/18 |
+| [`1405-07-29_17-11-29_amirali_pr18-log-record`](./logs/pending/1405-07-29_17-11-29_amirali_pr18-log-record.md) | ثبت لاگ مستقل PR شماره ۱۸ | `Commit` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۱۷:۱۱:۲۹<br>`2026-10-21T13:41:29.000Z` | PR #18 |
 | [`1405-07-29_17-10-37_amirali_invitation-room-entry`](./logs/pending/1405-07-29_17-10-37_amirali_invitation-room-entry.md) | پوش شاخه arena/6cc17c27-escaperoom — 1a911b7 | `Push` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۱۷:۱۰:۳۷<br>`2026-10-21T13:40:37.000Z` | origin/arena/6cc17c27-escaperoom (origin/main..1a911b7) |
 | [`1405-07-29_17-09-19_amirali_invitation-room-entry`](./logs/pending/1405-07-29_17-09-19_amirali_invitation-room-entry.md) | اتصال دعوت‌نامه به اتاق واقعی | `Commit` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۱۷:۰۹:۱۹<br>`2026-10-21T13:39:19.000Z` | شاخه arena/6cc17c27-escaperoom |
 | [`1405-07-29_16-54-57_arena-agent_push-after-main-merge`](./logs/pending/1405-07-29_16-54-57_arena-agent_push-after-main-merge.md) | پوش پس از ادغام main — مهاجرت لاگ‌های جدید و همگام‌سازی | `Push` | **ایجنت Arena** | ۱۴۰۵/۰۷/۲۹ — ۱۶:۵۴:۵۷<br>`2026-10-21T13:24:57.000Z` | origin/arena/8e9aee3f-escaperoom (5fba304) |
