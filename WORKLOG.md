@@ -121,7 +121,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۱** — ✅ Archive: **۱۰۳** — 🧾 مجموع: **۱۰۴** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۵:۱۶ (`2026-10-21T15:55:16.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۲** — ✅ Archive: **۱۰۳** — 🧾 مجموع: **۱۰۵** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۵:۳۶ (`2026-10-21T15:55:36.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -131,6 +131,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:EVENTS:START -->
 | 🕒 زمان (ایران / UTC) | رویداد | شناسه لاگ | توسط |
 | --- | --- | --- | --- |
+| ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۵:۳۶<br>`2026-10-21T15:55:36.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-25-36_tohid_push-wave2-runtime-boundary`](./logs/pending/1405-07-29_19-25-36_tohid_push-wave2-runtime-boundary.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۵:۱۶<br>`2026-10-21T15:55:16.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-25-16_tohid_wave2-runtime-boundary`](./logs/pending/1405-07-29_19-25-16_tohid_wave2-runtime-boundary.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۱۶:۴۶<br>`2026-10-21T15:46:46.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_19-13-26_amirali_push`](./logs/archive/1405-07-29_19-13-26_amirali_push.md) | **علیرضا** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۱۶:۴۶<br>`2026-10-21T15:46:46.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_18-57-53_amirali_push`](./logs/archive/1405-07-29_18-57-53_amirali_push.md) | **علیرضا** |
@@ -142,7 +143,6 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۱۶:۳۰<br>`2026-10-21T15:46:30.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_19-14-30_alireza_push`](./logs/archive/1405-07-29_19-14-30_alireza_push.md) | **علیرضا** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۱۴:۳۶<br>`2026-10-21T15:44:36.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-14-36_alireza_fix-conflict-pr`](./logs/archive/1405-07-29_19-14-36_alireza_fix-conflict-pr.md) | **علیرضا** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۱۴:۳۰<br>`2026-10-21T15:44:30.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-14-30_alireza_fix-conflict-archive`](./logs/archive/1405-07-29_19-14-30_alireza_fix-conflict-archive.md) | **علیرضا** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۹:۱۴:۳۰<br>`2026-10-21T15:44:30.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-14-30_alireza_push`](./logs/archive/1405-07-29_19-14-30_alireza_push.md) | **علیرضا** |
 <!-- WORKLOG:EVENTS:END -->
 
 ---
@@ -154,6 +154,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:PENDING:START -->
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- |
+| [`1405-07-29_19-25-36_tohid_push-wave2-runtime-boundary`](./logs/pending/1405-07-29_19-25-36_tohid_push-wave2-runtime-boundary.md) | پوش شاخه پس از تعیین مرز موج دوم | `Push` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۵:۳۶<br>`2026-10-21T15:55:36.000Z` | origin/arena/ca5ca2d8-escaperoom (origin/main..1472920) |
 | [`1405-07-29_19-25-16_tohid_wave2-runtime-boundary`](./logs/pending/1405-07-29_19-25-16_tohid_wave2-runtime-boundary.md) | موج ۲ توحید — تعیین مرز قرارداد runtime | `Commit` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۵:۱۶<br>`2026-10-21T15:55:16.000Z` | شاخه arena/ca5ca2d8-escaperoom |
 <!-- WORKLOG:PENDING:END -->
 
