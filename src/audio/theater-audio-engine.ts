@@ -190,6 +190,14 @@ export class TheaterAudioEngine {
     return this.ctx !== null;
   }
 
+  /**
+   * وضعیت AudioContext برای لایه نمایش (موج ۲: تصمیم برای نمایش دکمه فعال‌سازی صدا).
+   * 'uninitialized' یعنی init() هنوز صدا زده نشده است.
+   */
+  get contextState(): AudioContextState | 'uninitialized' {
+    return this.ctx ? this.ctx.state : 'uninitialized';
+  }
+
   get musicState(): TheaterMusicState {
     return this.musicStateValue;
   }

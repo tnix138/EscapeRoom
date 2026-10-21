@@ -119,4 +119,9 @@ describe('ایمنی کلاس TheaterAudioEngine بدون مرورگر (SSR/Node
     const engine = new TheaterAudioEngine();
     await expect(engine.init()).resolves.toBe(false);
   });
+
+  it('contextState قبل از init برابر uninitialized است (مصرف موج ۲: دکمه فعال‌سازی صدا)', () => {
+    const engine = new TheaterAudioEngine();
+    expect(engine.contextState).toBe('uninitialized');
+  });
 });

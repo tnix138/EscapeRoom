@@ -1,0 +1,102 @@
+/* استیج اصلی کات‌سین اول‌شخص — علیرضا، موج ۲ */
+
+.stageRoot {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 420px;
+  overflow: hidden;
+  background: #020103;
+  border-radius: inherit;
+  cursor: ew-resize;
+  touch-action: none; /* کشیدن انگشت فقط چرخش سر است، اسکرول نه */
+  user-select: none;
+}
+
+.vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.55), transparent 14%, transparent 84%, rgba(0, 0, 0, 0.6)),
+    radial-gradient(ellipse at center, transparent 54%, rgba(0, 0, 0, 0.55) 100%);
+  z-index: 15;
+}
+
+.blackFade {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  pointer-events: none;
+  z-index: 18;
+}
+
+/* HUD مینیمال روی کات‌سین */
+.hud {
+  position: absolute;
+  top: 10px;
+  inset-inline: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  z-index: 20;
+  pointer-events: none;
+}
+
+.playerChip,
+.hintChip {
+  background: rgba(10, 5, 16, 0.66);
+  border: 1px solid rgba(201, 162, 39, 0.55);
+  color: #f7e8c9;
+  border-radius: 999px;
+  padding: 5px 13px;
+  font-size: clamp(11px, 1.8vw, 13.5px);
+  white-space: nowrap;
+  backdrop-filter: blur(3px);
+}
+
+.hintChip {
+  color: #d9c9a3;
+  transition: opacity 0.6s ease;
+}
+
+.muteButton {
+  pointer-events: auto;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid rgba(201, 162, 39, 0.7);
+  background: rgba(10, 5, 16, 0.72);
+  font-size: 19px;
+  cursor: pointer;
+  color: #ffe9a8;
+  flex-shrink: 0;
+}
+
+.muteButton:hover {
+  background: rgba(60, 16, 28, 0.85);
+}
+
+.unlockButton {
+  position: absolute;
+  bottom: 64px;
+  inset-inline-start: 50%;
+  transform: translateX(50%);
+  z-index: 21;
+  border-radius: 999px;
+  padding: 11px 22px;
+  font-size: 15px;
+  font-family: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  color: #ffe9a8;
+  background: linear-gradient(180deg, #8c1d2f, #5d1120);
+  border: 1.5px solid #d4af37;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.7), 0 0 18px rgba(212, 175, 55, 0.25);
+  white-space: nowrap;
+}
+
+.unlockButton:hover {
+  filter: brightness(1.12);
+}
