@@ -233,7 +233,12 @@
 
 ## وضعیت
 
-- 🟡 در جریان — hook/ترنسپورت، RemotePlayer و RemotePlayerManager تکمیل و تست شده‌اند؛ اتصال به صحنهٔ فعال و سنجش FPS واقعی هنوز لازم است (Issue #77).
+- ✅ تکمیل شد — hook/ترنسپورت، `RemotePlayer` و `RemotePlayerManager` تست شده‌اند و **اکنون در صحنهٔ کوچه mount هستند**.
+- ✅ `src/client-sdk/presence-avatars.ts` قاب حضور HUD (`position`, `yawDeg`) را به snapshot موتور تبدیل می‌کند؛ بازیکن محلی حذف و آواتار آفلاین بعد از ۳۰ ثانیه پاک می‌شود.
+- 📝 تاریخ: ۱۴۰۵/۰۸/۰۱
+- 🔗 کامیت مرجع: `59ad5c5`
+- 📊 نتیجهٔ تست: `tests/tohid/presence-avatar-wiring.test.ts` (۱۰) + `tests/alireza/presence-client.test.ts` (۸) + قرارداد/فاز ۱۲ (۵۳) — سبز
+- ⏳ FPS روی دستگاه واقعی به‌عنوان دروازهٔ انتشار در #88 سنجیده می‌شود (روش کار در `docs/checklists/before-release.md`).
 
 ---
 
@@ -308,7 +313,8 @@ Materialهای PBR با normal map، roughness map، AO map رویه‌ای. س�
 ## وضعیت
 
 - ✅ مواد PBR و بافت‌های رویه‌ای تکمیل و در PR #106 ادغام شد (2026-10-21).
-- ✅ تست‌های فاز، `npm run typecheck`، `npm test` و `npm run build` موفق‌اند؛ تست دستگاه واقعی FPS در دسترس نیست.
+- ✅ تست‌های فاز، `npm run typecheck`، `npm test` و `npm run build` موفق‌اند.
+- ⏳ سنجش FPS روی دستگاه واقعی در #87/#88 باقی است؛ روش گام‌به‌گام در `docs/checklists/before-release.md` ثبت شد.
 
 ---
 
@@ -349,8 +355,12 @@ Materialهای PBR با normal map، roughness map، AO map رویه‌ای. س�
 - ✅ سهم HUD امیرعلی در PR #109 تکمیل و به صحنه وصل شد.
 - ✅ سهم اولیهٔ علیرضا: vignette/film grain، جامپ‌اسکر زمان‌محور و `HorrorAudio` با ضربان قلب (PR #106).
 - ✅ قرارداد `HorrorIntensity` در `src/contracts/horror.ts` آماده شد (PR #110)؛ دیگر نیاز به قرارداد محلی نیست.
-- 🟡 تکمیل جدید در این شاخه: مه واکنش‌گرا به ترس، تبدیل فاصلهٔ تهدید به ضربان و همهمهٔ دور؛ اتصال این اجزا به صحنهٔ فعال و سنجش FPS هنوز باقی است (Issue #90).
-- 📊 نتیجهٔ فعلی: کل مخزن ۴۶۶ تست در ۴۲ فایل سبز؛ `npm run typecheck` و `npm run build` موفق‌اند.
+- ✅ **اتصال به صحنه انجام شد:** مهِ واکنش‌گرا (`FearResponsiveFog`) روی `engine.scene` کوچه با چگالی متناسب با سطح ترس، و `HorrorAudio` (باد + همهمهٔ دور + ضربان قلب) که فقط با تعامل کاربر راه می‌افتد و `setFearLevel` آن با سطح ترس هم‌گام است.
+- ✅ افکت‌های صوتی یک‌باره (`windowed`-style) داخل کات‌سین با `StoryCueDirector` پخش می‌شوند.
+- 📝 تاریخ: ۱۴۰۵/۰۸/۰۱
+- 🔗 کامیت مرجع: `c030fec`
+- 📊 نتیجهٔ تست: `tests/alireza/horror-atmosphere.test.ts` (۹) + `tests/amirali/horror-*` (۳۵) + `tests/qa/horror-wiring.test.ts` (۴) — سبز؛ کل مخزن ۵۹۸ تست در ۵۷ فایل
+- ⏳ FPS روی دستگاه واقعی در #88 سنجیده می‌شود.
 
 # 📋 فاز ۰۸ — کات‌سین سینمایی (Three.js)
 
