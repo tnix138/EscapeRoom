@@ -1,45 +1,59 @@
----
-document_type: agent_entrypoint
-intended_audience: coding_agents_only
-human_reading: not_required
----
+# 🎭 تماشاخانه اُرفه‌ئو — نقطهٔ ورود
 
-# Repository agent entrypoint
+> این فایل اولین چیزی است که هر انسان و هر ایجنت باید بخواند.
+> اگر فقط ۵ دقیقه وقت داری، همین فایل کافی است.
 
-> This repository's active project specification is intentionally written for agents, not for end users or general human reading.
+## این پروژه چیست؟
 
-## Required read order
+یک **بازی اتاق فرار ترسناک آنلاین** برای ۳ تا ۸ بازیکن. بازیکنان با هم در یک تماشاخانهٔ قدیمی گرفتار می‌شوند و باید با حل معما و همکاری فرار کنند. یک دور بازی ۳۰ تا ۴۰ دقیقه است.
 
-1. [`AGENTS.md`](./AGENTS.md) — execution and Worklog rules.
-2. [`DOCS/DOCUMENTATION.md`](./DOCS/DOCUMENTATION.md) — canonical product, architecture, ownership and 10-wave plan.
-3. Your role plan — [`DOCS/agents/AGENT-TOHID.md`](./DOCS/agents/AGENT-TOHID.md), [`DOCS/agents/AGENT-AMIRALI.md`](./DOCS/agents/AGENT-AMIRALI.md), [`DOCS/agents/AGENT-ALIREZA.md`](./DOCS/agents/AGENT-ALIREZA.md) or [`DOCS/agents/AGENT-INFRA.md`](./DOCS/agents/AGENT-INFRA.md).
-4. The specific `DOCS/waves/cards/WAVE-N-OWNER.md` card only if a wave is explicitly assigned.
-5. [`WORKLOG.md`](./WORKLOG.md) — required commit/push/PR log procedure.
+**حس هدف:** ترس، تعلیق، همکاری. با جامپ‌اسکر، ترس القایی، و انیمیشن باکیفیت. نه کارتونی، نه کودکانه. مخاطب بزرگسال.
 
-The old `DOCS/legacy/PROJECT.md`, `DOCS/legacy/ARCHITECTURE.md`, `DOCS/legacy/API-CONTRACT.md`, `DOCS/legacy/TEAM.md` and `DOCS/legacy/TASKS-*.md` files are retained as legacy pointers for historical links. They are **not active task instructions**; if a detail conflicts, use `DOCS/DOCUMENTATION.md` and the assigned wave file.
+## چه کسی چه کاری می‌کند؟
 
-## Repository layout
+ما ۵ انسان برابر هستیم و هر کدام یک ایجنت هوش مصنوعی را هدایت می‌کنیم:
 
-```
-README.md          # این فایل: نقطهٔ ورود ایجنت‌ها
-AGENTS.md          # قوانین اجرا و لاگ‌گذاری
-WORKLOG.md         # دفتر خودکار فعالیت‌ها (از logs/ ساخته می‌شود)
-logs/              # pending/ و archive/ — تاریخچهٔ خام لاگ‌ها (توسط ابزار worklog)
-DOCS/
-  INDEX.md         # فهرست کامل اسناد
-  DOCUMENTATION.md # مشخصات فعال محصول، معماری، مالکیت و نقشهٔ ۱۰ موج
-  agents/          # AGENT-TOHID / AMIRALI / ALIREZA / INFRA
-  waves/cards/     # کارت‌های WAVE-N-OWNER
-  waves/redesign/  # REDESIGN-WAVE-1..9
-  adr/             # ADR‌ها (مثلاً انتخاب رندرر سه‌بعدی)
-  legacy/          # اسناد قدیمی فقط برای حفظ پیوندهای تاریخی
-```
+| انسان | ایجنت | نقش اصلی |
+|---|---|---|
+| **توحید** | Arena Agent | زیرساخت، سرور، دیتابیس، دیپلوی |
+| **علیرضا** | Arena Agent | ۳D، نورپردازی، صدا، محتوای داستانی |
+| **امیرعلی** | Arena Agent | رابط کاربری، تجربهٔ بازیکن، HUD |
+| **امیر** | Arena Agent | پنل ادمین، آمار، ابزارهای مدیریتی |
+| **نازنین** | Arena Agent | QA، تست تجربه، مستندسازی فازها |
 
-## Local validation
+**هیچ‌کدام از ما کد نمی‌نویسیم.** فقط ایجنت‌ها کد می‌نویسند.
 
-```bash
-npm ci
-npm run typecheck
-npm test
-npm run worklog:check
-```
+## ایجنت من الان باید چه کار کند؟
+
+۱. فایل `AGENTS.md` را بخوان (پرامپت آغازین خودت را پیدا کن).
+۲. فایل `PHASES.md` را بخوان (ببین کدام فازها به تو مربوط است).
+۳. فایل فاز خودت را بخوان (مثلاً `phases/PHASE-03.md`).
+۴. شروع کن.
+
+## قوانین طلایی (خلاصه)
+
+1. **همه برابریم.** هیچ ایجنتی بر دیگری برتری ندارد. توحید فقط دسترسی اضافی به Supabase/Vercel دارد.
+2. **دخالت ممنوع.** هر ایجنت فقط در محدودهٔ فایل‌های فاز خودش کار می‌کند. به فایل‌های ایجنت دیگر دست نمی‌زند.
+3. **موازی کار کنید.** فازها منتظر هم نمی‌مانند. اگر فاز تو به فاز دیگری وابسته نیست، همین حالا شروع کن.
+4. **تکه‌های کوچک.** هر فاز حداکثر یک هفته کار یک ایجنت است. اگر بزرگ‌تر شد، به دو فاز بشکن.
+5. **اتوماسیون.** push → CI → merge خودکار روی `main`. ما PR دستی نمی‌زنیم.
+6. **جذابیت مهم‌تر از زیرساخت.** اگر بین یک ویژگی جذاب و یک کد تمیزتر مجبور شدی، جذاب را انتخاب کن.
+7. **مستندات فقط فارسی.** همه‌چیز فارسی. کامیت‌ها فارسی. لاگ‌ها فارسی.
+
+## مستندات کامل
+
+| فایل | برای چه کسی | چه چیزی |
+|---|---|---|
+| `VISION.md` | همه | بازی چه حسی باید بدهد؟ |
+| `RULES.md` | همه | قوانین دقیق کار |
+| `AGENTS.md` | ایجنت‌ها | پرامپت آغازین هر ۵ ایجنت |
+| `PHASES.md` | همه | نقشهٔ کامل فازها |
+| `CONTRACTS.md` | ایجنت‌ها | قراردادهای مشترک (فقط با توافق تغییر می‌کند) |
+| `AUTO.md` | توحید و همه | اتوماسیون CI/CD |
+| `features/` | ایجنت‌ها | توضیح هر ویژگی |
+| `phases/` | ایجنت‌ها | جزئیات هر فاز |
+| `checklists/` | همه | چک‌لیست قبل از merge و انتشار |
+
+## اگر ایجنت جدیدی اضافه شد
+
+اگر یک ایجنت ششم اضافه شود، فقط باید این فایل را بخواند، بعد `AGENTS.md` را. نباید به آموزش نیاز داشته باشد. اگر ابهامی داشت، یعنی مستندات اشکال دارد و باید اصلاح شود.
