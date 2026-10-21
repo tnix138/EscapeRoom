@@ -4,18 +4,33 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --hostname 0.0.0.0",
     "build": "next build",
-    "start": "next start",
+    "start": "next start --hostname 0.0.0.0",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:tohid": "vitest run tests/tohid",
     "test:amirali": "vitest run tests/amirali",
     "test:alireza": "vitest run tests/alireza",
+    "test:e2e:alireza": "playwright test tests/alireza/multiplayer-theater.spec.ts",
+<<<<<<< HEAD
     "test:e2e:alireza": "playwright test tests/alireza/multiplayer-theater.spec.ts"
+=======
+    "worklog": "node scripts/worklog.mjs",
+    "worklog:new": "node scripts/worklog.mjs new",
+    "worklog:push": "node scripts/worklog.mjs push",
+    "worklog:archive": "node scripts/worklog.mjs archive",
+    "worklog:sync": "node scripts/worklog.mjs sync",
+    "worklog:check": "node scripts/worklog.mjs check",
+    "worklog:attach": "node scripts/worklog.mjs attach",
+    "worklog:list": "node scripts/worklog.mjs list",
+    "worklog:hooks": "node scripts/worklog.mjs hooks",
+    "test:worklog": "vitest run tests/worklog"
+>>>>>>> origin/main
   },
   "dependencies": {
-    "next": "^15.3.0",
+    "@fontsource-variable/vazirmatn": "^5.3.0",
+    "next": "^15.5.28",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "zod": "^3.24.0"
@@ -26,8 +41,14 @@
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
     "typescript": "^5.8.0",
-    "vitest": "^3.1.0"
+    "vitest": "^5.0.5"
   },
+<<<<<<< HEAD
+=======
+  "overrides": {
+    "postcss": "^8.5.31"
+  },
+>>>>>>> origin/main
   "engines": {
     "node": ">=22"
   }
