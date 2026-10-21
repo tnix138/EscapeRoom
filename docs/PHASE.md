@@ -343,7 +343,10 @@ Materialهای PBR با normal map، roughness map، AO map رویه‌ای. س�
 - ✅ `prefers-reduced-motion` → تپش و لرزش متوقف، لبهٔ قرمز می‌ماند
 - ✅ در `AlleyRoomThreeIntegration` mount شد: باز شدن در → «دلواپس»، دو بار تلاش ناموفق قفل → «دلواپس»، در غیر این صورت «آرام»
 - ⚠️ شدت واقعی ترس (فاز علیرضا) فعلاً فقط از وضعیت اتاق مشتق می‌شود؛ با اضافه شدن `fearLevel` در snapshot، `horrorLevelFromFear()` نقطهٔ اتصال آماده است.
-- 📊 تست: `tests/amirali/horror-phase07.test.ts` + `horror-signal-phase07.test.ts` (۲۹ تست سبز)
+- ℹ️ `src/contracts/horror.ts` که Issue #91 به آن ارجاع می‌دهد در مخزن ساخته نشد؛ نوع `HorrorIntensity` با **همان شکل دقیق** به‌صورت محلی در `horror-signal.ts` تعریف شده تا وقتی قرارداد مشترک ساخته شود، فقط یک `export type` جابه‌جا شود.
+- 📅 تاریخ: ۱۴۰۵/۰۸/۰۱
+- 🔗 کامیت مرجع: `4be0071` (merge #111) — شروع از `3abe980`
+- 📊 نتیجهٔ تست: `tests/amirali/horror-phase07.test.ts` + `horror-signal-phase07.test.ts` = **۳۵ تست سبز**؛ کل مخزن ۴۶۱/۴۶۱ در ۴۲ فایل؛ `tsc --noEmit` صفر خطا؛ `next build` موفق
 
 # 📋 فاز ۰۸ — کات‌سین سینمایی (Three.js)
 
@@ -430,6 +433,10 @@ Materialهای PBR با normal map، roughness map، AO map رویه‌ای. س�
 - ✅ **احراز هویت**: توکن HS256 (`header.payload.signature`) با `node:crypto` در کوکی `HttpOnly; SameSite=Lax; Secure` (در production)، عمر ۸ ساعت
 - ✅ اعتبارنامه‌ها فقط از env: `ADMIN_USERNAME` + `ADMIN_PASSWORD_HASH` (یا `ADMIN_PASSWORD` محلی) + `ADMIN_SESSION_SECRET`؛ بدون آن‌ها ورود **۵۰۳** می‌دهد (fail-closed)
 - ✅ مقایسهٔ ثابت‌زمان نام کاربری و گذرواژه؛ rate limit ۵ بار در دقیقه برای هر IP (۴۲۹)
+- ℹ️ **انحراف مستند:** Issue #95 می‌گوید فرم از `src/components/admin/LoginForm.tsx` (امیر) import شود؛ آن فایل هرگز در مخزن ساخته نشد. فرم به‌صورت درون‌خطی در `src/app/admin/login/page.tsx` پیاده شده و با API واقعی ورود موفق می‌دهد. با آمدن `LoginForm` امیر، فقط بدنهٔ فرم جابه‌جا می‌شود.
+- 📅 تاریخ: ۱۴۰۵/۰۸/۰۱
+- 🔗 کامیت مرجع: `4be0071` (merge #111)
+- 📊 نتیجهٔ تست: `admin-login-phase09.test.ts` (۲۲) + `admin-gate-phase09.test.ts` (۹) + `admin-auth-phase09.test.ts` (۱۵) = **۴۶ تست سبز**؛ smoke زندهٔ production: ۴۰۱ → ورود ۲۰۰ + کوکی → `/admin` ۲۰۰ → خروج → ۴۰۱؛ ششمین تلاش ۴۲۹
 - ✅ داشبورد حداقلی `/admin`: بدون جلسه → ۳۰۷ به صفحهٔ ورود؛ با جلسه → نام، نقش، پایان جلسه و دکمهٔ خروج (جایگزین موقت داشبورد فاز ۱۰)
 - 📊 تست: `tests/amirali/admin-login-phase09.test.ts` (۲۲) + `admin-gate-phase09.test.ts` (۹) + `admin-auth-phase09.test.ts` (۱۵) — ۴۶ تست سبز
 - ⏳ باقی‌مانده (فاز ۱۰ — امیر): داشبورد آمار اتاق‌ها/بازیکنان و `AdminSidebar`؛ صفحهٔ فعلی `/admin` فقط پوستهٔ احراز هویت است.
@@ -557,7 +564,7 @@ Materialهای PBR با normal map، roughness map، AO map رویه‌ای. س�
 - ✅ **fail-safe سرویس غایب**: probe اولیه با `AbortSignal.timeout(3000)`؛ اگر سرویس حضور وجود نداشت (۴۰۴/۴۰۵)، hook یک بار بررسی می‌کند و **بی‌صدا خاموش** می‌ماند — نه ۴۰۴ پشت‌سرهم، نه EventSource دوم. پس از ۵ خطای پیاپی هم ارسال متوقف می‌شود.
 - ✅ **سرور حضور وصل شد**: `src/app/api/rooms/[code]/presence/route.ts` + `presence-service.ts` + `presence-tracker.ts` و رویداد `presence_update` روی استریم. اکنون مسیر کامل «کلاینت → سرور → استریم → HUD» با smoke زنده تأیید شده است.
 - ℹ️ `src/contracts/presence.ts` ساخته نشد (نوع‌ها در دو لایهٔ مجاز خودشان تعریف شده‌اند)؛ اگر توحید قرارداد مشترک را ساخت، `presence-contract.ts` همان شکل سیمی را دارد و تغییری لازم نیست.
-- 📊 تست: `tests/amirali/presence-phase12.test.ts` (۳۲) + `presence-contract.test.ts` (۱۹)
+- 📊 تست: `tests/amirali/presence-phase12.test.ts` (۳۲) + `presence-contract.test.ts` (۲۱) + `presence-server-phase12.test.ts` (۲۴) = **۷۷ تست سبز**
 
 # 📋 فاز ۱۳ — ابزارهای مدیریتی
 
