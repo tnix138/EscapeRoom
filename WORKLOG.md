@@ -121,7 +121,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۱۰** — ✅ Archive: **۶۹** — 🧾 مجموع: **۷۹** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۹:۰۶:۲۹ (`2026-10-21T15:36:29.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۲۶** — ✅ Archive: **۶۹** — 🧾 مجموع: **۹۵** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۹:۰۶:۲۹ (`2026-10-21T15:36:29.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -134,15 +134,15 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۰۶:۲۹<br>`2026-10-21T15:36:29.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-06-29_alireza_alireza-final-pr`](./logs/pending/1405-07-29_19-06-29_alireza_alireza-final-pr.md) | **علیرضا** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۰۶:۲۵<br>`2026-10-21T15:36:25.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-06-25_alireza_push`](./logs/pending/1405-07-29_19-06-25_alireza_push.md) | **علیرضا** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۰۶:۱۴<br>`2026-10-21T15:36:14.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-06-14_alireza_alireza-final`](./logs/pending/1405-07-29_19-06-14_alireza_alireza-final.md) | **علیرضا** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۳:۳۶<br>`2026-10-21T15:23:36.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_18-53-22_alireza_wave10-archive-pr`](./logs/archive/1405-07-29_18-53-22_alireza_wave10-archive-pr.md) | **علیرضا** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۳:۳۶<br>`2026-10-21T15:23:36.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_18-53-18_alireza_push`](./logs/archive/1405-07-29_18-53-18_alireza_push.md) | **علیرضا** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۳:۳۵<br>`2026-10-21T15:23:35.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_18-53-18_alireza_wave10-final-archive`](./logs/archive/1405-07-29_18-53-18_alireza_wave10-final-archive.md) | **علیرضا** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۳:۲۲<br>`2026-10-21T15:23:22.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-53-22_alireza_wave10-archive-pr`](./logs/archive/1405-07-29_18-53-22_alireza_wave10-archive-pr.md) | **علیرضا** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۳:۱۸<br>`2026-10-21T15:23:18.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-53-18_alireza_push`](./logs/archive/1405-07-29_18-53-18_alireza_push.md) | **علیرضا** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۳:۱۸<br>`2026-10-21T15:23:18.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-53-18_alireza_wave10-final-archive`](./logs/archive/1405-07-29_18-53-18_alireza_wave10-final-archive.md) | **علیرضا** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۳:۱۷<br>`2026-10-21T15:23:17.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_18-53-03_alireza_wave10-pr`](./logs/archive/1405-07-29_18-53-03_alireza_wave10-pr.md) | **علیرضا** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۳:۱۷<br>`2026-10-21T15:23:17.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_18-52-59_alireza_push`](./logs/archive/1405-07-29_18-52-59_alireza_push.md) | **علیرضا** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۳:۱۷<br>`2026-10-21T15:23:17.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_18-52-55_alireza_wave10-performance`](./logs/archive/1405-07-29_18-52-55_alireza_wave10-performance.md) | **علیرضا** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۶:۲۶<br>`2026-10-21T15:26:26.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-56-26_tohid_push-pr31-log`](./logs/pending/1405-07-29_18-56-26_tohid_push-pr31-log.md) | **توحید** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۶:۲۲<br>`2026-10-21T15:26:22.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-56-22_tohid_fix-pr31-log-format`](./logs/pending/1405-07-29_18-56-22_tohid_fix-pr31-log-format.md) | **توحید** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۶:۰۷<br>`2026-10-21T15:26:07.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-56-07_tohid_pr31-wave1-audit`](./logs/pending/1405-07-29_18-56-07_tohid_pr31-wave1-audit.md) | **توحید** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۵:۳۹<br>`2026-10-21T15:25:39.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-55-39_tohid_push-after-log-cleanup`](./logs/pending/1405-07-29_18-55-39_tohid_push-after-log-cleanup.md) | **توحید** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۵:۳۰<br>`2026-10-21T15:25:30.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-55-30_tohid_remove-draft-push-log`](./logs/pending/1405-07-29_18-55-30_tohid_remove-draft-push-log.md) | **توحید** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۴:۵۳<br>`2026-10-21T15:24:53.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-54-53_tohid_push-after-wave10-sync`](./logs/pending/1405-07-29_18-54-53_tohid_push-after-wave10-sync.md) | **توحید** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۴:۴۹<br>`2026-10-21T15:24:49.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-54-49_tohid_fix-push-log-metadata`](./logs/pending/1405-07-29_18-54-49_tohid_fix-push-log-metadata.md) | **توحید** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۴:۱۳<br>`2026-10-21T15:24:13.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-54-13_tohid_sync-main-wave10-alireza`](./logs/pending/1405-07-29_18-54-13_tohid_sync-main-wave10-alireza.md) | **توحید** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۳:۴۲<br>`2026-10-21T15:23:42.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-53-42_tohid_push-after-wave7-9`](./logs/pending/1405-07-29_18-53-42_tohid_push-after-wave7-9.md) | **توحید** |
 <!-- WORKLOG:EVENTS:END -->
 
 ---
@@ -157,6 +157,22 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | [`1405-07-29_19-06-29_alireza_alireza-final-pr`](./logs/pending/1405-07-29_19-06-29_alireza_alireza-final-pr.md) | PR تکمیل نهایی تمام وظایف علیرضا | `PR` | **علیرضا** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۰۶:۲۹<br>`2026-10-21T15:36:29.000Z` | PR #31 |
 | [`1405-07-29_19-06-25_alireza_push`](./logs/pending/1405-07-29_19-06-25_alireza_push.md) | پوش شاخه arena/424e63a7-escaperoom — a7924ba | `Push` | **علیرضا** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۰۶:۲۵<br>`2026-10-21T15:36:25.000Z` | origin/arena/424e63a7-escaperoom (origin/main..a7924ba) |
 | [`1405-07-29_19-06-14_alireza_alireza-final`](./logs/pending/1405-07-29_19-06-14_alireza_alireza-final.md) | تکمیل نهایی تمام وظایف علیرضا — ۱۰ موج | `Commit` | **علیرضا** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۰۶:۱۴<br>`2026-10-21T15:36:14.000Z` | شاخه arena/424e63a7-escaperoom |
+| [`1405-07-29_18-56-26_tohid_push-pr31-log`](./logs/pending/1405-07-29_18-56-26_tohid_push-pr31-log.md) | پوش شاخه پس از ایجاد PR شماره ۳۱ | `Push` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۶:۲۶<br>`2026-10-21T15:26:26.000Z` | origin/arena/ca5ca2d8-escaperoom (origin/main..2a599b5) |
+| [`1405-07-29_18-56-22_tohid_fix-pr31-log-format`](./logs/pending/1405-07-29_18-56-22_tohid_fix-pr31-log-format.md) | اصلاح قالب گزارش PR شماره ۳۱ | `Commit` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۶:۲۲<br>`2026-10-21T15:26:22.000Z` | PR #31 |
+| [`1405-07-29_18-56-07_tohid_pr31-wave1-audit`](./logs/pending/1405-07-29_18-56-07_tohid_pr31-wave1-audit.md) | PR #31 — ممیزی موج اول مرز سرور و همگام‌سازی | `PR` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۶:۰۷<br>`2026-10-21T15:26:07.000Z` | PR #31 — arena/ca5ca2d8-escaperoom → main |
+| [`1405-07-29_18-55-39_tohid_push-after-log-cleanup`](./logs/pending/1405-07-29_18-55-39_tohid_push-after-log-cleanup.md) | پوش شاخه پس از پاک‌سازی گزارش موقت | `Push` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۵:۳۹<br>`2026-10-21T15:25:39.000Z` | origin/arena/ca5ca2d8-escaperoom (origin/main..bedc5cd) |
+| [`1405-07-29_18-55-30_tohid_remove-draft-push-log`](./logs/pending/1405-07-29_18-55-30_tohid_remove-draft-push-log.md) | پاک‌سازی گزارش پوش موقت تکراری | `Commit` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۵:۳۰<br>`2026-10-21T15:25:30.000Z` | شاخه arena/ca5ca2d8-escaperoom |
+| [`1405-07-29_18-54-53_tohid_push-after-wave10-sync`](./logs/pending/1405-07-29_18-54-53_tohid_push-after-wave10-sync.md) | پوش شاخه پس از همگام‌سازی موج دهم | `Push` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۴:۵۳<br>`2026-10-21T15:24:53.000Z` | origin/arena/ca5ca2d8-escaperoom (origin/main..72d23d7) |
+| [`1405-07-29_18-54-49_tohid_fix-push-log-metadata`](./logs/pending/1405-07-29_18-54-49_tohid_fix-push-log-metadata.md) | اصلاح فراداده لاگ پوش موج دهم | `Commit` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۴:۴۹<br>`2026-10-21T15:24:49.000Z` | شاخه arena/ca5ca2d8-escaperoom |
+| [`1405-07-29_18-54-13_tohid_sync-main-wave10-alireza`](./logs/pending/1405-07-29_18-54-13_tohid_sync-main-wave10-alireza.md) | همگام‌سازی main — دریافت موج دهم علیرضا | `Commit` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۴:۱۳<br>`2026-10-21T15:24:13.000Z` | origin/main 265548d → arena/ca5ca2d8-escaperoom |
+| [`1405-07-29_18-53-42_tohid_push-after-wave7-9`](./logs/pending/1405-07-29_18-53-42_tohid_push-after-wave7-9.md) | پوش شاخه پس از موج ۷ تا ۹ سه‌بعدی | `Push` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۳:۴۲<br>`2026-10-21T15:23:42.000Z` | origin/arena/ca5ca2d8-escaperoom (origin/main..835142b) |
+| [`1405-07-29_18-53-33_tohid_sync-main-wave7-9`](./logs/pending/1405-07-29_18-53-33_tohid_sync-main-wave7-9.md) | همگام‌سازی main — دریافت موج ۷ تا ۹ علیرضا | `Commit` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۳:۳۳<br>`2026-10-21T15:23:33.000Z` | origin/main 585ff89 → arena/ca5ca2d8-escaperoom |
+| [`1405-07-29_18-51-22_tohid_push-after-wave5-6-sync`](./logs/pending/1405-07-29_18-51-22_tohid_push-after-wave5-6-sync.md) | پوش شاخه توحید پس از موج ۵ و ۶ | `Push` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۱:۲۲<br>`2026-10-21T15:21:22.000Z` | origin/arena/ca5ca2d8-escaperoom (origin/main..5b851ea) |
+| [`1405-07-29_18-51-12_tohid_sync-main-wave5-6`](./logs/pending/1405-07-29_18-51-12_tohid_sync-main-wave5-6.md) | همگام‌سازی main — دریافت موج ۵ و ۶ علیرضا | `Commit` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۱:۱۲<br>`2026-10-21T15:21:12.000Z` | origin/main 58dbfc5 → arena/ca5ca2d8-escaperoom |
+| [`1405-07-29_18-50-35_tohid_push-after-main-sync`](./logs/pending/1405-07-29_18-50-35_tohid_push-after-main-sync.md) | پوش شاخه توحید پس از همگام‌سازی main | `Push` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۰:۳۵<br>`2026-10-21T15:20:35.000Z` | origin/arena/ca5ca2d8-escaperoom (origin/main..4b2109b) |
+| [`1405-07-29_18-50-18_tohid_sync-main-wave4-alireza`](./logs/pending/1405-07-29_18-50-18_tohid_sync-main-wave4-alireza.md) | همگام‌سازی main — دریافت موج ۴ سه‌بعدی علیرضا | `Commit` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۰:۱۸<br>`2026-10-21T15:20:18.000Z` | origin/main d2b85f2 → arena/ca5ca2d8-escaperoom |
+| [`1405-07-29_18-48-41_tohid_wave1-audit-push`](./logs/pending/1405-07-29_18-48-41_tohid_wave1-audit-push.md) | پوش شاخه توحید — ثبت ممیزی موج اول | `Push` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۸:۴۱<br>`2026-10-21T15:18:41.000Z` | origin/arena/ca5ca2d8-escaperoom (origin/main..b1e76c7) |
+| [`1405-07-29_18-48-23_tohid_wave1-server-data-audit`](./logs/pending/1405-07-29_18-48-23_tohid_wave1-server-data-audit.md) | ممیزی موج اول — وضعیت داده و همگام‌سازی موقعیت | `Commit` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۸:۲۳<br>`2026-10-21T15:18:23.000Z` | شاخه arena/ca5ca2d8-escaperoom |
 | [`1405-07-29_18-40-31_arena-agent_agent-docs-wave-breakdown`](./logs/pending/1405-07-29_18-40-31_arena-agent_agent-docs-wave-breakdown.md) | درخواست بازبینی مستندات عامل‌محور و برنامهٔ ده‌موجی | `PR` | **ایجنت Arena** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۰:۳۱<br>`2026-10-21T15:10:31.000Z` | شاخه arena/6d25be20-escaperoom → main |
 | [`1405-07-29_18-40-31_arena-agent_push`](./logs/pending/1405-07-29_18-40-31_arena-agent_push.md) | پوش شاخه arena/6d25be20-escaperoom — 806f206 | `Push` | **ایجنت Arena** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۰:۳۱<br>`2026-10-21T15:10:31.000Z` | origin/arena/6d25be20-escaperoom (origin/main..806f206) |
 | [`1405-07-29_18-40-04_arena-agent_push`](./logs/pending/1405-07-29_18-40-04_arena-agent_push.md) | پوش شاخه arena/6d25be20-escaperoom — 028b400 | `Push` | **ایجنت Arena** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۰:۰۴<br>`2026-10-21T15:10:04.000Z` | origin/arena/6d25be20-escaperoom (origin/main..028b400) |
