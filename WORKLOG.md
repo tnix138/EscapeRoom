@@ -121,7 +121,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۱۷** — ✅ Archive: **۱۰۷** — 🧾 مجموع: **۱۲۴** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۹:۳۰:۵۰ (`2026-10-21T16:00:50.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۱۸** — ✅ Archive: **۱۰۷** — 🧾 مجموع: **۱۲۵** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۹:۳۱:۲۹ (`2026-10-21T16:01:29.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -131,6 +131,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:EVENTS:START -->
 | 🕒 زمان (ایران / UTC) | رویداد | شناسه لاگ | توسط |
 | --- | --- | --- | --- |
+| ۱۴۰۵/۰۷/۲۹ — ۱۹:۳۱:۲۹<br>`2026-10-21T16:01:29.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-31-29_infra-agent_push`](./logs/pending/1405-07-29_19-31-29_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۳۰:۵۰<br>`2026-10-21T16:00:50.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-30-50_infra-agent_production-deploy-3d-orfeo`](./logs/pending/1405-07-29_19-30-50_infra-agent_production-deploy-3d-orfeo.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۳۰:۵۰<br>`2026-10-21T16:00:50.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_19-26-07_infra-agent_push`](./logs/archive/1405-07-29_19-26-07_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۳۰:۵۰<br>`2026-10-21T16:00:50.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_19-25-43_infra-agent_pr40-wave1-infra-audit`](./logs/archive/1405-07-29_19-25-43_infra-agent_pr40-wave1-infra-audit.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
@@ -142,7 +143,6 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۷:۵۰<br>`2026-10-21T15:57:50.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-27-50_tohid_sync-main-pr40-infra`](./logs/pending/1405-07-29_19-27-50_tohid_sync-main-pr40-infra.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۷:۳۲<br>`2026-10-21T15:57:32.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-27-32_amirali_push`](./logs/pending/1405-07-29_19-27-32_amirali_push.md) | **امیرعلی** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۶:۴۱<br>`2026-10-21T15:56:41.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-26-41_tohid_pr-wave2-runtime-boundary`](./logs/pending/1405-07-29_19-26-41_tohid_pr-wave2-runtime-boundary.md) | **توحید** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۶:۲۷<br>`2026-10-21T15:56:27.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-26-27_amirali_wave2-b3-ticket-container`](./logs/pending/1405-07-29_19-26-27_amirali_wave2-b3-ticket-container.md) | **امیرعلی** |
 <!-- WORKLOG:EVENTS:END -->
 
 ---
@@ -154,6 +154,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:PENDING:START -->
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- |
+| [`1405-07-29_19-31-29_infra-agent_push`](./logs/pending/1405-07-29_19-31-29_infra-agent_push.md) | پوش شاخه arena/5f12b76c-escaperoom — fc10bfc | `Push` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۳۱:۲۹<br>`2026-10-21T16:01:29.000Z` | origin/arena/5f12b76c-escaperoom (origin/arena/5f12b76c-escaperoom..fc10bfc) |
 | [`1405-07-29_19-30-50_infra-agent_production-deploy-3d-orfeo`](./logs/pending/1405-07-29_19-30-50_infra-agent_production-deploy-3d-orfeo.md) | دیپلوی Production نسخه سه‌بعدی (Three.js) و پوسته خوانا روی Vercel و تست سلامت Supabase | `Infra-FullDeploy` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۳۰:۵۰<br>`2026-10-21T16:00:50.000Z` | Vercel dpl_w6wdyEKqCrGJpasSK81vXgQy4seV / Supabase yavwoaqxhptzufmjckwz |
 | [`1405-07-29_19-29-08_tohid_push-sync-pr41-pr42`](./logs/pending/1405-07-29_19-29-08_tohid_push-sync-pr41-pr42.md) | ارسال همگام‌سازی PR #41 | `Push` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۹:۰۸<br>`2026-10-21T15:59:08.000Z` | origin/arena/ca5ca2d8-escaperoom (origin/main..de52815) |
 | [`1405-07-29_19-28-54_tohid_sync-main-pr41-tickets`](./logs/pending/1405-07-29_19-28-54_tohid_sync-main-pr41-tickets.md) | همگام‌سازی main — پیگیری بلیط امیرعلی | `Commit` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۸:۵۴<br>`2026-10-21T15:58:54.000Z` | origin/main beaad6e → arena/ca5ca2d8-escaperoom |
