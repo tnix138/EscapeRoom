@@ -121,7 +121,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۴۲** — ✅ Archive: **۱۱۹** — 🧾 مجموع: **۱۶۱** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۹:۰۴ (`2026-10-21T16:39:04.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۴۳** — ✅ Archive: **۱۱۹** — 🧾 مجموع: **۱۶۲** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۹:۲۸ (`2026-10-21T16:39:28.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -131,6 +131,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:EVENTS:START -->
 | 🕒 زمان (ایران / UTC) | رویداد | شناسه لاگ | توسط |
 | --- | --- | --- | --- |
+| ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۹:۲۸<br>`2026-10-21T16:39:28.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-09-28_infra-agent_push`](./logs/pending/1405-07-29_20-09-28_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۹:۰۴<br>`2026-10-21T16:39:04.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-09-04_infra-agent_wave2-runtime-preview-webgl`](./logs/pending/1405-07-29_20-09-04_infra-agent_wave2-runtime-preview-webgl.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۹:۰۴<br>`2026-10-21T16:39:04.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_19-58-10_infra-agent_push`](./logs/archive/1405-07-29_19-58-10_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۹:۰۴<br>`2026-10-21T16:39:04.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_19-57-41_infra-agent_pr48-production-deploy-pr46-pr47`](./logs/archive/1405-07-29_19-57-41_infra-agent_pr48-production-deploy-pr46-pr47.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
@@ -142,7 +143,6 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۴:۳۲<br>`2026-10-21T16:34:32.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-04-32_tohid_pr-wave6-alley-security`](./logs/pending/1405-07-29_20-04-32_tohid_pr-wave6-alley-security.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۴:۰۷<br>`2026-10-21T16:34:07.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-04-07_tohid_push-sync-main-wave6`](./logs/pending/1405-07-29_20-04-07_tohid_push-sync-main-wave6.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۳:۵۸<br>`2026-10-21T16:33:58.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-03-58_tohid_sync-pr50-wave6-alley-security`](./logs/pending/1405-07-29_20-03-58_tohid_sync-pr50-wave6-alley-security.md) | **توحید** |
-| ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۱:۴۴<br>`2026-10-21T16:31:44.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-01-44_amirali_push`](./logs/pending/1405-07-29_20-01-44_amirali_push.md) | **امیرعلی** |
 <!-- WORKLOG:EVENTS:END -->
 
 ---
@@ -154,6 +154,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:PENDING:START -->
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- |
+| [`1405-07-29_20-09-28_infra-agent_push`](./logs/pending/1405-07-29_20-09-28_infra-agent_push.md) | پوش شاخه arena/3cf79cfd-escaperoom — 771bea8 | `Push` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۹:۲۸<br>`2026-10-21T16:39:28.000Z` | origin/arena/3cf79cfd-escaperoom (origin/main..771bea8) |
 | [`1405-07-29_20-09-04_infra-agent_wave2-runtime-preview-webgl`](./logs/pending/1405-07-29_20-09-04_infra-agent_wave2-runtime-preview-webgl.md) | موج ۲ زیرساخت — بررسی Runtime Preview، باندل کلاینت WebGL و پاسخ دارایی‌ها | `Infra-Vercel` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۹:۰۴<br>`2026-10-21T16:39:04.000Z` | WAVE-2-INFRA.md / dpl_Baehq1tTn1KPLrGwjaqrPJGMmUZ6 |
 | [`1405-07-29_20-07-30_tohid_pr-wave7-theater-transition`](./logs/pending/1405-07-29_20-07-30_tohid_pr-wave7-theater-transition.md) | ثبت PR #52 — انتقال هماهنگ به سالن | `PR` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۷:۳۰<br>`2026-10-21T16:37:30.000Z` | https://github.com/tnix138/EscapeRoom/pull/52 |
 | [`1405-07-29_20-07-17_tohid_push-wave7-transition`](./logs/pending/1405-07-29_20-07-17_tohid_push-wave7-transition.md) | پوش تست انتقال سالن موج ۷ | `Push` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۷:۱۷<br>`2026-10-21T16:37:17.000Z` | origin/arena/bab0d18a-escaperoom (origin/main..364cfbd) |
