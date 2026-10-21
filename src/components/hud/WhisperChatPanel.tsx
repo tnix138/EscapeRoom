@@ -35,6 +35,7 @@ export default function WhisperChatPanel({
   const [lastSeen, setLastSeen] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
   const unread = isOpen ? 0 : unseenMessageCount(messages.length, lastSeen);
   const draft = whisperDraft(text);
 
@@ -50,6 +51,19 @@ export default function WhisperChatPanel({
     const timer = window.setTimeout(() => setSendState('idle'), 3200);
     return () => window.clearTimeout(timer);
   }, [sendState]);
+
+  // موج ۱۰: Esc پنل را می‌بندد و فوکوس را به دکمهٔ سربرگ برمی‌گرداند تا بازیکن
+  // در حالت صفحه‌کلید داخل پنل گیر نکند.
+  useEffect(() => {
+    if (!isOpen) return undefined;
+    function onKeyDown(event: globalThis.KeyboardEvent) {
+      if (event.key !== 'Escape') return;
+      setOpen(false);
+      window.setTimeout(() => toggleRef.current?.focus({ preventScroll: true }), 0);
+    }
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [isOpen]);
 
   function setOpen(next: boolean) {
     if (open === undefined) setInternalOpen(next);
@@ -82,6 +96,7 @@ export default function WhisperChatPanel({
   return (
     <aside className={`whisper-panel ${isOpen ? 'whisper-expanded' : ''}`} aria-label="نجوای گروهی">
       <button
+        ref={toggleRef}
         className="whisper-toggle"
         type="button"
         onClick={toggle}
