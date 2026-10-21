@@ -121,7 +121,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۴۰** — ✅ Archive: **۱۵۸** — 🧾 مجموع: **۱۹۸** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۳:۴۶ (`2026-10-21T16:53:46.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۴۱** — ✅ Archive: **۱۵۸** — 🧾 مجموع: **۱۹۹** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۳:۴۷ (`2026-10-21T16:53:47.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -131,6 +131,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:EVENTS:START -->
 | 🕒 زمان (ایران / UTC) | رویداد | شناسه لاگ | توسط |
 | --- | --- | --- | --- |
+| ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۳:۴۷<br>`2026-10-21T16:53:47.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-23-47_infra-agent_push`](./logs/pending/1405-07-29_20-23-47_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۳:۴۶<br>`2026-10-21T16:53:46.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-23-46_infra-agent_wave7-auditorium-assets-preview`](./logs/pending/1405-07-29_20-23-46_infra-agent_wave7-auditorium-assets-preview.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۳:۲۵<br>`2026-10-21T16:53:25.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-23-25_infra-agent_pr54-wave6-infra`](./logs/pending/1405-07-29_20-23-25_infra-agent_pr54-wave6-infra.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۳:۲۲<br>`2026-10-21T16:53:22.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-23-22_infra-agent_push`](./logs/pending/1405-07-29_20-23-22_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
@@ -142,7 +143,6 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۲:۱۳<br>`2026-10-21T16:52:13.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-22-13_infra-agent_push`](./logs/pending/1405-07-29_20-22-13_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۲:۱۲<br>`2026-10-21T16:52:12.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-22-12_infra-agent_wave4-alley-assets-cache`](./logs/pending/1405-07-29_20-22-12_infra-agent_wave4-alley-assets-cache.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۱:۴۷<br>`2026-10-21T16:51:47.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-21-47_infra-agent_pr54-wave3-infra`](./logs/pending/1405-07-29_20-21-47_infra-agent_pr54-wave3-infra.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
-| ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۱:۴۵<br>`2026-10-21T16:51:45.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-21-45_infra-agent_push`](./logs/pending/1405-07-29_20-21-45_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 <!-- WORKLOG:EVENTS:END -->
 
 ---
@@ -154,6 +154,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:PENDING:START -->
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- |
+| [`1405-07-29_20-23-47_infra-agent_push`](./logs/pending/1405-07-29_20-23-47_infra-agent_push.md) | پوش شاخه arena/3cf79cfd-escaperoom — 67e77ac | `Push` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۳:۴۷<br>`2026-10-21T16:53:47.000Z` | origin/arena/3cf79cfd-escaperoom (origin/arena/3cf79cfd-escaperoom..67e77ac) |
 | [`1405-07-29_20-23-46_infra-agent_wave7-auditorium-assets-preview`](./logs/pending/1405-07-29_20-23-46_infra-agent_wave7-auditorium-assets-preview.md) | موج ۷ زیرساخت — بررسی بارگذاری دارایی‌های صحنه سالن و بودجه عملکرد | `Infra-Vercel` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۳:۴۶<br>`2026-10-21T16:53:46.000Z` | WAVE-7-INFRA.md / dpl_AcVtEAPxUJs71pczn5chv4ycTzJ6 |
 | [`1405-07-29_20-23-25_infra-agent_pr54-wave6-infra`](./logs/pending/1405-07-29_20-23-25_infra-agent_pr54-wave6-infra.md) | به‌روزرسانی PR #54 با موج ۶ زیرساخت (WAVE-6-INFRA.md) | `PR` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۳:۲۵<br>`2026-10-21T16:53:25.000Z` | PR #54 (WAVE-6-INFRA.md) |
 | [`1405-07-29_20-23-22_infra-agent_push`](./logs/pending/1405-07-29_20-23-22_infra-agent_push.md) | پوش شاخه arena/3cf79cfd-escaperoom — 9279298 | `Push` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۳:۲۲<br>`2026-10-21T16:53:22.000Z` | origin/arena/3cf79cfd-escaperoom (origin/arena/3cf79cfd-escaperoom..9279298) |
