@@ -121,7 +121,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۴۵** — ✅ Archive: **۱۱۵** — 🧾 مجموع: **۱۶۰** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۷:۳۰ (`2026-10-21T16:37:30.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۴۶** — ✅ Archive: **۱۱۵** — 🧾 مجموع: **۱۶۱** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۱:۴۶ (`2026-10-21T16:41:46.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -131,6 +131,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:EVENTS:START -->
 | 🕒 زمان (ایران / UTC) | رویداد | شناسه لاگ | توسط |
 | --- | --- | --- | --- |
+| ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۱:۴۶<br>`2026-10-21T16:41:46.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-11-46_amirali_wave5-reservation-entry`](./logs/pending/1405-07-29_20-11-46_amirali_wave5-reservation-entry.md) | **امیرعلی** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۷:۳۰<br>`2026-10-21T16:37:30.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-07-30_tohid_pr-wave7-theater-transition`](./logs/pending/1405-07-29_20-07-30_tohid_pr-wave7-theater-transition.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۷:۱۷<br>`2026-10-21T16:37:17.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-07-17_tohid_push-wave7-transition`](./logs/pending/1405-07-29_20-07-17_tohid_push-wave7-transition.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۷:۱۳<br>`2026-10-21T16:37:13.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-07-13_tohid_wave7-theater-transition`](./logs/pending/1405-07-29_20-07-13_tohid_wave7-theater-transition.md) | **توحید** |
@@ -142,7 +143,6 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۰:۰۹<br>`2026-10-21T16:30:09.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-00-09_tohid_push-sync-pr48-wave5`](./logs/pending/1405-07-29_20-00-09_tohid_push-sync-pr48-wave5.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۹:۴۵<br>`2026-10-21T16:29:45.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-59-45_tohid_sync-main-pr48-infra`](./logs/pending/1405-07-29_19-59-45_tohid_sync-main-pr48-infra.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۸:۵۹<br>`2026-10-21T16:28:59.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-58-59_amirali_wave4-alley-clues`](./logs/pending/1405-07-29_19-58-59_amirali_wave4-alley-clues.md) | **امیرعلی** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۸:۴۵<br>`2026-10-21T16:28:45.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-58-45_amirali_push`](./logs/pending/1405-07-29_19-58-45_amirali_push.md) | **امیرعلی** |
 <!-- WORKLOG:EVENTS:END -->
 
 ---
@@ -154,6 +154,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:PENDING:START -->
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- |
+| [`1405-07-29_20-11-46_amirali_wave5-reservation-entry`](./logs/pending/1405-07-29_20-11-46_amirali_wave5-reservation-entry.md) | موج ۵ — رزرو تا ورود: فرم سه‌تا‌هشت‌نفره، خطای هر فیلد، کپی/اشتراک دعوت‌نامه‌ها و قرارداد ورود | `Commit` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۱:۴۶<br>`2026-10-21T16:41:46.000Z` | شاخه arena/27e693e0-escaperoom |
 | [`1405-07-29_20-07-30_tohid_pr-wave7-theater-transition`](./logs/pending/1405-07-29_20-07-30_tohid_pr-wave7-theater-transition.md) | ثبت PR #52 — انتقال هماهنگ به سالن | `PR` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۷:۳۰<br>`2026-10-21T16:37:30.000Z` | https://github.com/tnix138/EscapeRoom/pull/52 |
 | [`1405-07-29_20-07-17_tohid_push-wave7-transition`](./logs/pending/1405-07-29_20-07-17_tohid_push-wave7-transition.md) | پوش تست انتقال سالن موج ۷ | `Push` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۷:۱۷<br>`2026-10-21T16:37:17.000Z` | origin/arena/bab0d18a-escaperoom (origin/main..364cfbd) |
 | [`1405-07-29_20-07-13_tohid_wave7-theater-transition`](./logs/pending/1405-07-29_20-07-13_tohid_wave7-theater-transition.md) | موج ۷ توحید — بررسی انتقال گروه به سالن | `Commit` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۰۷:۱۳<br>`2026-10-21T16:37:13.000Z` | شاخه arena/bab0d18a-escaperoom |
