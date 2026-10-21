@@ -109,10 +109,15 @@ async function main() {
     }),
   });
   const presenceBody = await presence.json().catch(() => null);
+  // قرارداد #104: پاسخ `{ presences, serverNow }` است (بدون accepted/entry).
+  const presenceFrame = presenceBody?.data;
   assert(
-    presence.ok && presenceBody?.data?.accepted === true,
+    presence.ok &&
+      Array.isArray(presenceFrame?.presences) &&
+      presenceFrame.presences.length >= 1 &&
+      typeof presenceFrame?.serverNow === 'number',
     'ثبت حضور بازیکن',
-    `تعداد snapshot: ${presenceBody?.data?.presences?.length ?? 0}`,
+    `تعداد snapshot: ${presenceFrame?.presences?.length ?? 0}`,
   );
 
   // ۷) رد موقعیت خارج از محدوده
@@ -146,6 +151,101 @@ async function main() {
     firstChunk.includes('event: room_update'),
     'استریم بلادرنگ SSE',
     firstChunk ? 'رویداد room_update دریافت شد' : 'هیچ رویدادی نیامد',
+  );
+
+  // ۹) مسیر کامل معما: پانچ سه بلیط با اطلاعات کوپن‌های هم‌تیمی، سپس باز کردن در
+  //    (هر بازیکن فقط کوپن نفر بعدی را دارد؛ این مرحله هم‌کاری واقعی را می‌سنجد.)
+  const views = [];
+  for (const invite of room.invites) {
+    const res = await request(`/api/rooms/${room.roomCode}`, { headers: { 'x-seat-token': invite.seatToken } });
+    const body = await res.json().catch(() => null);
+    views.push(body?.data?.roomView);
+  }
+  const playbill = views[0]?.alley?.leftWallPlaybill ?? [];
+  const rowChart = views[0]?.alley?.rightWallRowChart ?? [];
+  const actOfTitle = new Map(playbill.map((item) => [item.sceneTitle, item.actNumber]));
+  const romanOfRow = new Map(rowChart.map((item) => [item.rowTitle, item.romanCode]));
+
+  const digits = [];
+  let allPunched = true;
+  for (const [index, invite] of room.invites.entries()) {
+    const view = views[index];
+    // نماد و پردهٔ بلیط من، از کوپنِ نفر قبلی خوانده می‌شود
+    const coupon = views.find((candidate) =>
+      candidate?.myHeldTickets?.companionStub?.targetTeammateName === invite.playerName,
+    )?.myHeldTickets?.companionStub;
+    const emblem = coupon?.targetEmblem;
+    const actNumber = actOfTitle.get(coupon?.targetActSceneTitle);
+    const rowCode = romanOfRow.get(view?.myHeldTickets?.mainTicket?.alleyRowHintName);
+    if (!emblem || !actNumber || !rowCode) {
+      allPunched = false;
+      break;
+    }
+    const punch = await request(`/api/rooms/${room.roomCode}/action`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'x-seat-token': invite.seatToken },
+      body: JSON.stringify({ type: 'PUNCH_MY_TICKET', emblem, actNumber, rowCode }),
+    });
+    const punchBody = await punch.json().catch(() => null);
+    const digit = String(punchBody?.data?.message ?? '').match(/[0-9۰-۹]/g)?.pop();
+    if (!punchBody?.data?.accepted || digit == null) {
+      allPunched = false;
+      break;
+    }
+    digits.push(digit);
+  }
+  assert(allPunched && digits.length === room.invites.length, 'پانچ بلیط هر سه بازیکن', `ارقام: ${digits.join('')}`);
+
+  const unlock = await request(`/api/rooms/${room.roomCode}/action`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', 'x-seat-token': first.seatToken },
+    body: JSON.stringify({ type: 'UNLOCK_THEATER_DOOR', code: digits.join('') }),
+  });
+  const unlockBody = await unlock.json().catch(() => null);
+  assert(
+    unlock.ok && unlockBody?.data?.roomView?.phase === 'door_cutscene',
+    'باز کردن در با ارقام طلایی',
+    `فاز: ${unlockBody?.data?.roomView?.phase ?? '—'}`,
+  );
+
+  // ۱۰) در حین کات‌سین، تعامل‌های کوچه باید ۴۰۹ بگیرند (قفل فاز)
+  const locked = await request(`/api/rooms/${room.roomCode}/action`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', 'x-seat-token': first.seatToken },
+    body: JSON.stringify({ type: 'PUNCH_MY_TICKET', emblem: 'mask', actNumber: 1, rowCode: 'I' }),
+  });
+  assert(locked.status === 409, 'قفل تعامل در کات‌سین', `HTTP ${locked.status}`);
+
+  // ۱۱) انتظار اختیاری تا پایان کات‌سین و ورود به سالن تاریک (۷۴ ثانیه)
+  if (process.env.SMOKE_FULL_PATH === '1') {
+    const deadline = Date.now() + 90_000;
+    let phase = 'door_cutscene';
+    while (Date.now() < deadline) {
+      await new Promise((resolve) => setTimeout(resolve, 5_000));
+      const poll = await request(`/api/rooms/${room.roomCode}`, { headers: { 'x-seat-token': first.seatToken } });
+      const pollBody = await poll.json().catch(() => null);
+      phase = pollBody?.data?.roomView?.phase ?? phase;
+      if (phase === 'in_theater') break;
+    }
+    assert(phase === 'in_theater', 'پایان کات‌سین و ورود به سالن تاریک', `فاز: ${phase}`);
+  }
+
+  // ۱۲) صفحه‌های پیش‌نمایش و ورود ادمین باید بالا بیایند (فازهای ۰۸، ۰۹، ۱۰)
+  for (const [label, path] of [
+    ['پیش‌نمایش کوچه', '/preview/alley'],
+    ['پیش‌نمایش سالن تاریک', '/preview/auditorium'],
+    ['صفحهٔ ورود ادمین', '/admin/login'],
+  ]) {
+    const page = await request(path);
+    assert(page.ok, label, `HTTP ${page.status}`);
+  }
+
+  // ۱۳) پنل ادمین بدون جلسه باید به ورود هدایت شود، نه ۵۰۰
+  const admin = await request('/admin', { redirect: 'manual' });
+  assert(
+    admin.status === 307 || admin.status === 302 || admin.status === 200,
+    'نگهبان پنل ادمین',
+    `HTTP ${admin.status}`,
   );
 
   console.log(`\n🎉 اسمک‌تست کامل شد: ${passed} مرحله سبز.`);
