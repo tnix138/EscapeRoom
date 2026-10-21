@@ -2499,8 +2499,9 @@ h1 em {
   font-size: var(--text-base);
 }
 .playbill-board {
-  width: min(100%, 260px);
-  height: 360px;
+  width: min(100%, 270px);
+  height: auto;
+  min-height: 360px;
   padding: 11px;
   background: linear-gradient(135deg, #554336, #21171a 25%, #20161a);
   border: 5px solid #4b3a2c;
@@ -2581,13 +2582,15 @@ h1 em {
   display: block;
 }
 .playbill-entry > span strong {
-  font-size: var(--text-sm);
+  font-size: var(--text-base);
   font-weight: 600;
+  line-height: 1.5;
 }
 .playbill-entry > span small {
-  font-size: var(--text-xs);
+  font-size: var(--text-sm);
+  line-height: 1.65;
   color: var(--paper-muted);
-  margin-top: 2px;
+  margin-top: 3px;
 }
 .playbill-entry > i {
   font-size: var(--text-xs);
@@ -2835,7 +2838,7 @@ h1 em {
   background: linear-gradient(90deg, #25191d, #49332c, #25191d);
 }
 .row-chart-window {
-  width: min(100%, 245px);
+  width: min(100%, 272px);
   padding: 14px 13px 9px;
   background: linear-gradient(135deg, #9b7948, #413024 11%, #34241e);
   border: 4px solid #9b7842;
@@ -2853,19 +2856,21 @@ h1 em {
 }
 .chart-row {
   display: grid;
-  grid-template-columns: 1fr 44px 13px;
+  grid-template-columns: minmax(0, 1fr) 56px 14px;
   align-items: center;
-  gap: 5px;
-  padding: 9px 4px;
+  gap: 6px;
+  padding: 10px 4px;
   border-bottom: 1px solid rgba(215, 180, 117, 0.23);
   color: #e3d4b9;
-  font-size: var(--text-sm);
+  font-size: var(--text-base);
+  line-height: 1.5;
 }
 .chart-row strong {
-  font-size: var(--text-base);
+  font-size: 1.125rem; /* 18px — کد ردیف در فاصله */
   font-family: Georgia, serif;
   color: #f0d38e;
   text-align: center;
+  letter-spacing: 0.06em;
 }
 .chart-row i {
   font-style: normal;
@@ -2874,12 +2879,13 @@ h1 em {
 .chart-foot {
   text-align: center;
   color: #c3aa7b;
-  font-size: var(--text-xs);
+  font-size: var(--text-sm);
+  line-height: 1.65;
   margin-top: 10px;
 }
 .brass-counter {
   margin-top: 12px;
-  min-width: 118px;
+  min-width: 132px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -2887,7 +2893,7 @@ h1 em {
   padding: 6px 9px;
   border: 1px solid rgba(213, 177, 106, 0.5);
   background: rgba(20, 13, 14, 0.72);
-  font-size: var(--text-xs);
+  font-size: var(--text-sm);
   color: #b9a179;
 }
 .brass-counter strong {
@@ -5377,5 +5383,371 @@ button:disabled {
     overflow-y: auto;
     overscroll-behavior: contain;
     padding-inline-end: 4px;
+  }
+}
+
+/* ==========================================================================
+   موج ۴ — محتوای کوچه و حالت خواندن سرنخ
+   پوستر/جدول در فاصلهٔ بازی دیده می‌شوند؛ خواندن واقعی در پنل inspect است.
+   ========================================================================== */
+
+/* --- دکمهٔ بررسی سرنخ روی پوستر و گیشه (در صحنهٔ کلاسیک) --- */
+.clue-inspect-button {
+  position: relative;
+  z-index: 2;
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  margin-top: 12px;
+  padding: 0 16px;
+  border: 1px solid rgba(212, 175, 99, 0.45);
+  border-radius: 999px;
+  background: rgba(18, 13, 16, 0.82);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: var(--text-sm);
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.42);
+  transition:
+    border-color 0.2s,
+    color 0.2s,
+    background 0.2s;
+}
+
+.clue-inspect-button:hover,
+.clue-inspect-button:focus-visible {
+  border-color: var(--gold);
+  color: var(--gold-light);
+  background: rgba(38, 25, 30, 0.92);
+}
+
+.clue-inspect-button kbd {
+  min-width: 26px;
+  min-height: 26px;
+  font-size: var(--text-xs);
+}
+
+/* --- پنل خواندن سرنخ --- */
+.clue-reading {
+  position: fixed;
+  z-index: 40;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+}
+
+.clue-reading-scrim {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  padding: 0;
+  background: rgba(8, 6, 8, 0.78);
+  backdrop-filter: blur(5px);
+  cursor: pointer;
+}
+
+.clue-sheet {
+  position: relative;
+  width: min(560px, 100%);
+  max-height: 88svh;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 22px 24px 18px;
+  border: 1px solid rgba(212, 175, 99, 0.4);
+  background:
+    radial-gradient(ellipse at 78% 4%, rgba(143, 33, 50, 0.16), transparent 46%),
+    linear-gradient(158deg, #241a1d, #150f12 72%);
+  color: var(--text-primary);
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.6),
+    inset 0 0 0 6px rgba(212, 175, 99, 0.04);
+  text-align: right;
+}
+
+.clue-sheet-playbill {
+  background:
+    radial-gradient(ellipse at 20% 0, rgba(120, 82, 48, 0.18), transparent 42%),
+    linear-gradient(158deg, #2a1f1c, #161012 74%);
+}
+
+.clue-sheet-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(212, 175, 99, 0.2);
+}
+
+.clue-sheet-icon {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(212, 175, 99, 0.35);
+  border-radius: 50%;
+  font-size: 20px;
+  color: var(--gold-light);
+  background: rgba(212, 175, 99, 0.06);
+}
+
+.clue-sheet-titles {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.clue-sheet-kicker {
+  display: block;
+  font-family: Georgia, serif;
+  font-size: var(--text-xs);
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
+  direction: ltr;
+  text-align: right;
+}
+
+.clue-sheet-titles h2 {
+  margin: 3px 0 0;
+  font-size: 1.625rem; /* 26px — عنوان خواندنی */
+  line-height: 1.35;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.clue-sheet-close {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(212, 175, 99, 0.28);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: var(--text-base);
+  cursor: pointer;
+}
+
+.clue-sheet-close:hover {
+  border-color: rgba(212, 175, 99, 0.7);
+  color: var(--gold-light);
+}
+
+.clue-sheet-lede {
+  margin: 12px 0 4px;
+  color: var(--text-secondary);
+  font-size: 1.0625rem; /* 17px */
+  line-height: 1.85;
+}
+
+/* --- پرده‌ها روی پوستر --- */
+.clue-acts {
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.clue-act {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr) 18px;
+  align-items: start;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(212, 175, 99, 0.14);
+}
+
+.clue-act:last-child {
+  border-bottom: 0;
+}
+
+.clue-act-number {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border: 1px solid rgba(212, 175, 99, 0.35);
+  border-radius: 50%;
+  font-family: Georgia, serif;
+  font-size: 1.5rem; /* 24px */
+  color: var(--gold-light);
+  background: rgba(212, 175, 99, 0.05);
+}
+
+.clue-act-body {
+  min-width: 0;
+}
+
+.clue-act-label {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--gold);
+  letter-spacing: normal;
+}
+
+.clue-act-title {
+  margin: 2px 0 0;
+  font-size: 1.25rem; /* 20px — خواندن در فاصله */
+  line-height: 1.5;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.clue-act-description {
+  margin: 5px 0 0;
+  font-size: 1rem; /* 16px */
+  line-height: 1.85;
+  color: var(--text-secondary);
+}
+
+.clue-act-mark {
+  color: rgba(212, 175, 99, 0.6);
+  font-size: var(--text-sm);
+}
+
+/* --- جدول ردیف‌ها --- */
+.clue-rows {
+  width: 100%;
+  margin: 14px 0 0;
+  border-collapse: collapse;
+  text-align: right;
+}
+
+.clue-rows-caption {
+  caption-side: top;
+  padding-bottom: 8px;
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  text-align: right;
+}
+
+.clue-rows thead th {
+  padding: 8px 6px;
+  border-bottom: 1px solid rgba(212, 175, 99, 0.32);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--gold);
+}
+
+.clue-rows thead th:last-child {
+  text-align: center;
+}
+
+.clue-row th {
+  padding: 12px 6px;
+  border-bottom: 1px solid rgba(212, 175, 99, 0.13);
+  font-size: 1.0625rem; /* 17px */
+  font-weight: 400;
+  color: var(--text-primary);
+  text-align: right;
+}
+
+.clue-row td {
+  padding: 12px 6px;
+  border-bottom: 1px solid rgba(212, 175, 99, 0.13);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.clue-row td strong {
+  font-family: Georgia, serif;
+  font-size: 1.375rem; /* 22px — کد ثبت‌شده */
+  font-weight: 400;
+  color: var(--gold-light);
+  letter-spacing: 0.08em;
+}
+
+.clue-row-mark {
+  margin-inline-start: 8px;
+  color: rgba(212, 175, 99, 0.55);
+  font-size: var(--text-xs);
+}
+
+.clue-sheet-empty {
+  margin: 18px 0;
+  padding: 14px;
+  border: 1px dashed rgba(212, 175, 99, 0.32);
+  border-radius: 8px;
+  color: var(--text-muted);
+  font-size: var(--text-base);
+  text-align: center;
+}
+
+.clue-sheet-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(212, 175, 99, 0.18);
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+.clue-sheet-progress {
+  color: var(--text-secondary);
+}
+
+.clue-sheet-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.clue-sheet-hint kbd {
+  min-width: 30px;
+  min-height: 28px;
+  font-size: var(--text-xs);
+}
+
+@media (max-width: 680px) {
+  .clue-reading {
+    padding: 0;
+    place-items: end stretch;
+  }
+
+  .clue-sheet {
+    width: 100%;
+    max-height: 92svh;
+    padding: 18px 16px calc(16px + env(safe-area-inset-bottom));
+    border-width: 1px 0 0;
+  }
+
+  .clue-sheet-titles h2 {
+    font-size: 1.375rem; /* 22px */
+  }
+
+  .clue-sheet-icon {
+    width: 40px;
+    height: 40px;
+    font-size: var(--text-base);
+  }
+
+  .clue-act {
+    grid-template-columns: 40px minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .clue-act-number {
+    width: 40px;
+    height: 40px;
+    font-size: 1.25rem;
+  }
+
+  .clue-act-mark {
+    display: none;
+  }
+
+  .clue-inspect-button {
+    margin-top: 10px;
+    padding: 0 13px;
   }
 }
