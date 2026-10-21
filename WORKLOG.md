@@ -121,7 +121,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۴۵** — ✅ Archive: **۱۵۸** — 🧾 مجموع: **۲۰۳** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۴:۱۵ (`2026-10-21T16:54:15.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۴۶** — ✅ Archive: **۱۵۸** — 🧾 مجموع: **۲۰۴** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۴:۵۱ (`2026-10-21T16:54:51.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -131,6 +131,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:EVENTS:START -->
 | 🕒 زمان (ایران / UTC) | رویداد | شناسه لاگ | توسط |
 | --- | --- | --- | --- |
+| ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۴:۵۱<br>`2026-10-21T16:54:51.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-24-51_infra-agent_wave9-auditorium-persistence-restore`](./logs/pending/1405-07-29_20-24-51_infra-agent_wave9-auditorium-persistence-restore.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۴:۱۵<br>`2026-10-21T16:54:15.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-24-15_infra-agent_pr54-wave8-infra`](./logs/pending/1405-07-29_20-24-15_infra-agent_pr54-wave8-infra.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۴:۱۴<br>`2026-10-21T16:54:14.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-24-14_infra-agent_push`](./logs/pending/1405-07-29_20-24-14_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۴:۱۳<br>`2026-10-21T16:54:13.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-24-13_infra-agent_wave8-cutscene-sse-headers-timeout`](./logs/pending/1405-07-29_20-24-13_infra-agent_wave8-cutscene-sse-headers-timeout.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
@@ -142,7 +143,6 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۳:۲۱<br>`2026-10-21T16:53:21.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-23-21_infra-agent_wave6-alley-api-migration-check`](./logs/pending/1405-07-29_20-23-21_infra-agent_wave6-alley-api-migration-check.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۲:۵۶<br>`2026-10-21T16:52:56.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-22-56_infra-agent_pr54-wave5-infra`](./logs/pending/1405-07-29_20-22-56_infra-agent_pr54-wave5-infra.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۲:۵۵<br>`2026-10-21T16:52:55.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-22-55_infra-agent_push`](./logs/pending/1405-07-29_20-22-55_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
-| ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۲:۵۴<br>`2026-10-21T16:52:54.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-22-54_infra-agent_wave5-invitation-multiuser-smoke`](./logs/pending/1405-07-29_20-22-54_infra-agent_wave5-invitation-multiuser-smoke.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 <!-- WORKLOG:EVENTS:END -->
 
 ---
@@ -154,6 +154,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:PENDING:START -->
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- |
+| [`1405-07-29_20-24-51_infra-agent_wave9-auditorium-persistence-restore`](./logs/pending/1405-07-29_20-24-51_infra-agent_wave9-auditorium-persistence-restore.md) | موج ۹ زیرساخت — بررسی مسیرهای ذخیره‌سازی و بازخوانی کاوش سالن و تخته | `Infra-Supabase` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۴:۵۱<br>`2026-10-21T16:54:51.000Z` | WAVE-9-INFRA.md / yavwoaqxhptzufmjckwz |
 | [`1405-07-29_20-24-15_infra-agent_pr54-wave8-infra`](./logs/pending/1405-07-29_20-24-15_infra-agent_pr54-wave8-infra.md) | به‌روزرسانی PR #54 با موج ۸ زیرساخت (WAVE-8-INFRA.md) | `PR` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۴:۱۵<br>`2026-10-21T16:54:15.000Z` | PR #54 (WAVE-8-INFRA.md) |
 | [`1405-07-29_20-24-14_infra-agent_push`](./logs/pending/1405-07-29_20-24-14_infra-agent_push.md) | پوش شاخه arena/3cf79cfd-escaperoom — 8399b68 | `Push` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۴:۱۴<br>`2026-10-21T16:54:14.000Z` | origin/arena/3cf79cfd-escaperoom (origin/arena/3cf79cfd-escaperoom..8399b68) |
 | [`1405-07-29_20-24-13_infra-agent_wave8-cutscene-sse-headers-timeout`](./logs/pending/1405-07-29_20-24-13_infra-agent_wave8-cutscene-sse-headers-timeout.md) | موج ۸ زیرساخت — بررسی کات‌سین، هدرهای SSE، عدم بافرینگ و رفتار Timeout | `Infra-Vercel` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۴:۱۳<br>`2026-10-21T16:54:13.000Z` | WAVE-8-INFRA.md / vercel.json |
