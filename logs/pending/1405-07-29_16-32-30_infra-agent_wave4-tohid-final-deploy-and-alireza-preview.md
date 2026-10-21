@@ -1,14 +1,61 @@
+---
+id: '1405-07-29_16-32-30_infra-agent_wave4-tohid-final-deploy-and-alireza-preview'
+title: 'موج ۴ زیرساخت — استقرار Production و Preview علیرضا'
+summary: 'استقرار Production جدید پس از PR #11 توحید (`dpl_F4ddK4xRwvE8FR4cedNAuwVhmSh2` از `f354b65` با ۳۹ تست پاس) + استقرار Preview شاخه علیرضا (`dpl_7bnxrUqTxnVrWFQCHLXcUoD7t1Ca` از `arena/f2303553-escaperoom`) + تست سلامت `/api/health` و آرشیو لاگ‌های PR #10 و PR #11.'
+author: 'ایجنت چهارم زیرساخت (به مدیریت توحید)'
+author_slug: 'infra-agent'
+activity: 'Infra-FullDeploy'
+ref: 'شاخه `arena/b6d06c28-escaperoom` — دیپلوی Production `dpl_F4ddK4xRwvE8FR4cedNAuwVhmSh2` (`f354b65`) + دیپلوی Preview علیرضا `dpl_7bnxrUqTxnVrWFQCHLXcUoD7t1Ca` (`49ef807`)'
+branch: 'arena/b6d06c28-escaperoom'
+status: 'pending'
+created_by: 'ایجنت چهارم زیرساخت (به مدیریت توحید)'
+created_at_jalali: '1405-07-29'
+created_at_time: '16:32:30'
+created_at_utc: '2026-10-21T13:02:30.000Z'
+archived_by: null
+archived_at_jalali: null
+archived_at_time: null
+archived_at_utc: null
+archive_note: null
+commits: ['eda0e16']
+tags: null
+---
+
 # گزارش فعالیت تیمی — 1405-07-29_16-32-30_infra-agent_wave4-tohid-final-deploy-and-alireza-preview
 
-- **نام شخص:** ایجنت چهارم زیرساخت (به مدیریت توحید)
-- **تاریخ شمسی:** ۱۴۰۵/۰۷/۲۹
-- **ساعت انجام:** ۱۶:۳۲:۳۰
-- **نوع فعالیت:** Infra-FullDeploy
-- **شناسه مرجع (Commit / PR):** شاخه `arena/b6d06c28-escaperoom` — دیپلوی Production `dpl_F4ddK4xRwvE8FR4cedNAuwVhmSh2` (`f354b65`) + دیپلوی Preview علیرضا `dpl_7bnxrUqTxnVrWFQCHLXcUoD7t1Ca` (`49ef807`)
-- **وضعیت:** Pending (ثبت استقرار Production پس از PR #11 توحید + استقرار Preview شاخه علیرضا و آرشیو لاگ‌های PR #10 و PR #11)
-- **زمان دقیق سیستمی:** 2026-10-21T13:02:30Z
+> ⚙️ جدول مشخصات و چرخه عمر این فایل به‌صورت خودکار از فراداده (YAML) بالای فایل توسط
+> `npm run worklog:sync` ساخته می‌شود؛ برای تغییر وضعیت از `npm run worklog:archive` استفاده کنید.
 
-### شرح دقیق فعالیت انجام‌شده
+<!-- WORKLOG:LOG-HEADER:START -->
+## 📌 مشخصات فعالیت
+
+| فیلد | مقدار |
+| --- | --- |
+| **شناسه لاگ** | `1405-07-29_16-32-30_infra-agent_wave4-tohid-final-deploy-and-alireza-preview` |
+| **عنوان** | موج ۴ زیرساخت — استقرار Production و Preview علیرضا |
+| **خلاصه** | استقرار Production جدید پس از PR #11 توحید (`dpl_F4ddK4xRwvE8FR4cedNAuwVhmSh2` از `f354b65` با ۳۹ تست پاس) + استقرار Preview شاخه علیرضا (`dpl_7bnxrUqTxnVrWFQCHLXcUoD7t1Ca` از `arena/f2303553-escaperoom`) + تست سلامت `/api/health` و آرشیو لاگ‌های PR #10 و PR #11. |
+| **نوع فعالیت** | `Infra-FullDeploy` |
+| **مرجع** | شاخه `arena/b6d06c28-escaperoom` — دیپلوی Production `dpl_F4ddK4xRwvE8FR4cedNAuwVhmSh2` (`f354b65`) + دیپلوی Preview علیرضا `dpl_7bnxrUqTxnVrWFQCHLXcUoD7t1Ca` (`49ef807`) |
+| **شاخه** | `arena/b6d06c28-escaperoom` |
+| **ساخته‌شده توسط** | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
+| **زمان ایجاد (ایران / شمسی)** | **۱۴۰۵/۰۷/۲۹ — ۱۶:۳۲:۳۰** |
+| **زمان ایجاد (UTC)** | `2026-10-21T13:02:30.000Z` |
+| **وضعیت فعلی** | 🟡 **Pending** (در انتظار تأیید، ادغام یا اجرا) |
+| **کامیت‌های مرتبط** | `eda0e16` |
+
+## 🔁 چرخه عمر لاگ
+
+| رویداد | توسط | تاریخ شمسی | ساعت (ایران) | زمان UTC | یادداشت |
+| --- | --- | --- | --- | --- | --- |
+| 🟡 ایجاد و ثبت در `Pending` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ | ۱۶:۳۲:۳۰ | `2026-10-21T13:02:30.000Z` | ثبت اولیه گزارش |
+| 🟢 تبدیل به `Archive` | ⏳ در انتظار | — | — | — | هنوز آرشیو نشده است |
+
+> 🧾 **خط زمان:** این لاگ در **۱۴۰۵/۰۷/۲۹ — ۱۶:۳۲:۳۰** توسط **ایجنت چهارم زیرساخت (به مدیریت توحید)** ساخته شد و در حال حاضر در وضعیت **`Pending`** (در انتظار تأیید، ادغام یا اجرا) قرار دارد.
+<!-- WORKLOG:LOG-HEADER:END -->
+
+---
+
+## شرح دقیق فعالیت انجام‌شده
 اجرای موج ۴ ایجنت چهارم زیرساخت پس از ادغام تحویل نهایی توحید (`PR #11` — `f354b65`):
 1. **استقرار Production جدید شاخه `main` (`f354b65`):** اجرای دیپلوی `dpl_F4ddK4xRwvE8FR4cedNAuwVhmSh2` روی پروژه Vercel (`escaperoom-orfeo`) تا رسیدن به وضعیت `READY` (`PROMOTED`) و اجرای هر ۳۹ تست واحد (`vitest run` — ۶ فایل، ۳۹ تست پاس).
 2. **استقرار Preview شاخه علیرضا (`arena/f2303553-escaperoom` — `49ef807`):** ساخت دیپلوی Preview (`dpl_7bnxrUqTxnVrWFQCHLXcUoD7t1Ca` ➔ `READY` / `STAGED`) برای موج ۱ و ۲ علیرضا (`/preview/cinema`) روی آدرس شاخه `https://escaperoom-orfeo-git-arena-f2303553-escaperoom-tnix138.vercel.app`.

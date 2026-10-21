@@ -1,0 +1,27 @@
+#!/bin/sh
+# ---------------------------------------------------------------------------
+# ۱) پیام کامیت باید فارسی باشد (طبق TEAM.md §۴).
+# ۲) امضای Arena (Co-authored-by) حفظ می‌شود.
+# نصب: npm run worklog:hooks
+# ---------------------------------------------------------------------------
+MSG_FILE="$1"
+TRAILER='Co-authored-by: arena-agent <297053741+arena-agent@users.noreply.github.com>'
+
+if command -v node >/dev/null 2>&1; then
+  node -e '
+    const fs = require("node:fs");
+    const file = process.argv[1];
+    const subject = fs.readFileSync(file, "utf8").split("\n")[0].trim();
+    if (!subject) process.exit(0);
+    if (/^(Merge|Revert|fixup!|squash!|amend!)/i.test(subject)) process.exit(0);
+    if (!/[\u0600-\u06FF]/.test(subject)) {
+      console.error("✖ پیام کامیت باید فارسی باشد (TEAM.md §۴). مثال:");
+      console.error("  feat(worklog): افزودن چرخه عمر کامل لاگ‌ها");
+      process.exit(1);
+    }
+  ' "$MSG_FILE" || exit 1
+fi
+
+grep -Fqx "$TRAILER" "$MSG_FILE" 2>/dev/null && exit 0
+printf '\n%s\n' "$TRAILER" >> "$MSG_FILE"
+exit 0
