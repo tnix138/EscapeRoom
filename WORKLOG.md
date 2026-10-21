@@ -134,7 +134,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۶۲** — ✅ Archive: **۱۵۸** — 🧾 مجموع: **۲۲۰** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۲۰:۴۰:۴۴ (`2026-10-21T17:10:44.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۶۳** — ✅ Archive: **۱۵۸** — 🧾 مجموع: **۲۲۱** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۲۰:۴۸:۴۷ (`2026-10-21T17:18:47.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -144,6 +144,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:EVENTS:START -->
 | 🕒 زمان (ایران / UTC) | رویداد | شناسه لاگ | توسط |
 | --- | --- | --- | --- |
+| ۱۴۰۵/۰۷/۲۹ — ۲۰:۴۸:۴۷<br>`2026-10-21T17:18:47.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-48-47_amirali_wave8-narration-captions`](./logs/pending/1405-07-29_20-48-47_amirali_wave8-narration-captions.md) | **امیرعلی** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۴۰:۴۴<br>`2026-10-21T17:10:44.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-40-44_amirali_pr-64-wave7-theater-companion`](./logs/pending/1405-07-29_20-40-44_amirali_pr-64-wave7-theater-companion.md) | **امیرعلی** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۳۷:۰۲<br>`2026-10-21T17:07:02.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-37-02_infra-agent_push`](./logs/pending/1405-07-29_20-37-02_infra-agent_push.md) | **ایجنت چهارم زیرساخت** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۳۶:۵۸<br>`2026-10-21T17:06:58.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-36-58_infra-agent_worklog-reader-summary`](./logs/pending/1405-07-29_20-36-58_infra-agent_worklog-reader-summary.md) | **ایجنت چهارم زیرساخت** |
@@ -155,7 +156,6 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۸:۱۴<br>`2026-10-21T16:58:14.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-28-14_amirali_pr-61-wave6-ticket-puzzle`](./logs/pending/1405-07-29_20-28-14_amirali_pr-61-wave6-ticket-puzzle.md) | **امیرعلی** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۶:۲۰<br>`2026-10-21T16:56:20.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-26-20_infra-agent_pr54-wave10-infra`](./logs/pending/1405-07-29_20-26-20_infra-agent_pr54-wave10-infra.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۶:۱۷<br>`2026-10-21T16:56:17.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-26-17_amirali_push`](./logs/pending/1405-07-29_20-26-17_amirali_push.md) | **امیرعلی** |
-| ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۶:۱۷<br>`2026-10-21T16:56:17.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-26-17_infra-agent_push`](./logs/pending/1405-07-29_20-26-17_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 <!-- WORKLOG:EVENTS:END -->
 
 ---
@@ -167,6 +167,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:PENDING:START -->
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- |
+| [`1405-07-29_20-48-47_amirali_wave8-narration-captions`](./logs/pending/1405-07-29_20-48-47_amirali_wave8-narration-captions.md) | موج ۸ — زیرنویس زمان‌بندی‌شده، کنترل صدا با کیبورد و اعلان حرکت | `Commit` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۴۸:۴۷<br>`2026-10-21T17:18:47.000Z` | شاخه arena/167e8b3c-escaperoom |
 | [`1405-07-29_20-40-44_amirali_pr-64-wave7-theater-companion`](./logs/pending/1405-07-29_20-40-44_amirali_pr-64-wave7-theater-companion.md) | PR #64 — موج ۷ امیرعلی: همراه تماشاخانه | `PR` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۴۰:۴۴<br>`2026-10-21T17:10:44.000Z` | PR #64 — arena/ef2e593f-escaperoom ➔ main |
 | [`1405-07-29_20-37-02_infra-agent_push`](./logs/pending/1405-07-29_20-37-02_infra-agent_push.md) | پوش شاخه arena/fdf788c2-escaperoom — 9e1c551 | `Push` | **ایجنت چهارم زیرساخت** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۳۷:۰۲<br>`2026-10-21T17:07:02.000Z` | origin/arena/fdf788c2-escaperoom (origin/main..9e1c551) |
 | [`1405-07-29_20-36-58_infra-agent_worklog-reader-summary`](./logs/pending/1405-07-29_20-36-58_infra-agent_worklog-reader-summary.md) | درخواست ادغام قالب خوانای Worklog | `PR` | **ایجنت چهارم زیرساخت** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۳۶:۵۸<br>`2026-10-21T17:06:58.000Z` | PR #63: خواناتر کردن گزارش‌های جدید Worklog |
