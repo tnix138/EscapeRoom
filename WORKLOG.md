@@ -121,7 +121,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۳۱** — ✅ Archive: **۱۵۸** — 🧾 مجموع: **۱۸۹** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۲:۱۲ (`2026-10-21T16:52:12.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۳۲** — ✅ Archive: **۱۵۸** — 🧾 مجموع: **۱۹۰** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۲:۱۳ (`2026-10-21T16:52:13.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -131,6 +131,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:EVENTS:START -->
 | 🕒 زمان (ایران / UTC) | رویداد | شناسه لاگ | توسط |
 | --- | --- | --- | --- |
+| ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۲:۱۳<br>`2026-10-21T16:52:13.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-22-13_infra-agent_push`](./logs/pending/1405-07-29_20-22-13_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۲:۱۲<br>`2026-10-21T16:52:12.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-22-12_infra-agent_wave4-alley-assets-cache`](./logs/pending/1405-07-29_20-22-12_infra-agent_wave4-alley-assets-cache.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۱:۴۷<br>`2026-10-21T16:51:47.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-21-47_infra-agent_pr54-wave3-infra`](./logs/pending/1405-07-29_20-21-47_infra-agent_pr54-wave3-infra.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۱:۴۵<br>`2026-10-21T16:51:45.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-21-45_infra-agent_push`](./logs/pending/1405-07-29_20-21-45_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
@@ -142,7 +143,6 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۹:۱۵<br>`2026-10-21T16:49:15.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_20-17-47_tohid_push`](./logs/archive/1405-07-29_20-17-47_tohid_push.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۹:۱۵<br>`2026-10-21T16:49:15.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_20-17-47_tohid_wave8-10-hardening-and-archive`](./logs/archive/1405-07-29_20-17-47_tohid_wave8-10-hardening-and-archive.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۸:۰۲<br>`2026-10-21T16:48:02.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-18-02_tohid_pr-59-tohid-final-hardening`](./logs/archive/1405-07-29_20-18-02_tohid_pr-59-tohid-final-hardening.md) | **توحید** |
-| ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۸:۰۲<br>`2026-10-21T16:48:02.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-18-02_tohid_push`](./logs/archive/1405-07-29_20-18-02_tohid_push.md) | **توحید** |
 <!-- WORKLOG:EVENTS:END -->
 
 ---
@@ -154,6 +154,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:PENDING:START -->
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- |
+| [`1405-07-29_20-22-13_infra-agent_push`](./logs/pending/1405-07-29_20-22-13_infra-agent_push.md) | پوش شاخه arena/3cf79cfd-escaperoom — 40f31a5 | `Push` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۲:۱۳<br>`2026-10-21T16:52:13.000Z` | origin/arena/3cf79cfd-escaperoom (origin/arena/3cf79cfd-escaperoom..40f31a5) |
 | [`1405-07-29_20-22-12_infra-agent_wave4-alley-assets-cache`](./logs/pending/1405-07-29_20-22-12_infra-agent_wave4-alley-assets-cache.md) | موج ۴ زیرساخت — بررسی کش دارایی‌های کوچه، اندازه باندل و بارگذاری در Preview | `Infra-Vercel` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۲:۱۲<br>`2026-10-21T16:52:12.000Z` | WAVE-4-INFRA.md / dpl_AcVtEAPxUJs71pczn5chv4ycTzJ6 |
 | [`1405-07-29_20-21-47_infra-agent_pr54-wave3-infra`](./logs/pending/1405-07-29_20-21-47_infra-agent_pr54-wave3-infra.md) | به‌روزرسانی PR #54 با موج ۳ زیرساخت (WAVE-3-INFRA.md) | `PR` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۱:۴۷<br>`2026-10-21T16:51:47.000Z` | PR #54 (WAVE-3-INFRA.md) |
 | [`1405-07-29_20-21-45_infra-agent_push`](./logs/pending/1405-07-29_20-21-45_infra-agent_push.md) | پوش شاخه arena/3cf79cfd-escaperoom — 0aea4fb | `Push` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۱:۴۵<br>`2026-10-21T16:51:45.000Z` | origin/arena/3cf79cfd-escaperoom (origin/arena/3cf79cfd-escaperoom..0aea4fb) |
