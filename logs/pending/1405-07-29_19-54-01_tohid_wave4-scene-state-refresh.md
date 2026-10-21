@@ -1,0 +1,57 @@
+---
+id: '1405-07-29_19-54-01_tohid_wave4-scene-state-refresh'
+title: 'موج ۴ توحید — پایداری phase و scene در refresh'
+summary: 'آزمون بازگشت از refresh برای چهار فاز را اضافه کردم؛ phase فعلی برای scene کافی است و موقعیت renderer همچنان محلی می‌ماند.'
+author: 'توحید'
+author_slug: 'tohid'
+activity: 'Commit'
+ref: 'شاخه arena/bab0d18a-escaperoom'
+branch: 'arena/bab0d18a-escaperoom'
+status: 'pending'
+created_by: 'توحید'
+created_at_jalali: '1405-07-29'
+created_at_time: '19:54:01'
+created_at_utc: '2026-10-21T16:24:01.000Z'
+archived_by: null
+archived_at_jalali: null
+archived_at_time: null
+archived_at_utc: null
+archive_note: null
+commits: null
+tags: null
+---
+
+# گزارش فعالیت تیمی — 1405-07-29_19-54-01_tohid_wave4-scene-state-refresh
+
+> ⚙️ جدول مشخصات و چرخه عمر این فایل به‌صورت خودکار از فراداده (YAML) بالای فایل توسط
+> `npm run worklog:sync` ساخته می‌شود؛ برای تغییر وضعیت از `npm run worklog:archive` استفاده کنید.
+
+<!-- WORKLOG:LOG-HEADER:START -->
+## 📌 مشخصات فعالیت
+
+| فیلد | مقدار |
+| --- | --- |
+| **شناسه لاگ** | `1405-07-29_19-54-01_tohid_wave4-scene-state-refresh` |
+| **عنوان** | موج ۴ توحید — پایداری phase و scene در refresh |
+| **خلاصه** | آزمون بازگشت از refresh برای چهار فاز را اضافه کردم؛ phase فعلی برای scene کافی است و موقعیت renderer همچنان محلی می‌ماند. |
+| **نوع فعالیت** | `Commit` |
+| **مرجع** | شاخه arena/bab0d18a-escaperoom |
+| **شاخه** | `arena/bab0d18a-escaperoom` |
+| **ساخته‌شده توسط** | **توحید** |
+| **زمان ایجاد (ایران / شمسی)** | **۱۴۰۵/۰۷/۲۹ — ۱۹:۵۴:۰۱** |
+| **زمان ایجاد (UTC)** | `2026-10-21T16:24:01.000Z` |
+| **وضعیت فعلی** | 🟡 **Pending** (در انتظار تأیید، ادغام یا اجرا) |
+
+## 🔁 چرخه عمر لاگ
+
+| رویداد | توسط | تاریخ شمسی | ساعت (ایران) | زمان UTC | یادداشت |
+| --- | --- | --- | --- | --- | --- |
+| 🟡 ایجاد و ثبت در `Pending` | **توحید** | ۱۴۰۵/۰۷/۲۹ | ۱۹:۵۴:۰۱ | `2026-10-21T16:24:01.000Z` | ثبت اولیه گزارش |
+| 🟢 تبدیل به `Archive` | ⏳ در انتظار | — | — | — | هنوز آرشیو نشده است |
+
+> 🧾 **خط زمان:** این لاگ در **۱۴۰۵/۰۷/۲۹ — ۱۹:۵۴:۰۱** توسط **توحید** ساخته شد و در حال حاضر در وضعیت **`Pending`** (در انتظار تأیید، ادغام یا اجرا) قرار دارد.
+<!-- WORKLOG:LOG-HEADER:END -->
+
+---
+
+پس از ادغام موج ۳ توحید در PR #46، موج ۴ نشان داد phase و ساعت کات‌سین در SQLite پس از بستن/بازکردن و projection مجدد حفظ می‌شوند. تست جدید گذار alley_puzzle تا in_theater را پس از refresh بررسی می‌کند و نبود sceneId/transform در state سرور را قفل می‌کند. بنابراین قرارداد، migration یا endpoint جدید لازم نیست. typecheck، ۴۲ تست Tohid، ۱۵۸ تست کلی، build و Worklog check موفق بودند.

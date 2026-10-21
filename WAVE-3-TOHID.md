@@ -1,7 +1,7 @@
 ---
 agent: Tohid
 wave: 3
-status: IMPLEMENTED_PENDING_REVIEW
+status: COMPLETE
 intended_audience: coding_agents_only
 ---
 
@@ -46,3 +46,7 @@ Projection contract test موجود همچنان شکل دقیق `ClientRoomView
 ## محدودیت
 
 `isOnline` یک lease با پنجرهٔ ۳۰ثانیه‌ای است، نه تأیید اتصال دائمی. تأخیر طولانی timer می‌تواند وضعیت را موقتاً offline نشان دهد؛ refresh بعدی آن را اصلاح می‌کند. اگر در موج‌های بعدی بازیابی world position بین دستگاه‌ها یا avatar sync نیاز شد، قرارداد جداگانه و توافق مالکان لازم است.
+
+## تکمیل
+
+PR #46 در main ادغام شد (merge commit `04e8928`). موج ۳ توحید تکمیل شد؛ بدون endpoint حرکتی و بدون تغییر قرارداد مشترک.
