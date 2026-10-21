@@ -85,4 +85,7 @@
 | **Production نهایی (پس از PR #46 و PR #47 توحید — موج ۳ و ۴ حضور SSE و پایداری Refresh)** | `dpl_BWq27G9267uGzCNKL7ENjLXH7sQ2` | `04e8928` / `31168df` | `READY` / `PROMOTED` (`28.3s`) | `https://escaperoom-orfeo.vercel.app` |
 | **Preview / Staging (موج ۲ تا ۶ زیرساخت پس از PR #51)** | `dpl_Baehq1tTn1KPLrGwjaqrPJGMmUZ6` | `ddde895` | `READY` / `STAGED` (`33.7s`) | `https://escaperoom-orfeo-eem9jbg06-tnix138.vercel.app` |
 | **Production نهایی (موج ۱۰ زیرساخت پس از PR #60 توحید و PR #58 امیرعلی)** | `dpl_AcVtEAPxUJs71pczn5chv4ycTzJ6` | `37e11ac` | `READY` / `PROMOTED` (`32.0s`) | `https://escaperoom-orfeo.vercel.app` |
+| **Production (پس از PR #65 — موج ۶ و ۷ امیرعلی و قالب جدید Worklog)** | `dpl_CGJM9AoYPVbNPQ21yXoacXhQDTXf` | `fc166ee` | `READY` / `PROMOTED` (`45.8s`) | `https://escaperoom-orfeo.vercel.app` |
+| **Production (پس از PR #68 — موج ۸ امیرعلی: زیرنویس، صدا و اعلان حرکت)** | `dpl_2HTchzK9wjGkaSKsLzuBXyupxDFL` | `44859b3` | `READY` / `PROMOTED` (`30.2s`) | `https://escaperoom-orfeo.vercel.app` |
+| **Production (پس از PR #69 — موج ۹ امیرعلی: HUD کاوش سالن تاریک و تخته تیمی)** | `dpl_92YBE2abGq9ebZLzNcixLBzzchrc` | `b7dcb50` | `READY` / `PROMOTED` | `https://escaperoom-orfeo.vercel.app` |
 

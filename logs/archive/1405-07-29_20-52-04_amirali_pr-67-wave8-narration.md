@@ -12,16 +12,16 @@ author_slug: 'amirali'
 activity: 'PR'
 ref: 'PR #67 — arena/167e8b3c-escaperoom ➔ main'
 branch: 'arena/167e8b3c-escaperoom'
-status: 'pending'
+status: 'archive'
 created_by: 'امیرعلی'
 created_at_jalali: '1405-07-29'
 created_at_time: '20:52:04'
 created_at_utc: '2026-10-21T17:22:04.000Z'
-archived_by: null
-archived_at_jalali: null
-archived_at_time: null
-archived_at_utc: null
-archive_note: null
+archived_by: 'ایجنت چهارم زیرساخت (به مدیریت توحید)'
+archived_at_jalali: '1405-07-29'
+archived_at_time: '21:05:50'
+archived_at_utc: '2026-10-21T17:35:50.000Z'
+archive_note: 'ادغام PRهای #66، #67، #68 و #69 در main و استقرار روی Vercel Production (dpl_2HTchzK9wjGkaSKsLzuBXyupxDFL و dpl_92YBE2abGq9ebZLzNcixLBzzchrc)'
 commits: null
 tags: null
 ---
@@ -49,16 +49,20 @@ tags: null
 | **ساخته‌شده توسط** | **امیرعلی** |
 | **زمان ایجاد (ایران / شمسی)** | **۱۴۰۵/۰۷/۲۹ — ۲۰:۵۲:۰۴** |
 | **زمان ایجاد (UTC)** | `2026-10-21T17:22:04.000Z` |
-| **وضعیت فعلی** | 🟡 **Pending** (در انتظار تأیید، ادغام یا اجرا) |
+| **وضعیت فعلی** | ✅ **Archive** (تأیید/ادغام یا اجراشده) |
+| **آرشیو شده توسط** | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
+| **زمان آرشیو (ایران / شمسی)** | **۱۴۰۵/۰۷/۲۹ — ۲۱:۰۵:۵۰** |
+| **زمان آرشیو (UTC)** | `2026-10-21T17:35:50.000Z` |
+| **یادداشت آرشیو** | ادغام PRهای #66، #67، #68 و #69 در main و استقرار روی Vercel Production (dpl_2HTchzK9wjGkaSKsLzuBXyupxDFL و dpl_92YBE2abGq9ebZLzNcixLBzzchrc) |
 
 ## 🔁 چرخه عمر لاگ
 
 | رویداد | توسط | تاریخ شمسی | ساعت (ایران) | زمان UTC | یادداشت |
 | --- | --- | --- | --- | --- | --- |
 | 🟡 ایجاد و ثبت در `Pending` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ | ۲۰:۵۲:۰۴ | `2026-10-21T17:22:04.000Z` | ثبت اولیه گزارش |
-| 🟢 تبدیل به `Archive` | ⏳ در انتظار | — | — | — | هنوز آرشیو نشده است |
+| 🟢 تبدیل به `Archive` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ | ۲۱:۰۵:۵۰ | `2026-10-21T17:35:50.000Z` | ادغام PRهای #66، #67، #68 و #69 در main و استقرار روی Vercel Production (dpl_2HTchzK9wjGkaSKsLzuBXyupxDFL و dpl_92YBE2abGq9ebZLzNcixLBzzchrc) |
 
-> 🧾 **خط زمان:** این لاگ در **۱۴۰۵/۰۷/۲۹ — ۲۰:۵۲:۰۴** توسط **امیرعلی** ساخته شد و در حال حاضر در وضعیت **`Pending`** (در انتظار تأیید، ادغام یا اجرا) قرار دارد.
+> 🧾 **خط زمان:** این لاگ در **۱۴۰۵/۰۷/۲۹ — ۲۰:۵۲:۰۴** توسط **امیرعلی** ساخته شد و در **۱۴۰۵/۰۷/۲۹ — ۲۱:۰۵:۵۰** توسط **ایجنت چهارم زیرساخت (به مدیریت توحید)** به **`Archive`** منتقل شد.
 <!-- WORKLOG:LOG-HEADER:END -->
 
 ---
@@ -94,4 +98,3 @@ tags: null
 - پس از ادغام روی `main`: build و ۲۶۷ تست دوباره سبز؛ dev server روی ۳۰۰۰ بالا و
   `/preview/invitation` کپشن و کنترل صدا را در SSR رندر می‌کند؛ `/room/DEMO24` و
   `/api/health` هم ۲۰۰.
-
