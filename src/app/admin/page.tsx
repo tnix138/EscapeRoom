@@ -1,6 +1,7 @@
 // src/app/admin/page.tsx — داشبورد آمار پنل ادمین (فاز ۱۰)
 import Link from 'next/link';
 import AdminSidebar from '@/components/admin/AdminSidebar';
+import { PLAYER_CHARACTER_PRESETS } from '@/components/admin/CharactersShowcase';
 import StatsCard from '@/components/admin/StatsCard';
 import RoomsTable from '@/components/admin/RoomsTable';
 import { faDigits, formatPercent, phaseLabel } from '@/components/admin/format';
@@ -70,6 +71,59 @@ export default async function AdminDashboardPage() {
             همهٔ اتاق‌ها →
           </Link>
         </p>
+      </section>
+
+      <section aria-label="کاراکترهای بازی" style={panelStyle}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
+          <h2 style={titleStyle}>کاراکترهای پلیر و صحنه</h2>
+          <Link href="/admin/characters" style={{ color: 'var(--gold-light)', fontSize: 'var(--text-sm)' }}>
+            استودیوی سه‌بعدی و نمایش کامل کاراکترها →
+          </Link>
+        </div>
+        <p style={{ ...hintStyle, marginTop: 6 }}>
+          ۸ تیپ کاراکتر انسان برای صندلی‌های ۱ تا ۸ (با مدل سه‌بعدی مفصل‌دار، انیمیشن راه رفتن/نشستن و نیم‌تنهٔ دوبعدی):
+        </p>
+        <div
+          style={{
+            display: 'grid',
+            gap: 8,
+            gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+            marginTop: 10,
+          }}
+        >
+          {PLAYER_CHARACTER_PRESETS.map((preset) => (
+            <Link
+              key={preset.seatIndex}
+              href="/admin/characters"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+                padding: '8px 10px',
+                borderRadius: 8,
+                border: '1px solid var(--line)',
+                background: 'var(--ink-soft)',
+                textDecoration: 'none',
+                color: 'var(--text-primary)',
+                fontSize: 'var(--text-xs)',
+              }}
+            >
+              <span
+                style={{
+                  width: 14,
+                  height: 14,
+                  borderRadius: '50%',
+                  background: preset.coatHex,
+                  border: '1px solid rgba(255,255,255,0.35)',
+                  flexShrink: 0,
+                }}
+              />
+              <span>
+                <strong>{preset.archetypeName}</strong> · کت {preset.coatLabel}
+              </span>
+            </Link>
+          ))}
+        </div>
       </section>
     </main>
   );

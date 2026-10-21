@@ -12,6 +12,254 @@
  */
 
 import * as THREE from 'three';
+import { resolvePlayerHumanPalette } from './presence/RemotePlayer';
+
+export interface SeatedPlayerCharacterOptions {
+  playerId: string;
+  playerName: string;
+  seatIndex: number;
+  isLocalPlayer?: boolean;
+}
+
+/**
+ * ساخت کاراکتر سه‌بعدی انسان در حالت نشسته روی صندلی تئاتر (نگاه به سمت صحنه در جهت -Z)
+ */
+export function createSeatedPlayerCharacter(
+  options: SeatedPlayerCharacterOptions,
+): THREE.Group {
+  const palette = resolvePlayerHumanPalette(
+    options.playerId,
+    options.seatIndex,
+    options.isLocalPlayer ? 0xc9a86a : undefined,
+  );
+
+  const root = new THREE.Group();
+  root.name = `Avatar_${options.playerName}`;
+  root.userData.playerId = options.playerId;
+  root.userData.playerName = options.playerName;
+  root.userData.seatIndex = options.seatIndex;
+
+  const coatMat = new THREE.MeshStandardMaterial({
+    color: palette.coatColor,
+    roughness: 0.74,
+    metalness: 0.06,
+  });
+  const trimMat = new THREE.MeshStandardMaterial({
+    color: palette.coatTrimColor,
+    roughness: 0.8,
+  });
+  const skinMat = new THREE.MeshStandardMaterial({
+    color: palette.skinColor,
+    roughness: 0.66,
+  });
+  const hairMat = new THREE.MeshStandardMaterial({
+    color: palette.hairColor,
+    roughness: 0.86,
+  });
+  const trouserMat = new THREE.MeshStandardMaterial({
+    color: palette.trouserColor,
+    roughness: 0.85,
+  });
+  const shoeMat = new THREE.MeshStandardMaterial({
+    color: palette.shoeColor,
+    roughness: 0.5,
+    metalness: 0.14,
+  });
+  const shirtMat = new THREE.MeshStandardMaterial({
+    color: palette.shirtColor,
+    roughness: 0.78,
+  });
+  const cravatMat = new THREE.MeshStandardMaterial({
+    color: palette.cravatColor,
+    roughness: 0.72,
+  });
+  const eyeMat = new THREE.MeshStandardMaterial({
+    color: 0x161219,
+    roughness: 0.4,
+  });
+
+  // ۱. تنه در حالت نشسته (روی تشک صندلی در ارتفاع y=0.45)
+  const torsoGroup = new THREE.Group();
+  torsoGroup.name = 'avatar-body';
+  torsoGroup.position.set(0, 0.78, 0.04);
+
+  const chest = new THREE.Mesh(
+    new THREE.CapsuleGeometry(0.16, 0.32, 6, 12),
+    coatMat,
+  );
+  chest.scale.set(1.2, 1, 0.78);
+  chest.castShadow = true;
+  chest.receiveShadow = true;
+  torsoGroup.add(chest);
+
+  const shirtFront = new THREE.Mesh(
+    new THREE.BoxGeometry(0.11, 0.2, 0.024),
+    shirtMat,
+  );
+  shirtFront.position.set(0, 0.08, -0.12);
+  torsoGroup.add(shirtFront);
+
+  const cravat = new THREE.Mesh(
+    new THREE.BoxGeometry(0.044, 0.13, 0.028),
+    cravatMat,
+  );
+  cravat.position.set(0, 0.07, -0.128);
+  torsoGroup.add(cravat);
+
+  for (const side of [-1, 1] as const) {
+    const lapel = new THREE.Mesh(
+      new THREE.BoxGeometry(0.05, 0.22, 0.026),
+      trimMat,
+    );
+    lapel.position.set(side * 0.064, 0.07, -0.124);
+    lapel.rotation.z = side * 0.22;
+    torsoGroup.add(lapel);
+
+    const shoulder = new THREE.Mesh(
+      new THREE.SphereGeometry(0.074, 10, 8),
+      coatMat,
+    );
+    shoulder.position.set(side * 0.205, 0.16, 0);
+    shoulder.castShadow = true;
+    torsoGroup.add(shoulder);
+  }
+  root.add(torsoGroup);
+
+  // ۲. سر، گردن، صورت و مو (avatar-head)
+  const headGroup = new THREE.Group();
+  headGroup.name = 'avatar-head';
+  headGroup.position.set(0, 1.2, 0.03);
+
+  const neck = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.052, 0.062, 0.11, 10),
+    skinMat,
+  );
+  neck.position.set(0, -0.1, 0);
+  headGroup.add(neck);
+
+  const skull = new THREE.Mesh(
+    new THREE.SphereGeometry(0.118, 16, 14),
+    skinMat,
+  );
+  skull.scale.set(0.92, 1.08, 0.98);
+  skull.castShadow = true;
+  headGroup.add(skull);
+
+  for (const side of [-1, 1] as const) {
+    const ear = new THREE.Mesh(
+      new THREE.SphereGeometry(0.024, 8, 8),
+      skinMat,
+    );
+    ear.scale.set(0.45, 1.1, 0.7);
+    ear.position.set(side * 0.108, -0.008, 0);
+    headGroup.add(ear);
+
+    const eye = new THREE.Mesh(
+      new THREE.SphereGeometry(0.012, 8, 8),
+      eyeMat,
+    );
+    eye.position.set(side * 0.04, 0.016, -0.11);
+    headGroup.add(eye);
+  }
+
+  const nose = new THREE.Mesh(
+    new THREE.ConeGeometry(0.017, 0.048, 6),
+    skinMat,
+  );
+  nose.rotation.x = -Math.PI / 2;
+  nose.position.set(0, -0.004, -0.12);
+  headGroup.add(nose);
+
+  const hairCap = new THREE.Mesh(
+    new THREE.SphereGeometry(0.124, 14, 12, 0, Math.PI * 2, 0, Math.PI * 0.6),
+    hairMat,
+  );
+  hairCap.scale.set(0.95, 1.08, 1.02);
+  hairCap.position.set(0, 0.012, 0.006);
+  hairCap.castShadow = true;
+  headGroup.add(hairCap);
+
+  const hairBack = new THREE.Mesh(
+    new THREE.SphereGeometry(0.11, 12, 10),
+    hairMat,
+  );
+  hairBack.scale.set(0.94, 1.05, 0.88);
+  hairBack.position.set(0, -0.012, 0.032);
+  headGroup.add(hairBack);
+
+  root.add(headGroup);
+
+  // ۳. بازوها و دست‌ها در حالت نشسته روی پا/دسته صندلی
+  for (const side of [-1, 1] as const) {
+    const armGroup = new THREE.Group();
+    armGroup.name = side < 0 ? 'avatar-arm-left' : 'avatar-arm-right';
+    armGroup.position.set(side * 0.22, 0.94, 0.04);
+
+    const upperArm = new THREE.Mesh(
+      new THREE.CapsuleGeometry(0.048, 0.19, 5, 10),
+      coatMat,
+    );
+    upperArm.position.set(0, -0.11, -0.02);
+    upperArm.rotation.x = 0.22;
+    upperArm.castShadow = true;
+    armGroup.add(upperArm);
+
+    const forearm = new THREE.Mesh(
+      new THREE.CapsuleGeometry(0.042, 0.18, 5, 10),
+      coatMat,
+    );
+    forearm.position.set(-side * 0.03, -0.22, -0.14);
+    forearm.rotation.x = Math.PI / 2.3;
+    forearm.rotation.z = side * 0.18;
+    forearm.castShadow = true;
+    armGroup.add(forearm);
+
+    const hand = new THREE.Mesh(
+      new THREE.SphereGeometry(0.04, 8, 8),
+      skinMat,
+    );
+    hand.scale.set(0.85, 0.65, 1.2);
+    hand.position.set(-side * 0.055, -0.24, -0.26);
+    armGroup.add(hand);
+
+    root.add(armGroup);
+  }
+
+  // ۴. ران‌ها (افقی روی صندلی) و ساق پاها (عمودی تا کف زمین)
+  for (const side of [-1, 1] as const) {
+    const legGroup = new THREE.Group();
+    legGroup.name = side < 0 ? 'avatar-leg-left' : 'avatar-leg-right';
+
+    const thigh = new THREE.Mesh(
+      new THREE.CapsuleGeometry(0.068, 0.24, 5, 10),
+      trouserMat,
+    );
+    thigh.rotation.x = Math.PI / 2;
+    thigh.position.set(side * 0.105, 0.51, -0.08);
+    thigh.castShadow = true;
+    legGroup.add(thigh);
+
+    const calf = new THREE.Mesh(
+      new THREE.CapsuleGeometry(0.055, 0.25, 5, 10),
+      trouserMat,
+    );
+    calf.position.set(side * 0.105, 0.28, -0.25);
+    calf.castShadow = true;
+    legGroup.add(calf);
+
+    const shoe = new THREE.Mesh(
+      new THREE.BoxGeometry(0.09, 0.065, 0.19),
+      shoeMat,
+    );
+    shoe.position.set(side * 0.105, 0.04, -0.29);
+    shoe.castShadow = true;
+    legGroup.add(shoe);
+
+    root.add(legGroup);
+  }
+
+  return root;
+}
 
 export interface TheaterGeometryResult {
   group: THREE.Group;
