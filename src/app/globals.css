@@ -5344,3 +5344,26 @@ button:disabled {
   font-size: var(--text-sm);
   line-height: 1.8;
 }
+
+/* --- موج ۲ (پیگیری): پنل بلیط در قاب‌های باریک سه‌بعدی --- */
+.held-tickets {
+  container-type: inline-size;
+}
+
+.held-tickets-scroll {
+  min-width: 0;
+}
+
+@container (max-width: 560px) {
+  .ticket-pair {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .held-tickets-scroll {
+    max-height: 64svh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-inline-end: 4px;
+  }
+}
