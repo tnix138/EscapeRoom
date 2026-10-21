@@ -5,6 +5,7 @@ import {
   HORROR_LEVEL_STYLE,
   describeHorrorLevel,
   horrorLevelChangeMessage,
+  horrorSignalCssVars,
   normalizeHorrorLevel,
   type HorrorIntensity,
 } from './horror-signal';
@@ -60,13 +61,8 @@ export default function HorrorSignalHud({
 
   if (hidden) return null;
 
-  const cssVars = {
-    '--horror-signal-pulse': style.pulse.toFixed(3),
-    '--horror-signal-vignette': style.vignette.toFixed(3),
-    '--horror-signal-grain': style.grain.toFixed(3),
-    '--horror-signal-shake': `${style.shakePx}px`,
-    '--horror-signal-heartbeat': `${style.heartbeatMs}ms`,
-  } as CSSProperties;
+  // همان تابعی که تست می‌سنجد؛ تا «استایل درست هر سطح» در تست و رندر یکی باشد.
+  const cssVars = horrorSignalCssVars(safeLevel) as CSSProperties;
 
   return (
     <>

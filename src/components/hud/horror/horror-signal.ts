@@ -117,3 +117,19 @@ export function horrorLevelFromFear(fear: number): HorrorIntensity {
 export function isMotionLevel(level: unknown): boolean {
   return normalizeHorrorLevel(level) !== 'calm';
 }
+
+/**
+ * متغیرهای CSS لایهٔ ترس برای یک سطح؛ کامپوننت و تست هر دو از همین‌جا
+ * می‌خوانند تا «کلاس/استایل درست برای هر سه سطح» یک منبع حقیقت داشته باشد.
+ * خروجی همیشه سه سطح را پوشش می‌دهد و مقدار ناشناخته → calm.
+ */
+export function horrorSignalCssVars(level: unknown): Record<string, string> {
+  const style = HORROR_LEVEL_STYLE[normalizeHorrorLevel(level)];
+  return {
+    '--horror-signal-pulse': style.pulse.toFixed(3),
+    '--horror-signal-vignette': style.vignette.toFixed(3),
+    '--horror-signal-grain': style.grain.toFixed(3),
+    '--horror-signal-shake': `${style.shakePx}px`,
+    '--horror-signal-heartbeat': `${style.heartbeatMs}ms`,
+  };
+}

@@ -11,6 +11,7 @@ import {
   horrorLevelIntensity,
   isMotionLevel,
   normalizeHorrorLevel,
+  horrorSignalCssVars,
 } from '../../src/components/hud/horror/horror-signal';
 
 /**
@@ -90,6 +91,28 @@ describe('فاز ۰۷-ب — مدل سیگنال', () => {
     expect(horrorLevelFromFear(Number.NaN)).toBe('calm');
   });
 
+  it('برای هر سه سطح، متغیرهای CSS درست و متمایز ساخته می‌شود', () => {
+    const seen = new Set<string>();
+    for (const level of HORROR_LEVELS) {
+      const vars = horrorSignalCssVars(level);
+      expect(Object.keys(vars)).toEqual([
+        '--horror-signal-pulse',
+        '--horror-signal-vignette',
+        '--horror-signal-grain',
+        '--horror-signal-shake',
+        '--horror-signal-heartbeat',
+      ]);
+      expect(vars['--horror-signal-pulse']).toBe(HORROR_LEVEL_STYLE[level].pulse.toFixed(3));
+      expect(vars['--horror-signal-heartbeat']).toBe(`${HORROR_LEVEL_STYLE[level].heartbeatMs}ms`);
+      seen.add(JSON.stringify(vars));
+    }
+    // سه سطح ⇒ سه استایل متمایز (نه یک ظاهر برای همه).
+    expect(seen.size).toBe(3);
+    // مقدار ناشناخته همان استایل آرام است.
+    expect(horrorSignalCssVars('garbage')).toEqual(horrorSignalCssVars('calm'));
+    expect(horrorSignalCssVars(null)).toEqual(horrorSignalCssVars('calm'));
+  });
+
   it('سطح آرام حرکتی ندارد', () => {
     expect(isMotionLevel('calm')).toBe(false);
     expect(isMotionLevel('tense')).toBe(true);
@@ -103,6 +126,7 @@ describe('فاز ۰۷-ب — کامپوننت HUD', () => {
     expect(hudSource.startsWith("'use client';")).toBe(true);
     expect(hudSource).toContain('level: HorrorIntensity | string | null | undefined');
     expect(hudSource).toContain('normalizeHorrorLevel(level)');
+    expect(hudSource).toContain('horrorSignalCssVars(safeLevel)');
   });
 
   it('هیچ وابستگی به موتور سه‌بعدی، صدا یا شبکه ندارد', () => {
