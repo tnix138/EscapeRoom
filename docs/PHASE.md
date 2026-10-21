@@ -464,7 +464,7 @@ Materialهای PBR با normal map، roughness map، AO map رویه‌ای. س�
 
 ## وضعیت
 
-- ⏳ در انتظار شروع
+- 🟡 در حال انجام (۱۴۰۵/۰۷/۲۹)
 
 ---
 
@@ -575,7 +575,7 @@ Materialهای PBR با normal map، roughness map، AO map رویه‌ای. س�
 
 ## وضعیت
 
-- ⏳ در انتظار شروع
+- 🟡 در حال انجام (۱۴۰۵/۰۷/۲۹)
 
 ---
 
