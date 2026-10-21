@@ -11,7 +11,7 @@ import {
   type HostReservationResult,
 } from '../../contracts/types';
 import { createInitialRoomState, tickPhaseByClock, type InternalRoomState } from '../../engine/index';
-import { projectRoomView } from '../../engine/view-projector';
+import { ONLINE_WINDOW_MS, projectRoomView } from '../../engine/view-projector';
 import {
   actSceneTitle,
   doorCodeFromTargets,
@@ -249,6 +249,47 @@ export async function getRoomViewForSeat(
     }
     throw err;
   }
+}
+
+/** SSE lease cadence. Keep below the projector's 30-second online window. */
+export const PRESENCE_REFRESH_INTERVAL_MS = Math.floor(ONLINE_WINDOW_MS / 2);
+
+/** Refresh an authenticated seat's persisted presence without writing on every SSE clock tick. */
+export async function touchSeatPresence(
+  code: string,
+  seatToken: string,
+  repo: RoomRepository = getRoomRepository(),
+  now = Date.now(),
+): Promise<ClientRoomView> {
+  for (let attempt = 0; attempt < MAX_OCC_ATTEMPTS; attempt++) {
+    const state = await repo.getRoom(code);
+    if (!state) throw new GameServiceError('ROOM_NOT_FOUND', 'اتاق پیدا نشد.', 404);
+
+    const seatIndex = requireSeat(state, seatToken);
+    const seat = state.seats[seatIndex] as (typeof state.seats)[number];
+    const ticked = tickPhaseByClock(state, now);
+    const shouldRefresh =
+      !seat.joined || seat.lastSeenAt === null || now - seat.lastSeenAt >= PRESENCE_REFRESH_INTERVAL_MS;
+
+    if (!shouldRefresh && !ticked) return projectRoomView(state, seatIndex, now);
+
+    if (shouldRefresh) {
+      seat.joined = true;
+      seat.isOnline = true;
+      seat.lastSeenAt = now;
+    }
+
+    if (await repo.saveRoomIfVersion(state, state.version)) {
+      publishRoomUpdate(state);
+      return projectRoomView(state, seatIndex, now);
+    }
+  }
+
+  throw new GameServiceError(
+    'CONFLICT_RETRY_EXHAUSTED',
+    'به‌روزرسانی حضور همزمان چند بار تداخل داشت؛ دوباره تلاش کنید.',
+    409,
+  );
 }
 
 export async function performGameAction(

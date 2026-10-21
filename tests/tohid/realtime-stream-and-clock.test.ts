@@ -7,11 +7,15 @@ import {
   computeClockOffset,
   computeCutsceneElapsedMs,
 } from '../../src/client-sdk/cutscene-clock';
+import { ONLINE_WINDOW_MS, projectRoomView } from '../../src/engine/view-projector';
 import { SqliteRoomRepository } from '../../src/server/db/sqlite-repository';
 import { roomListenerCount, subscribeRoom } from '../../src/server/realtime/room-hub';
+import { shouldSendRoomViewUpdate } from '../../src/server/realtime/presence';
 import {
   performGameAction,
+  PRESENCE_REFRESH_INTERVAL_MS,
   reserveRoom,
+  touchSeatPresence,
 } from '../../src/server/services/room-service';
 import { resetRateLimits } from '../../src/server/auth/rate-limit';
 
@@ -36,6 +40,77 @@ describe('موج ۳ — همگام‌سازی میلی‌ثانیه‌ای کا�
     expect(computeCutsceneElapsedMs(start, 0, start - 500)).toBe(0);
     expect(computeCutsceneElapsedMs(start, 0, start + 45_300)).toBe(45_300);
     expect(computeCutsceneElapsedMs(start, 0, start + 999_999)).toBe(74_000);
+  });
+});
+
+describe('موج ۳ — حضور و اتصال مجدد بدون همگام‌سازی transform', () => {
+  it('تغییر presence را حتی با نسخه برابر منتشر می‌کند و snapshot قدیمی را رد می‌کند', () => {
+    expect(shouldSendRoomViewUpdate(8, 8, '110', '111')).toBe(true);
+    expect(shouldSendRoomViewUpdate(8, 8, '110', '110')).toBe(false);
+    expect(shouldSendRoomViewUpdate(7, 8, '110', '111')).toBe(false);
+    expect(shouldSendRoomViewUpdate(9, 8, '110', '110')).toBe(true);
+  });
+
+  it('حضور را با cadence محدود تازه می‌کند، reconnect را آنلاین می‌کند و آخرین کلاینت آنلاین شدن هم‌تیمی را می‌بیند', async () => {
+    const repo = new SqliteRoomRepository(path.join(tmpDir, 'presence.db'));
+    const createdAt = 1_700_000_000_000;
+    const reservation = await reserveRoom(
+      { playerCount: 3, playerNames: ['توحید ۱', 'امیرعلی ۲', 'علیرضا ۳'] },
+      repo,
+      createdAt,
+    );
+    const token = reservation.invites[0]!.seatToken;
+    const initial = await repo.getRoom(reservation.roomCode);
+    expect(initial?.seats[0]?.joined).toBe(false);
+
+    const publishedVersions: number[] = [];
+    const teammateVersions: number[] = [];
+    const unsubscribe = subscribeRoom(reservation.roomCode, (state) => {
+      publishedVersions.push(state.version);
+    });
+    const unsubscribeTeammate = subscribeRoom(reservation.roomCode, (state) => {
+      teammateVersions.push(state.version);
+    });
+
+    const firstTouchAt = createdAt + 5_000;
+    const firstView = await touchSeatPresence(reservation.roomCode, token, repo, firstTouchAt);
+    expect(firstView.me.joined).toBe(true);
+    expect(firstView.me.isOnline).toBe(true);
+    expect(firstView.me.lastSeenAt).toBe(firstTouchAt);
+    const afterFirstTouch = await repo.getRoom(reservation.roomCode);
+    expect(afterFirstTouch?.version).toBe((initial?.version ?? 0) + 1);
+
+    // Duplicate tabs/requests within the lease don't write or publish a room version each tick.
+    await touchSeatPresence(
+      reservation.roomCode,
+      token,
+      repo,
+      firstTouchAt + PRESENCE_REFRESH_INTERVAL_MS - 1,
+    );
+    expect((await repo.getRoom(reservation.roomCode))?.version).toBe(afterFirstTouch?.version);
+
+    // Concurrent reconnect/heartbeat attempts converge to one OCC write.
+    const refreshAt = firstTouchAt + PRESENCE_REFRESH_INTERVAL_MS;
+    const [reconnectedView, duplicateView] = await Promise.all([
+      touchSeatPresence(reservation.roomCode, token, repo, refreshAt),
+      touchSeatPresence(reservation.roomCode, token, repo, refreshAt),
+    ]);
+    expect(reconnectedView.me.isOnline).toBe(true);
+    expect(duplicateView.me.lastSeenAt).toBe(refreshAt);
+    const afterReconnect = await repo.getRoom(reservation.roomCode);
+    expect(afterReconnect?.version).toBe((afterFirstTouch?.version ?? 0) + 1);
+    expect(afterReconnect?.seats[0]?.lastSeenAt).toBe(refreshAt);
+    expect(publishedVersions).toEqual([afterFirstTouch!.version, afterReconnect!.version]);
+    expect(teammateVersions).toEqual(publishedVersions);
+
+    // Online status expires from its lease even though no movement/world state was persisted.
+    const expiredView = projectRoomView(afterReconnect!, 0, refreshAt + ONLINE_WINDOW_MS + 1);
+    expect(expiredView.me.isOnline).toBe(false);
+    expect(JSON.stringify(afterReconnect)).not.toMatch(/position|transform|movement/i);
+
+    unsubscribe();
+    unsubscribeTeammate();
+    repo.close();
   });
 });
 
@@ -95,5 +170,6 @@ describe('موج ۳ — انتشار بلادرنگ و استریم SSE', () => 
     expect(payload.roomView.me.playerName).toBe('امیرعلی ۲');
     expect(payload.roomView.myHeldTickets.mainTicket.revealedGoldenDigit).toBeNull();
     await reader.cancel();
+    expect(roomListenerCount(reservation.roomCode)).toBe(0);
   });
 });
