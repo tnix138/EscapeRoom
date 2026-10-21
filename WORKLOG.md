@@ -121,7 +121,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۵۴** — ✅ Archive: **۱۵۸** — 🧾 مجموع: **۲۱۲** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۸:۱۴ (`2026-10-21T16:58:14.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۵۵** — ✅ Archive: **۱۵۸** — 🧾 مجموع: **۲۱۳** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۲۰:۳۳:۳۹ (`2026-10-21T17:03:39.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -131,6 +131,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:EVENTS:START -->
 | 🕒 زمان (ایران / UTC) | رویداد | شناسه لاگ | توسط |
 | --- | --- | --- | --- |
+| ۱۴۰۵/۰۷/۲۹ — ۲۰:۳۳:۳۹<br>`2026-10-21T17:03:39.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-33-39_infra-agent_push`](./logs/pending/1405-07-29_20-33-39_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۸:۱۴<br>`2026-10-21T16:58:14.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-28-14_amirali_pr-61-wave6-ticket-puzzle`](./logs/pending/1405-07-29_20-28-14_amirali_pr-61-wave6-ticket-puzzle.md) | **امیرعلی** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۶:۲۰<br>`2026-10-21T16:56:20.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-26-20_infra-agent_pr54-wave10-infra`](./logs/pending/1405-07-29_20-26-20_infra-agent_pr54-wave10-infra.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۶:۱۷<br>`2026-10-21T16:56:17.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-26-17_amirali_push`](./logs/pending/1405-07-29_20-26-17_amirali_push.md) | **امیرعلی** |
@@ -142,7 +143,6 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۴:۵۱<br>`2026-10-21T16:54:51.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-24-51_infra-agent_wave9-auditorium-persistence-restore`](./logs/pending/1405-07-29_20-24-51_infra-agent_wave9-auditorium-persistence-restore.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۴:۱۵<br>`2026-10-21T16:54:15.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-24-15_infra-agent_pr54-wave8-infra`](./logs/pending/1405-07-29_20-24-15_infra-agent_pr54-wave8-infra.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۴:۱۴<br>`2026-10-21T16:54:14.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-24-14_infra-agent_push`](./logs/pending/1405-07-29_20-24-14_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
-| ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۴:۱۳<br>`2026-10-21T16:54:13.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-24-13_infra-agent_wave8-cutscene-sse-headers-timeout`](./logs/pending/1405-07-29_20-24-13_infra-agent_wave8-cutscene-sse-headers-timeout.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 <!-- WORKLOG:EVENTS:END -->
 
 ---
@@ -154,6 +154,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:PENDING:START -->
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- |
+| [`1405-07-29_20-33-39_infra-agent_push`](./logs/pending/1405-07-29_20-33-39_infra-agent_push.md) | پوش شاخه arena/3cf79cfd-escaperoom — 1079037 | `Push` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۳۳:۳۹<br>`2026-10-21T17:03:39.000Z` | origin/arena/3cf79cfd-escaperoom (origin/arena/3cf79cfd-escaperoom..1079037) |
 | [`1405-07-29_20-28-14_amirali_pr-61-wave6-ticket-puzzle`](./logs/pending/1405-07-29_20-28-14_amirali_pr-61-wave6-ticket-puzzle.md) | PR #61 — موج ۶ امیرعلی: بلیط و معما | `PR` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۸:۱۴<br>`2026-10-21T16:58:14.000Z` | PR #61 — arena/0956f116-escaperoom ➔ main |
 | [`1405-07-29_20-26-20_infra-agent_pr54-wave10-infra`](./logs/pending/1405-07-29_20-26-20_infra-agent_pr54-wave10-infra.md) | به‌روزرسانی PR #54 با موج ۱۰ زیرساخت (WAVE-10-INFRA.md) | `PR` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۶:۲۰<br>`2026-10-21T16:56:20.000Z` | PR #54 (WAVE-2-INFRA.md .. WAVE-10-INFRA.md) |
 | [`1405-07-29_20-26-17_amirali_push`](./logs/pending/1405-07-29_20-26-17_amirali_push.md) | پوش شاخه arena/0956f116-escaperoom — a6b1feb | `Push` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۶:۱۷<br>`2026-10-21T16:56:17.000Z` | origin/arena/0956f116-escaperoom (origin/main..a6b1feb) |
