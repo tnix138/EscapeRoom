@@ -5,7 +5,7 @@
 - **ساعت انجام:** ۱۶:۳۲:۳۰
 - **نوع فعالیت:** Infra-FullDeploy
 - **شناسه مرجع (Commit / PR):** شاخه `arena/b6d06c28-escaperoom` — دیپلوی Production `dpl_F4ddK4xRwvE8FR4cedNAuwVhmSh2` (`f354b65`) + دیپلوی Preview علیرضا `dpl_7bnxrUqTxnVrWFQCHLXcUoD7t1Ca` (`49ef807`)
-- **وضعیت:** Pending (ثبت استقرار Production پس از PR #11 توحید + استقرار Preview شاخه علیرضا و آرشیو لاگ‌های PR #10 و PR #11)
+- **وضعیت:** Archive (کامل و ادغام شده در `main` — `PR #12` / `66a457d`)
 - **زمان دقیق سیستمی:** 2026-10-21T13:02:30Z
 
 ### شرح دقیق فعالیت انجام‌شده
