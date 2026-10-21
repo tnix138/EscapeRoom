@@ -98,9 +98,11 @@
 
 - هیچ دیالوگی **جواب معما**، **عدد سه‌رقمی**، **رمز** یا **کد در** را نمی‌گوید.
 - راهنمایی فقط تلمیح است: «هر سایه نامی دارد»، «نام‌هایی که روی بلیط آمده».
-- بازبینی خودکار: `validateStoryScript()` در `src/components/cinema/story-script.ts`
-  متن خالی/بلند، بازهٔ نامعتبر، بیرون از ۷۴ ثانیه، هم‌پوشانی و شناسهٔ تکراری را
-  برمی‌گرداند؛ تست روایت الگوهای اسپویل را هم چک می‌کند.
+- بازبینی خودکار: `validateStoryScript()` در `tests/qa/story-script-rules.ts` متن
+  خالی/بلند، بازهٔ نامعتبر، بیرون از ۷۴ ثانیه، هم‌پوشانی، ترتیب و شناسهٔ تکراری را
+  برمی‌گرداند و `findSpoilers()` الگوهای اسپویل را می‌گیرد؛ هر تخلف، سوئیت CI را
+  قرمز می‌کند. (قاعده‌ها عمداً بیرون از `src/components/cinema/**` — محدودهٔ مالک
+  آن بخش — نگه داشته شده‌اند.)
 - اگر متنی عوض شد: اول این مستند، بعد `story-script.ts`، بعد تست.
 
 ## واژه‌نامهٔ فارسی (هماهنگی لحن با HUD)
@@ -132,10 +134,11 @@
 
 | فایل | نقش |
 |---|---|
-| `src/components/cinema/story-script.ts` | دیالوگ‌ها، انتخاب بیت جاری، `validateStoryScript()` |
+| `src/components/cinema/story-script.ts` | دیالوگ‌ها و انتخاب بیت جاری (فقط خواندن) |
 | `src/audio/story-cue-director.ts` | زمان‌بندی یک‌بارهٔ افکت‌های داستانی |
 | `src/audio/theater-audio-engine.ts` | `CUTSCENE_BEAT_WINDOWS` و موسیقی بیت‌ها |
 | `src/contracts/types.ts` | `CutsceneBeatId`، `GamePhase`، طول‌های کات‌سین |
+| `tests/qa/story-script-rules.ts` | `validateStoryScript()` و `findSpoilers()` — قواعد بازبینی نسخهٔ داستان |
 | `tests/qa/story-narrative.test.ts` | زمان‌بندی، متن‌ها، سیاست اسپویل، هم‌خوانی با بیت‌ها |
 | `tests/qa/story-cue-timing.test.ts` | رفتار `StoryCueDirector` (یک‌بار، پرش، تأخیر، reset) |
 | `tests/qa/game-path.test.ts` | ترتیب فازها و پایداری مسیر کامل بازی |

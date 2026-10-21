@@ -1,5 +1,3 @@
-import { TOTAL_CUTSCENE_DURATION_MS } from '../../contracts/types';
-
 export type StorySpeaker = 'راوی' | 'دربان' | 'بانوی صحنه' | 'مرد سیاه‌پوش' | 'همهمهٔ تالار';
 export type StoryDelivery = 'dialogue' | 'whisper' | 'narration';
 
@@ -66,61 +64,4 @@ export function getStoryDialogueAt(elapsedMs: number): StoryDialogueCue | null {
 export function getStoryCaptionAt(elapsedMs: number): { speaker: StorySpeaker; textFa: string } | null {
   const cue = getStoryDialogueAt(elapsedMs);
   return cue ? { speaker: cue.speaker, textFa: cue.textFa } : null;
-}
-
-/** کوتاه‌ترین و بلندترین متن مجاز یک بیت داستانی (فاز ۱۱-الف). */
-export const STORY_TEXT_MIN_LENGTH = 8;
-export const STORY_TEXT_MAX_LENGTH = 150;
-
-export type StoryScriptProblem =
-  | 'empty-text'
-  | 'too-long'
-  | 'out-of-range'
-  | 'empty-range'
-  | 'overlap'
-  | 'not-sorted'
-  | 'duplicate-id';
-
-export interface StoryScriptIssue {
-  cueId: string;
-  problem: StoryScriptProblem;
-}
-
-/**
- * بازبینی خودکار نسخهٔ داستان: متن خالی یا بیش از حد بلند، بازهٔ نامعتبر،
- * بیرون از ۷۴ ثانیه، هم‌پوشانی، ترتیب نادرست و شناسهٔ تکراری.
- * خروجی خالی یعنی نسخهٔ داستان سالم است.
- */
-export function validateStoryScript(
-  script: readonly StoryDialogueCue[],
-  durationMs = TOTAL_CUTSCENE_DURATION_MS,
-): StoryScriptIssue[] {
-  const issues: StoryScriptIssue[] = [];
-  const seen = new Set<string>();
-  let previousEnd = Number.NEGATIVE_INFINITY;
-  let previousStart = Number.NEGATIVE_INFINITY;
-
-  for (const cue of script) {
-    const text = (cue.textFa ?? '').trim();
-    if (text.length < STORY_TEXT_MIN_LENGTH) issues.push({ cueId: cue.id, problem: 'empty-text' });
-    if (text.length > STORY_TEXT_MAX_LENGTH) issues.push({ cueId: cue.id, problem: 'too-long' });
-    if (!Number.isFinite(cue.startMs) || !Number.isFinite(cue.endMs) || cue.endMs <= cue.startMs) {
-      issues.push({ cueId: cue.id, problem: 'empty-range' });
-    }
-    if (cue.startMs < 0 || cue.endMs > durationMs) {
-      issues.push({ cueId: cue.id, problem: 'out-of-range' });
-    }
-    if (cue.startMs < previousEnd) {
-      issues.push({ cueId: cue.id, problem: 'overlap' });
-    }
-    if (cue.startMs < previousStart) {
-      issues.push({ cueId: cue.id, problem: 'not-sorted' });
-    }
-    if (seen.has(cue.id)) issues.push({ cueId: cue.id, problem: 'duplicate-id' });
-    seen.add(cue.id);
-    previousStart = cue.startMs;
-    previousEnd = Math.max(previousEnd, cue.endMs);
-  }
-
-  return issues;
 }

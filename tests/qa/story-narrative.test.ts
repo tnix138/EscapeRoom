@@ -9,13 +9,16 @@ import {
 import { CUTSCENE_BEAT_WINDOWS } from '../../src/audio/theater-audio-engine';
 import {
   ORFEO_STORY_SCRIPT,
-  STORY_TEXT_MAX_LENGTH,
-  STORY_TEXT_MIN_LENGTH,
   getStoryCaptionAt,
   getStoryDialogueAt,
-  validateStoryScript,
   type StoryDialogueCue,
 } from '../../src/components/cinema/story-script';
+import {
+  STORY_TEXT_MAX_LENGTH,
+  STORY_TEXT_MIN_LENGTH,
+  findSpoilers,
+  validateStoryScript,
+} from './story-script-rules';
 import {
   ORFEO_STORY_AUDIO_CUES,
   type StoryAudioCue,
@@ -26,15 +29,6 @@ const BEAT_OF = (atMs: number): CutsceneBeatId => {
   if (!window) throw new Error(`زمان ${atMs} در هیچ بیت کات‌سین نیست`);
   return window.beat;
 };
-
-/**
- * الگوهای اسپویل: عدد سه‌رقمی/بیشتر، و واژه‌های لو‌دهندهٔ جواب به‌صورت واژهٔ مستقل
- * (تا ترکیب‌های بی‌گناهی مثل «بی‌پاسخ‌تر» مثبت کاذب نسازند).
- */
-const SPOILERS = [
-  /[0-9۰-۹]{3,}/,
-  /(?:^|[\s،؛.:!؟«»"'؛])(?:رمز|پاسخ|جواب|کدِ در)(?=$|[\s،؛.:!؟«»"'!])/,
-];
 
 describe('فاز ۱۱-الف — نسخهٔ داستان سالم است', () => {
   it('بازبینی خودکار هیچ ایرادی پیدا نمی‌کند', () => {
@@ -52,11 +46,7 @@ describe('فاز ۱۱-الف — نسخهٔ داستان سالم است', () =>
   });
 
   it('هیچ بیت داستانی جواب معما را لو نمی‌دهد', () => {
-    for (const cue of ORFEO_STORY_SCRIPT) {
-      for (const pattern of SPOILERS) {
-        expect(cue.textFa).not.toMatch(pattern);
-      }
-    }
+    expect(findSpoilers(ORFEO_STORY_SCRIPT)).toEqual([]);
   });
 });
 

@@ -17,6 +17,8 @@ import { usePlayerControls } from '@/engine3d/usePlayerControls';
 import { createAlleyGeometry } from '@/engine3d/alley-geometry';
 import { resolveInitialTransform, saveTransform } from '@/engine3d/spawn';
 import { createTransitionState, type TransitionPhase } from '@/engine3d/transition';
+import { RemotePlayerManager } from '@/engine3d/presence/RemotePlayerManager';
+import { toPresenceSnapshots } from '@/client-sdk/presence-avatars';
 import { ThreeErrorBoundary } from '@/engine3d/ThreeErrorBoundary';
 import type { PlayerTransform } from '@/engine3d/types';
 import type { ClientRoomView } from '@/contracts/types';
@@ -137,6 +139,41 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
         alleyRef.current = null;
       }
     };
+  }, [engine]);
+
+  // آواتار هم‌تیمی‌ها در صحنه (فاز ۰۴ / قرارداد #104): قاب حضور HUD به snapshot
+  // موتور تبدیل و در `RemotePlayerManager` هم‌گام می‌شود؛ هر فریم آواتارها درون‌یابی می‌شوند.
+  const remotePlayersRef = useRef<RemotePlayerManager | null>(null);
+  useEffect(() => {
+    const manager = new RemotePlayerManager();
+    remotePlayersRef.current = manager;
+    return () => {
+      manager.dispose();
+      remotePlayersRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    const manager = remotePlayersRef.current;
+    if (!engine || !manager) return;
+    engine.scene.add(manager);
+    return () => {
+      engine.scene.remove(manager);
+    };
+  }, [engine]);
+
+  useEffect(() => {
+    const manager = remotePlayersRef.current;
+    if (!manager) return;
+    manager.sync(toPresenceSnapshots(presence.presences, room.me.playerId), Date.now(), room.me.playerId);
+  }, [presence.presences, room.me.playerId]);
+
+  useEffect(() => {
+    if (!engine) return;
+    engine.setTick((delta) => {
+      remotePlayersRef.current?.update(delta);
+    });
+    return () => engine.setTick(() => {});
   }, [engine]);
 
   function openClue(kind: 'playbill' | 'rowChart') {
