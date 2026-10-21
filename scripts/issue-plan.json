@@ -64,9 +64,10 @@
     {
       "number": 77,
       "labels": [
-        "phase",
         "owner:alireza",
-        "priority:high"
+        "phase",
+        "priority:high",
+        "status:done"
       ],
       "milestone": "هفته ۴ — کلاینت حضور، ترس، ابزارهای مدیریتی",
       "assignee": "alispy021"
@@ -94,10 +95,11 @@
     {
       "number": 80,
       "labels": [
-        "phase",
         "owner:alireza",
         "owner:amirali",
-        "priority:high"
+        "phase",
+        "priority:high",
+        "status:done"
       ],
       "milestone": "هفته ۴ — کلاینت حضور، ترس، ابزارهای مدیریتی"
     },
@@ -135,10 +137,11 @@
     {
       "number": 84,
       "labels": [
-        "phase",
         "owner:alireza",
         "owner:nazanin",
-        "priority:medium"
+        "phase",
+        "priority:medium",
+        "status:done"
       ],
       "milestone": "هفته ۲ — CI، نورپردازی، ادمین، داستان"
     },
@@ -185,9 +188,10 @@
     {
       "number": 90,
       "labels": [
-        "split",
         "owner:alireza",
-        "priority:high"
+        "priority:high",
+        "split",
+        "status:done"
       ],
       "milestone": "هفته ۴ — کلاینت حضور، ترس، ابزارهای مدیریتی",
       "assignee": "alispy021"
@@ -227,9 +231,10 @@
     {
       "number": 96,
       "labels": [
-        "split",
         "owner:alireza",
-        "priority:medium"
+        "priority:medium",
+        "split",
+        "status:done"
       ],
       "milestone": "هفته ۲ — CI، نورپردازی، ادمین، داستان",
       "assignee": "alispy021"
@@ -237,9 +242,10 @@
     {
       "number": 97,
       "labels": [
-        "split",
         "owner:nazanin",
-        "priority:medium"
+        "priority:medium",
+        "split",
+        "status:done"
       ],
       "milestone": "هفته ۲ — CI، نورپردازی، ادمین، داستان",
       "assignee": "nazanindavoodi"
@@ -255,8 +261,9 @@
     {
       "number": 99,
       "labels": [
-        "tracker",
-        "owner:alireza"
+        "owner:alireza",
+        "status:done",
+        "tracker"
       ],
       "assignee": "alispy021",
       "bodyFile": "scripts/issue-bodies/99.md"
@@ -273,8 +280,9 @@
     {
       "number": 101,
       "labels": [
-        "tracker",
-        "owner:amir"
+        "owner:amir",
+        "status:done",
+        "tracker"
       ],
       "assignee": "emirhamzehlou"
     },
@@ -296,7 +304,8 @@
       "number": 104,
       "labels": [
         "contract",
-        "owner:tohid"
+        "owner:tohid",
+        "status:done"
       ],
       "assignee": "tnix138",
       "bodyFile": "scripts/issue-bodies/104.md",
@@ -418,6 +427,66 @@
       "number": 95,
       "marker": "<!-- issue-sync:done-09b -->",
       "body": "<!-- issue-sync:done-09b -->\n✅ **فاز ۰۹-ب (پوستهٔ پنل ادمین) تحویل شد.**\n\n| کار | وضعیت |\n|---|---|\n| چیدمان `src/app/admin/layout.tsx` با تم تاریک و فونت فارسی (Vazirmatn از `src/app/layout.tsx`) | ✅ |\n| صفحهٔ `/admin/login` که `LoginForm` امیر را import می‌کند | ✅ |\n| هدایت بازدیدکنندهٔ بدون جلسه از `/admin/**` به `/admin/login` (`src/app/admin/guard.ts`) | ✅ |\n| حالت لودینگ و خطای فارسی در `LoginForm` (بدون افشای جزئیات امنیتی) | ✅ |\n| واکنش‌گرا (پنل با `max-width` روی موبایل هم جا می‌شود) | ✅ |\n\n**تست:** ۷ مورد در `tests/amir/admin-shell.test.ts` — رندر صفحهٔ ورود و چیدمان، ریدایرکت بدون جلسه، نشست معتبر، کوکی دست‌کاری‌شده، کوکی منقضی و env تنظیم‌نشده. برای این تست‌ها ترنسفورم JSX در `vitest.config.ts` فعال شد (`oxc.jsx`) تا کامپوننت‌های `.tsx` هم قابل رندر شوند.\n\n⚠️ **شفاف‌سازی:** این دو فایل چون امیرعلی در دسترس نبود، توسط توحید به‌صورت **حداقلی** نوشته شده‌اند و کامل‌اند از نظر رفتار، نه طراحی نهایی. هر وقت امیرعلی برگشت می‌تواند آزادانه جایگزینشان کند؛ تست‌های بالا نگهبان رفتار باقی می‌مانند."
+    },
+    {
+      "number": 77,
+      "marker": "<!-- issue-sync:avatares-04 -->",
+      "body": "<!-- issue-sync:avatares-04 -->\n🔍 **بازبینی دوبارهٔ #77 — یک شکاف واقعی پیدا و بسته شد**\n\nکد `RemotePlayerManager` / `RemotePlayer` / `usePresence` تست داشت، ولی **در هیچ صحنه‌ای mount نبود**؛ یعنی HUD حضور هم‌تیمی را نشان می‌داد اما در جهان سه‌بعدی کسی دیده نمی‌شد. الان وصل است:\n\n- `src/client-sdk/presence-avatars.ts` — تبدیل قاب حضور HUD (`position`, `yawDeg`) به snapshot موتور (`transform`, `updatedAt`)، حذف بازیکن محلی، یکتاسازی، رد موقعیت نامعتبر (NaN/∞).\n- `src/components/alley/AlleyRoomThreeIntegration.tsx` — ساخت `RemotePlayerManager`، افزودن به `engine.scene`، هم‌گام‌سازی با هر قاب حضور، به‌روزرسانی آواتارها در تیک هر فریم و `dispose` در unmount.\n- `tests/tohid/presence-avatar-wiring.test.ts` — ۱۰ تست: تبدیل، حالت‌های خطا، چرخهٔ عمر (ساخت/به‌روز/حذف آفلاین ۳۰ ثانیه/dispose) و اتصال واقعی فایل صحنه.\n\n**شاهد:** `tests/alireza/presence-client.test.ts` (۸) + `tests/amirali/presence-contract.test.ts` (۲۱) + `tests/amirali/presence-phase12.test.ts` (۳۲) + `tests/tohid/presence-avatar-wiring.test.ts` (۱۰) — همه سبز. کامیت `59ad5c5`.\n\n**دربارهٔ FPS:** اندازه‌گیری روی سخت‌افزار واقعی در سندباکس ممکن نیست (بدون GPU/مرورگر). به‌جای تیک زدن الکی، روش گام‌به‌گام اندازه‌گیری در `docs/checklists/before-release.md` ثبت شد و این معیار به‌عنوان دروازهٔ انتشار در #88 و #87 پیگیری می‌شود."
+    },
+    {
+      "number": 90,
+      "marker": "<!-- issue-sync:horror-07a -->",
+      "body": "<!-- issue-sync:horror-07a -->\n🔍 **بازبینی — شکاف واقعی: مه و صدای ترس ساخته شده بودند ولی در بازی نبودند**\n\n`FearResponsiveFog` و `HorrorAudio` تست داشتند اما هیچ صحنه‌ای mount نمی‌کرد. الان در صحنهٔ سه‌بعدی کوچه زنده‌اند (کامیت `c030fec`):\n\n- **مه واکنش‌گرا:** `FearResponsiveFog` روی `engine.scene` ساخته می‌شود، با هر تغییر سطح ترس HUD (`calm/tense/panic` → ۰٫۰۸/۰٫۳۴/۰٫۶۸) چگالی هدف عوض می‌شود، در حلقهٔ رندر نرم می‌شود و در unmount مه قبلی بازگردانده می‌شود.\n- **صدای محیطی + ضربان قلب:** `HorrorAudio` فقط با تعامل کاربر (کلیک «قفل ماوس») `init` می‌شود (قانون autoplay مرورگرها)، سپس `startAmbience` + `startHeartbeat`؛ `setFearLevel` با سطح ترس هم‌گام است و در unmount `dispose`.\n- **HUD ترس** (سهم امیرعلی) از قبل با `HorrorSignalHud` به همان صحنه وصل بود.\n- `tests/qa/horror-wiring.test.ts` (۴ تست): اتصال واقعی، صعودی بودن چگالی مه با سه سطح، تندتر شدن ضربان با ترس، و سازگاری جهت مدل صوتی با مدل HUD.\n\n**شاهد:** `tests/alireza/horror-atmosphere.test.ts` (۹) + `tests/amirali/horror-phase07.test.ts` (۲۱) + `tests/amirali/horror-signal-phase07.test.ts` (۱۴) + `tests/qa/horror-wiring.test.ts` (۴).\n\n**دربارهٔ FPS:** اندازه‌گیری روی سخت‌افزار واقعی در سندباکس ممکن نیست (بدون GPU/مرورگر). به‌جای تیک زدن الکی، روش گام‌به‌گام اندازه‌گیری در `docs/checklists/before-release.md` ثبت شد و این معیار به‌عنوان دروازهٔ انتشار در #88 و #87 پیگیری می‌شود."
+    },
+    {
+      "number": 80,
+      "marker": "<!-- issue-sync:horror-07 -->",
+      "body": "<!-- issue-sync:horror-07 -->\n🔍 **بازبینی — شکاف واقعی: مه و صدای ترس ساخته شده بودند ولی در بازی نبودند**\n\n`FearResponsiveFog` و `HorrorAudio` تست داشتند اما هیچ صحنه‌ای mount نمی‌کرد. الان در صحنهٔ سه‌بعدی کوچه زنده‌اند (کامیت `c030fec`):\n\n- **مه واکنش‌گرا:** `FearResponsiveFog` روی `engine.scene` ساخته می‌شود، با هر تغییر سطح ترس HUD (`calm/tense/panic` → ۰٫۰۸/۰٫۳۴/۰٫۶۸) چگالی هدف عوض می‌شود، در حلقهٔ رندر نرم می‌شود و در unmount مه قبلی بازگردانده می‌شود.\n- **صدای محیطی + ضربان قلب:** `HorrorAudio` فقط با تعامل کاربر (کلیک «قفل ماوس») `init` می‌شود (قانون autoplay مرورگرها)، سپس `startAmbience` + `startHeartbeat`؛ `setFearLevel` با سطح ترس هم‌گام است و در unmount `dispose`.\n- **HUD ترس** (سهم امیرعلی) از قبل با `HorrorSignalHud` به همان صحنه وصل بود.\n- `tests/qa/horror-wiring.test.ts` (۴ تست): اتصال واقعی، صعودی بودن چگالی مه با سه سطح، تندتر شدن ضربان با ترس، و سازگاری جهت مدل صوتی با مدل HUD.\n\n**شاهد:** `tests/alireza/horror-atmosphere.test.ts` (۹) + `tests/amirali/horror-phase07.test.ts` (۲۱) + `tests/amirali/horror-signal-phase07.test.ts` (۱۴) + `tests/qa/horror-wiring.test.ts` (۴).\n\n**دربارهٔ FPS:** اندازه‌گیری روی سخت‌افزار واقعی در سندباکس ممکن نیست (بدون GPU/مرورگر). به‌جای تیک زدن الکی، روش گام‌به‌گام اندازه‌گیری در `docs/checklists/before-release.md` ثبت شد و این معیار به‌عنوان دروازهٔ انتشار در #88 و #87 پیگیری می‌شود."
+    },
+    {
+      "number": 96,
+      "marker": "<!-- issue-sync:story-11a -->",
+      "body": "<!-- issue-sync:story-11a -->\n🔍 **بازبینی #96 — انجام شده و حالا تست هم دارد**\n\n- دیالوگ‌ها در کات‌سین واقعی دیده می‌شوند: `ThreeCutsceneView` از `getStoryDialogueAt(elapsedMs)` می‌خواند و کپشن را روی همان ساعت سرور می‌سازد.\n- افکت‌های صوتی داستانی در `FirstPersonCutsceneStage` با `StoryCueDirector` پخش می‌شوند (هر cue یک بار، بدون تکرار بعد از پرش میان‌کات‌سین).\n- **زمان‌بندی با `contracts/types` هم‌خوان است:** هر ۱۰ بیت داستان داخل `[0, 74s)` و شروع هر کدام در یک `CutsceneBeatId` رسمی (`CUTSCENE_BEAT_WINDOWS`) است.\n- **رد متن خالی/بلند:** `tests/qa/story-script-rules.ts` (بیرون از `src/components/cinema/**` تا محدودهٔ مالک دست‌نخورده بماند) متن کوتاه‌تر از ۸ یا بلندتر از ۱۵۰ نویسه، بازهٔ نامعتبر، بیرون از ۷۴ ثانیه، هم‌پوشانی، ترتیب نادرست و شناسهٔ تکراری را می‌گیرد.\n- تلمیح بدون لو دادن جواب: `findSpoilers()` هیچ عدد سه‌رقمی/رمز/جوابی در متن‌ها پیدا نمی‌کند.\n\n**تست‌ها:** `tests/qa/story-narrative.test.ts` (۱۲) + `tests/qa/story-cue-timing.test.ts` (۶).\n**مستند مرجع:** `docs/features/story.md` (#97). کامیت `e46e4f5`."
+    },
+    {
+      "number": 97,
+      "marker": "<!-- issue-sync:story-11b -->",
+      "body": "<!-- issue-sync:story-11b -->\n✅ **#97 انجام شد — مستند داستان + تست روایت**\n\n- `docs/features/story.md`: خلاصهٔ روایت، شخصیت‌ها (دربان، راوی، بانوی صحنه، مرد سیاه‌پوش، همهمهٔ تالار)، پایان، جدول ۱۰ بیت با زمان و متن مرجع، افکت‌های صوتی، مسیر احساسی ترس → همکاری → کشف → فرار، سیاست اسپویل و واژه‌نامهٔ فارسی هم‌لحن با HUD.\n- `tests/qa/story-narrative.test.ts` (۱۲ تست): ترتیب فازها، هم‌خوانی بیت‌ها با `CutsceneBeatId`، لبه‌های `[start, end)`، متن‌های مجاز، و این‌که هیچ متنی جواب معما را لو نمی‌دهد.\n- `tests/qa/story-cue-timing.test.ts` (۶ تست): زمان‌بندی یک‌بارهٔ افکت‌ها، پرش میان‌کات‌سین، آستانهٔ تأخیر، `reset` و پن استریو.\n- `tests/qa/game-path.test.ts` (۸ تست): مسیر کامل `alley_puzzle → door_cutscene → theater_cutscene → in_theater` بدون عقب‌گرد.\n\n**شاهد:** ۵۹۳ تست در ۵۶ فایل سبز، `tsc` و `lint` پاک. کامیت `e46e4f5`."
+    },
+    {
+      "number": 84,
+      "marker": "<!-- issue-sync:story-11 -->",
+      "body": "<!-- issue-sync:story-11 -->\n✅ **فاز ۱۱ کامل شد.** هر دو زیرکار بسته شدند:\n\n- #96 (اجرا — علیرضا): دیالوگ و cueهای صوتی در کات‌سین واقعی، تست‌های زمان‌بندی و بازبینی متن.\n- #97 (محتوا — نازنین): `docs/features/story.md` + `tests/qa/story-*.test.ts`.\n\nنتیجهٔ معیارها: داستان مستند است ✅ · دیالوگ‌ها پیاده شده‌اند ✅ · صداهای داستانی پخش می‌شوند ✅ · تست داستان سبز ✅ (`tests/qa/`). کامیت `e46e4f5`."
+    },
+    {
+      "number": 104,
+      "marker": "<!-- issue-sync:contract-presence-review -->",
+      "body": "<!-- issue-sync:contract-presence-review -->\n✅ **بازبینی قرارداد — هر دو مصرف‌کننده تأیید شدند**\n\n- **کلاینت ۳D (#77):** `usePresence` + `RemotePlayerManager` در صحنهٔ کوچه mount شدند و بازیکن‌ها همدیگر را می‌بینند (کامیت `59ad5c5`).\n- **HUD (#85):** `usePresenceFeed` + `PresenceHud` با ۳۲ تست قرارداد/فاز ۱۲.\n\n**تغییر مسیرهای مرجع بعد از ادغام شاخه‌ها** (قرارداد فقط یک پیاده‌سازی دارد):\n\n| مورد | مسیر قطعی فعلی |\n|---|---|\n| نگه‌داری و اعتبارسنجی حضور | `src/server/realtime/presence-tracker.ts` |\n| سرویس (توکن صندلی، محدوده، rate limit ۵۰/ث) | `src/server/services/presence-service.ts` |\n| مسیر HTTP | `src/app/api/rooms/[code]/presence/route.ts` |\n| قرارداد سمت HUD | `src/components/hud/presence/presence-contract.ts` |\n| انتقال سمت کلاینت | `src/engine3d/presence/usePresence.ts` |\n\n`src/contracts/presence.ts` و `src/server/presence/**` (نسخهٔ موازی) در ادغام حذف شدند تا دو قرارداد هم‌زمان نماند.\n\n**تفاوت شکل پاسخ:** پاسخ `POST/GET` الان `data: { presences, serverNow }` است (بدون `accepted`/`entry`). هویت همچنان فقط از هدر `x-seat-token` خوانده می‌شود، `yaw` رادیان و در `[-π, π)` نرمال می‌شود، موقعیت خارج از محدودهٔ کوچه رد می‌شود (۴۰۰) و توکن نامعتبر ۴۰۱ می‌دهد. تیک‌های ۱۰Hz سمت کلاینت حفظ شده‌اند."
+    },
+    {
+      "number": 99,
+      "marker": "<!-- issue-sync:tracker-alireza-done -->",
+      "body": "<!-- issue-sync:tracker-alireza-done -->\n✅ **همهٔ کارهای این مسیر انجام و ادغام شد.**\n\n| کار | Issue | شاهد |\n|---|---|---|\n| حضور در کلاینت (دیدن هم‌تیمی) | #77 | `RemotePlayerManager` در صحنهٔ کوچه + ۷۱ تست حضور |\n| نورپردازی PBR و سایه | #78 | `src/engine3d/lighting/**` + `tests/alireza/lighting-rig.test.ts` |\n| مواد و بافت رویه‌ای | #79 | `src/engine3d/materials/**` + `tests/alireza/materials-pbr.test.ts` |\n| اتمسفر ترس — ۳D و صدا | #90 | مه + `HorrorAudio` در صحنه + `tests/qa/horror-wiring.test.ts` |\n| کات‌سین سینمایی | #81 | ۸ شات `camera-path` + `tests/alireza/cinema-camera-path.test.ts` |\n| محتوای داستانی — دیالوگ و صدا | #96 | `story-script` + `StoryCueDirector` + `tests/qa/story-*.test.ts` |\n\nاندازه‌گیری FPS روی دستگاه واقعی به‌عنوان دروازهٔ انتشار در #88 پیگیری می‌شود."
+    },
+    {
+      "number": 101,
+      "marker": "<!-- issue-sync:tracker-amir-done -->",
+      "body": "<!-- issue-sync:tracker-amir-done -->\n✅ **همهٔ کارهای این مسیر انجام شد.**\n\n| کار | Issue | شاهد |\n|---|---|---|\n| احراز هویت ادمین (سرور + فرم) | #94 | `src/server/auth/admin-session.ts` + `/api/admin/{login,logout,session}` + `tests/amir/admin-auth.test.ts` (۱۸) |\n| آمار و مشاهده | #83 | `/api/admin/{stats,rooms,players}` + داشبورد `src/app/admin/**` |\n| ابزارهای مدیریتی (حذف بازیکن، خطاها) | #86 | `DELETE /api/admin/players/[id]` + `/admin/errors` + رویدادهای ادمین |\n\nبعد از ادغام، ماژول نشست مشترک با نسخهٔ امیرعلی یکی شد (`admin-session.ts`) و `LoginForm` جداگانه حذف شد؛ رفتار پنل با `tests/amir/admin-*.test.ts` نگهبان است."
+    },
+    {
+      "number": 87,
+      "marker": "<!-- issue-sync:qa-14-status -->",
+      "body": "<!-- issue-sync:qa-14-status -->\n🟡 **وضعیت #87 — بخش خودکار کامل و سبز، بخش دستی باقی است**\n\nانجام‌شده و تست‌شده:\n- **مسیر کامل بازی:** `tests/qa/game-path.test.ts` (۸ تست) — ترتیب `alley_puzzle → door_cutscene → theater_cutscene → in_theater`، مرزهای دقیق ۱۱s/۷۴s، هم‌گامی `resolveRoomPhase` با ساعت سرور، شروع سالن تاریک و نبود توکن/seed در نمای کلاینت.\n- **روایت و صدا:** `tests/qa/story-narrative.test.ts` + `tests/qa/story-cue-timing.test.ts`.\n- **چک‌لیست انتشار:** بخش «وضعیت بازبینی» در `docs/checklists/before-release.md` پر شد و هر مورد شاهد جداگانه دارد.\n\nباقی‌ماندهٔ دستی (در سندباکس قابل سنجش نیست):\n- FPS دسکتاپ ۶۰ / موبایل ۳۰+ روی دستگاه واقعی — روش گام‌به‌گام در `docs/checklists/before-release.md` نوشته شد.\n- بررسی نبود خطای کنسول در مرورگر واقعی.\n- یک بازی واقعی ۴ نفرهٔ ۳۰ دقیقه‌ای.\n\nIssue باز می‌ماند تا این سه مورد با شاهد واقعی تیک بخورند."
+    },
+    {
+      "number": 88,
+      "marker": "<!-- issue-sync:release-15-status -->",
+      "body": "<!-- issue-sync:release-15-status -->\n🚫 **وضعیت #88 — انتشار هنوز مسدود است**\n\nآماده: `deploy.yml` (فقط از `main` سبز)، `npm run smoke`، `CHANGELOG.md` به‌روز، `docs/checklists/before-release.md` با بخش «وضعیت بازبینی».\n\nمسدودکننده‌ها:\n1. **production کهنه است:** `https://escaperoom-orfeo.vercel.app/api/health` سالم است (`storageDriver: supabase`) ولی `/admin/login` و مسیرهای جدید پنل ۴۰۴ می‌دهند؛ یعنی آخرین deploy قبل از فازهای ۰۹/۱۰/۱۳ است.\n2. **متغیرهای ادمین روی Vercel ست نیستند:** `ADMIN_USERNAME`، `ADMIN_PASSWORD_HASH` (`scrypt$…` از `npm run hash:admin`)، `ADMIN_SESSION_SECRET` — بدون آن‌ها ورود عمداً ۵۰۳ می‌دهد (fail-closed).\n3. **`.github/workflows` روی `main` وجود ندارد** (فایل‌ها فقط روی شاخهٔ ادغام‌اند)، پس deploy خودکار از `main` اجرا نمی‌شود و برنچ‌پروتکشن/سکرت `GITHUB_TOKEN` هم بدون دسترسی ادمین قابل تنظیم نیست.\n\nقدم بعدی: merge این شاخه به `main` → ست کردن سه متغیر بالا در Vercel → اجرای `npm run smoke` روی production → تیک نهایی چک‌لیست."
+    },
+    {
+      "number": 102,
+      "marker": "<!-- issue-sync:tracker-nazanin-status -->",
+      "body": "<!-- issue-sync:tracker-nazanin-status -->\n🟡 **وضعیت مسیر نازنین**\n\n- #97 ✅ انجام شد: `docs/features/story.md` + `tests/qa/story-narrative.test.ts` + `tests/qa/story-cue-timing.test.ts`.\n- #87 🟡 بخش خودکار (مسیر کامل بازی + روایت + وضعیت چک‌لیست) انجام شد؛ فقط سنجش FPS/خطای کنسول روی دستگاه واقعی و یک بازی ۴ نفره باقی است. جزئیات در کامنت #87."
     }
   ],
   "close": [
@@ -466,6 +535,51 @@
       "number": 95,
       "marker": "<!-- issue-sync:close-09b -->",
       "body": "<!-- issue-sync:close-09b -->\n✅ فاز ۰۹-ب تحویل شد: چیدمان و صفحهٔ ورود پنل ادمین + نگهبان ریدایرکت، با ۷ تست در `tests/amir/admin-shell.test.ts`. نسخهٔ فعلی حداقلی است و با طرح نهایی امیرعلی قابل تعویض."
+    },
+    {
+      "number": 77,
+      "marker": "<!-- issue-sync:close-04 -->",
+      "body": "<!-- issue-sync:close-04 -->\n✅ **فاز ۰۴ بسته شد — بازیکن‌ها همدیگر را در جهان سه‌بعدی می‌بینند.**\n\n- `RemotePlayerManager` + `RemotePlayer` + `usePresence` (قرارداد #104) اکنون در صحنهٔ کوچه mount هستند.\n- `src/client-sdk/presence-avatars.ts` قاب حضور HUD را به snapshot موتور تبدیل می‌کند.\n- آواتارِ آفلاین بعد از ۳۰ ثانیه از صحنه حذف می‌شود؛ بازیکن محلی هرگز آواتار نمی‌گیرد.\n- ۱۰ تست جدید در `tests/tohid/presence-avatar-wiring.test.ts` + ۶۱ تست حضور موجود.\n\nFPS روی دستگاه واقعی در دروازهٔ انتشار #88 سنجیده می‌شود. کامیت `59ad5c5`."
+    },
+    {
+      "number": 80,
+      "marker": "<!-- issue-sync:close-07 -->",
+      "body": "<!-- issue-sync:close-07 -->\n✅ **فاز ۰۷ بسته شد — اتمسفر ترس در بازی واقعی وجود دارد.**\n\n- مهِ واکنش‌گرا به سطح ترس (`FearResponsiveFog`) روی صحنهٔ کوچه.\n- صدای محیطی و ضربان قلب (`HorrorAudio`) فقط بعد از تعامل کاربر، هم‌گام با سطح ترس.\n- جامپ‌اسکر زمان‌محور، vignette/grain و HUD سه‌سطحی ترس از قبل وصل و تست‌شده بودند.\n- ۴ تست اتصال در `tests/qa/horror-wiring.test.ts` + ۴۴ تست ترس موجود.\n\nFPS روی دستگاه واقعی در #88. کامیت `c030fec`."
+    },
+    {
+      "number": 90,
+      "marker": "<!-- issue-sync:close-07a -->",
+      "body": "<!-- issue-sync:close-07a -->\n✅ **فاز ۰۷-الف بسته شد.**\n\nمه حجمی متغیر با ترس، vignette/grain، صدای محیطی تئاتر، ضربان قلب متناسب با تهدید و جامپ‌اسکر زمان‌بندی‌شده — همه پیاده، تست‌شده **و اکنون در صحنه mount**.\n\nاثبات: `tests/alireza/horror-atmosphere.test.ts` (۹) + `tests/qa/horror-wiring.test.ts` (۴) + `tests/amirali/horror-*.test.ts` (۳۵). کامیت `c030fec`."
+    },
+    {
+      "number": 96,
+      "marker": "<!-- issue-sync:close-11a -->",
+      "body": "<!-- issue-sync:close-11a -->\n✅ **فاز ۱۱-الف بسته شد.** دیالوگ، صدا و زمان‌بندی داستان در کات‌سین واقعی؛ بازبینی متن و زمان‌بندی cue با ۱۸ تست در `tests/qa/`. کامیت `e46e4f5`."
+    },
+    {
+      "number": 97,
+      "marker": "<!-- issue-sync:close-11b -->",
+      "body": "<!-- issue-sync:close-11b -->\n✅ **فاز ۱۱-ب بسته شد.** `docs/features/story.md` مرجع داستان است و `tests/qa/story-*.test.ts` روایت، زمان‌بندی و سیاست اسپویل را نگهبان است. کامیت `e46e4f5`."
+    },
+    {
+      "number": 84,
+      "marker": "<!-- issue-sync:close-11 -->",
+      "body": "<!-- issue-sync:close-11 -->\n✅ **فاز ۱۱ بسته شد.** هر دو زیرکار (#96، #97) کامل و تست‌شده‌اند؛ مستند داستان، دیالوگ‌های کات‌سین، صداهای داستانی و تست روایت موجودند. کامیت `e46e4f5`."
+    },
+    {
+      "number": 99,
+      "marker": "<!-- issue-sync:close-tracker-alireza -->",
+      "body": "<!-- issue-sync:close-tracker-alireza -->\n✅ **مسیر علیرضا بسته شد.** هر شش کار (#77، #78، #79، #90، #81، #96) انجام و ادغام شده‌اند. جدول شاهد در کامنت بالا."
+    },
+    {
+      "number": 101,
+      "marker": "<!-- issue-sync:close-tracker-amir -->",
+      "body": "<!-- issue-sync:close-tracker-amir -->\n✅ **مسیر امیر بسته شد.** #94، #83 و #86 انجام و ادغام شده‌اند؛ پنل ادمین سرتاسر کار می‌کند. جدول شاهد در کامنت بالا."
+    },
+    {
+      "number": 104,
+      "marker": "<!-- issue-sync:close-contract-presence -->",
+      "body": "<!-- issue-sync:close-contract-presence -->\n✅ **قرارداد حضور بسته شد.** هر دو مصرف‌کننده (#77 کلاینت ۳D، #85 HUD) پیاده و تست شده‌اند؛ مسیرهای قطعی و تفاوت شکل پاسخ در کامنت بالا ثبت شد."
     }
   ]
 }
