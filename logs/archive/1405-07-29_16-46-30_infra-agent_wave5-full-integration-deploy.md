@@ -7,16 +7,16 @@ author_slug: 'infra-agent'
 activity: 'Infra-FullDeploy'
 ref: 'شاخه arena/7e8eac07-escaperoom` — دیپلوی Production `dpl_BWQnxbFLaeqT3p6TcK33Kduw5zUG` (`8b389fb`) و `dpl_ExEjEsRrAyfWNXUt1mXkuF8DkjFn` (`d97ac25`) + دیپلوی‌های Preview امیرعلی `dpl_EKcwm9AHWuRz5RYAkYzx6HKCB29o` و `dpl_838LNSfpfUu4myqNik5GzcDbyDbW'
 branch: 'arena/7e8eac07-escaperoom'
-status: 'pending'
+status: 'archive'
 created_by: 'ایجنت چهارم زیرساخت (به مدیریت توحید)'
 created_at_jalali: '1405-07-29'
 created_at_time: '16:46:30'
 created_at_utc: '2026-10-21T13:16:30.000Z'
-archived_by: null
-archived_at_jalali: null
-archived_at_time: null
-archived_at_utc: null
-archive_note: null
+archived_by: 'ایجنت چهارم زیرساخت (به مدیریت توحید)'
+archived_at_jalali: '1405-07-29'
+archived_at_time: '17:20:58'
+archived_at_utc: '2026-10-21T13:50:58.000Z'
+archive_note: 'ادغام در main و استقرار Production (dpl_WGemQNJZMfhDVheHhGh1qtp54FsT — READY / PROMOTED)'
 commits: ['511237b']
 tags: null
 ---
@@ -40,7 +40,11 @@ tags: null
 | **ساخته‌شده توسط** | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | **زمان ایجاد (ایران / شمسی)** | **۱۴۰۵/۰۷/۲۹ — ۱۶:۴۶:۳۰** |
 | **زمان ایجاد (UTC)** | `2026-10-21T13:16:30.000Z` |
-| **وضعیت فعلی** | 🟡 **Pending** (در انتظار تأیید، ادغام یا اجرا) |
+| **وضعیت فعلی** | ✅ **Archive** (تأیید/ادغام یا اجراشده) |
+| **آرشیو شده توسط** | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
+| **زمان آرشیو (ایران / شمسی)** | **۱۴۰۵/۰۷/۲۹ — ۱۷:۲۰:۵۸** |
+| **زمان آرشیو (UTC)** | `2026-10-21T13:50:58.000Z` |
+| **یادداشت آرشیو** | ادغام در main و استقرار Production (dpl_WGemQNJZMfhDVheHhGh1qtp54FsT — READY / PROMOTED) |
 | **کامیت‌های مرتبط** | `511237b` |
 
 ## 🔁 چرخه عمر لاگ
@@ -48,9 +52,9 @@ tags: null
 | رویداد | توسط | تاریخ شمسی | ساعت (ایران) | زمان UTC | یادداشت |
 | --- | --- | --- | --- | --- | --- |
 | 🟡 ایجاد و ثبت در `Pending` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ | ۱۶:۴۶:۳۰ | `2026-10-21T13:16:30.000Z` | ثبت اولیه گزارش |
-| 🟢 تبدیل به `Archive` | ⏳ در انتظار | — | — | — | هنوز آرشیو نشده است |
+| 🟢 تبدیل به `Archive` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ | ۱۷:۲۰:۵۸ | `2026-10-21T13:50:58.000Z` | ادغام در main و استقرار Production (dpl_WGemQNJZMfhDVheHhGh1qtp54FsT — READY / PROMOTED) |
 
-> 🧾 **خط زمان:** این لاگ در **۱۴۰۵/۰۷/۲۹ — ۱۶:۴۶:۳۰** توسط **ایجنت چهارم زیرساخت (به مدیریت توحید)** ساخته شد و در حال حاضر در وضعیت **`Pending`** (در انتظار تأیید، ادغام یا اجرا) قرار دارد.
+> 🧾 **خط زمان:** این لاگ در **۱۴۰۵/۰۷/۲۹ — ۱۶:۴۶:۳۰** توسط **ایجنت چهارم زیرساخت (به مدیریت توحید)** ساخته شد و در **۱۴۰۵/۰۷/۲۹ — ۱۷:۲۰:۵۸** توسط **ایجنت چهارم زیرساخت (به مدیریت توحید)** به **`Archive`** منتقل شد.
 <!-- WORKLOG:LOG-HEADER:END -->
 
 ---
@@ -65,3 +69,8 @@ tags: null
    - بررسی زنده مسیرهای `/` (فرم رزرو ۳ تا ۸ نفره امیرعلی)، `/preview/invitation` (پیش‌نمایش کارت دعوت)، `/preview/alley` (کوچه و معمای بلیط‌ها)، `/preview/cinema` (سینمای اول‌شخص و دربان علیرضا) و `/api/health` (`{"ok":true,"data":{"status":"healthy","storageDriver":"supabase"}}`).
    - بررسی سلامت سرویس‌های `db`، `rest` و `auth` (`ACTIVE_HEALTHY`) و جدول `public.rooms` روی پروژه Supabase (`yavwoaqxhptzufmjckwz`).
 4. **آرشیو لاگ‌های ادغام‌شده:** انتقال تمامی لاگ‌های مرج‌شده‌ی `PR #12` (ایجنت چهارم)، `PR #13` (علیرضا) و `PR #14` (امیرعلی) از `logs/pending/` به `logs/archive/` و به‌روزرسانی جدول `WORKLOG.md`.
+
+## 🛠️ نتیجه اجرای ایجنت چهارم (زیرساخت)
+- **وضعیت:** ✅ در شاخه `main` ادغام و در استقرار نهایی Production (`dpl_WGemQNJZMfhDVheHhGh1qtp54FsT` روی کامیت `0cadb44`) مستقر و تأیید شد (`READY` / `PROMOTED`).
+- **لینک عمومی Production:** `https://escaperoom-orfeo.vercel.app`
+- **وضعیت تست دود (Smoke Test):** تمامی مسیرهای `/`، `/preview/invitation`، `/preview/alley`، `/preview/cinema`، `/preview/auditorium` و `/api/health` (`storageDriver: "supabase"`) سالم و فعال هستند.
