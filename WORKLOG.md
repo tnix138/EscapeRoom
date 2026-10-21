@@ -14,6 +14,7 @@
 
 | شناسه لاگ | نام شخص | تاریخ شمسی | ساعت انجام | نوع فعالیت و مرجع | توضیحات کار انجام‌شده / عملیات درخواستی | فایل جزئیات |
 |---|---|---|---|---|---|---|
+| `1405-07-29_16-29-51_tohid_contract-conformance-and-dod` | **توحید** | ۱۴۰۵/۰۷/۲۹ | ۱۶:۲۹:۵۱ | `Commit` (شاخه `arena/045041ba-escaperoom`) | بستن تحویل نهایی توحید: افزودن ۷ تست انطباق زمان‌اجرای قرارداد و عدم نشت داده داخلی برای ۳ تا ۸ نفر و هر ۴ فاز، تیک چک‌لیست تحویل در `TASKS-TOHID.md` و تست زنده سفر کامل ۴ نفره تا سالن تاریک (مجموع ۳۹ تست پاس). | [مشاهده فایل](./logs/pending/1405-07-29_16-29-51_tohid_contract-conformance-and-dod.md) |
 | `1405-07-29_16-24-00_infra-agent_wave3-fulldeploy-and-archive` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ | ۱۶:۲۴:۰۰ | `Infra-FullDeploy` (شاخه `arena/c9528bce-escaperoom`) | استقرار مجدد Production از آخرین `main` (`dpl_4jfxZBLatr4Q9gwfTqZAAg3cmUps` با تنظیمات `vercel.json` و سخت‌سازی موج ۲ توحید)، تست سلامت آنلاین `https://escaperoom-orfeo.vercel.app/api/health` و انتقال تمامی لاگ‌های ادغام‌شده از `Pending` به `Archive`. | [مشاهده فایل](./logs/pending/1405-07-29_16-24-00_infra-agent_wave3-fulldeploy-and-archive.md) |
 
 ---
