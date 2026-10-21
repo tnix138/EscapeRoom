@@ -121,7 +121,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۲۸** — ✅ Archive: **۱۱۵** — 🧾 مجموع: **۱۴۳** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۷:۴۱ (`2026-10-21T16:27:41.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۲۹** — ✅ Archive: **۱۱۵** — 🧾 مجموع: **۱۴۴** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۸:۱۰ (`2026-10-21T16:28:10.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -131,6 +131,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:EVENTS:START -->
 | 🕒 زمان (ایران / UTC) | رویداد | شناسه لاگ | توسط |
 | --- | --- | --- | --- |
+| ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۸:۱۰<br>`2026-10-21T16:28:10.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-58-10_infra-agent_push`](./logs/pending/1405-07-29_19-58-10_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۷:۴۱<br>`2026-10-21T16:27:41.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-57-41_infra-agent_pr48-production-deploy-pr46-pr47`](./logs/pending/1405-07-29_19-57-41_infra-agent_pr48-production-deploy-pr46-pr47.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۷:۱۹<br>`2026-10-21T16:27:19.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-57-19_infra-agent_push`](./logs/pending/1405-07-29_19-57-19_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۶:۵۳<br>`2026-10-21T16:26:53.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-56-53_infra-agent_production-deploy-after-pr46-pr47`](./logs/pending/1405-07-29_19-56-53_infra-agent_production-deploy-after-pr46-pr47.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
@@ -142,7 +143,6 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۴:۰۷<br>`2026-10-21T16:24:07.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-54-07_tohid_push-wave4-scene-state`](./logs/pending/1405-07-29_19-54-07_tohid_push-wave4-scene-state.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۴:۰۱<br>`2026-10-21T16:24:01.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-54-01_tohid_wave4-scene-state-refresh`](./logs/pending/1405-07-29_19-54-01_tohid_wave4-scene-state-refresh.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۴۹:۰۳<br>`2026-10-21T16:19:03.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-49-03_tohid_pr-wave3-presence`](./logs/pending/1405-07-29_19-49-03_tohid_pr-wave3-presence.md) | **توحید** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۹:۴۸:۴۱<br>`2026-10-21T16:18:41.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-48-41_tohid_push-wave3-presence`](./logs/pending/1405-07-29_19-48-41_tohid_push-wave3-presence.md) | **توحید** |
 <!-- WORKLOG:EVENTS:END -->
 
 ---
@@ -154,6 +154,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:PENDING:START -->
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- |
+| [`1405-07-29_19-58-10_infra-agent_push`](./logs/pending/1405-07-29_19-58-10_infra-agent_push.md) | پوش شاخه arena/0473db0f-escaperoom — b43d74b | `Push` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۸:۱۰<br>`2026-10-21T16:28:10.000Z` | origin/arena/0473db0f-escaperoom (origin/arena/0473db0f-escaperoom..b43d74b) |
 | [`1405-07-29_19-57-41_infra-agent_pr48-production-deploy-pr46-pr47`](./logs/pending/1405-07-29_19-57-41_infra-agent_pr48-production-deploy-pr46-pr47.md) | PR #48 — استقرار Production پس از موج‌های ۳ و ۴ توحید و آرشیو لاگ‌های PR #45 | `PR` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۷:۴۱<br>`2026-10-21T16:27:41.000Z` | PR #48 (arena/0473db0f-escaperoom → main) |
 | [`1405-07-29_19-57-19_infra-agent_push`](./logs/pending/1405-07-29_19-57-19_infra-agent_push.md) | پوش شاخه arena/0473db0f-escaperoom — 07e3202 | `Push` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۷:۱۹<br>`2026-10-21T16:27:19.000Z` | origin/arena/0473db0f-escaperoom (origin/main..07e3202) |
 | [`1405-07-29_19-56-53_infra-agent_production-deploy-after-pr46-pr47`](./logs/pending/1405-07-29_19-56-53_infra-agent_production-deploy-after-pr46-pr47.md) | دیپلوی Production پس از ادغام موج‌های ۳ و ۴ توحید (dpl_BWq27G9267uGzCNKL7ENjLXH7sQ2) و آرشیو لاگ‌های PR #45 | `Infra-FullDeploy` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۵۶:۵۳<br>`2026-10-21T16:26:53.000Z` | Vercel dpl_BWq27G9267uGzCNKL7ENjLXH7sQ2 / PR #46 & PR #47 |
