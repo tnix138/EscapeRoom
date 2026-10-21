@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import InvitationCardVideo from './InvitationCardVideo';
+import { rememberSeatToken } from './seat-storage';
 
 interface InvitationGateProps {
   code: string;
@@ -23,18 +24,17 @@ export default function InvitationGate({ code, seatToken, requestedName, request
   const [isPreview, setIsPreview] = useState(Boolean(requestedName));
   const [error, setError] = useState('');
   const [sending, setSending] = useState(false);
+  const primaryActionRef = useRef<HTMLAnchorElement | null>(null);
 
   useEffect(() => {
-    let cancelled = false;
+    // قرارداد ذخیرهٔ توکن: `seat:<code>` و `orfeo:<code>:<token>` — مسیر اتاق همین‌ها را می‌خواند.
     try {
-      // The room route reads a per-tab token so separate invitees can share this browser.
-      sessionStorage.setItem(`seat:${code}`, seatToken);
-      sessionStorage.setItem(`orfeo:${code}:${seatToken}`, seatToken);
-      localStorage.setItem(`orfeo:${code}:${seatToken}`, seatToken);
+      rememberSeatToken(code, seatToken, [window.sessionStorage, window.localStorage]);
     } catch {
-      // Storage is a convenience; the current invitation still has its token in memory.
+      // storage اختیاری است؛ توکن در حافظهٔ همین صفحه باقی می‌ماند.
     }
 
+    let cancelled = false;
     async function loadSeat() {
       try {
         const response = await fetch(`/api/rooms/${encodeURIComponent(code)}`, {
@@ -56,13 +56,22 @@ export default function InvitationGate({ code, seatToken, requestedName, request
           }
         }
       } catch {
-        // The visual invitation can run independently before the room API is available.
+        // دعوت‌نامهٔ بصری مستقل از API هم قابل نمایش است.
       }
       if (!cancelled) setState('watching');
     }
     void loadSeat();
     return () => { cancelled = true; };
   }, [code, seatToken]);
+
+  // در حالت‌های پایانی، فوکوس روی اقدام اصلی می‌رود تا کاربر با کیبورد گیر نکند.
+  useEffect(() => {
+    if (state === 'already-watched' || state === 'preview-complete') {
+      const timer = window.setTimeout(() => primaryActionRef.current?.focus({ preventScroll: true }), 0);
+      return () => window.clearTimeout(timer);
+    }
+    return undefined;
+  }, [state]);
 
   async function completeInvitation() {
     setSending(true);
@@ -94,21 +103,82 @@ export default function InvitationGate({ code, seatToken, requestedName, request
   }
 
   if (state === 'loading') {
-    return <main className="invitation-loading"><span className="loading-seal">✳</span><p>در حال یافتن صندلی شما…</p><span className="loading-line" /></main>;
+    return (
+      <main className="invitation-loading" aria-busy="true">
+        <span className="loading-seal" aria-hidden="true">✳</span>
+        <p role="status">در حال یافتن صندلی شما…</p>
+        <span className="loading-line" />
+      </main>
+    );
   }
 
   if (state === 'already-watched') {
-    return <main className="invitation-loading"><span className="loading-seal">✦</span><p>این دعوت‌نامه پیش‌تر گشوده شده است.</p><button className="invitation-secondary" onClick={() => router.replace(`/room/${encodeURIComponent(code)}`)}>بازگشت به اتاق</button></main>;
+    return (
+      <main className="invitation-loading">
+        <span className="loading-seal" aria-hidden="true">✦</span>
+        <p>این دعوت‌نامه پیش‌تر گشوده شده است.</p>
+        <a
+          ref={primaryActionRef}
+          className="invitation-secondary"
+          href={`/room/${encodeURIComponent(code)}`}
+          onClick={(event) => {
+            event.preventDefault();
+            router.replace(`/room/${encodeURIComponent(code)}`);
+          }}
+        >
+          بازگشت به اتاق
+        </a>
+      </main>
+    );
   }
 
   if (state === 'preview-complete') {
-    return <main className="invitation-finish"><span className="finish-ornament">✳</span><p className="invitation-kicker"><span /> {playerName} · {seatLabel}</p><h1>دعوت‌نامه پذیرفته شد.</h1><p>پیش‌درآمد شما به پایان رسید. وقتی سرویس اتاق فعال شود، از همین لینک وارد کوچهٔ تماشاخانه می‌شوید.</p><div className="finish-actions"><a className="invitation-primary" href={`/preview/alley?name=${encodeURIComponent(playerName)}&seat=${encodeURIComponent(seatLabel)}&seatIndex=${seatIndex}`}>ادامه به کوچهٔ تماشاخانه</a><a className="invitation-secondary" href="/">بازگشت به صفحهٔ رزرو</a><button className="invitation-secondary" onClick={() => { setError(''); setState('watching'); }}>بازپخش دعوت‌نامه</button></div></main>;
+    return (
+      <main className="invitation-finish">
+        <span className="finish-ornament" aria-hidden="true">✳</span>
+        <p className="invitation-kicker"><span /> {playerName} · {seatLabel}</p>
+        <h1>دعوت‌نامه پذیرفته شد.</h1>
+        <p>
+          صندلی شما در همین مرورگر ذخیره شد. با فعال‌شدن سرویس اتاق، از همین لینک مستقیم وارد کوچهٔ
+          تماشاخانه می‌شوید؛ نیازی به فرستادن دوبارهٔ لینک نیست.
+        </p>
+        <div className="finish-actions">
+          <a
+            ref={primaryActionRef}
+            className="invitation-primary"
+            href={`/preview/alley?name=${encodeURIComponent(playerName)}&seat=${encodeURIComponent(seatLabel)}&seatIndex=${seatIndex}`}
+          >
+            ادامه به کوچهٔ تماشاخانه
+          </a>
+          <a className="invitation-secondary" href="/">بازگشت به صفحهٔ رزرو</a>
+          <button className="invitation-secondary" type="button" onClick={() => { setError(''); setState('watching'); }}>
+            بازپخش دعوت‌نامه
+          </button>
+        </div>
+      </main>
+    );
   }
 
-  return <>
-    {isPreview && <div className="preview-ribbon">حالت پیش‌نمایش · لینک دعوت نمایشی</div>}
-    <InvitationCardVideo playerName={playerName} seatLabel={seatLabel} onComplete={() => { void completeInvitation(); }} />
-    {sending && <div className="invitation-overlay"><span className="loading-seal">✳</span><p>دعوت‌نامه پذیرفته شد؛ درها گشوده می‌شوند…</p></div>}
-    {error && <div className="invitation-error" role="alert">{error}<button onClick={() => setError('')}>بستن</button></div>}
-  </>;
+  return (
+    <>
+      {isPreview && <div className="preview-ribbon">حالت پیش‌نمایش · لینک دعوت نمایشی</div>}
+      <InvitationCardVideo
+        playerName={playerName}
+        seatLabel={seatLabel}
+        onComplete={() => { void completeInvitation(); }}
+      />
+      {sending && (
+        <div className="invitation-overlay" role="status" aria-live="polite" aria-busy="true">
+          <span className="loading-seal" aria-hidden="true">✳</span>
+          <p>دعوت‌نامه پذیرفته شد؛ درها گشوده می‌شوند…</p>
+        </div>
+      )}
+      {error && (
+        <div className="invitation-error" role="alert">
+          {error}
+          <button type="button" onClick={() => setError('')}>بستن</button>
+        </div>
+      )}
+    </>
+  );
 }
