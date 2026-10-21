@@ -8,6 +8,8 @@ import {
   firstInvalidField,
   loginErrorMessage,
   loginStatusMessage,
+  landingAvailabilityFromStatus,
+  ADMIN_PANEL_PENDING_MESSAGE,
   passwordToggleLabel,
   readLoginResult,
   safeAdminLanding,
@@ -34,6 +36,8 @@ export default function AdminLoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<LoginErrors>({});
   const [formError, setFormError] = useState('');
+  /** مقصد ورود وقتی صفحه‌اش هنوز در مخزن نیست (داشبورد فاز ۱۰ — امیر). */
+  const [pendingLanding, setPendingLanding] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [session, setSession] = useState<AdminSessionView | null>(null);
 
@@ -87,7 +91,15 @@ export default function AdminLoginPage() {
       setPassword('');
       setSubmitting(false);
       const next = new URLSearchParams(window.location.search).get('next');
-      window.location.assign(safeAdminLanding(next));
+      const landing = safeAdminLanding(next);
+      // مقصد ممکن است هنوز ساخته نشده باشد (داشبورد فاز ۱۰ — امیر)؛
+      // به‌جای پرت کردن مدیر به ۴۰۴، یک بار وجودش را می‌سنجیم.
+      const availability = await probeLanding(landing);
+      if (availability === 'missing') {
+        setPendingLanding(landing);
+        return;
+      }
+      window.location.assign(landing);
     } catch {
       setFormError(loginErrorMessage(0));
       setSubmitting(false);
@@ -135,7 +147,7 @@ export default function AdminLoginPage() {
                 autoComplete="username"
                 autoCapitalize="none"
                 spellCheck={false}
-                disabled={submitting || success}
+                disabled={submitting || success || Boolean(pendingLanding)}
                 aria-invalid={errors.username ? true : undefined}
                 aria-describedby={errors.username ? 'admin-username-error' : undefined}
               />
@@ -196,15 +208,35 @@ export default function AdminLoginPage() {
           )}
 
           <p className="sr-only" role="status" aria-live="polite">
-            {loginStatusMessage({ submitting, error: formError, success })}
+            {loginStatusMessage({ submitting, error: formError, success: success && !pendingLanding })}
           </p>
+
+          {pendingLanding && (
+            <div className="admin-login-pending" role="status">
+              <p>{ADMIN_PANEL_PENDING_MESSAGE}</p>
+              <p className="admin-login-pending-path" dir="ltr">
+                {pendingLanding}
+              </p>
+              <a className="admin-login-pending-link" href="/">
+                بازگشت به تماشاخانه
+              </a>
+            </div>
+          )}
 
           <button
             className="button button-gold admin-login-submit"
             type="submit"
-            disabled={submitting || success}
+            disabled={submitting || success || Boolean(pendingLanding)}
           >
-            <span>{success ? 'ورود موفق — انتقال…' : submitting ? 'در حال بررسی…' : 'ورود به پنل'}</span>
+            <span>
+              {success
+                ? pendingLanding
+                  ? 'ورود موفق'
+                  : 'ورود موفق — انتقال…'
+                : submitting
+                  ? 'در حال بررسی…'
+                  : 'ورود به پنل'}
+            </span>
             <span className="button-arrow" aria-hidden="true">
               ←
             </span>
@@ -218,4 +250,23 @@ export default function AdminLoginPage() {
       </div>
     </section>
   );
+}
+
+/**
+ * سنجش وجود مقصد با درخواست HEAD و مهلت کوتاه.
+ * خطای شبکه/مهلت = وضعیت نامعلوم → اجازهٔ رفتن می‌دهیم (fail-open)؛
+ * فقط ۴۰۴/۴۰۵ یعنی «واقعاً نیست».
+ */
+async function probeLanding(landing: string): Promise<'ready' | 'missing' | 'unknown'> {
+  try {
+    const response = await fetch(landing, {
+      method: 'HEAD',
+      credentials: 'same-origin',
+      cache: 'no-store',
+      signal: AbortSignal.timeout(2_000),
+    });
+    return landingAvailabilityFromStatus(response.status);
+  } catch {
+    return 'unknown';
+  }
 }

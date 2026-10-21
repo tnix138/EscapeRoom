@@ -45,8 +45,13 @@ export interface RemotePlayerInput {
   name?: unknown;
   seatIndex?: unknown;
   seatLabel?: unknown;
-  transform?: { x?: unknown; y?: unknown; z?: unknown } | null;
+  transform?: { x?: unknown; y?: unknown; z?: unknown; yawDeg?: unknown; yaw?: unknown } | null;
   position?: { x?: unknown; y?: unknown; z?: unknown } | null;
+  /** چرخش سرور به رادیان (قرارداد ۲ / Issue #104). */
+  yaw?: unknown;
+  /** چرخش شکل قدیمی کلاینت به درجه (فاز ۰۴). */
+  yawDeg?: unknown;
+  phase?: unknown;
   updatedAt?: unknown;
   lastUpdate?: unknown;
   x?: unknown;
@@ -60,6 +65,10 @@ export interface RemotePlayer {
   seatIndex: number | null;
   seatLabel: string | null;
   position: Vec3;
+  /** چرخش افقی به درجه؛ از `yaw` رادیانی یا `yawDeg` قدیمی خوانده می‌شود. */
+  yawDeg: number;
+  /** فاز بازی هنگام آخرین ارسال؛ اگر نبود null. */
+  phase: string | null;
   /** زمان آخرین به‌روزرسانی (ms)؛ نامعتبر → ۰ یعنی «نامعلوم». */
   updatedAt: number;
 }
@@ -143,9 +152,25 @@ export function normalizeRemotePlayer(input: unknown): RemotePlayer | null {
   const seatLabel = typeof raw.seatLabel === 'string' && raw.seatLabel.trim()
     ? raw.seatLabel.trim()
     : null;
-  const updatedAt = Math.max(0, finiteOr(raw.updatedAt, finiteOr(raw.lastUpdate, 0)));
+  // `receivedAt` هم ساعت سرور است و اگر lastUpdate نبود جایگزین می‌شود.
+  const updatedAt = Math.max(
+    0,
+    finiteOr(raw.updatedAt, finiteOr(raw.lastUpdate, finiteOr((raw as { receivedAt?: unknown }).receivedAt, 0))),
+  );
 
-  return { playerId, name, seatIndex, seatLabel, position: point, updatedAt };
+  // چرخش: شکل قدیمی درجه دارد و قرارداد ۲ رادیان؛ درجهٔ نرمال‌شده ذخیره می‌شود.
+  const rawTransform = raw.transform ?? null;
+  const yawDegSource = raw.yawDeg ?? rawTransform?.yawDeg;
+  const yawRadSource = raw.yaw ?? rawTransform?.yaw;
+  const yawDeg = typeof yawDegSource === 'number' && Number.isFinite(yawDegSource)
+    ? yawDegSource
+    : typeof yawRadSource === 'number' && Number.isFinite(yawRadSource)
+      ? (yawRadSource * 180) / Math.PI
+      : 0;
+
+  const phase = typeof raw.phase === 'string' && raw.phase.trim() ? raw.phase.trim() : null;
+
+  return { playerId, name, seatIndex, seatLabel, position: point, yawDeg, phase, updatedAt };
 }
 
 /** فهرست خام → فهرست معتبر، بدون تکرار playerId و حداکثر `MAX_MARKERS` مورد. */

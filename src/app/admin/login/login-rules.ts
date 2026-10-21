@@ -19,6 +19,8 @@ export const ADMIN_ROLES: readonly AdminRole[] = ['superadmin', 'moderator', 'vi
 /** مسیرهای رسمی ورود/خروج (توحید و امیر پیاده می‌کنند). */
 export const LOGIN_ENDPOINT = '/api/admin/login';
 export const LOGOUT_ENDPOINT = '/api/admin/logout';
+/** بررسی جلسهٔ فعلی؛ اگر امیر این مسیر را متفاوت ساخت، فقط همین ثابت عوض می‌شود. */
+export const ADMIN_SESSION_ENDPOINT = '/api/admin/session';
 
 /** مقصد پیش‌فرض پس از ورود موفق؛ داشبورد در فاز ۱۰ ساخته می‌شود. */
 export const DEFAULT_ADMIN_LANDING = '/admin';
@@ -180,4 +182,50 @@ export function loginStatusMessage(options: { submitting: boolean; error: string
   if (options.success) return 'ورود موفق بود؛ در حال رفتن به داشبورد…';
   if (options.submitting) return 'در حال بررسی نام کاربری و گذرواژه…';
   return options.error;
+}
+
+/* ==========================================================================
+ * محافظ جلسهٔ پنل (فاز ۰۹-ب — «اگر جلسه معتبر نیست، به /admin/login برو»)
+ * ========================================================================== */
+
+/** مسیر صفحهٔ ورود. */
+export const ADMIN_LOGIN_PATH = '/admin/login';
+
+/** آیا این مسیر خودِ صفحهٔ ورود است؟ (برای جلوگیری از حلقهٔ ریدایرکت) */
+export function isAdminLoginPath(pathname: string | null | undefined): boolean {
+  if (typeof pathname !== 'string') return false;
+  const clean = pathname.split('?')[0].replace(/\/+$/, '');
+  return clean === ADMIN_LOGIN_PATH;
+}
+
+/**
+ * فقط ۴۰۱/۴۰۳ یعنی «جلسه ندارید»؛ بقیهٔ حالت‌ها (۴۰۴ = سرویس آماده نیست،
+ * ۵۰۰، خطای شبکه) نباید بازدیدکننده را بیرون بیندازند — وگرنه تا وقتی سرویس
+ * امیر آماده نشده، پنل در حلقهٔ ریدایرکت گیر می‌کند.
+ */
+export function shouldRedirectToLogin(status: number): boolean {
+  return status === 401 || status === 403;
+}
+
+/**
+ * آمادگی مقصد پس از ورود: تا وقتی داشبورد پنل (فاز ۱۰ — امیر) ساخته نشده،
+ * `/admin` صفحهٔ ۴۰۴ می‌دهد. به‌جای پرت کردن مدیر به ۴۰۴، وضعیت را می‌فهمیم و
+ * پیام صادقانه نشان می‌دهیم. روزی که صفحه اضافه شود، خودکار «آماده» می‌شود.
+ */
+export function landingAvailabilityFromStatus(status: number): 'ready' | 'missing' | 'unknown' {
+  if (status === 404 || status === 405) return 'missing';
+  if (status >= 200 && status < 400) return 'ready';
+  return 'unknown';
+}
+
+/** متن وضعیت «پنل هنوز آماده نیست» برای صفحهٔ ورود. */
+export const ADMIN_PANEL_PENDING_MESSAGE =
+  'ورود موفق بود، اما داشبورد پنل مدیریت هنوز ساخته نشده است (فاز ۱۰). ' +
+  'با آماده شدن داشبورد، همین صفحه خودکار شما را به آن می‌فرستد.';
+
+/** مقصد ورود همراه با بازگشت به همان صفحه؛ مسیر ناامن نادیده گرفته می‌شود. */
+export function loginPathFor(pathname: string | null | undefined): string {
+  const safe = safeAdminLanding(pathname);
+  if (safe === DEFAULT_ADMIN_LANDING) return ADMIN_LOGIN_PATH;
+  return `${ADMIN_LOGIN_PATH}?next=${encodeURIComponent(safe)}`;
 }

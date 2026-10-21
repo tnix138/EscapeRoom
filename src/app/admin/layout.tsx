@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import AdminSessionGate from './login/admin-session-gate';
 
 /**
  * چیدمان پنل مدیریت (فاز ۰۹ — سهم امیرعلی؛ فقط چیدمان).
@@ -8,8 +9,9 @@ import type { Metadata } from 'next';
  * - پنل ادمین جدا از بازی است: هیچ استایل یا دادهٔ بازی را واکشی نمی‌کند؛
  *   اگر سرویس ادمین خراب شود، مسیر بازی دست‌نخورده می‌ماند.
  * - `noindex` است تا صفحه‌های مدیریتی در موتورهای جست‌وجو نیایند.
- * - خودِ چیدمان احراز هویت نمی‌کند؛ نگهبانی مسیر با سرویس‌های امیر
- *   (`/api/admin/*`) و کوکی httpOnly انجام می‌شود.
+ * - نگهبانی مسیر با `AdminSessionGate` انجام می‌شود: یک بار
+ *   `GET /api/admin/session` را می‌سنجد و فقط با ۴۰۱/۴۰۳ به صفحهٔ ورود
+ *   می‌فرستد؛ اگر سرویس امیر هنوز آماده نباشد، پنل در حلقهٔ ریدایرکت گیر نمی‌کند.
  */
 export const metadata: Metadata = {
   title: 'پنل مدیریت | تماشاخانهٔ اُرفه‌ئو',
@@ -30,6 +32,8 @@ export default function AdminLayout({ children }: Readonly<{ children: React.Rea
         </a>
       </header>
       <div className="admin-content">{children}</div>
+      {/* محافظ جلسه: فقط روی ۴۰۱/۴۰۳ ریدایرکت می‌کند و با سرویس آماده‌نشده کاری ندارد. */}
+      <AdminSessionGate />
     </div>
   );
 }

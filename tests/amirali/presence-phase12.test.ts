@@ -88,6 +88,8 @@ describe('فاز ۱۲ — خواندن snapshotها (سازگاری دو قرا�
       seatIndex: null,
       seatLabel: null,
       position: { x: 2, y: 1.65, z: -3 },
+      yawDeg: 0,
+      phase: null,
       updatedAt: NOW,
     });
   });
