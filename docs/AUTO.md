@@ -17,7 +17,7 @@ npm run lint
 ↓
 اگر همه سبز بود ← merge خودکار به main
 ↓
-اگر main سبز بود ← deploy خودکار به Vercel (فقط توسط توحید)
+اگر main سبز بود ← deploy خودکار به Vercel (اتصال Git؛ شاخهٔ production برابر main)
 
 text
 
@@ -80,22 +80,9 @@ jobs:
           git merge --no-ff origin/${{ github.event.workflow_run.head_branch }}
           git push origin main
 Deploy خودکار
-فقط توحید می‌تواند deploy کند. فایل .github/workflows/deploy.yml:
+پروژهٔ Vercel (escaperoom-orfeo) با اتصال Git به همین ریپو وصل است و شاخهٔ production آن main است؛ هر merge روی main به‌صورت خودکار بیلد و روی production منتشر می‌شود و push به شاخه‌های ایجنت‌ها Preview می‌سازد. اتصال و تنظیمات Vercel فقط دست توحید است.
 
-yaml
-name: Deploy
-
-on:
-  push:
-    branches: ['main']
-
-jobs:
-  deploy:
-    if: ${{ github.actor == 'tnix138' }}  # فقط توحید
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - run: npx vercel --prod --token=${{ secrets.VERCEL_TOKEN }}
+فایل .github/workflows/deploy.yml فقط مسیر دستیِ پشتیبان است (workflow_dispatch، فقط با اجرای tnix138) و trigger خودکار ندارد تا دیپلوی دوبل ساخته نشود؛ برای استفاده از آن باید secretهای VERCEL_TOKEN و VERCEL_ORG_ID و VERCEL_PROJECT_ID در گیت‌هاب تنظیم شده باشند.
 اگر CI قرمز شد
 ایجنت نباید merge را مجبور کند. باید:
 

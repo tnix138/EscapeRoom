@@ -1,15 +1,14 @@
-# Deploy — انتشار روی Vercel Production از main سبز
-# منبع: docs/AUTO.md (فقط توحید deploy می‌کند) و docs/checklists/before-release.md
+# Deploy — مسیر دستیِ پشتیبان برای انتشار روی Vercel Production
+# مسیر اصلی انتشار: اتصال Git در Vercel (پروژه به tnix138/EscapeRoom وصل است و
+# شاخهٔ production برابر main است)؛ هر push یا merge خودکار روی main را خودِ
+# Vercel بیلد و منتشر می‌کند و شاخه‌های دیگر Preview می‌گیرند.
+# این workflow عمداً هیچ trigger خودکاری ندارد تا با اتصال Git دیپلوی دوبل
+# ساخته نشود و به‌خاطر secretهای تنظیم‌نشده روی هر push قرمز نشود.
+# اجرا فقط دستی از تب Actions (workflow_dispatch) و فقط توسط توحید.
+# منبع: docs/AUTO.md و docs/checklists/before-release.md
 name: Deploy
 
 on:
-  push:
-    branches: ['main']
-  # بعد از ادغام خودکار، push با توکن ربات انجام می‌شود و actor توحید نیست؛
-  # پس اتمام موفق Auto-merge هم یک سیگنال main سبز است.
-  workflow_run:
-    workflows: ['Auto-merge']
-    types: [completed]
   workflow_dispatch:
 
 permissions:
@@ -21,15 +20,12 @@ concurrency:
 
 jobs:
   deploy:
-    name: انتشار production
-    if: >-
-      github.event_name == 'workflow_dispatch' ||
-      (github.event_name == 'push' && github.actor == 'tnix138') ||
-      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
+    name: انتشار دستی production
+    if: github.actor == 'tnix138'
     runs-on: ubuntu-latest
     environment: production
     steps:
-      # پیش‌بررسی: بدون این سه secret، انتشار بی‌معنا است. زودتر از نصب/ساخت
+      # پیش‌بررسی: بدون این سه secret، انتشار دستی بی‌معنا است. زودتر از نصب/ساخت
       # شکست می‌خورد تا پیام روشن باشد و دقیقهٔ CI هدر نرود.
       - name: بررسی secretهای انتشار
         run: |
@@ -41,7 +37,8 @@ jobs:
             fi
           done
           if [ "$missing" = "1" ]; then
-            echo "برای انتشار، سه secret بالا را در Settings → Secrets and variables → Actions بسازید."
+            echo "برای انتشار دستی، سه secret بالا را در Settings → Secrets and variables → Actions بسازید."
+            echo "انتشار خودکار از اتصال Git در Vercel انجام می‌شود و به این secretها نیاز ندارد."
             exit 1
           fi
           echo "✅ secretهای انتشار موجودند."
@@ -102,3 +99,4 @@ jobs:
           node scripts/smoke-test.mjs
         env:
           BASE_URL: ${{ secrets.PRODUCTION_URL }}
+          PRODUCTION_URL: ${{ secrets.PRODUCTION_URL }}
