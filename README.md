@@ -1,81 +1,28 @@
-# 🎭 پرده سرخ: تماشاخانه اُرفه‌ئو (Il Sipario Rosso — Escape Room)
-
-پروژه بازی اتاق فرار آنلاین، چندنفره (**۳ تا ۸ بازیکن همزمان**) و **اول‌شخص (`First-Person POV`)** با تلفیق معمای مشارکتی بلیط‌های تئاتر و سکانس سینمایی-ترسناک سالن اپرا تحت مرورگر وب.
-
-> **وضعیت فعلی ریپازیتوری:** مستندات کامل طراحی، معماری فنی، قرارداد API، سیستم ثبت لاگ شمسی (`Pending` / `Archive`) و تقسیم وظایف موازی برای اعضای تیم (**توحید، امیرعلی و علیرضا**) آماده و نهایی شده است. این نسخه **فصل آغازین بازی (از رزرو اتاق و کارت دعوت تا پایان کات‌سین سالن تئاتر و شروع مجدد بازی داخل همان سالن)** را پوشش می‌دهد.
-
+---
+document_type: agent_entrypoint
+intended_audience: coding_agents_only
+human_reading: not_required
 ---
 
-## 📚 نقشه مستندات پروژه
+# Repository agent entrypoint
 
-| فایل مستند | مخاطب | شرح محتوا |
-|---|---|---|
-| [`PROJECT.md`](./PROJECT.md) | کل تیم | داستان، ظرفیت ۳–۸ نفر، ویدیوی کارت دعوت، معمای بلیط‌ها و جزئیات خط‌به‌خط کات‌سین `POV` |
-| [`ARCHITECTURE.md`](./ARCHITECTURE.md) | کل تیم | تصمیمات فنی، دیتابیس دوگانه (`SQLite` + `Supabase`)، همگام‌سازی میلی‌ثانیه‌ای کات‌سین و امنیت |
-| [`API-CONTRACT.md`](./API-CONTRACT.md) | کل تیم (مرجع واحد) | تایپ‌های مشترک `TypeScript`، اندپوینت‌های سرور، امضای هوک‌ها و `Props` کامپوننت‌ها |
-| [`TEAM.md`](./TEAM.md) | توحید، امیرعلی، علیرضا | تقسیم متوازن ۳۳٪/۳۳٪/۳۴٪، ۴ ایستگاه دمو مشترک، قوانین عدم تداخل Git و پرامپت ایجنت‌ها |
-| [`TASKS-TOHID.md`](./TASKS-TOHID.md) | **توحید (`Tohid`)** | بک‌اند، دیتابیس پایدار، لینک‌های دعوت نام‌دار، موتور معمای حلقوی ۳–۸ نفره و `Client SDK` |
-| [`TASKS-AMIRALI.md`](./TASKS-AMIRALI.md) | **امیرعلی (`Amirali`)** | صفحه رزرو ۳–۸ نفره، ویدیوی گرافیکی `POV` کارت دعوت اپرا و صحنه اول‌شخص کوچه و بلیط‌ها *(فقط دسترسی GitHub)* |
-| [`TASKS-ALIREZA.md`](./TASKS-ALIREZA.md) | **علیرضا (`Alireza`)** | موتور صدای کلاسیک/ترسناک، کات‌سین `POV` دربان و سالن ۲۰ نفره، تخریب سالن و شروع مجدد + E2E *(فقط دسترسی GitHub)* |
-| [`TASKS-INFRA-AGENT.md`](./TASKS-INFRA-AGENT.md) | **ایجنت چهارم زیرساخت (توحید)** | اجرای لاگ‌های `Pending` مربوط به **Supabase** و **Vercel**، تنظیم امن متغیرها و دیپلوی آنلاین |
-| [`WORKLOG.md`](./WORKLOG.md) | **الزامی برای همه** | دفتر جامع و **خودکار** لاگ‌ها با چرخه عمر کامل (چه کسی ساخت، چه کسی و چه زمانی آرشیو کرد) + قوانین پوش، کامیت فارسی و آرشیو |
-| [`AGENTS.md`](./AGENTS.md) | **همه ایجنت‌های AI** | خلاصه اجرایی قوانین لاگ، دستورهای آماده و مرزها (قبل از هر کامیت بخوانید) |
+> This repository's active project specification is intentionally written for agents, not for end users or general human reading.
 
----
+## Required read order
 
-## 📋 قانون اجباری ثبت گزارش فعالیت‌ها (چرخه عمر `Pending` ➔ `Archive`)
+1. [`AGENTS.md`](./AGENTS.md) — execution and Worklog rules.
+2. [`DOCUMENTATION.md`](./DOCUMENTATION.md) — canonical product, architecture, ownership and 10-wave plan.
+3. Your role plan — [`AGENT-TOHID.md`](./AGENT-TOHID.md), [`AGENT-AMIRALI.md`](./AGENT-AMIRALI.md), [`AGENT-ALIREZA.md`](./AGENT-ALIREZA.md) or [`AGENT-INFRA.md`](./AGENT-INFRA.md).
+4. The specific `WAVE-N-OWNER.md` card only if a wave is explicitly assigned.
+5. [`WORKLOG.md`](./WORKLOG.md) — required commit/push/PR log procedure.
 
-هر یک از اعضای تیم (**توحید، امیرعلی، علیرضا و ایجنت چهارم زیرساخت**) به ازای **هر Commit**، **هر Push** و **هر Pull Request** موظف است یک فایل لاگ بسازد. لاگ‌ها در پوشه [`logs/`](./logs) نگهداری و در فایل مرجع **[`WORKLOG.md`](./WORKLOG.md)** فهرست می‌شوند:
+The old `PROJECT.md`, `ARCHITECTURE.md`, `API-CONTRACT.md`, `TEAM.md` and `TASKS-*.md` files are retained as legacy pointers for historical links. They are **not active task instructions**; if a detail conflicts, use `DOCUMENTATION.md` and the assigned wave file.
 
-- **🟡 `Pending`** (`logs/pending/`) — ساخته شده و در انتظار بررسی، ادغام PR یا اجرای زیرساخت.
-- **✅ `Archive`** (`logs/archive/`) — تأیید/ادغام/اجرا شده، همراه با ثبت **«آرشیو شده توسط»** و **زمان دقیق آرشیو**.
-
-قواعد سخت‌گیرانه (با هوک Git و CI اجرا می‌شوند):
-
-1. **هر پوش بدون حداقل یک فایل لاگ رد می‌شود** (`.githooks/pre-push`).
-2. **پیام کامیت باید فارسی باشد** (`.githooks/commit-msg`).
-3. جدول‌های `WORKLOG.md` **دستی ویرایش نمی‌شوند**؛ با `npm run worklog:sync` از فراداده لاگ‌ها ساخته می‌شوند و CI واگرایی را خطا می‌دهد.
-4. هر لاگ باید **ساخته‌شده توسط + تاریخ/ساعت شمسی و ایران + UTC** و پس از آرشیو **آرشیو شده توسط + تاریخ/ساعت آرشیو** را دقیق و هم‌خوان داشته باشد.
+## Local validation
 
 ```bash
-npm run worklog:hooks      # فعال‌سازی گاردها (یک‌بار در هر کلون)
-
-npm run worklog:new -- --author "علیرضا" --slug alireza --activity Commit \
-  --title "موج ۳ — سالن تاریک" --topic wave3-dark-auditorium --ref "شاخه …" --commit
-npm run worklog:push -- --author "توحید" --slug tohid --commit
-npm run worklog:archive -- <log-id> --by "توحید" --note "PR #21 ادغام شد"
-npm run worklog:check     # اعتبارسنجی کامل
+npm ci
+npm run typecheck
+npm test
+npm run worklog:check
 ```
-
-> 📖 راهنمای کامل و چرخه عمر: [`WORKLOG.md`](./WORKLOG.md) — خلاصه اجرایی برای ایجنت‌ها: [`AGENTS.md`](./AGENTS.md)
-
----
-
-## ⚡ راهنمای راه‌اندازی، پیش‌نمایش موازی و تست (پس از شروع کدنویسی تیم)
-
-### ۱. نصب و اجرای توسعه محلی (بدون نیاز به سرویس خارجی)
-```bash
-npm install
-npm run dev
-```
-دیتابیس محلی به صورت خودکار با ماژول توکار `node:sqlite` در مسیر `.data/escaperoom.db` ساخته شده و تمام وضعیت اتاق‌ها پس از Refresh مرورگر یا ری‌استارت سرور حفظ می‌شود.
-
-### ۲. مسیرهای پیش‌نمایش زنده برای هم‌افزایی تیم در حین توسعه موازی
-- `http://localhost:3000/` ← رزرو اتاق ۳ تا ۸ نفره و دریافت لینک‌های دعوت اختصاصی با نام مهمانان (**امیرعلی + توحید**)
-- `http://localhost:3000/preview/invitation` ← تماشای مستقل ویدیوی گرافیکی کارت دعوت اپرا در دید اول‌شخص (**امیرعلی**)
-- `http://localhost:3000/preview/alley` ← تست مستقل کوچه تماشاخانه، تابلوهای چپ/راست و پانچ بلیط‌های دست بازیکن (**امیرعلی**)
-- `http://localhost:3000/preview/cinema` ← تماشای مستقل کات‌سین ۷۴ ثانیه‌ای `POV` با چرخش سر چپ/راست و صداگذاری کامل (**علیرضا**)
-- `http://localhost:3000/preview/auditorium` ← بررسی مستقل سالن تاریک به‌هم‌ریخته پس از پایان کات‌سین (**علیرضا**)
-
-### ۳. اجرای تست‌های تفکیک‌شده هر عضو و تست سرتاسری
-```bash
-npm run typecheck      # بررسی کامل تایپ‌های کل پروژه
-npm run test:tohid     # تست دیتابیس، امنیت توکن‌ها، همزمانی OCC و موتور معمای ۳–۸ نفره
-npm run test:amirali   # تست فرم رزرو ۳–۸ نفره، ویدیوی دعوت‌نامه و تعامل بلیط‌های کوچه
-npm run test:alireza   # تست کات‌سین POV، محدودیت چرخش سر چپ/راست و سناریوی چندنفره Playwright
-npm run test:worklog   # تست خود سیستم لاگ (تقویم شمسی، چرخه عمر و اعتبارسنجی WORKLOG)
-```
-
-### ۴. استقرار آنلاین (Production)
-1. اجرای اسکریپت `supabase/migrations/001_initial_schema.sql` در پروژه **Supabase**.
-2. تنظیم متغیرهای محیطی `STORAGE_DRIVER=supabase`، `SUPABASE_URL` و `SUPABASE_SERVICE_ROLE_KEY` در پروژه **Vercel** متصل به این ریپازیتوری GitHub.

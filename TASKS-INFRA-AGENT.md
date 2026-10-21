@@ -1,121 +1,14 @@
-# 🟪 سند وظایف اختصاصی ایجنت چهارم: ایجنت زیرساخت و استقرار ابری (Supabase & Vercel Ops Agent)
-
-> **مدیر و راه‌انداز این ایجنت:** **توحید (`Tohid`)**
-> **دسترسی‌های انحصاری این ایجنت:** دسترسی همزمان به **ریپازیتوری GitHub** + کانکتور **Supabase** + کانکتور **Vercel**
-> **اسناد کافی برای شروع کار:** همین سند + `ARCHITECTURE.md` + `WORKLOG.md`
-
+---
+document_type: legacy_pointer
+status: superseded
+intended_audience: coding_agents_only
+canonical: DOCUMENTATION.md
 ---
 
-## ۱. فلسفه وجودی ایجنت چهارم (چرا این ایجنت ساخته شده است؟)
+# Infrastructure tasks legacy pointer
 
-در ساختار دسترسی تیم ما:
-- **امیرعلی (`Amirali`)** و **علیرضا (`Alireza`)** **فقط و فقط به ریپازیتوری GitHub دسترسی دارند** و هیچ دسترسی مستقیمی به پنل یا کلیدهای **Vercel** و **Supabase** ندارند.
-- بنابراین هر زمان **توحید**، **امیرعلی** یا **علیرضا** در جریان توسعه نیاز به انجام هرگونه عملیات روی **Supabase** (ساخت پروژه، اجرای مایگریشن دیتابیس، تغییر جدول، بررسی داده) یا **Vercel** (ساخت پروژه، تنظیم Environment Variables، گرفتن لینک Preview برای تست موبایل، یا استقرار نهایی Production) داشته باشند، **درخواست خود را به صورت یک رکورد لاگ استاندارد در بخش `Pending` ثبت می‌کنند.**
-- سپس **توحید** تو (ایجنت چهارم) را بالا می‌آورد تا تمام لاگ‌های زیرساختی موجود در صف **`Pending`** را بخوانی، عملیات‌های لازم را روی **Supabase** و **Vercel** اجرا کنی، از سلامت خروجی مطمئن شوی و گزارش تکمیل‌شده را به بخش **`Archive`** منتقل نمایی.
+> **Not an active instruction file.** Retained only so historical links, tests and archived Worklog entries remain resolvable. This file is not written for human readers.
 
----
+Use [`DOCUMENTATION.md`](./DOCUMENTATION.md) as the single active project specification and read the assigned wave task before acting. Canonical references for this owner: AGENT-INFRA.md and DOCUMENTATION.md; assigned wave cards live in `WAVE-N-INFRA.md`.
 
-## ۲. مرز مالکیت و قوانین امنیتی ایجنت چهارم
-
-### ✅ کارهایی که در حیطه اختیارات توست:
-1. تعامل کامل با سرویس **Supabase** (ایجاد یا فعال‌سازی پروژه PostgreSQL، اجرای فایل‌های `supabase/migrations/*.sql`، بررسی جداول و دریافت کلیدهای اتصال سمت سرور).
-2. تعامل کامل با سرویس **Vercel** (ایجاد پروژه، اتصال به ریپازیتوری GitHub، ثبت امن متغیرهای محیطی، اجرای استقرار Preview / Production، خواندن لاگ بیلد در صورت بروز خطا و استخراج لینک زنده HTTPS).
-3. مدیریت فایل تنظیمات استقرار (`vercel.json` یا `.env.example` در صورت نیاز بدون درج هیچ مقدار واقعی کلید محرمانه).
-4. خواندن، تکمیل نتیجه اجرا و انتقال لاگ‌های زیرساختی از `logs/pending/` به `logs/archive/` و به‌روزرسانی جدول‌های **`Pending`** و **`Archive`** در فایل مرجع `WORKLOG.md`.
-
-### ❌ خطوط قرمز امنیتی و کدی (اکیداً ممنوع):
-- **هرگز و تحت هیچ شرایطی** مقدار واقعی `SUPABASE_SERVICE_ROLE_KEY` یا کلیدهای خصوصی را داخل هیچ فایلی در Git (نه در کد، نه در `.env`، و نه در متن `WORKLOG.md`) ننویس! کلیدها را مستقیماً از خروجی ابزار Supabase بخوان و مستقیماً در تنظیمات رمزنگاری‌شده Environment Variables سرویس Vercel ثبت کن.
-- بدون هماهنگی صریح، کدهای منطق بازی یا کامپوننت‌های UI مربوط به توحید، امیرعلی و علیرضا را تغییر نده؛ اگر بیلد Vercel به دلیل خطای کدی شکست خورد، متن دقیق لاگ خطای بیلد را در یک لاگ **`Pending`** برای عضو مربوطه ثبت کن.
-
----
-
-## ۳. چرخه عملیاتی گام‌به‌گام هنگام بیدار شدن ایجنت چهارم
-
-هر بار که **توحید** تو را فراخوانی می‌کند، دقیقاً این ۶ گام را به ترتیب اجرا کن:
-
-### گام ۱: اسکن صف درخواست‌ها در `WORKLOG.md` و `logs/pending/`
-- تمام فایل‌های داخل `logs/pending/` و جدول **`Pending`** در `WORKLOG.md` را بررسی کن.
-- تمام رکوردهایی که `نوع فعالیت` آن‌ها یکی از موارد زیر است را استخراج کن:
-  - `Infra-Supabase` (عملیات دیتابیس ابری)
-  - `Infra-Vercel` (عملیات بیلد، متغیر محیطی یا دیپلوی ابری)
-  - `Infra-FullDeploy` (راه‌اندازی و استقرار سرتاسری دیتابیس + وب‌اپلیکیشن)
-
-### گام ۲: اجرای عملیات‌های مربوط به Supabase
-1. بررسی کن آیا پروژه فعال مخصوص بازی در اکانت Supabase وجود دارد یا خیر (`list_projects`). اگر وجود ندارد یا غیرفعال است، پروژه مناسب را ایجاد یا بازیابی کن.
-2. فایل‌های مهاجرت موجود در مسیر `supabase/migrations/*.sql` (ساخته‌شده توسط توحید) را به ترتیب شماره نسخه روی دیتابیس اجرا کن (`create_migration` / `execute_query`).
-3. با یک کوئری تست سلامت (`SELECT to_regclass('public.rooms');`) مطمئن شو جدول `rooms` و ایندکس‌ها در وضعیت آماده قرار دارند.
-4. مقادیر `SUPABASE_URL` و کلید سرویس سمت سرور (`SUPABASE_SERVICE_ROLE_KEY`) را از طریق ابزار مدیریت کلیدهای Supabase در حافظه کاری خود آماده نگه دار.
-
-### گام ۳: اجرای عملیات‌های مربوط به Vercel
-1. پروژه Vercel مرتبط با ریپازیتوری `tnix138/EscapeRoom` را بررسی یا ایجاد کن (`Framework: nextjs`).
-2. متغیرهای محیطی زیر را برای محیط‌های `production` و `preview` در Vercel ثبت یا به‌روزرسانی کن:
-   - `STORAGE_DRIVER` = `supabase`
-   - `SUPABASE_URL` = `<آدرس پروژه Supabase>`
-   - `SUPABASE_SERVICE_ROLE_KEY` = `<کلید محرمانه سمت سرور به صورت Encrypted/Sensitive>`
-3. دیپلوی شاخه مورد درخواست (مثلاً `Preview` روی شاخه یکی از بچه‌ها یا `Production` روی `main` / شاخه یکپارچه) را اجرا کن و منتظر رسیدن وضعیت دیپلوی به `READY` بمان (`get_deployment` / `get_deployment_events`).
-
-### گام ۴: تست دود (Smoke Test) روی لینک آنلاین مستقرشده
-- پس از `READY` شدن دیپلوی، سالم بودن خروجی و اتصال به دیتابیس ابری را بررسی کن (مثلاً بررسی پاسخ `/api/health` با `storageDriver: "supabase"`).
-
-### گام ۵: انتقال لاگ درخواست از `Pending` به `Archive` + ثبت گزارش خودت
-1. در انتهای فایل درخواستِ انجام‌شده (که قبلاً توسط توحید، امیرعلی یا علیرضا در `logs/pending/` ساخته شده بود)، بخش `## 🛠️ نتیجه اجرای ایجنت چهارم (زیرساخت)` را با ذکر **تاریخ شمسی، ساعت انجام، وضعیت نهایی و لینک عمومی دیپلوی (`https://...vercel.app`)** اضافه کن.
-2. لاگ را با ابزار رسمی آرشیو کن (فایل به `logs/archive/` منتقل می‌شود، «آرشیو شده توسط» و زمان ثبت می‌شود و جدول‌های `WORKLOG.md` خودکار به‌روز می‌شوند):
-
-```bash
-npm run worklog:archive -- <log-id> \
-  --by "ایجنت چهارم زیرساخت (به مدیریت توحید)" \
-  --note "مایگریشن 001 اجرا و تأیید شد — دیپلوی dpl_xxx READY" \
-  --append "## 🛠️ نتیجه اجرای ایجنت چهارم (زیرساخت)\n- وضعیت: ✅ اجرا و تأیید شد\n- لینک: https://escaperoom-orfeo.vercel.app"
-```
-
-3. برای **پوش / کامیت / PR خودت** نیز طبق قانون تیم یک لاگ شمسی با نام **`ایجنت چهارم زیرساخت (به مدیریت توحید)`** بساز:
-
-```bash
-npm run worklog:new -- --author "ایجنت چهارم زیرساخت (به مدیریت توحید)" --slug infra-agent \
-  --activity Infra-FullDeploy --title "موج N زیرساخت — استقرار و آرشیو" --topic wave-n-fulldeploy \
-  --ref "دیپلوی dpl_xxx" --commit
-
-# یا برای پوش:
-npm run worklog:push -- --author "ایجنت چهارم زیرساخت (به مدیریت توحید)" --slug infra-agent --commit
-```
-
-4. ⚠️ **هرگز** کلید محرمانه (`SUPABASE_SERVICE_ROLE_KEY`، توکن‌ها و…) را در لاگ یا `WORKLOG.md` ننویس؛ فقط شناسه پروژه/دیپلوی، وضعیت و لینک عمومی مجاز است.
-5. اگر پوش بدون لاگ انجام شود یا لاگ‌ها نامعتبر باشند، هوک `.githooks/pre-push` (پس از `npm run worklog:hooks`) جلوی پوش را می‌گیرد؛ `npm run worklog:check` وضعیت را نشان می‌دهد.
-
----
-
-## ۴. قالب استاندارد ثبت درخواست زیرساخت (توسط توحید، امیرعلی یا علیرضا برای ایجنت چهارم)
-
-هر یک از اعضای تیم هرگاه نیاز به کاری روی **Supabase** یا **Vercel** داشت، لاگ درخواست را با ابزار می‌سازد تا ایجنت چهارم آن را اجرا و آرشیو کند:
-
-```bash
-npm run worklog:new -- --author "علیرضا" --slug alireza --activity Infra-Vercel \
-  --title "درخواست Preview شاخه علیرضا برای تست موبایل" \
-  --topic preview-alireza-wave2 --ref "شاخه arena/xxx-escaperoom" \
-  --body "لطفاً از شاخه جاری یک دیپلوی Preview ساخته شود و لینک آن ثبت گردد."
-```
-
-ساختار فراداده‌ای که ابزار تولید می‌کند (برای مرجع):
-
-```yaml
-id: '1405-07-29_18-10-00_alireza_preview-alireza-wave2'
-title: 'درخواست Preview شاخه علیرضا برای تست موبایل'
-summary: 'درخواست دیپلوی Preview برای تست همزمان سه‌نفره روی موبایل'
-author: 'علیرضا'
-author_slug: 'alireza'
-activity: 'Infra-Vercel'
-ref: 'شاخه arena/xxx-escaperoom'
-branch: 'arena/xxx-escaperoom'
-status: 'pending'
-created_by: 'علیرضا'
-created_at_jalali: '1405-07-29'
-created_at_time: '18:10:00'
-created_at_utc: '2026-10-21T14:40:00.000Z'
-archived_by: null
-archived_at_jalali: null
-archived_at_time: null
-archived_at_utc: null
-archive_note: null
-```
-
-> چرخه عمر (چه کسی ساخت / چه کسی و چه زمانی آرشیو کرد) به‌صورت خودکار در بلوک «مشخصات فعالیت» همان فایل و در جدول‌های [`WORKLOG.md`](./WORKLOG.md) نمایش داده می‌شود. مرجع کامل: [`WORKLOG.md`](./WORKLOG.md) — خلاصه اجرایی: [`AGENTS.md`](./AGENTS.md)
+Conflict rule: `DOCUMENTATION.md` + the assigned `WAVE-*.md` file take precedence over this pointer and all historical records. Operational commit/push/PR logging is governed by [`WORKLOG.md`](./WORKLOG.md) and [`AGENTS.md`](./AGENTS.md).
