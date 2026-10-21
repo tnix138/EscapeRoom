@@ -33,6 +33,7 @@ import {
 } from './cutscene-timing';
 import UsherDoorCutsceneView from './UsherDoorCutsceneView';
 import AuditoriumPerformanceView from './AuditoriumPerformanceView';
+import ThreeCutsceneView from './ThreeCutsceneView';
 import styles from './FirstPersonCutsceneStage.module.css';
 
 export interface FirstPersonCutsceneStageProps {
@@ -52,6 +53,7 @@ export default function FirstPersonCutsceneStage({
   const engineRef = useRef<TheaterAudioEngine | null>(null);
   const prevElapsedRef = useRef(0);
   const [audioRunning, setAudioRunning] = useState(false);
+  const [threeReady, setThreeReady] = useState(false);
 
   const { yaw, handlers } = usePovHeadPan({
     onYawChange: (nextYaw) => engineRef.current?.setHeadYaw(nextYaw),
@@ -164,11 +166,18 @@ export default function FirstPersonCutsceneStage({
         if (!audioRunning) void tryUnlockAudio();
       }}
     >
-      {inDoorScene ? (
-        <UsherDoorCutsceneView room={room} elapsedMs={clampedElapsed} yaw={yaw} />
-      ) : (
-        <AuditoriumPerformanceView room={room} elapsedMs={clampedElapsed} yaw={yaw} />
-      )}
+      <ThreeCutsceneView elapsedMs={clampedElapsed} yaw={yaw} onReady={setThreeReady} />
+      <div
+        className={styles.cssFallback}
+        style={{ display: threeReady ? 'none' : undefined }}
+        aria-hidden={threeReady}
+      >
+        {!threeReady && (inDoorScene ? (
+          <UsherDoorCutsceneView room={room} elapsedMs={clampedElapsed} yaw={yaw} />
+        ) : (
+          <AuditoriumPerformanceView room={room} elapsedMs={clampedElapsed} yaw={yaw} />
+        ))}
+      </div>
 
       {/* وینیت سینمایی + فید گذر بین سکانس‌ها */}
       <div className={styles.vignette} aria-hidden="true" />
