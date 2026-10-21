@@ -7,16 +7,16 @@ author_slug: 'arena-agent'
 activity: 'PR'
 ref: 'PR #17 — arena/8e9aee3f-escaperoom ➔ main'
 branch: 'arena/8e9aee3f-escaperoom'
-status: 'pending'
+status: 'archive'
 created_by: 'ایجنت Arena'
 created_at_jalali: '1405-07-29'
 created_at_time: '16:52:43'
 created_at_utc: '2026-10-21T13:22:43.000Z'
-archived_by: null
-archived_at_jalali: null
-archived_at_time: null
-archived_at_utc: null
-archive_note: null
+archived_by: 'ایجنت چهارم زیرساخت (به مدیریت توحید)'
+archived_at_jalali: '1405-07-29'
+archived_at_time: '17:20:58'
+archived_at_utc: '2026-10-21T13:50:58.000Z'
+archive_note: 'ادغام در main و استقرار Production (dpl_WGemQNJZMfhDVheHhGh1qtp54FsT — READY / PROMOTED)'
 commits: null
 tags: null
 ---
@@ -40,16 +40,20 @@ tags: null
 | **ساخته‌شده توسط** | **ایجنت Arena** |
 | **زمان ایجاد (ایران / شمسی)** | **۱۴۰۵/۰۷/۲۹ — ۱۶:۵۲:۴۳** |
 | **زمان ایجاد (UTC)** | `2026-10-21T13:22:43.000Z` |
-| **وضعیت فعلی** | 🟡 **Pending** (در انتظار تأیید، ادغام یا اجرا) |
+| **وضعیت فعلی** | ✅ **Archive** (تأیید/ادغام یا اجراشده) |
+| **آرشیو شده توسط** | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
+| **زمان آرشیو (ایران / شمسی)** | **۱۴۰۵/۰۷/۲۹ — ۱۷:۲۰:۵۸** |
+| **زمان آرشیو (UTC)** | `2026-10-21T13:50:58.000Z` |
+| **یادداشت آرشیو** | ادغام در main و استقرار Production (dpl_WGemQNJZMfhDVheHhGh1qtp54FsT — READY / PROMOTED) |
 
 ## 🔁 چرخه عمر لاگ
 
 | رویداد | توسط | تاریخ شمسی | ساعت (ایران) | زمان UTC | یادداشت |
 | --- | --- | --- | --- | --- | --- |
 | 🟡 ایجاد و ثبت در `Pending` | **ایجنت Arena** | ۱۴۰۵/۰۷/۲۹ | ۱۶:۵۲:۴۳ | `2026-10-21T13:22:43.000Z` | ثبت اولیه گزارش |
-| 🟢 تبدیل به `Archive` | ⏳ در انتظار | — | — | — | هنوز آرشیو نشده است |
+| 🟢 تبدیل به `Archive` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ | ۱۷:۲۰:۵۸ | `2026-10-21T13:50:58.000Z` | ادغام در main و استقرار Production (dpl_WGemQNJZMfhDVheHhGh1qtp54FsT — READY / PROMOTED) |
 
-> 🧾 **خط زمان:** این لاگ در **۱۴۰۵/۰۷/۲۹ — ۱۶:۵۲:۴۳** توسط **ایجنت Arena** ساخته شد و در حال حاضر در وضعیت **`Pending`** (در انتظار تأیید، ادغام یا اجرا) قرار دارد.
+> 🧾 **خط زمان:** این لاگ در **۱۴۰۵/۰۷/۲۹ — ۱۶:۵۲:۴۳** توسط **ایجنت Arena** ساخته شد و در **۱۴۰۵/۰۷/۲۹ — ۱۷:۲۰:۵۸** توسط **ایجنت چهارم زیرساخت (به مدیریت توحید)** به **`Archive`** منتقل شد.
 <!-- WORKLOG:LOG-HEADER:END -->
 
 ---
@@ -101,3 +105,8 @@ tags: null
 - سه PR دیگر (`#14`، `#15` و `#16`) در `main` ادغام شده بودند؛ شاخه با حفظ کامل کد و بدون تعارض همگام شد.
 - ۶ لاگ جدیدِ اضافه‌شده در `main` به قالب چرخه عمر مهاجرت داده شد و ۴ لاگ منتقل‌شده به `Archive`، آرشیوکننده و زمان آرشیو خود را از تاریخ واقعی Git دریافت کردند.
 - وضعیت نهایی: **۳۷ لاگ** (۵ Pending، ۳۲ Archive)، `npx tsc --noEmit` بدون خطا، `npx vitest run` با **۱۱۱ تست پاس** و `worklog:check` سالم؛ CI روی GitHub (workflow `worklog`) ✅.
+
+## 🛠️ نتیجه اجرای ایجنت چهارم (زیرساخت)
+- **وضعیت:** ✅ در شاخه `main` ادغام و در استقرار نهایی Production (`dpl_WGemQNJZMfhDVheHhGh1qtp54FsT` روی کامیت `0cadb44`) مستقر و تأیید شد (`READY` / `PROMOTED`).
+- **لینک عمومی Production:** `https://escaperoom-orfeo.vercel.app`
+- **وضعیت تست دود (Smoke Test):** تمامی مسیرهای `/`، `/preview/invitation`، `/preview/alley`، `/preview/cinema`، `/preview/auditorium` و `/api/health` (`storageDriver: "supabase"`) سالم و فعال هستند.
