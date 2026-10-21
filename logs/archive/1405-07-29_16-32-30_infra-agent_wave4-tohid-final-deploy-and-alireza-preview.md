@@ -23,8 +23,18 @@ tags: null
 
 # گزارش فعالیت تیمی — 1405-07-29_16-32-30_infra-agent_wave4-tohid-final-deploy-and-alireza-preview
 
+<<<<<<< HEAD:logs/pending/1405-07-29_16-32-30_infra-agent_wave4-tohid-final-deploy-and-alireza-preview.md
 > ⚙️ جدول مشخصات و چرخه عمر این فایل به‌صورت خودکار از فراداده (YAML) بالای فایل توسط
 > `npm run worklog:sync` ساخته می‌شود؛ برای تغییر وضعیت از `npm run worklog:archive` استفاده کنید.
+=======
+- **نام شخص:** ایجنت چهارم زیرساخت (به مدیریت توحید)
+- **تاریخ شمسی:** ۱۴۰۵/۰۷/۲۹
+- **ساعت انجام:** ۱۶:۳۲:۳۰
+- **نوع فعالیت:** Infra-FullDeploy
+- **شناسه مرجع (Commit / PR):** شاخه `arena/b6d06c28-escaperoom` — دیپلوی Production `dpl_F4ddK4xRwvE8FR4cedNAuwVhmSh2` (`f354b65`) + دیپلوی Preview علیرضا `dpl_7bnxrUqTxnVrWFQCHLXcUoD7t1Ca` (`49ef807`)
+- **وضعیت:** Archive (کامل و ادغام شده در `main` — `PR #12` / `66a457d`)
+- **زمان دقیق سیستمی:** 2026-10-21T13:02:30Z
+>>>>>>> origin/main:logs/archive/1405-07-29_16-32-30_infra-agent_wave4-tohid-final-deploy-and-alireza-preview.md
 
 <!-- WORKLOG:LOG-HEADER:START -->
 ## 📌 مشخصات فعالیت
