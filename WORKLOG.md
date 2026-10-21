@@ -121,7 +121,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۸** — ✅ Archive: **۶۰** — 🧾 مجموع: **۶۸** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۱:۵۱ (`2026-10-21T15:21:51.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۹** — ✅ Archive: **۶۰** — 🧾 مجموع: **۶۹** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۱:۵۶ (`2026-10-21T15:21:56.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -131,6 +131,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:EVENTS:START -->
 | 🕒 زمان (ایران / UTC) | رویداد | شناسه لاگ | توسط |
 | --- | --- | --- | --- |
+| ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۱:۵۶<br>`2026-10-21T15:21:56.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-51-56_alireza_push`](./logs/pending/1405-07-29_18-51-56_alireza_push.md) | **علیرضا** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۱:۵۱<br>`2026-10-21T15:21:51.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-51-51_alireza_wave7-9-theater`](./logs/pending/1405-07-29_18-51-51_alireza_wave7-9-theater.md) | **علیرضا** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۰:۴۰<br>`2026-10-21T15:20:40.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_18-50-24_alireza_wave5-6-pr`](./logs/archive/1405-07-29_18-50-24_alireza_wave5-6-pr.md) | **علیرضا** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۰:۴۰<br>`2026-10-21T15:20:40.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_18-50-18_alireza_push`](./logs/archive/1405-07-29_18-50-18_alireza_push.md) | **علیرضا** |
@@ -142,7 +143,6 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۹:۰۵<br>`2026-10-21T15:19:05.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_18-48-49_alireza_push`](./logs/archive/1405-07-29_18-48-49_alireza_push.md) | **علیرضا** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۹:۰۵<br>`2026-10-21T15:19:05.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_18-48-49_alireza_wave4-archive`](./logs/archive/1405-07-29_18-48-49_alireza_wave4-archive.md) | **علیرضا** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۸:۵۲<br>`2026-10-21T15:18:52.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-48-52_alireza_wave4-archive-pr`](./logs/archive/1405-07-29_18-48-52_alireza_wave4-archive-pr.md) | **علیرضا** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۸:۴۹<br>`2026-10-21T15:18:49.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-48-49_alireza_push`](./logs/archive/1405-07-29_18-48-49_alireza_push.md) | **علیرضا** |
 <!-- WORKLOG:EVENTS:END -->
 
 ---
@@ -154,6 +154,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:PENDING:START -->
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- |
+| [`1405-07-29_18-51-56_alireza_push`](./logs/pending/1405-07-29_18-51-56_alireza_push.md) | پوش شاخه arena/424e63a7-escaperoom — e9501c5 | `Push` | **علیرضا** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۱:۵۶<br>`2026-10-21T15:21:56.000Z` | origin/arena/424e63a7-escaperoom (origin/main..e9501c5) |
 | [`1405-07-29_18-51-51_alireza_wave7-9-theater`](./logs/pending/1405-07-29_18-51-51_alireza_wave7-9-theater.md) | موج ۷ و ۹ علیرضا — سالن تئاتر ۲۰ نفره و سالن تاریک سه‌بعدی | `Commit` | **علیرضا** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۱:۵۱<br>`2026-10-21T15:21:51.000Z` | شاخه arena/424e63a7-escaperoom |
 | [`1405-07-29_18-40-31_arena-agent_agent-docs-wave-breakdown`](./logs/pending/1405-07-29_18-40-31_arena-agent_agent-docs-wave-breakdown.md) | درخواست بازبینی مستندات عامل‌محور و برنامهٔ ده‌موجی | `PR` | **ایجنت Arena** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۰:۳۱<br>`2026-10-21T15:10:31.000Z` | شاخه arena/6d25be20-escaperoom → main |
 | [`1405-07-29_18-40-31_arena-agent_push`](./logs/pending/1405-07-29_18-40-31_arena-agent_push.md) | پوش شاخه arena/6d25be20-escaperoom — 806f206 | `Push` | **ایجنت Arena** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۰:۳۱<br>`2026-10-21T15:10:31.000Z` | origin/arena/6d25be20-escaperoom (origin/main..806f206) |
