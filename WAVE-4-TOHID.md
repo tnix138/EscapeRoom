@@ -22,7 +22,7 @@ intended_audience: coding_agents_only
 
 - `npm run typecheck` — موفق.
 - `npm test` — ۱۸ فایل، ۱۵۸ تست موفق.
-- `npm run build` — موفق؛ ۱۴ مسیر.
+- `npm run build` — موفق؛ ۱۵ مسیر.
 - `npm run worklog:check` و `git diff --check` — موفق.
 
 ## محدودیت

@@ -4,6 +4,8 @@ import { KeyboardEvent, PointerEvent, useEffect, useMemo, useRef, useState } fro
 import HeldTicketsDrawer from './HeldTicketsDrawer';
 import TheaterDoorLockModal from './TheaterDoorLockModal';
 import WhisperChatPanel from '../hud/WhisperChatPanel';
+import ClueReadingPanel from './ClueReadingPanel';
+import { inspectHint, type ClueKind } from './clue-reading-data';
 import { AlleyRoomView, PlayActNumber, RowRomanCode, THEATER_EMBLEMS, TheaterEmblemId, TicketPunchSelection } from './contracts';
 
 export interface AlleyFirstPersonSceneProps {
@@ -25,6 +27,7 @@ export default function AlleyFirstPersonScene({ room, onPunchTicket, onUnlockDoo
   const [localDigit, setLocalDigit] = useState<number | null>(null);
   const [ticketFeedback, setTicketFeedback] = useState('');
   const [doorUnlocked, setDoorUnlocked] = useState(false);
+  const [openClue, setOpenClue] = useState<ClueKind | null>(null);
   const pointerX = useRef<number | null>(null);
   const activeView = yaw < -12 ? 'left' : yaw > 12 ? 'right' : 'center';
   const currentEmblem = THEATER_EMBLEMS.find((item) => item.id === room.myHeldTickets.companionStub.targetEmblem);
@@ -57,10 +60,16 @@ export default function AlleyFirstPersonScene({ room, onPunchTicket, onUnlockDoo
       if (event.target instanceof HTMLElement && ['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON'].includes(event.target.tagName)) return;
       if (event.key === 'ArrowLeft' || event.key.toLowerCase() === 'a') { event.preventDefault(); setYaw((value) => clamp(value - 9, -42, 42)); }
       if (event.key === 'ArrowRight' || event.key.toLowerCase() === 'd') { event.preventDefault(); setYaw((value) => clamp(value + 9, -42, 42)); }
+      if (event.key.toLowerCase() === 'e' && !event.metaKey && !event.ctrlKey && !event.altKey) {
+        const target: ClueKind | null = activeView === 'left' ? 'playbill' : activeView === 'right' ? 'rowChart' : null;
+        if (!target) return;
+        event.preventDefault();
+        setOpenClue(target);
+      }
     }
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, []);
+  }, [activeView]);
 
   function onPointerDown(event: PointerEvent<HTMLElement>) {
     if ((event.target as HTMLElement).closest('.pan-ignore')) return;
@@ -117,6 +126,11 @@ export default function AlleyFirstPersonScene({ room, onPunchTicket, onUnlockDoo
             <footer>یک اجرا · یک شب · یک راز</footer>
           </div></div>
           <p>سرنخ نمایش‌نامهٔ امشب</p>
+          <button className="clue-inspect-button pan-ignore" type="button" onClick={() => setOpenClue('playbill')}>
+            <span aria-hidden="true">🎭</span>
+            <span>{inspectHint('playbill')}</span>
+            <kbd>E</kbd>
+          </button>
         </article>
 
         <article className={`panorama-target target-center ${activeView === 'center' ? 'target-active' : ''}`}>
@@ -139,6 +153,11 @@ export default function AlleyFirstPersonScene({ room, onPunchTicket, onUnlockDoo
           </div>
           <div className="brass-counter"><span>بلیط‌های آماده</span><strong>{room.alley.doorLockState.punchedCount.toLocaleString('fa')}<i>/</i>{room.playerCount.toLocaleString('fa')}</strong></div>
           <p>جدول تبدیل ردیف‌ها</p>
+          <button className="clue-inspect-button pan-ignore" type="button" onClick={() => setOpenClue('rowChart')}>
+            <span aria-hidden="true">⌘</span>
+            <span>{inspectHint('rowChart')}</span>
+            <kbd>E</kbd>
+          </button>
         </article>
 
         <div className="alley-vignette" />
@@ -160,6 +179,17 @@ export default function AlleyFirstPersonScene({ room, onPunchTicket, onUnlockDoo
 
       <WhisperChatPanel messages={room.messages} currentPlayerName={room.me.playerName} couponText={couponText} onSendWhisper={onSendWhisper} />
       <TheaterDoorLockModal room={roomWithLocalState} open={doorOpen} onClose={() => setDoorOpen(false)} onUnlock={async (code) => { const result = await onUnlockDoor(code); if (result.accepted) setDoorUnlocked(true); return result; }} />
+      {openClue && (
+        <ClueReadingPanel
+          kind={openClue}
+          open
+          playbill={room.alley.leftWallPlaybill}
+          rowChart={room.alley.rightWallRowChart}
+          punchedCount={roomWithLocalState.alley.doorLockState.punchedCount}
+          playerCount={room.playerCount}
+          onClose={() => setOpenClue(null)}
+        />
+      )}
       <div className="alley-screen-reader" aria-live="polite">{activeView === 'left' ? 'اکنون به پوستر نمایش‌نامه نگاه می‌کنید.' : activeView === 'right' ? 'اکنون به جدول تبدیل ردیف صندلی‌ها نگاه می‌کنید.' : 'اکنون به درِ ورودی تماشاخانه نگاه می‌کنید.'}</div>
     </main>
   );
