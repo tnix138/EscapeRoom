@@ -134,7 +134,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۴** — ✅ Archive: **۲۰۵** — 🧾 مجموع: **۲۰۹** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۲۱:۱۳:۴۶ (`2026-10-21T17:43:46.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۵** — ✅ Archive: **۲۰۵** — 🧾 مجموع: **۲۱۰** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۲۱:۱۹:۱۶ (`2026-10-21T17:49:16.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -144,6 +144,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:EVENTS:START -->
 | 🕒 زمان (ایران / UTC) | رویداد | شناسه لاگ | توسط |
 | --- | --- | --- | --- |
+| ۱۴۰۵/۰۷/۲۹ — ۲۱:۱۹:۱۶<br>`2026-10-21T17:49:16.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_21-19-16_arena-agent_docs-reorg`](./logs/pending/1405-07-29_21-19-16_arena-agent_docs-reorg.md) | **ایجنت Arena** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۱:۱۳:۴۶<br>`2026-10-21T17:43:46.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_21-13-46_arena-agent_docs-collect`](./logs/pending/1405-07-29_21-13-46_arena-agent_docs-collect.md) | **ایجنت Arena** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۱:۰۷:۴۶<br>`2026-10-21T17:37:46.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_21-07-46_infra-agent_pr70-deploy-wave8-wave9-and-archive`](./logs/pending/1405-07-29_21-07-46_infra-agent_pr70-deploy-wave8-wave9-and-archive.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۱:۰۷:۴۶<br>`2026-10-21T17:37:46.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_21-07-46_infra-agent_push`](./logs/pending/1405-07-29_21-07-46_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
@@ -155,7 +156,6 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | ۱۴۰۵/۰۷/۲۹ — ۲۱:۰۵:۵۰<br>`2026-10-21T17:35:50.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_20-49-07_amirali_push`](./logs/archive/1405-07-29_20-49-07_amirali_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۱:۰۵:۵۰<br>`2026-10-21T17:35:50.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_20-48-47_amirali_wave8-narration-captions`](./logs/archive/1405-07-29_20-48-47_amirali_wave8-narration-captions.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۱:۰۵:۵۰<br>`2026-10-21T17:35:50.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_20-45-11_infra-agent_push`](./logs/archive/1405-07-29_20-45-11_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
-| ۱۴۰۵/۰۷/۲۹ — ۲۱:۰۵:۵۰<br>`2026-10-21T17:35:50.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_20-45-10_infra-agent_pr66-cleanup-archive-and-deploy`](./logs/archive/1405-07-29_20-45-10_infra-agent_pr66-cleanup-archive-and-deploy.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 <!-- WORKLOG:EVENTS:END -->
 
 ---
@@ -167,6 +167,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:PENDING:START -->
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- |
+| [`1405-07-29_21-19-16_arena-agent_docs-reorg`](./logs/pending/1405-07-29_21-19-16_arena-agent_docs-reorg.md) | مرتب‌سازی مستندات در DOCS و حفظ همهٔ پیوندها | `Commit` | **ایجنت Arena** | ۱۴۰۵/۰۷/۲۹ — ۲۱:۱۹:۱۶<br>`2026-10-21T17:49:16.000Z` | شاخه arena/edd3d027-escaperoom |
 | [`1405-07-29_21-13-46_arena-agent_docs-collect`](./logs/pending/1405-07-29_21-13-46_arena-agent_docs-collect.md) | پوشه DOCS — آینه‌سازی همهٔ اسناد Markdown با حفظ ساختار | `Commit` | **ایجنت Arena** | ۱۴۰۵/۰۷/۲۹ — ۲۱:۱۳:۴۶<br>`2026-10-21T17:43:46.000Z` | شاخه arena/edd3d027-escaperoom |
 | [`1405-07-29_21-07-46_infra-agent_pr70-deploy-wave8-wave9-and-archive`](./logs/pending/1405-07-29_21-07-46_infra-agent_pr70-deploy-wave8-wave9-and-archive.md) | ایجاد PR #70 — استقرار Production موج‌های ۸ و ۹ امیرعلی و آرشیو ۹ لاگ Pending | `PR` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۲۱:۰۷:۴۶<br>`2026-10-21T17:37:46.000Z` | PR #70 (https://github.com/tnix138/EscapeRoom/pull/70) |
 | [`1405-07-29_21-07-46_infra-agent_push`](./logs/pending/1405-07-29_21-07-46_infra-agent_push.md) | پوش شاخه arena/b2f3de5d-escaperoom — 6acd032 | `Push` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۲۱:۰۷:۴۶<br>`2026-10-21T17:37:46.000Z` | origin/arena/b2f3de5d-escaperoom (origin/arena/b2f3de5d-escaperoom..6acd032) |
@@ -483,6 +484,7 @@ tags: null
 
 ## 📚 مراجع مرتبط
 
-- [`DOCUMENTATION.md` §۷](./DOCUMENTATION.md) — ضوابط اجرای ایجنت‌ها، مالکیت و چرخه کار
+- [`DOCS/DOCUMENTATION.md` §۷](./DOCS/DOCUMENTATION.md) — ضوابط اجرای ایجنت‌ها، مالکیت و چرخه کار
 - [`AGENTS.md`](./AGENTS.md) — خلاصه قوانین کامیت فارسی و لاگ‌گذاری
 - [`README.md`](./README.md) — مرور کلی پروژه و راه‌اندازی
+- [`DOCS/INDEX.md`](./DOCS/INDEX.md) — نقشهٔ کامل مستندات و مسیر هر سند
