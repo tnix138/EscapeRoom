@@ -1,6 +1,8 @@
 // تست فاز ۰۹-ب — پوستهٔ پنل ادمین: صفحهٔ ورود، چیدمان و هدایت بازدیدکنندهٔ بدون جلسه
 // پس از ادغام، صفحهٔ ورود و چیدمان نسخهٔ امیرعلی است؛ این تست‌ها رفتار را قفل می‌کنند.
 import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const { cookieJar } = vi.hoisted(() => ({ cookieJar: new Map<string, string>() }));
@@ -101,6 +103,18 @@ describe('فاز ۰۹-ب — صفحهٔ ورود و چیدمان', () => {
     }
     expect(showcaseHtml).toContain('استودیوی سه‌بعدی کاراکترهای بازی');
     expect(showcaseHtml).toContain('کالبدشکافی و اجزای مدل سه‌بعدی کاراکتر پلیر');
+
+    const presetsSource = readFileSync(
+      path.join(process.cwd(), 'src/components/admin/character-presets.ts'),
+      'utf8',
+    );
+    const dashboardSource = readFileSync(
+      path.join(process.cwd(), 'src/app/admin/page.tsx'),
+      'utf8',
+    );
+    expect(presetsSource).not.toContain("'use client'");
+    expect(dashboardSource).toContain("from '@/components/admin/character-presets'");
+    expect(dashboardSource).not.toContain("from '@/components/admin/CharactersShowcase'");
   });
 });
 

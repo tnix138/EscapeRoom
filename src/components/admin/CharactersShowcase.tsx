@@ -3,16 +3,20 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import type { AdminPlayerView } from '@/contracts/admin';
-import {
-  RemotePlayer,
-  resolvePlayerHumanPalette,
-} from '@/engine3d/presence/RemotePlayer';
+import { RemotePlayer } from '@/engine3d/presence/RemotePlayer';
 import {
   createSeatedPlayerCharacter,
   createTheaterGeometry,
 } from '@/engine3d/theater-geometry';
+import {
+  HUMAN_ANATOMY_PARTS,
+  PLAYER_CHARACTER_PRESETS,
+  type PlayerCharacterPreset,
+} from './character-presets';
 import { badgeStyle, buttonStyle, hintStyle, panelStyle, titleStyle } from './styles';
 import { faDigits, phaseLabel } from './format';
+
+export { HUMAN_ANATOMY_PARTS, PLAYER_CHARACTER_PRESETS, type PlayerCharacterPreset };
 
 export type CharacterPoseMode = 'standing' | 'walking' | 'running' | 'seated';
 export type CameraFramingMode = 'full' | 'closeup' | 'back';
@@ -22,111 +26,6 @@ export type ShowcaseTarget =
   | { kind: 'lineup' }
   | { kind: 'player'; player: AdminPlayerView }
   | { kind: 'npc'; npcType: 'dancer' | 'darkMan' };
-
-export interface PlayerCharacterPreset {
-  seatIndex: number;
-  seatLabel: string;
-  row: number;
-  col: number;
-  archetypeName: string;
-  coatLabel: string;
-  coatHex: string;
-  skinHex: string;
-  hairHex: string;
-  cravatHex: string;
-  hairStyleLabel: string;
-}
-
-const COAT_NAMES = [
-  'بنفش سلطنتی',
-  'آبی نفتی تالار',
-  'زرشکی مخملی',
-  'سبز زمردی',
-  'طلایی عتیقه',
-  'سربی تیره',
-  'قهوه‌ای ماهون',
-  'ارغوانی شبانه',
-] as const;
-
-const ARCHETYPE_NAMES = [
-  'سارا (صندلی ۱)',
-  'مریم (صندلی ۲)',
-  'نیما (صندلی ۳)',
-  'کیان (صندلی ۴)',
-  'لیلا (صندلی ۵)',
-  'توحید (صندلی ۶)',
-  'امیرعلی (صندلی ۷)',
-  'علیرضا (صندلی ۸)',
-] as const;
-
-const HAIR_STYLE_LABELS = [
-  'کلاسیک فرق‌دار',
-  'موج‌دار بلند',
-  'جمع‌شده بالای سر',
-] as const;
-
-function toHexString(color: number): string {
-  return `#${color.toString(16).padStart(6, '0')}`;
-}
-
-export const PLAYER_CHARACTER_PRESETS: readonly PlayerCharacterPreset[] = Array.from(
-  { length: 8 },
-  (_, seatIndex) => {
-    const palette = resolvePlayerHumanPalette(`seat-${seatIndex + 1}`, seatIndex);
-    const row = Math.floor(seatIndex / 5) + 1;
-    const col = (seatIndex % 5) + 1;
-    return {
-      seatIndex,
-      seatLabel: `ردیف ${faDigits(row)} · صندلی ${faDigits(col)}`,
-      row,
-      col,
-      archetypeName: ARCHETYPE_NAMES[seatIndex] ?? `هم‌تیمی ${seatIndex + 1}`,
-      coatLabel: COAT_NAMES[seatIndex % COAT_NAMES.length] ?? 'کت کلاسیک',
-      coatHex: toHexString(palette.coatColor),
-      skinHex: toHexString(palette.skinColor),
-      hairHex: toHexString(palette.hairColor),
-      cravatHex: toHexString(palette.cravatColor),
-      hairStyleLabel: HAIR_STYLE_LABELS[seatIndex % HAIR_STYLE_LABELS.length] ?? 'کلاسیک',
-    };
-  },
-);
-
-export const HUMAN_ANATOMY_PARTS: ReadonlyArray<{
-  partId: string;
-  title: string;
-  details: string;
-}> = [
-  {
-    partId: 'avatar-head',
-    title: 'سر، گردن و اجزای چهره',
-    details: 'جمجمه بیضی با خط فک، گردن، دو گوش، بینی، دو چشم (صلبیه و مردمک)، ابروها و لب‌ها',
-  },
-  {
-    partId: 'avatar-hair',
-    title: 'موی سه‌بخشی سر',
-    details: 'کلاهک بالای سر، حجم پشت گردن و چتری پیشانی با ۵ طیف رنگ طبیعی مو',
-  },
-  {
-    partId: 'avatar-body',
-    title: 'تنه، کت تئاتر و یقه',
-    details: 'قفسه سینه با تناسب طبیعی شانه، دامن کت، یقه برگردان، پیراهن، دستمال گردن و سنجاق طلایی بلیط',
-  },
-  {
-    partId: 'avatar-arm-left / right',
-    title: 'دو دست مفصل‌دار',
-    details: 'شانه، بازو، ساعد، سرآستین سفید پیراهن و کف دست با انیمیشن تاب خوردن هنگام راه رفتن',
-  },
-  {
-    partId: 'avatar-leg-left / right',
-    title: 'دو پای مفصل‌دار و کفش',
-    details: 'ران، ساق شلوار و کفش چرمی روی سطح زمین (y = 0) با سیکل گام‌برداری و حالت نشسته',
-  },
-  {
-    partId: 'avatar-name',
-    title: 'پلاک نام شناور (Sprite)',
-    details: 'بوم فارسی راست‌به‌چپ با قاب طلایی بالای سر کاراکتر در ارتفاع ۲٫۰۸ متر',
-  },
-];
 
 /** پیش‌نمایش دوبعدی نیم‌تنهٔ انسانی (مشابه نمای کات‌سین سالن) */
 function HumanBustPreviewSvg({ preset }: { preset: PlayerCharacterPreset }) {
