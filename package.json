@@ -1,25 +1,30 @@
 {
-  "name": "escape-room-orfeo",
+  "name": "escaperoom-orféo",
   "version": "0.1.0",
   "private": true,
-  "description": "پرده سرخ: تماشاخانه اُرفه‌ئو — اتاق فرار آنلاین اول‌شخص چندنفره (۳ تا ۸ بازیکن)",
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:tohid": "vitest run tests/tohid",
+    "test:amirali": "vitest run tests/amirali",
     "test:alireza": "vitest run tests/alireza"
   },
   "dependencies": {
     "next": "^15.3.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "zod": "^3.24.0"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
-    "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
-    "typescript": "^5.0.0",
-    "vitest": "^3.0.0"
-  }
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "typescript": "^5.8.0",
+    "vitest": "^3.1.0"
+  },
+  "engines": { "node": ">=22" }
 }

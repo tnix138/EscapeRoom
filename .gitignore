@@ -4,6 +4,7 @@ node_modules/
 # next.js
 .next/
 out/
+dist/
 
 # local database (node:sqlite — ARCHITECTURE.md)
 .data/
@@ -15,6 +16,7 @@ out/
 
 # misc
 .DS_Store
+*.log
 *.tsbuildinfo
 next-env.d.ts
 test-results/
