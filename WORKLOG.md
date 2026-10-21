@@ -121,7 +121,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۳** — ✅ Archive: **۴۸** — 🧾 مجموع: **۵۱** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۷:۲۱:۰۱ (`2026-10-21T13:51:01.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۳** — ✅ Archive: **۵۱** — 🧾 مجموع: **۵۴** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۷:۲۸:۲۹ (`2026-10-21T13:58:29.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -131,18 +131,18 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:EVENTS:START -->
 | 🕒 زمان (ایران / UTC) | رویداد | شناسه لاگ | توسط |
 | --- | --- | --- | --- |
-| ۱۴۰۵/۰۷/۲۹ — ۱۷:۲۱:۰۱<br>`2026-10-21T13:51:01.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_17-21-01_infra-agent_push`](./logs/pending/1405-07-29_17-21-01_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۷:۲۱:۰۰<br>`2026-10-21T13:51:00.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_17-21-00_infra-agent_pr-21-wave6-final-deploy`](./logs/pending/1405-07-29_17-21-00_infra-agent_pr-21-wave6-final-deploy.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۷:۲۱:۰۰<br>`2026-10-21T13:51:00.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_17-21-00_infra-agent_wave6-final-act1-production-deploy`](./logs/pending/1405-07-29_17-21-00_infra-agent_wave6-final-act1-production-deploy.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۷:۲۸:۲۹<br>`2026-10-21T13:58:29.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_17-28-29_infra-agent_pr-22-wave7-final-verification`](./logs/pending/1405-07-29_17-28-29_infra-agent_pr-22-wave7-final-verification.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۷:۲۸:۲۹<br>`2026-10-21T13:58:29.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_17-28-29_infra-agent_push`](./logs/pending/1405-07-29_17-28-29_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۷:۲۸:۲۸<br>`2026-10-21T13:58:28.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_17-28-28_infra-agent_wave7-final-cloud-verification-and-archive`](./logs/pending/1405-07-29_17-28-28_infra-agent_wave7-final-cloud-verification-and-archive.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۷:۲۸:۲۸<br>`2026-10-21T13:58:28.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_17-21-01_infra-agent_push`](./logs/archive/1405-07-29_17-21-01_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۷:۲۸:۲۸<br>`2026-10-21T13:58:28.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_17-21-00_infra-agent_pr-21-wave6-final-deploy`](./logs/archive/1405-07-29_17-21-00_infra-agent_pr-21-wave6-final-deploy.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۷:۲۸:۲۸<br>`2026-10-21T13:58:28.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_17-21-00_infra-agent_wave6-final-act1-production-deploy`](./logs/archive/1405-07-29_17-21-00_infra-agent_wave6-final-act1-production-deploy.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۷:۲۱:۰۱<br>`2026-10-21T13:51:01.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_17-21-01_infra-agent_push`](./logs/archive/1405-07-29_17-21-01_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۷:۲۱:۰۰<br>`2026-10-21T13:51:00.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_17-21-00_infra-agent_pr-21-wave6-final-deploy`](./logs/archive/1405-07-29_17-21-00_infra-agent_pr-21-wave6-final-deploy.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۷:۲۱:۰۰<br>`2026-10-21T13:51:00.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_17-21-00_infra-agent_wave6-final-act1-production-deploy`](./logs/archive/1405-07-29_17-21-00_infra-agent_wave6-final-act1-production-deploy.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۷:۲۱:۰۰<br>`2026-10-21T13:51:00.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_17-19-39_alireza_pr-20-archive-wave3-logs`](./logs/archive/1405-07-29_17-19-39_alireza_pr-20-archive-wave3-logs.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۷:۲۱:۰۰<br>`2026-10-21T13:51:00.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_17-19-22_alireza_push`](./logs/archive/1405-07-29_17-19-22_alireza_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۷:۲۰:۵۹<br>`2026-10-21T13:50:59.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_17-11-45_amirali_invitation-room-entry-pr18`](./logs/archive/1405-07-29_17-11-45_amirali_invitation-room-entry-pr18.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۷:۲۰:۵۹<br>`2026-10-21T13:50:59.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_17-11-34_amirali_invitation-room-entry-pr18`](./logs/archive/1405-07-29_17-11-34_amirali_invitation-room-entry-pr18.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۷:۲۰:۵۹<br>`2026-10-21T13:50:59.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_17-11-29_amirali_pr18-log-record`](./logs/archive/1405-07-29_17-11-29_amirali_pr18-log-record.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۷:۲۰:۵۹<br>`2026-10-21T13:50:59.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_17-10-37_amirali_invitation-room-entry`](./logs/archive/1405-07-29_17-10-37_amirali_invitation-room-entry.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۷:۲۰:۵۹<br>`2026-10-21T13:50:59.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_17-09-19_amirali_invitation-room-entry`](./logs/archive/1405-07-29_17-09-19_amirali_invitation-room-entry.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۷:۲۰:۵۸<br>`2026-10-21T13:50:58.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_16-54-57_arena-agent_push-after-main-merge`](./logs/archive/1405-07-29_16-54-57_arena-agent_push-after-main-merge.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۷:۲۰:۵۸<br>`2026-10-21T13:50:58.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_16-52-43_arena-agent_pr-17-worklog-system`](./logs/archive/1405-07-29_16-52-43_arena-agent_pr-17-worklog-system.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 <!-- WORKLOG:EVENTS:END -->
 
 ---
@@ -154,9 +154,9 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:PENDING:START -->
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- |
-| [`1405-07-29_17-21-01_infra-agent_push`](./logs/pending/1405-07-29_17-21-01_infra-agent_push.md) | پوش شاخه arena/056ddfd3-escaperoom — 229af14 | `Push` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۷:۲۱:۰۱<br>`2026-10-21T13:51:01.000Z` | origin/arena/056ddfd3-escaperoom (origin/arena/056ddfd3-escaperoom..229af14) |
-| [`1405-07-29_17-21-00_infra-agent_pr-21-wave6-final-deploy`](./logs/pending/1405-07-29_17-21-00_infra-agent_pr-21-wave6-final-deploy.md) | PR #21 — تحویل موج ۶ زیرساخت (استقرار نهایی فصل اول و آرشیو ۱۲ لاگ) | `PR` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۷:۲۱:۰۰<br>`2026-10-21T13:51:00.000Z` | PR #21 — arena/056ddfd3-escaperoom ➔ main |
-| [`1405-07-29_17-21-00_infra-agent_wave6-final-act1-production-deploy`](./logs/pending/1405-07-29_17-21-00_infra-agent_wave6-final-act1-production-deploy.md) | موج ۶ زیرساخت — استقرار نهایی فصل اول روی Vercel Production (PR #17، PR #18، PR #19 و PR #20) و آرشیو ۱۲ لاگ | `Infra-FullDeploy` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۷:۲۱:۰۰<br>`2026-10-21T13:51:00.000Z` | دیپلوی Production: dpl_WGemQNJZMfhDVheHhGh1qtp54FsT و dpl_3MeXqkmFWDXqCZBfmWZiBUpbo767 |
+| [`1405-07-29_17-28-29_infra-agent_pr-22-wave7-final-verification`](./logs/pending/1405-07-29_17-28-29_infra-agent_pr-22-wave7-final-verification.md) | PR #22 — تحویل موج ۷ زیرساخت (تایید نهایی استقرار ابری و آرشیو لاگ‌های PR #21) | `PR` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۷:۲۸:۲۹<br>`2026-10-21T13:58:29.000Z` | PR #22 — arena/264ad334-escaperoom ➔ main |
+| [`1405-07-29_17-28-29_infra-agent_push`](./logs/pending/1405-07-29_17-28-29_infra-agent_push.md) | پوش شاخه arena/264ad334-escaperoom — f8e18cd | `Push` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۷:۲۸:۲۹<br>`2026-10-21T13:58:29.000Z` | origin/arena/264ad334-escaperoom (origin/main..f8e18cd) |
+| [`1405-07-29_17-28-28_infra-agent_wave7-final-cloud-verification-and-archive`](./logs/pending/1405-07-29_17-28-28_infra-agent_wave7-final-cloud-verification-and-archive.md) | موج ۷ زیرساخت — تایید نهایی دیپلوی Production (dpl_5VmACcqcKa514feFCUZj4euiJnmV)، بررسی اتاق‌های Supabase و آرشیو لاگ‌های PR #21 | `Infra-FullDeploy` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۷:۲۸:۲۸<br>`2026-10-21T13:58:28.000Z` | دیپلوی dpl_5VmACcqcKa514feFCUZj4euiJnmV و دیتابیس yavwoaqxhptzufmjckwz |
 <!-- WORKLOG:PENDING:END -->
 
 ---
@@ -168,6 +168,9 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:ARCHIVE:START -->
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | آرشیو شده توسط | زمان آرشیو (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- | --- | --- |
+| [`1405-07-29_17-21-01_infra-agent_push`](./logs/archive/1405-07-29_17-21-01_infra-agent_push.md) | پوش شاخه arena/056ddfd3-escaperoom — 229af14 | `Push` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۷:۲۱:۰۱<br>`2026-10-21T13:51:01.000Z` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۷:۲۸:۲۸<br>`2026-10-21T13:58:28.000Z` | origin/arena/056ddfd3-escaperoom (origin/arena/056ddfd3-escaperoom..229af14) |
+| [`1405-07-29_17-21-00_infra-agent_pr-21-wave6-final-deploy`](./logs/archive/1405-07-29_17-21-00_infra-agent_pr-21-wave6-final-deploy.md) | PR #21 — تحویل موج ۶ زیرساخت (استقرار نهایی فصل اول و آرشیو ۱۲ لاگ) | `PR` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۷:۲۱:۰۰<br>`2026-10-21T13:51:00.000Z` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۷:۲۸:۲۸<br>`2026-10-21T13:58:28.000Z` | PR #21 — arena/056ddfd3-escaperoom ➔ main |
+| [`1405-07-29_17-21-00_infra-agent_wave6-final-act1-production-deploy`](./logs/archive/1405-07-29_17-21-00_infra-agent_wave6-final-act1-production-deploy.md) | موج ۶ زیرساخت — استقرار نهایی فصل اول روی Vercel Production (PR #17، PR #18، PR #19 و PR #20) و آرشیو ۱۲ لاگ | `Infra-FullDeploy` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۷:۲۱:۰۰<br>`2026-10-21T13:51:00.000Z` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۷:۲۸:۲۸<br>`2026-10-21T13:58:28.000Z` | دیپلوی Production: dpl_WGemQNJZMfhDVheHhGh1qtp54FsT و dpl_3MeXqkmFWDXqCZBfmWZiBUpbo767 |
 | [`1405-07-29_17-19-39_alireza_pr-20-archive-wave3-logs`](./logs/archive/1405-07-29_17-19-39_alireza_pr-20-archive-wave3-logs.md) | PR #20 — آرشیو لاگ‌های موج ۳ علیرضا | `PR` | **علیرضا** | ۱۴۰۵/۰۷/۲۹ — ۱۷:۱۹:۳۹<br>`2026-10-21T13:49:39.000Z` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۷:۲۱:۰۰<br>`2026-10-21T13:51:00.000Z` | PR #20 — arena/f2303553-escaperoom ➔ main |
 | [`1405-07-29_17-19-22_alireza_push`](./logs/archive/1405-07-29_17-19-22_alireza_push.md) | پوش شاخه arena/f2303553-escaperoom — ee3efb8 | `Push` | **علیرضا** | ۱۴۰۵/۰۷/۲۹ — ۱۷:۱۹:۲۲<br>`2026-10-21T13:49:22.000Z` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۷:۲۱:۰۰<br>`2026-10-21T13:51:00.000Z` | origin/arena/f2303553-escaperoom (origin/main..ee3efb8) |
 | [`1405-07-29_17-11-45_amirali_invitation-room-entry-pr18`](./logs/archive/1405-07-29_17-11-45_amirali_invitation-room-entry-pr18.md) | پوش شاخه arena/6cc17c27-escaperoom — 3af751f | `Push` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۱۷:۱۱:۴۵<br>`2026-10-21T13:41:45.000Z` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۷:۲۰:۵۹<br>`2026-10-21T13:50:59.000Z` | origin/arena/6cc17c27-escaperoom (origin/main..3af751f) |
