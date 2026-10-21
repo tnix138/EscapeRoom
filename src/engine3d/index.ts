@@ -1,0 +1,15 @@
+'use client';
+
+/**
+ * engine3d — نقطه ورود عمومی (علیرضا — موج ۴/۵)
+ */
+
+export * from './types';
+export * from './collision';
+export * from './three-engine';
+export * from './player-controller';
+export * from './useThreeEngine';
+export * from './usePlayerControls';
+export * from './alley-geometry';
+export { ThreeErrorBoundary } from './ThreeErrorBoundary';
+export { default as ThreeSceneBase } from './ThreeSceneBase';
