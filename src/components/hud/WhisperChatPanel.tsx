@@ -15,10 +15,21 @@ interface WhisperChatPanelProps {
   currentPlayerName: string;
   couponText: string;
   onSendWhisper: (text: string, shareStub?: boolean) => Promise<void>;
+  /** کنترل باز/بسته بودن پنل از بیرون (اختیاری؛ پیش‌فرض کنترل داخلی). */
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
-export default function WhisperChatPanel({ messages, currentPlayerName, couponText, onSendWhisper }: WhisperChatPanelProps) {
-  const [isOpen, setIsOpen] = useState(false);
+export default function WhisperChatPanel({
+  messages,
+  currentPlayerName,
+  couponText,
+  onSendWhisper,
+  open,
+  onOpenChange,
+}: WhisperChatPanelProps) {
+  const [internalOpen, setInternalOpen] = useState(false);
+  const isOpen = open ?? internalOpen;
   const [text, setText] = useState('');
   const [sendState, setSendState] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
   const [lastSeen, setLastSeen] = useState(0);
@@ -40,12 +51,14 @@ export default function WhisperChatPanel({ messages, currentPlayerName, couponTe
     return () => window.clearTimeout(timer);
   }, [sendState]);
 
+  function setOpen(next: boolean) {
+    if (open === undefined) setInternalOpen(next);
+    if (next) setLastSeen(messages.length);
+    onOpenChange?.(next);
+  }
+
   function toggle() {
-    setIsOpen((previous) => {
-      const next = !previous;
-      if (next) setLastSeen(messages.length);
-      return next;
-    });
+    setOpen(!isOpen);
   }
 
   async function send(shareStub: boolean) {
