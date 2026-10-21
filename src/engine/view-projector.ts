@@ -10,7 +10,7 @@ import {
   actSceneTitle,
 } from './ticket-puzzle';
 
-const ONLINE_WINDOW_MS = 30_000;
+export const ONLINE_WINDOW_MS = 30_000;
 
 function publicSeatView(state: InternalRoomState, seatIndex: number, now: number): PlayerSeatPublicView {
   const seat = state.seats[seatIndex] as (typeof state.seats)[number];

@@ -5124,7 +5124,7 @@ button:disabled {
   position: fixed;
   z-index: 20;
   left: 50%;
-  bottom: 18px;
+  bottom: max(18px, env(safe-area-inset-bottom));
   transform: translateX(-50%);
   min-height: 44px;
   display: inline-flex;
@@ -5143,6 +5143,10 @@ button:disabled {
     border-color 0.2s,
     color 0.2s,
     background 0.2s;
+}
+
+.controls-help-trigger-label {
+  display: inline;
 }
 
 .controls-help-trigger > span:first-child {
@@ -5307,9 +5311,17 @@ button:disabled {
 
 @media (max-width: 680px) {
   .controls-help-trigger {
-    bottom: 14px;
+    bottom: max(14px, env(safe-area-inset-bottom));
+    width: 44px;
+    height: 44px;
     min-height: 44px;
-    padding: 0 13px;
+    padding: 0;
+    justify-content: center;
+    border-radius: 50%;
+  }
+
+  .controls-help-trigger-label {
+    display: none;
   }
 
   .controls-help {

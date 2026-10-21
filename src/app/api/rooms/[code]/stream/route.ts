@@ -1,12 +1,16 @@
 // GET /api/rooms/[code]/stream?token=<seatToken>&sinceVersion=0 — استریم بلادرنگ SSE
 // event: room_update به محض تغییر نسخه اتاق + event: heartbeat حاوی serverNow برای همگام‌سازی کات‌سین
+import type { ClientRoomView } from '../../../../../contracts/types';
 import { projectRoomView } from '../../../../../engine/view-projector';
 import { subscribeRoom } from '../../../../../server/realtime/room-hub';
+import { shouldSendRoomViewUpdate } from '../../../../../server/realtime/presence';
 import {
   GameServiceError,
   findSeatIndexByToken,
   getRoomViewForSeat,
   loadRoom,
+  PRESENCE_REFRESH_INTERVAL_MS,
+  touchSeatPresence,
 } from '../../../../../server/services/room-service';
 
 export const runtime = 'nodejs';
@@ -28,7 +32,7 @@ export async function GET(
     );
   }
 
-  let initialView;
+  let initialView: ClientRoomView;
   try {
     initialView = await getRoomViewForSeat(code, seatToken);
   } catch (err) {
@@ -47,7 +51,9 @@ export async function GET(
   const encoder = new TextEncoder();
   let unsubscribe: (() => void) | null = null;
   let heartbeat: ReturnType<typeof setInterval> | null = null;
+  let presenceHeartbeat: ReturnType<typeof setInterval> | null = null;
   let lastSentVersion = 0;
+  let lastOnlineSignature = '';
 
   const stream = new ReadableStream<Uint8Array>({
     start(controller) {
@@ -59,28 +65,53 @@ export async function GET(
         }
       };
 
+      const sendRoomView = (roomView: typeof initialView) => {
+        lastSentVersion = Math.max(lastSentVersion, roomView.version);
+        lastOnlineSignature = roomView.players.map((player) => (player.isOnline ? '1' : '0')).join('');
+        send('room_update', { roomView });
+      };
+
       // وضعیت فعلی بلافاصله ارسال می‌شود تا کلاینت بدون انتظار به‌روز شود
       lastSentVersion = initialView.version;
-      send('room_update', { roomView: initialView });
+      sendRoomView(initialView);
 
       unsubscribe = subscribeRoom(code, (state) => {
         if (state.version <= lastSentVersion) return;
         const seatIndex = findSeatIndexByToken(state, seatToken);
         if (seatIndex === null) return;
-        lastSentVersion = state.version;
-        send('room_update', { roomView: projectRoomView(state, seatIndex, Date.now()) });
+        sendRoomView(projectRoomView(state, seatIndex, Date.now()));
       });
 
+      // حفظ حضور با cadence کمتر از پنجره ۳۰ ثانیه‌ای isOnline؛ هیچ دادهٔ حرکتی ارسال نمی‌شود.
+      presenceHeartbeat = setInterval(() => {
+        void touchSeatPresence(code, seatToken).catch(() => {
+          // خطای گذرا در به‌روزرسانی حضور نباید SSE را ببندد؛ اتصال بعدی دوباره تلاش می‌کند.
+        });
+      }, PRESENCE_REFRESH_INTERVAL_MS);
+
       heartbeat = setInterval(async () => {
-        send('heartbeat', { serverNow: Date.now() });
-        // پیشبرد فاز بر اساس ساعت سرور حتی اگر هیچ اکشنی رخ ندهد (پایان کات‌سین)
+        const serverNow = Date.now();
+        send('heartbeat', { serverNow });
+        // پیشبرد فاز و بازپروژکشن حضور حتی وقتی نسخه اتاق ثابت است (مثلاً عبور آفلاین از TTL).
         try {
           const state = await loadRoom(code);
-          if (state && state.version > lastSentVersion) {
+          if (state && state.version >= lastSentVersion) {
             const seatIndex = findSeatIndexByToken(state, seatToken);
             if (seatIndex !== null) {
-              lastSentVersion = state.version;
-              send('room_update', { roomView: projectRoomView(state, seatIndex, Date.now()) });
+              const roomView = projectRoomView(state, seatIndex, serverNow);
+              const onlineSignature = roomView.players
+                .map((player) => (player.isOnline ? '1' : '0'))
+                .join('');
+              if (
+                shouldSendRoomViewUpdate(
+                  state.version,
+                  lastSentVersion,
+                  onlineSignature,
+                  lastOnlineSignature,
+                )
+              ) {
+                sendRoomView(roomView);
+              }
             }
           }
         } catch {
@@ -88,19 +119,31 @@ export async function GET(
         }
       }, HEARTBEAT_MS);
 
-      req.signal.addEventListener('abort', () => {
+      const cleanup = () => {
         if (heartbeat) clearInterval(heartbeat);
+        if (presenceHeartbeat) clearInterval(presenceHeartbeat);
         if (unsubscribe) unsubscribe();
+        heartbeat = null;
+        presenceHeartbeat = null;
+        unsubscribe = null;
+      };
+
+      req.signal.addEventListener('abort', () => {
+        cleanup();
         try {
           controller.close();
         } catch {
           // قبلاً بسته شده است
         }
-      });
+      }, { once: true });
     },
     cancel() {
       if (heartbeat) clearInterval(heartbeat);
+      if (presenceHeartbeat) clearInterval(presenceHeartbeat);
       if (unsubscribe) unsubscribe();
+      heartbeat = null;
+      presenceHeartbeat = null;
+      unsubscribe = null;
     },
   });
 
