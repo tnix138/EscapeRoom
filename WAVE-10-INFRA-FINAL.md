@@ -1,8 +1,8 @@
 # گزارش نهایی تکمیل ۱۰ موج — ایجنت چهارم زیرساخت (به مدیریت توحید)
 
 **تاریخ:** ۱۴۰۵/۰۷/۲۹ (۲۰۲۶-۱۰-۲۱)
-**شاخه کاری:** `arena/0473db0f-escaperoom` (ادغام‌شده در `main`)
-**وضعیت کلی:** تمام ۱۰ موج تعریف‌شده در `AGENT-INFRA.md` و `DOCUMENTATION.md` با رعایت کامل سه قانون سخت `AGENTS.md`، جداسازی کامل کلیدهای محرمانه (Zero-Secret Exposure) و تست‌های زنده روی محیط محلی (`SQLite`)، محیط پیش‌نمایش (`Vercel Preview`) و محیط عملیاتی (`Vercel Production` + `Supabase PostgreSQL`) تکمیل و پس از ادغام موج‌های ۳ و ۴ توحید (`PR #46` و `PR #47`) مجدداً روی Production مستقر و تأیید شد.
+**شاخه کاری:** `arena/3cf79cfd-escaperoom`
+**وضعیت کلی:** تمام ۱۰ موج تعریف‌شده در `AGENT-INFRA.md` و `DOCUMENTATION.md` به‌صورت تک‌به‌تک در فایل‌های مستقل `WAVE-1-INFRA.md` تا `WAVE-10-INFRA.md` با رعایت کامل سه قانون سخت `AGENTS.md`، جداسازی کامل کلیدهای محرمانه (Zero-Secret Exposure) و تست‌های زنده روی محیط محلی (`SQLite`)، محیط پیش‌نمایش (`Vercel Preview`) و محیط عملیاتی (`Vercel Production` + `Supabase PostgreSQL`) تکمیل و پس از ادغام موج‌های ۱ تا ۱۰ توحید (`PR #60`) و موج ۵ امیرعلی (`PR #58`) روی Production مستقر و تأیید شد.
 
 ---
 
@@ -83,3 +83,6 @@
 | **Preview / Staging (موج ۲، ۳، ۵ و ۸)** | `dpl_kQYaCHXKijotMZRifboVkHxG5s9e` | `23e66f4` (پس از PR #43) | `READY` / `STAGED` (`42.2s`) | `https://escaperoom-orfeo-iaslbqy6g-tnix138.vercel.app` |
 | **Production (پس از PR #44 امیرعلی)** | `dpl_C7VNbP8N1zJCLMLuK3jzyUo1VZHJ` | `39e16a6` (پس از PR #44) | `READY` / `PROMOTED` (`32.2s`) | `https://escaperoom-orfeo.vercel.app` |
 | **Production نهایی (پس از PR #46 و PR #47 توحید — موج ۳ و ۴ حضور SSE و پایداری Refresh)** | `dpl_BWq27G9267uGzCNKL7ENjLXH7sQ2` | `04e8928` / `31168df` | `READY` / `PROMOTED` (`28.3s`) | `https://escaperoom-orfeo.vercel.app` |
+| **Preview / Staging (موج ۲ تا ۶ زیرساخت پس از PR #51)** | `dpl_Baehq1tTn1KPLrGwjaqrPJGMmUZ6` | `ddde895` | `READY` / `STAGED` (`33.7s`) | `https://escaperoom-orfeo-eem9jbg06-tnix138.vercel.app` |
+| **Production نهایی (موج ۱۰ زیرساخت پس از PR #60 توحید و PR #58 امیرعلی)** | `dpl_AcVtEAPxUJs71pczn5chv4ycTzJ6` | `37e11ac` | `READY` / `PROMOTED` (`32.0s`) | `https://escaperoom-orfeo.vercel.app` |
+
