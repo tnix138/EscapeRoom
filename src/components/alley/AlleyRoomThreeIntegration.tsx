@@ -22,6 +22,7 @@ import type { PlayerTransform } from '@/engine3d/types';
 import type { ClientRoomView } from '@/contracts/types';
 import type { TheaterEmblemId, PlayActNumber, RowRomanCode } from '@/components/alley/contracts';
 import HeldTicketsDrawer from './HeldTicketsDrawer';
+import ClueReadingPanel from './ClueReadingPanel';
 import TheaterDoorLockModal from './TheaterDoorLockModal';
 import WhisperChatPanel from '../hud/WhisperChatPanel';
 
@@ -220,35 +221,29 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
         </div>
       </div>
 
-      {/* Overlayهای تعاملی */}
+      {/* حالت خواندن سرنخ — مشترک با نمای کلاسیک (موج ۴) */}
       {showPlaybill && (
-        <div style={{ position: 'absolute', top: 20, left: 20, width: 320, background: 'rgba(20,15,10,0.92)', color: '#e8dcc8', padding: 16, borderRadius: 12, border: '1px solid #c9a86a', direction: 'rtl', pointerEvents: 'auto', maxHeight: '70vh', overflow: 'auto' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
-            <strong>🎭 تابلوی اعلانات — نمایش امشب</strong>
-            <button type="button" onClick={() => setShowPlaybill(false)} style={{ background: 'none', border: 'none', color: '#e8dcc8', cursor: 'pointer' }}>✕</button>
-          </div>
-          {playbill.map((act, i) => (
-            <div key={i} style={{ marginBottom: 10, paddingBottom: 10, borderBottom: '1px solid rgba(201,168,106,0.2)' }}>
-              <div style={{ fontWeight: 700 }}>پرده {act.actNumber}: {act.sceneTitle}</div>
-              <div style={{ fontSize: 12, opacity: 0.8 }}>{act.description}</div>
-            </div>
-          ))}
-        </div>
+        <ClueReadingPanel
+          kind="playbill"
+          open
+          playbill={playbill}
+          rowChart={rowChart}
+          punchedCount={room.players.filter((p) => p.ticketPunched).length}
+          playerCount={room.playerCount}
+          onClose={() => setShowPlaybill(false)}
+        />
       )}
 
       {showRowChart && (
-        <div style={{ position: 'absolute', top: 20, right: 20, width: 300, background: 'rgba(20,15,10,0.92)', color: '#e8dcc8', padding: 16, borderRadius: 12, border: '1px solid #c9a86a', direction: 'rtl', pointerEvents: 'auto' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
-            <strong>📋 گیشه — جدول ردیف‌ها</strong>
-            <button type="button" onClick={() => setShowRowChart(false)} style={{ background: 'none', border: 'none', color: '#e8dcc8', cursor: 'pointer' }}>✕</button>
-          </div>
-          {rowChart.map((row, i) => (
-            <div key={i} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontSize: 13 }}>
-              <span>{row.rowTitle}</span><strong>{row.romanCode}</strong>
-            </div>
-          ))}
-          <div style={{ marginTop: 12, fontSize: 11, opacity: 0.7 }}>ردیف خود را از روی بلیط پیدا کنید</div>
-        </div>
+        <ClueReadingPanel
+          kind="rowChart"
+          open
+          playbill={playbill}
+          rowChart={rowChart}
+          punchedCount={room.players.filter((p) => p.ticketPunched).length}
+          playerCount={room.playerCount}
+          onClose={() => setShowRowChart(false)}
+        />
       )}
 
       {/* بلیط و چت */}
