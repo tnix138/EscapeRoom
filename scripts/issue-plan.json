@@ -293,7 +293,9 @@
         "contract",
         "owner:tohid"
       ],
-      "assignee": "tnix138"
+      "assignee": "tnix138",
+      "bodyFile": "scripts/issue-bodies/104.md",
+      "milestone": "هفته ۳ — حضور، مواد، آمار، HUD"
     }
   ],
   "comments": [
@@ -376,6 +378,11 @@
       "number": 88,
       "marker": "<!-- issue-sync:release-prep -->",
       "body": "<!-- issue-sync:release-prep -->\n🧰 **آماده‌سازی انتشار انجام شده (توحید)**\n\n- [x] `npm run build` سبز\n- [x] `npm run smoke` → ۸ مرحله (سلامت، صفحهٔ اصلی، ساخت اتاق، توکن معتبر/نامعتبر، حضور، محدوده، SSE)\n- [x] اسمک‌تست به‌صورت خودکار بعد از deploy روی `PRODUCTION_URL` در `deploy.yml`\n- [x] `CHANGELOG.md` نوشته شد\n- [x] `npm run hash:admin` برای ساخت هش رمز ادمین\n\n**مسدود تا تکمیل این‌ها:**\n- [ ] تنظیم secrets ریپو: `VERCEL_TOKEN`، `VERCEL_ORG_ID`، `VERCEL_PROJECT_ID`، `PRODUCTION_URL`\n- [ ] `STORAGE_DRIVER=supabase` + `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` روی production\n- [ ] اجرای `supabase/migrations/001_initial_schema.sql` و `002_admin_events.sql`\n- [ ] اولین merge به `main` تا زنجیرهٔ CI → Auto-merge → Deploy فعال شود\n- [ ] پایان فازهای ۰۴ تا ۱۴ (وابستگی فاز ۱۵ طبق `docs/PHASE.md`)\n\n> تا این‌ها انجام نشود، انتشار production عمداً انجام نمی‌شود."
+    },
+    {
+      "number": 88,
+      "marker": "<!-- issue-sync:multi-instance-risk -->",
+      "body": "<!-- issue-sync:multi-instance-risk -->\n⚠️ **ریسک معماری برای انتشار روی Vercel — باید قبل از انتشار تصمیم گرفته شود**\n\nبلادرنگ فعلی در `src/server/realtime/room-hub.ts` و `src/server/presence/presence-store.ts` **در حافظهٔ پروسه** کار می‌کند و همچنین درایور پیش‌فرض `sqlite` است.\n\nپیامدها:\n- روی Vercel، هر نمونه (instance/سرورلس) حافظهٔ جدا دارد؛ اگر دو بازیکن یک اتاق به دو نمونهٔ مختلف برسند، `room_update` و `presence_update` را از هم نمی‌گیرند.\n- مسیر `.data/escaperoom.db` روی Vercel پایدار نیست؛ برای production باید `STORAGE_DRIVER=supabase` باشد.\n- SSE روی محیط serverless به پلن/زمان اجرا محدود است (`vercel.json` روی `maxDuration: 60` است).\n\nگزینه‌های پیشنهادی (یکی انتخاب شود):\n1. **Supabase Realtime** — اتاق‌ها از `supabase` بخوانند و تغییرات را از کانال Realtime پخش کنیم (بیشترین کار، بهترین نتیجه).\n2. **شارژ single-instance** — روی یک نمونهٔ همیشه‌بیدار اجرا شود (ساده، اما مقیاس‌پذیر نیست).\n3. **Polling کوتاه** — کلاینت هر ۳۰۰–۵۰۰ms وضعیت را بخواند و SSE فقط delta بدهد (کمترین تغییر، تأخیر بیشتر).\n\nتا انتخاب این گزینه، انتشار production عمداً انجام نمی‌شود."
     }
   ],
   "close": [

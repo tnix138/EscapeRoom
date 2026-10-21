@@ -101,7 +101,7 @@ describe('چیدمان Issueها — یکپارچگی طرح', () => {
 
   it('فایل بدنهٔ Issueهای اصلاح‌شده موجود و بدون آکولاد تکراری است', () => {
     const withBody = plan.issues.filter((issue) => issue.bodyFile);
-    expect(withBody.map((issue) => issue.number).sort((a, b) => a - b)).toEqual([99, 100]);
+    expect(withBody.map((issue) => issue.number).sort((a, b) => a - b)).toEqual([99, 100, 104]);
     for (const issue of withBody) {
       const file = path.join(ROOT, issue.bodyFile as string);
       expect(existsSync(file), issue.bodyFile).toBe(true);
@@ -111,6 +111,14 @@ describe('چیدمان Issueها — یکپارچگی طرح', () => {
       expect(body).toContain('/api/rooms/{CODE}/presence');
       expect(body).toContain('رادیان');
     }
+    // قرارداد نباید نمونهٔ کدِ باگ‌دار داشته باشد
+    const contract = readFileSync(path.join(ROOT, 'scripts/issue-bodies/104.md'), 'utf8');
+    expect(contract).not.toContain("? currentCode : currentCode");
+    expect(contract).not.toContain('currentCode');
+    expect(contract).toContain('inFlight');
+    expect(contract).toContain('حافظهٔ پروسه');
+    // متن کهنه دربارهٔ خرابی #99/#100 نباید بماند
+    expect(contract).not.toContain('دچار خطای نمایشی');
   });
 
   it('هر کامنت و بستن، نشانگر یکتا برای همان Issue دارد تا اجرای دوباره تکراری نسازد', () => {
