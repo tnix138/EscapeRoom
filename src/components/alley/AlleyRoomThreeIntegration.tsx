@@ -18,6 +18,9 @@ import { createAlleyGeometry } from '@/engine3d/alley-geometry';
 import { resolveInitialTransform, saveTransform } from '@/engine3d/spawn';
 import { createTransitionState, type TransitionPhase } from '@/engine3d/transition';
 import { RemotePlayerManager } from '@/engine3d/presence/RemotePlayerManager';
+import { FearResponsiveFog } from '@/engine3d/horror/fear-fog';
+import { HorrorAudio } from '@/audio/horror/horror-audio';
+import { horrorLevelIntensity } from '../hud/horror/horror-signal';
 import { toPresenceSnapshots } from '@/client-sdk/presence-avatars';
 import { ThreeErrorBoundary } from '@/engine3d/ThreeErrorBoundary';
 import type { PlayerTransform } from '@/engine3d/types';
@@ -168,13 +171,52 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
     manager.sync(toPresenceSnapshots(presence.presences, room.me.playerId), Date.now(), room.me.playerId);
   }, [presence.presences, room.me.playerId]);
 
+  // اتمسفر ترس فاز ۰۷-الف: مه متناسب با سطح ترس (چگال‌تر در «دلواپس»/«وحشت»).
+  // آواتارها و مه در همان حلقهٔ رندر موتور به‌روز می‌شوند.
+  const fogRef = useRef<FearResponsiveFog | null>(null);
   useEffect(() => {
     if (!engine) return;
+    const fog = new FearResponsiveFog(engine.scene, { initialFear: 0 });
+    fogRef.current = fog;
     engine.setTick((delta) => {
       remotePlayersRef.current?.update(delta);
+      fog.update(delta);
     });
-    return () => engine.setTick(() => {});
+    return () => {
+      fogRef.current = null;
+      engine.setTick(() => {});
+      fog.dispose();
+    };
   }, [engine]);
+
+  useEffect(() => {
+    fogRef.current?.setFearLevel(horrorLevelIntensity(horrorLevel));
+  }, [horrorLevel]);
+
+  // صدای محیطی/ضربان قلب فاز ۰۷-الف — فقط بعد از تعامل کاربر (قانون مرورگرها).
+  const horrorAudioRef = useRef<HorrorAudio | null>(null);
+  useEffect(() => {
+    const audio = new HorrorAudio();
+    horrorAudioRef.current = audio;
+    return () => {
+      horrorAudioRef.current = null;
+      void audio.dispose();
+    };
+  }, []);
+
+  const startHorrorAudio = useCallback(async () => {
+    const audio = horrorAudioRef.current;
+    if (!audio || audio.isInitialized) return;
+    const ready = await audio.init();
+    if (!ready) return;
+    audio.startAmbience();
+    audio.startHeartbeat();
+    audio.setFearLevel(horrorLevelIntensity(horrorLevel));
+  }, [horrorLevel]);
+
+  useEffect(() => {
+    horrorAudioRef.current?.setFearLevel(horrorLevelIntensity(horrorLevel));
+  }, [horrorLevel]);
 
   function openClue(kind: 'playbill' | 'rowChart') {
     if (kind === 'playbill') setShowPlaybill((value) => !value);
@@ -339,7 +381,7 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
           {ticketFeedback && <div style={{ marginTop: 6, color: isTicketPunched ? '#8aff8a' : '#ffd080' }}>{ticketFeedback}</div>}
         </div>
         <div style={{ display: 'flex', gap: 8, pointerEvents: 'auto' }}>
-          <button type="button" onClick={() => requestPointerLock()} style={{ padding: '8px 12px', borderRadius: 8, border: '1px solid #c9a86a', background: 'rgba(26,26,46,0.9)', color: '#e8dcc8', cursor: 'pointer', fontSize: 12 }}>
+          <button type="button" onClick={() => { void startHorrorAudio(); requestPointerLock(); }} style={{ padding: '8px 12px', borderRadius: 8, border: '1px solid #c9a86a', background: 'rgba(26,26,46,0.9)', color: '#e8dcc8', cursor: 'pointer', fontSize: 12 }}>
             {isPointerLocked ? '🔓 خروج (Esc)' : '🔒 قفل ماوس'}
           </button>
         </div>
