@@ -1,8 +1,8 @@
 # گزارش نهایی تکمیل ۱۰ موج — ایجنت چهارم زیرساخت (به مدیریت توحید)
 
 **تاریخ:** ۱۴۰۵/۰۷/۲۹ (۲۰۲۶-۱۰-۲۱)
-**شاخه کاری:** `arena/5f12b76c-escaperoom` (ادغام‌شده در `main`)
-**وضعیت کلی:** تمام ۱۰ موج تعریف‌شده در `AGENT-INFRA.md` و `DOCUMENTATION.md` با رعایت کامل سه قانون سخت `AGENTS.md`، جداسازی کامل کلیدهای محرمانه (Zero-Secret Exposure) و تست‌های زنده روی محیط محلی (`SQLite`)، محیط پیش‌نمایش (`Vercel Preview`) و محیط عملیاتی (`Vercel Production` + `Supabase PostgreSQL`) تکمیل شد.
+**شاخه کاری:** `arena/0473db0f-escaperoom` (ادغام‌شده در `main`)
+**وضعیت کلی:** تمام ۱۰ موج تعریف‌شده در `AGENT-INFRA.md` و `DOCUMENTATION.md` با رعایت کامل سه قانون سخت `AGENTS.md`، جداسازی کامل کلیدهای محرمانه (Zero-Secret Exposure) و تست‌های زنده روی محیط محلی (`SQLite`)، محیط پیش‌نمایش (`Vercel Preview`) و محیط عملیاتی (`Vercel Production` + `Supabase PostgreSQL`) تکمیل و پس از ادغام موج‌های ۳ و ۴ توحید (`PR #46` و `PR #47`) مجدداً روی Production مستقر و تأیید شد.
 
 ---
 
@@ -81,4 +81,5 @@
 | --- | --- | --- | --- | --- |
 | **Production (موج‌های سه‌بعدی + موج ۲/۳ رابط)** | `dpl_w6wdyEKqCrGJpasSK81vXgQy4seV` | `beaad6e` (پس از PR #41) | `READY` / `PROMOTED` (`32.5s`) | `https://escaperoom-orfeo.vercel.app` |
 | **Preview / Staging (موج ۲، ۳، ۵ و ۸)** | `dpl_kQYaCHXKijotMZRifboVkHxG5s9e` | `23e66f4` (پس از PR #43) | `READY` / `STAGED` (`42.2s`) | `https://escaperoom-orfeo-iaslbqy6g-tnix138.vercel.app` |
-| **Production نهایی (پس از PR #44 امیرعلی)** | `dpl_C7VNbP8N1zJCLMLuK3jzyUo1VZHJ` | `39e16a6` (پس از PR #44) | `READY` / `PROMOTED` (`32.2s`) | `https://escaperoom-orfeo.vercel.app` |
+| **Production (پس از PR #44 امیرعلی)** | `dpl_C7VNbP8N1zJCLMLuK3jzyUo1VZHJ` | `39e16a6` (پس از PR #44) | `READY` / `PROMOTED` (`32.2s`) | `https://escaperoom-orfeo.vercel.app` |
+| **Production نهایی (پس از PR #46 و PR #47 توحید — موج ۳ و ۴ حضور SSE و پایداری Refresh)** | `dpl_BWq27G9267uGzCNKL7ENjLXH7sQ2` | `04e8928` / `31168df` | `READY` / `PROMOTED` (`28.3s`) | `https://escaperoom-orfeo.vercel.app` |
