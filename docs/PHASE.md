@@ -59,7 +59,7 @@
 1. ✅ **سرور حضور ساخته شد** — `presence-tracker.ts`، `presence-service.ts` و `/api/rooms/[code]/presence` + رویداد `presence_update` روی استریم. با smoke زنده تأیید شد (رزرو → POST حضور ۲۰۰ → GET ۲۰۰ → قاب SSE حاوی بازیکن؛ توکن غلط ۴۰۱، موقعیت خارج از محدوده ۴۰۰).
 2. ✅ **API پنل ادمین ساخته شد** — `/api/admin/login|logout|session` با توکن HS256 در کوکی httpOnly. smoke زنده: بدون جلسه ۴۰۱، `/admin` بدون جلسه ۳۰۷ به `/admin/login`، ورود درست ۲۰۰ + کوکی، صفحهٔ `/admin` ۲۰۰، خروج ۲۰۰ و بعد از آن ۴۰۱، ششمین تلاش ورود ۴۲۹.
 3. ✅ **BOM از `package.json` حذف شد** — `next build` و `next dev` دیگر با `SyntaxError: Unexpected token '\uFEFF'` نمی‌شکنند.
-4. ⏳ باقی‌مانده واقعی: داشبورد آمار فاز ۱۰ (امیر)؛ صفحهٔ فعلی `/admin` فقط پوستهٔ احراز هویت است.
+4. ✅ داشبورد آمار فاز ۱۰ (امیر) تحویل شد: `/api/admin/stats|players|rooms|errors` + صفحات `/admin`، `/admin/players`، `/admin/errors`.
 5. ℹ️ حضور در حافظهٔ هر نمونه است (مثل `room-hub`)؛ برای استقرار چندنمونه‌ای باید به Redis منتقل شود.
 
 ---
@@ -100,7 +100,10 @@
 
 ## وضعیت
 
-- ⏳ در انتظار شروع
+- ✅ تکمیل شد (انحراف پذیرفته‌شده در مسیر: پوشه در عمل `docs/` است، نه `docs-v2/`؛ خودِ `docs/` مرجع نهایی و منبع حقیقت است)
+- 📝 تاریخ: ۱۴۰۵/۰۷/۳۱
+- 🔗 کامیت مرجع: `e46e4f5`
+- 📊 نتیجهٔ تست: `docs/` کامل (۱۱ فایل + `features/` + `checklists/`)؛ `README.md` ریشه به `docs/README.md` اشاره می‌کند؛ بازبینی مستندات در Issue #95 بدون یافته‌ٔ متناقض بسته شد
 
 ---
 
@@ -133,7 +136,14 @@
 
 ## وضعیت
 
-- ⏳ در انتظار شروع
+- 🟡 در حال انجام — فایل‌های اتوماسیون نوشته و روی شاخهٔ ادغام سبز شده‌اند، ولی **روی `main` فعال نیستند**
+- ✅ `ci.yml` (typecheck + lint + test + build)، `auto-merge.yml`، `deploy.yml`، `issue-sync.yml` در `.github/workflows/`
+- ✅ `scripts/issue-sync.mjs` + `scripts/issue-plan.json` برای کامنت/بستن Issueها با `GITHUB_TOKEN`
+- ✅ اسکریپت‌های `npm run ci` / `lint` / `smoke` / `hash:admin`
+- 🚫 مسدود: `origin/main` هیچ فایل workflow ندارد و برنچ‌پروتکشن/سکرت `GITHUB_TOKEN` بدون دسترسی ادمین قابل تنظیم نیست
+- 📝 تاریخ: ۱۴۰۵/۰۷/۳۱
+- 🔗 کامیت مرجع: `0437604`
+- 📊 نتیجهٔ تست: اجرای محلی معادل CI سبز — `tsc --noEmit` پاک، `npm run lint` پاک، ۵۷۹ تست در ۵۴ فایل، `next build` موفق
 
 ---
 
@@ -434,7 +444,7 @@ Materialهای PBR با normal map، roughness map، AO map رویه‌ای. س�
 - 📊 نتیجهٔ تست: `admin-login-phase09.test.ts` (۲۲) + `admin-gate-phase09.test.ts` (۹) + `admin-auth-phase09.test.ts` (۱۵) = **۴۶ تست سبز**؛ smoke زندهٔ production: ۴۰۱ → ورود ۲۰۰ + کوکی → `/admin` ۲۰۰ → خروج → ۴۰۱؛ ششمین تلاش ۴۲۹
 - ✅ داشبورد حداقلی `/admin`: بدون جلسه → ۳۰۷ به صفحهٔ ورود؛ با جلسه → نام، نقش، پایان جلسه و دکمهٔ خروج (جایگزین موقت داشبورد فاز ۱۰)
 - 📊 تست: `tests/amirali/admin-login-phase09.test.ts` (۲۲) + `admin-gate-phase09.test.ts` (۹) + `admin-auth-phase09.test.ts` (۱۵) — ۴۶ تست سبز
-- ⏳ باقی‌مانده (فاز ۱۰ — امیر): داشبورد آمار اتاق‌ها/بازیکنان و `AdminSidebar`؛ صفحهٔ فعلی `/admin` فقط پوستهٔ احراز هویت است.
+- ✅ داشبورد فاز ۱۰ (امیر) وصل شد: آمار اتاق‌ها/بازیکنان، لیست اتاق‌ها و خطاها زیر `AdminSessionGate`.
 
 # 📋 فاز ۱۰ — پنل ادمین: آمار و مشاهده
 
@@ -476,7 +486,13 @@ Materialهای PBR با normal map، roughness map، AO map رویه‌ای. س�
 
 ## وضعیت
 
-- ⏳ در انتظار شروع
+- ✅ تکمیل شد
+- ✅ `/api/admin/stats|players|rooms|errors` روی `src/server/admin/queries.ts` (SQLite و Supabase هر دو)
+- ✅ `/admin` با کارت‌های آمار، لیست اتاق‌ها، لیست بازیکنان و صفحهٔ خطاها؛ همه پشت `AdminSessionGate`
+- ✅ حذف بازیکن از پنل (`DELETE /api/admin/players/[id]`) با ثبت رویداد ادمین
+- 📝 تاریخ: ۱۴۰۵/۰۸/۰۱
+- 🔗 کامیت مرجع: `0437604`
+- 📊 نتیجهٔ تست: `tests/amir/admin-auth.test.ts` (۱۸) + `admin-shell.test.ts` (۶) + `admin-*.test.ts` فاز ۱۰/۱۳؛ کل مجموعه ۵۷۹ تست سبز
 
 ---
 
@@ -513,8 +529,13 @@ Materialهای PBR با normal map، roughness map، AO map رویه‌ای. س�
 
 ## وضعیت
 
-- 🟡 سهم علیرضا (دیالوگ‌های کپشنی و cueهای صوتی) در PR #114 ادغام شد.
-- ⏳ داستان مرجع، تلمیح معما/پایان فرار و QA روایت در Issue #97 (نازنین) هنوز باز است؛ Issueهای #96 و #84 تا تکمیل هماهنگی باز می‌مانند.
+- ✅ تکمیل شد
+- ✅ دیالوگ‌ها و cueهای صوتی (سهم علیرضا) در PR #114 و در کات‌سین واقعی mount شده‌اند
+- ✅ داستان مرجع، شخصیت‌ها، پایان و واژه‌نامه: `docs/features/story.md` (Issue #97)
+- ✅ `validateStoryScript()` + تست‌های روایت و زمان‌بندی صدا
+- 📝 تاریخ: ۱۴۰۵/۰۸/۰۱
+- 🔗 کامیت مرجع: `e46e4f5`
+- 📊 نتیجهٔ تست: `tests/qa/story-narrative.test.ts` (۱۲) + `story-cue-timing.test.ts` (۶) + تست‌های کات‌سین/صدا — سبز
 
 ---
 
@@ -597,7 +618,13 @@ Materialهای PBR با normal map، roughness map، AO map رویه‌ای. س�
 
 ## وضعیت
 
-- ⏳ در انتظار شروع
+- ✅ تکمیل شد
+- ✅ حذف بازیکن با تأیید دو مرحله‌ای در پنل (`/admin/players`) و `DELETE /api/admin/players/[id]`
+- ✅ لیست خطاها با کد، زمان و پیام از `admin_events` (صفحهٔ `/admin/errors` + `GET /api/admin/errors`)
+- ✅ هر عملیات مدیریتی به‌صورت رویداد در دیتابیس ثبت می‌شود (`recordAdminEvent`)
+- 📝 تاریخ: ۱۴۰۵/۰۸/۰۱
+- 🔗 کامیت مرجع: `0437604`
+- 📊 نتیجهٔ تست: تست‌های ادمین فاز ۱۰/۱۳ (شامل ۴۰۱/۴۰۳ روی مسیر حذف و اعتبارسنجی ورودی) — سبز
 
 ---
 
@@ -633,7 +660,13 @@ Materialهای PBR با normal map، roughness map، AO map رویه‌ای. س�
 
 ## وضعیت
 
-- ⏳ در انتظار شروع
+- 🟡 در حال انجام
+- ✅ مسیر کامل بازی تست شد: `tests/qa/game-path.test.ts` (۸ تست) — ترتیب فازها، مرزهای ۱۱s/۷۴s، هم‌گامی کلاینت با ساعت سرور، شروع سالن تاریک، نبود توکن/seed در نمای کلاینت
+- ✅ روایت و صدا: `tests/qa/story-narrative.test.ts` + `tests/qa/story-cue-timing.test.ts`
+- ⏳ باقی‌ماندهٔ دستی: سنجش FPS روی دسکتاپ/موبایل واقعی و پر کردن `docs/checklists/before-release.md` (نیازمند اجرای انسان روی دستگاه)
+- 📝 تاریخ: ۱۴۰۵/۰۸/۰۱
+- 🔗 کامیت مرجع: `e46e4f5`
+- 📊 نتیجهٔ تست: ۲۰ تست QA سبز؛ کل مجموعه ۵۷۹ تست در ۵۴ فایل
 
 ---
 
@@ -663,7 +696,14 @@ Materialهای PBR با normal map، roughness map، AO map رویه‌ای. س�
 
 ## وضعیت
 
-- ⏳ در انتظار شروع
+- 🚫 مسدود — انتشار نهایی انجام نشده
+- ✅ `deploy.yml` نوشته شد و `CHANGELOG.md` به‌روز است
+- 🚫 production کهنه است: `https://escaperoom-orfeo.vercel.app/api/health` سالم است (storageDriver=supabase) ولی `/admin/login` هنوز ۴۰۴ می‌دهد
+- 🚫 متغیرهای `ADMIN_USERNAME` / `ADMIN_PASSWORD_HASH` / `ADMIN_SESSION_SECRET` روی Vercel ست نیستند
+- 🚫 `.github/workflows` روی `main` وجود ندارد، پس deploy خودکار از `main` اجرا نمی‌شود
+- 📝 تاریخ: ۱۴۰۵/۰۸/۰۱
+- 🔗 کامیت مرجع: —
+- 📊 نتیجهٔ تست: اجرای محلی سبز (۵۷۹ تست)؛ smoke روی production ناقص — فقط `/api/health`
 
 ---
 
