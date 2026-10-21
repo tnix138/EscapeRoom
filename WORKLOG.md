@@ -121,7 +121,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۲۸** — ✅ Archive: **۱۵۴** — 🧾 مجموع: **۱۸۲** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۲۰:۳۶:۲۱ (`2026-10-21T17:06:21.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۲۹** — ✅ Archive: **۱۵۴** — 🧾 مجموع: **۱۸۳** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۲۰:۳۶:۴۲ (`2026-10-21T17:06:42.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -131,6 +131,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:EVENTS:START -->
 | 🕒 زمان (ایران / UTC) | رویداد | شناسه لاگ | توسط |
 | --- | --- | --- | --- |
+| ۱۴۰۵/۰۷/۲۹ — ۲۰:۳۶:۴۲<br>`2026-10-21T17:06:42.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-36-42_amirali_push`](./logs/pending/1405-07-29_20-36-42_amirali_push.md) | **امیرعلی** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۳۶:۲۱<br>`2026-10-21T17:06:21.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-36-21_amirali_wave7-theater-companion`](./logs/pending/1405-07-29_20-36-21_amirali_wave7-theater-companion.md) | **امیرعلی** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۸:۱۴<br>`2026-10-21T16:58:14.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-28-14_amirali_pr-61-wave6-ticket-puzzle`](./logs/pending/1405-07-29_20-28-14_amirali_pr-61-wave6-ticket-puzzle.md) | **امیرعلی** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۶:۱۷<br>`2026-10-21T16:56:17.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-26-17_amirali_push`](./logs/pending/1405-07-29_20-26-17_amirali_push.md) | **امیرعلی** |
@@ -142,7 +143,6 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۹:۱۵<br>`2026-10-21T16:49:15.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_20-17-47_tohid_push`](./logs/archive/1405-07-29_20-17-47_tohid_push.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۹:۱۵<br>`2026-10-21T16:49:15.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_20-17-47_tohid_wave8-10-hardening-and-archive`](./logs/archive/1405-07-29_20-17-47_tohid_wave8-10-hardening-and-archive.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۸:۰۲<br>`2026-10-21T16:48:02.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-18-02_tohid_pr-59-tohid-final-hardening`](./logs/archive/1405-07-29_20-18-02_tohid_pr-59-tohid-final-hardening.md) | **توحید** |
-| ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۸:۰۲<br>`2026-10-21T16:48:02.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-18-02_tohid_push`](./logs/archive/1405-07-29_20-18-02_tohid_push.md) | **توحید** |
 <!-- WORKLOG:EVENTS:END -->
 
 ---
@@ -154,6 +154,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:PENDING:START -->
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- |
+| [`1405-07-29_20-36-42_amirali_push`](./logs/pending/1405-07-29_20-36-42_amirali_push.md) | پوش شاخه arena/ef2e593f-escaperoom — b84b24a | `Push` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۳۶:۴۲<br>`2026-10-21T17:06:42.000Z` | origin/arena/ef2e593f-escaperoom (origin/main..b84b24a) |
 | [`1405-07-29_20-36-21_amirali_wave7-theater-companion`](./logs/pending/1405-07-29_20-36-21_amirali_wave7-theater-companion.md) | موج ۷ — همراهِ تماشاخانه: فهرست هم‌تیمی‌ها، صندلی‌ها و نشانهٔ داستان | `Commit` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۳۶:۲۱<br>`2026-10-21T17:06:21.000Z` | شاخه arena/ef2e593f-escaperoom |
 | [`1405-07-29_20-28-14_amirali_pr-61-wave6-ticket-puzzle`](./logs/pending/1405-07-29_20-28-14_amirali_pr-61-wave6-ticket-puzzle.md) | PR #61 — موج ۶ امیرعلی: بلیط و معما | `PR` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۸:۱۴<br>`2026-10-21T16:58:14.000Z` | PR #61 — arena/0956f116-escaperoom ➔ main |
 | [`1405-07-29_20-26-17_amirali_push`](./logs/pending/1405-07-29_20-26-17_amirali_push.md) | پوش شاخه arena/0956f116-escaperoom — a6b1feb | `Push` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۶:۱۷<br>`2026-10-21T16:56:17.000Z` | origin/arena/0956f116-escaperoom (origin/main..a6b1feb) |
