@@ -121,7 +121,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۱۹** — ✅ Archive: **۱۰۷** — 🧾 مجموع: **۱۲۶** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۹:۳۱:۵۲ (`2026-10-21T16:01:52.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۲۰** — ✅ Archive: **۱۰۷** — 🧾 مجموع: **۱۲۷** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۹:۳۲:۲۳ (`2026-10-21T16:02:23.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -131,6 +131,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:EVENTS:START -->
 | 🕒 زمان (ایران / UTC) | رویداد | شناسه لاگ | توسط |
 | --- | --- | --- | --- |
+| ۱۴۰۵/۰۷/۲۹ — ۱۹:۳۲:۲۳<br>`2026-10-21T16:02:23.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-32-23_infra-agent_push`](./logs/pending/1405-07-29_19-32-23_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۳۱:۵۲<br>`2026-10-21T16:01:52.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-31-52_infra-agent_pr43-production-deploy-3d`](./logs/pending/1405-07-29_19-31-52_infra-agent_pr43-production-deploy-3d.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۳۱:۲۹<br>`2026-10-21T16:01:29.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-31-29_infra-agent_push`](./logs/pending/1405-07-29_19-31-29_infra-agent_push.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۳۰:۵۰<br>`2026-10-21T16:00:50.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-30-50_infra-agent_production-deploy-3d-orfeo`](./logs/pending/1405-07-29_19-30-50_infra-agent_production-deploy-3d-orfeo.md) | **ایجنت چهارم زیرساخت (به مدیریت توحید)** |
@@ -142,7 +143,6 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۸:۵۴<br>`2026-10-21T15:58:54.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-28-54_tohid_sync-main-pr41-tickets`](./logs/pending/1405-07-29_19-28-54_tohid_sync-main-pr41-tickets.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۸:۰۳<br>`2026-10-21T15:58:03.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-28-03_tohid_push-sync-pr40-pr42`](./logs/pending/1405-07-29_19-28-03_tohid_push-sync-pr40-pr42.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۷:۵۰<br>`2026-10-21T15:57:50.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-27-50_tohid_sync-main-pr40-infra`](./logs/pending/1405-07-29_19-27-50_tohid_sync-main-pr40-infra.md) | **توحید** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۹:۲۷:۳۲<br>`2026-10-21T15:57:32.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-27-32_amirali_push`](./logs/pending/1405-07-29_19-27-32_amirali_push.md) | **امیرعلی** |
 <!-- WORKLOG:EVENTS:END -->
 
 ---
@@ -154,6 +154,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:PENDING:START -->
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- |
+| [`1405-07-29_19-32-23_infra-agent_push`](./logs/pending/1405-07-29_19-32-23_infra-agent_push.md) | پوش شاخه arena/5f12b76c-escaperoom — d2fe085 | `Push` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۳۲:۲۳<br>`2026-10-21T16:02:23.000Z` | origin/arena/5f12b76c-escaperoom (origin/arena/5f12b76c-escaperoom..d2fe085) |
 | [`1405-07-29_19-31-52_infra-agent_pr43-production-deploy-3d`](./logs/pending/1405-07-29_19-31-52_infra-agent_pr43-production-deploy-3d.md) | PR #43 — دیپلوی Production نسخه سه‌بعدی روی Vercel، بررسی سلامت Supabase و آرشیو لاگ‌های PR #40 | `PR` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۳۱:۵۲<br>`2026-10-21T16:01:52.000Z` | PR #43 (arena/5f12b76c-escaperoom → main) |
 | [`1405-07-29_19-31-29_infra-agent_push`](./logs/pending/1405-07-29_19-31-29_infra-agent_push.md) | پوش شاخه arena/5f12b76c-escaperoom — fc10bfc | `Push` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۳۱:۲۹<br>`2026-10-21T16:01:29.000Z` | origin/arena/5f12b76c-escaperoom (origin/arena/5f12b76c-escaperoom..fc10bfc) |
 | [`1405-07-29_19-30-50_infra-agent_production-deploy-3d-orfeo`](./logs/pending/1405-07-29_19-30-50_infra-agent_production-deploy-3d-orfeo.md) | دیپلوی Production نسخه سه‌بعدی (Three.js) و پوسته خوانا روی Vercel و تست سلامت Supabase | `Infra-FullDeploy` | **ایجنت چهارم زیرساخت (به مدیریت توحید)** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۳۰:۵۰<br>`2026-10-21T16:00:50.000Z` | Vercel dpl_w6wdyEKqCrGJpasSK81vXgQy4seV / Supabase yavwoaqxhptzufmjckwz |
