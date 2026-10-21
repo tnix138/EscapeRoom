@@ -121,7 +121,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۹** — ✅ Archive: **۶۳** — 🧾 مجموع: **۷۲** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۲:۵۹ (`2026-10-21T15:22:59.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۱۰** — ✅ Archive: **۶۳** — 🧾 مجموع: **۷۳** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۳:۰۳ (`2026-10-21T15:23:03.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -131,6 +131,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:EVENTS:START -->
 | 🕒 زمان (ایران / UTC) | رویداد | شناسه لاگ | توسط |
 | --- | --- | --- | --- |
+| ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۳:۰۳<br>`2026-10-21T15:23:03.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-53-03_alireza_wave10-pr`](./logs/pending/1405-07-29_18-53-03_alireza_wave10-pr.md) | **علیرضا** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۲:۵۹<br>`2026-10-21T15:22:59.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-52-59_alireza_push`](./logs/pending/1405-07-29_18-52-59_alireza_push.md) | **علیرضا** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۲:۵۵<br>`2026-10-21T15:22:55.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-52-55_alireza_wave10-performance`](./logs/pending/1405-07-29_18-52-55_alireza_wave10-performance.md) | **علیرضا** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۲:۱۴<br>`2026-10-21T15:22:14.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_18-52-00_alireza_wave7-9-pr`](./logs/archive/1405-07-29_18-52-00_alireza_wave7-9-pr.md) | **علیرضا** |
@@ -142,7 +143,6 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۰:۴۰<br>`2026-10-21T15:20:40.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_18-50-24_alireza_wave5-6-pr`](./logs/archive/1405-07-29_18-50-24_alireza_wave5-6-pr.md) | **علیرضا** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۰:۴۰<br>`2026-10-21T15:20:40.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_18-50-18_alireza_push`](./logs/archive/1405-07-29_18-50-18_alireza_push.md) | **علیرضا** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۰:۳۹<br>`2026-10-21T15:20:39.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_18-50-13_alireza_wave5-6-spawn-interaction`](./logs/archive/1405-07-29_18-50-13_alireza_wave5-6-spawn-interaction.md) | **علیرضا** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۰:۲۴<br>`2026-10-21T15:20:24.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_18-50-24_alireza_wave5-6-pr`](./logs/archive/1405-07-29_18-50-24_alireza_wave5-6-pr.md) | **علیرضا** |
 <!-- WORKLOG:EVENTS:END -->
 
 ---
@@ -154,6 +154,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:PENDING:START -->
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- |
+| [`1405-07-29_18-53-03_alireza_wave10-pr`](./logs/pending/1405-07-29_18-53-03_alireza_wave10-pr.md) | PR موج ۱۰ علیرضا — کارایی و تکمیل | `PR` | **علیرضا** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۳:۰۳<br>`2026-10-21T15:23:03.000Z` | PR #28 |
 | [`1405-07-29_18-52-59_alireza_push`](./logs/pending/1405-07-29_18-52-59_alireza_push.md) | پوش شاخه arena/424e63a7-escaperoom — dffe850 | `Push` | **علیرضا** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۲:۵۹<br>`2026-10-21T15:22:59.000Z` | origin/arena/424e63a7-escaperoom (origin/main..dffe850) |
 | [`1405-07-29_18-52-55_alireza_wave10-performance`](./logs/pending/1405-07-29_18-52-55_alireza_wave10-performance.md) | موج ۱۰ علیرضا — کارایی، E2E و تکمیل جهان سه‌بعدی | `Commit` | **علیرضا** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۵۲:۵۵<br>`2026-10-21T15:22:55.000Z` | شاخه arena/424e63a7-escaperoom |
 | [`1405-07-29_18-40-31_arena-agent_agent-docs-wave-breakdown`](./logs/pending/1405-07-29_18-40-31_arena-agent_agent-docs-wave-breakdown.md) | درخواست بازبینی مستندات عامل‌محور و برنامهٔ ده‌موجی | `PR` | **ایجنت Arena** | ۱۴۰۵/۰۷/۲۹ — ۱۸:۴۰:۳۱<br>`2026-10-21T15:10:31.000Z` | شاخه arena/6d25be20-escaperoom → main |
