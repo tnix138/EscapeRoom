@@ -172,6 +172,8 @@ describe('فاز ۰۹-الف — مسیرهای HTTP', () => {
     expect(response.headers.get('set-cookie')).toBeNull();
     const payload = await response.json();
     expect(payload.error.code).toBe('ADMIN_NOT_CONFIGURED');
+    // در تست (NODE_ENV=test) راهنمای env می‌آید؛ در production پیام عمومی است.
+    expect(typeof payload.error.message).toBe('string');
   });
 
   it('ورود درست ۲۰۰ + کوکی httpOnly می‌دهد و جلسه با همان کوکی تأیید می‌شود', async () => {

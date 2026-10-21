@@ -162,11 +162,13 @@ export function normalizeRemotePlayer(input: unknown): RemotePlayer | null {
   const rawTransform = raw.transform ?? null;
   const yawDegSource = raw.yawDeg ?? rawTransform?.yawDeg;
   const yawRadSource = raw.yaw ?? rawTransform?.yaw;
-  const yawDeg = typeof yawDegSource === 'number' && Number.isFinite(yawDegSource)
+  const yawDegRaw = typeof yawDegSource === 'number' && Number.isFinite(yawDegSource)
     ? yawDegSource
     : typeof yawRadSource === 'number' && Number.isFinite(yawRadSource)
       ? (yawRadSource * 180) / Math.PI
       : 0;
+  // همیشه در [۰, ۳۶۰) نرمال می‌شود تا ورودی منفی/بیش‌ازحد (رادیان انباشته) یکسان دیده شود.
+  const yawDeg = ((yawDegRaw % 360) + 360) % 360;
 
   const phase = typeof raw.phase === 'string' && raw.phase.trim() ? raw.phase.trim() : null;
 
