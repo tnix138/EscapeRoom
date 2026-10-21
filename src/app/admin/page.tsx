@@ -1,7 +1,7 @@
 // src/app/admin/page.tsx — داشبورد آمار پنل ادمین (فاز ۱۰)
 import Link from 'next/link';
 import AdminSidebar from '@/components/admin/AdminSidebar';
-import { PLAYER_CHARACTER_PRESETS } from '@/components/admin/CharactersShowcase';
+import { PLAYER_CHARACTER_PRESETS } from '@/components/admin/character-presets';
 import StatsCard from '@/components/admin/StatsCard';
 import RoomsTable from '@/components/admin/RoomsTable';
 import { faDigits, formatPercent, phaseLabel } from '@/components/admin/format';
