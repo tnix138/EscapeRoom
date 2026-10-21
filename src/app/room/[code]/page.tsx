@@ -29,6 +29,8 @@ import type { AuditoriumHotspotId } from '@/contracts/types';
 import styles from './page.module.css';
 
 const AlleyRoomThreeIntegration = dynamic(() => import('@/components/alley/AlleyRoomThreeIntegration'), { ssr: false });
+const DarkAuditoriumThreeScene = dynamic(() => import('@/components/auditorium/DarkAuditoriumThreeScene'), { ssr: false });
+const AuditoriumThreeScene = dynamic(() => import('@/components/auditorium/AuditoriumThreeScene'), { ssr: false });
 
 interface RoomPageProps {
   params: Promise<{ code: string }>;
@@ -147,15 +149,34 @@ function RoomExperience({ roomCode }: { roomCode: string }) {
   if (displayPhase === 'in_theater') {
     return (
       <main className={styles.page}>
-        <DarkAuditoriumScene
-          room={room}
-          muted={muted}
-          onToggleMute={() => setMuted((value) => !value)}
-          onInspectHotspot={async (hotspotId: AuditoriumHotspotId) => {
-            await performAction({ type: 'INSPECT_AUDITORIUM_HOTSPOT', hotspotId });
-          }}
-          onSendWhisper={sendWhisper}
-        />
+        <div style={{ position: 'absolute', top: 8, right: 8, zIndex: 50 }}>
+          <button
+            type="button"
+            onClick={() => setUseThree((v) => !v)}
+            style={{ padding: '6px 12px', borderRadius: 6, border: '1px solid #c9a86a', background: 'rgba(0,0,0,0.7)', color: '#e8dcc8', fontSize: 11, cursor: 'pointer' }}
+          >
+            {useThree ? '🎨 کلاسیک' : '🌐 سه‌بعدی'}
+          </button>
+        </div>
+        {useThree ? (
+          <DarkAuditoriumThreeScene
+            room={room}
+            onInspectHotspot={async (hotspotId: AuditoriumHotspotId) => {
+              await performAction({ type: 'INSPECT_AUDITORIUM_HOTSPOT', hotspotId });
+            }}
+            onSendWhisper={sendWhisper}
+          />
+        ) : (
+          <DarkAuditoriumScene
+            room={room}
+            muted={muted}
+            onToggleMute={() => setMuted((value) => !value)}
+            onInspectHotspot={async (hotspotId: AuditoriumHotspotId) => {
+              await performAction({ type: 'INSPECT_AUDITORIUM_HOTSPOT', hotspotId });
+            }}
+            onSendWhisper={sendWhisper}
+          />
+        )}
       </main>
     );
   }
