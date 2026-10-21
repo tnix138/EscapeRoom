@@ -95,6 +95,35 @@ export function generateTicketTargets(seed: number, playerCount: number): Ticket
   return targets;
 }
 
+/** نرمال‌سازی کد قفل در: ارقام فارسی/عربی به انگلیسی، حذف فاصله و جداکننده‌ها */
+export function normalizeDoorCode(raw: string): string {
+  const FA = '۰۱۲۳۴۵۶۷۸۹';
+  const AR = '٠١٢٣٤٥٦٧٨٩';
+  return raw
+    .split('')
+    .map((ch) => {
+      const fa = FA.indexOf(ch);
+      if (fa >= 0) return String(fa);
+      const ar = AR.indexOf(ch);
+      if (ar >= 0) return String(ar);
+      return ch;
+    })
+    .join('')
+    .replace(/[\s-]/g, '');
+}
+
+/** تنها ترکیب درست برای بلیط یک بازیکن؛ هر ترکیب دیگری اشتباه است (جواب یکتا) */
+export function isCorrectPunch(
+  target: TicketTarget,
+  punch: { emblem: TheaterEmblemId; actNumber: PlayActNumber; rowCode: RowRomanCode },
+): boolean {
+  return (
+    punch.emblem === target.targetEmblem &&
+    punch.actNumber === target.targetAct &&
+    punch.rowCode === target.targetRowCode
+  );
+}
+
 /** کد N رقمی قفل در، به ترتیب شماره صندلی ۱ تا N (فقط پس از پانچ همه آشکار می‌شود) */
 export function doorCodeFromTargets(targets: readonly TicketTarget[]): string {
   return [...targets]
