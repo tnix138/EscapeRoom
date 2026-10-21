@@ -103,7 +103,7 @@ export default function ReservationForm() {
   return (
     <div className="reservation-layout">
       <form className="reservation-form" onSubmit={submit} noValidate>
-        <div className="form-topline"><span>ترکیب گروه</span><span className="count-label">{playerCount} <small>نفر</small></span></div>
+        <div className="form-topline"><span>ترکیب گروه</span><span className="count-label">{playerCount.toLocaleString('fa')} <small>نفر</small></span></div>
         <fieldset className="count-picker" aria-label="تعداد مهمان‌ها">
           <legend className="sr-only">تعداد بازیکنان را انتخاب کنید</legend>
           {Array.from({ length: MAX_PLAYERS - MIN_PLAYERS + 1 }, (_, offset) => MIN_PLAYERS + offset).map((count) => (
@@ -121,7 +121,7 @@ export default function ReservationForm() {
           {names.map((name, index) => (
             <label className="guest-field" key={index}>
               <span className="guest-seat">صندلی {String(index + 1).padStart(2, '۰')}</span>
-              <span className="input-wrap"><span className="guest-icon" aria-hidden="true">♙</span><input value={name} onChange={(event) => updateName(index, event.target.value)} maxLength={40} placeholder={`نام مهمان ${(index + 1).toLocaleString('fa')}`} autoComplete="off" /></span>
+              <span className="input-wrap"><span className="guest-icon" aria-hidden="true">♙</span><input value={name} onChange={(event) => updateName(index, event.target.value)} maxLength={32} placeholder={`نام مهمان ${(index + 1).toLocaleString('fa')}`} autoComplete="off" /></span>
             </label>
           ))}
         </div>
@@ -140,7 +140,7 @@ export default function ReservationForm() {
         <h3>هیچ‌کس تماشاگرِ تنها نیست.</h3>
         <p>هر بازیکن سرنخی منحصربه‌فرد در دست دارد. برای گشودن درِ تماشاخانه، به همهٔ دوستانتان نیاز خواهید داشت.</p>
         <div className="aside-divider"><span>✳</span></div>
-        <ul><li><span>01</span> نام مهمان‌ها را ثبت کنید</li><li><span>02</span> دعوت‌نامه‌ها را بفرستید</li><li><span>03</span> کنار هم، پرده را بالا ببرید</li></ul>
+        <ul><li><span>۰۱</span> نام مهمان‌ها را ثبت کنید</li><li><span>۰۲</span> دعوت‌نامه‌ها را بفرستید</li><li><span>۰۳</span> کنار هم، پرده را بالا ببرید</li></ul>
         <span className="aside-footnote">یک تجربهٔ بهتر با هدفون</span>
       </aside>
     </div>
