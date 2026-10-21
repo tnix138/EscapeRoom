@@ -54,11 +54,13 @@
 
 اصل مشترک هر سه: **اگر سرویس بالادستی آماده نیست، خاموش و بی‌صدا** — نه خطای کنسول، نه ریدایرکت، نه حلقه. با آمدن سرویس، بدون تغییر کد روشن می‌شوند.
 
-### مسدودکننده‌های باقی‌مانده (خارج از محدودهٔ فایل امیرعلی)
+### وضعیت مسدودکننده‌ها (به‌روزرسانی دوم)
 
-1. **سرور حضور وجود ندارد.** Issue #104 و #76 ادعا می‌کنند فاز ۰۳ پیاده شده، ولی `src/app/api/rooms/[code]/presence/route.ts` و `src/contracts/presence.ts` در هیچ کامیتی از مخزن نیستند و `stream/route.ts` رویداد `presence_update` نمی‌فرستد. → مالک: توحید (فاز ۰۳). کلاینت آماده است.
-2. **API پنل ادمین وجود ندارد.** `/api/admin/login`، `/api/admin/logout` و `/api/admin/session` نیستند و `src/components/admin/` خالی است. → مالک: امیر (فاز ۰۹-الف).
-3. **`package.json` با BOM ذخیره شده** و `next build/dev` را با `SyntaxError: Unexpected token '\uFEFF'` می‌شکند. → مالک: توحید (زیرساخت). فایل را کامیت نکنید.
+1. ✅ **سرور حضور ساخته شد** — `presence-tracker.ts`، `presence-service.ts` و `/api/rooms/[code]/presence` + رویداد `presence_update` روی استریم. با smoke زنده تأیید شد (رزرو → POST حضور ۲۰۰ → GET ۲۰۰ → قاب SSE حاوی بازیکن؛ توکن غلط ۴۰۱، موقعیت خارج از محدوده ۴۰۰).
+2. ✅ **API پنل ادمین ساخته شد** — `/api/admin/login|logout|session` با توکن HS256 در کوکی httpOnly. smoke زنده: بدون جلسه ۴۰۱، `/admin` بدون جلسه ۳۰۷ به `/admin/login`، ورود درست ۲۰۰ + کوکی، صفحهٔ `/admin` ۲۰۰، خروج ۲۰۰ و بعد از آن ۴۰۱، ششمین تلاش ورود ۴۲۹.
+3. ✅ **BOM از `package.json` حذف شد** — `next build` و `next dev` دیگر با `SyntaxError: Unexpected token '\uFEFF'` نمی‌شکنند.
+4. ⏳ باقی‌مانده واقعی: داشبورد آمار فاز ۱۰ (امیر)؛ صفحهٔ فعلی `/admin` فقط پوستهٔ احراز هویت است.
+5. ℹ️ حضور در حافظهٔ هر نمونه است (مثل `room-hub`)؛ برای استقرار چندنمونه‌ای باید به Redis منتقل شود.
 
 ---
 
@@ -174,7 +176,16 @@
 
 ## وضعیت
 
-- ⏳ در انتظار شروع
+- ✅ پیاده‌سازی شد (به‌صورت تکمیلی، چون در تاریخ ۱۴۰۵/۰۸/۰۱ هیچ فایلی از این فاز در مخزن نبود)
+- 📝 فایل‌ها: `src/server/realtime/presence-tracker.ts` (انبار حافظه‌ای + اعتبارسنجی)،
+  `src/server/services/presence-service.ts` (سرویس با توکن صندلی)،
+  `src/app/api/rooms/[code]/presence/route.ts` (GET و POST)
+- ✅ `POST` هویت را از هدر `x-seat-token` می‌خواند؛ `playerId`/`seatIndex` داخل بدنه نادیده گرفته می‌شوند
+- ✅ `yaw` رادیان است و در `[-π, π)` نرمال می‌شود
+- ✅ موقعیت خارج از `[-9.5, 9.5] × [0, 3.2] × [-18.5, 8.5]` یا مقدار غیرمتناهی → ۴۰۰
+- ✅ پاک‌سازی ۳۰ ثانیه‌ای، سقف ۳۲ ورودی هر اتاق، rate limit ۵۰/ثانیه برای هر صندلی (۴۲۹)
+- ✅ قاب `presence_update` = `{ presences, serverNow }` روی استریم موجود، با نرخ ۲۵۰ms و فقط وقتی امضا عوض شود
+- 📊 تست: `tests/amirali/presence-server-phase12.test.ts` (۲۱ تست) + smoke زنده HTTP
 
 ---
 
@@ -410,14 +421,18 @@ Materialهای PBR با normal map، roughness map، AO map رویه‌ای. س�
 
 ## وضعیت
 
-- 🟡 در حال انجام (سمت امیرعلی ✅)
-- 📝 سهم امیرعلی: `src/app/admin/layout.tsx`، `src/app/admin/login/page.tsx`، `src/app/admin/login/login-rules.ts` و محافظ جلسهٔ `AdminSessionGate`
-- 🔗 تست‌ها: `tests/amirali/admin-login-phase09.test.ts` (۲۲) + `admin-gate-phase09.test.ts` (۸) — ۳۰ تست سبز
+- ✅ تکمیل شد (هر دو سهم)
+- 📝 سهم امیرعلی: `src/app/admin/layout.tsx`، `src/app/admin/login/page.tsx`، `src/app/admin/login/login-rules.ts`، محافظ جلسهٔ `AdminSessionGate` و صفحهٔ ورودِ پنل `src/app/admin/page.tsx`
+- 📝 سهم امیر (تکمیلی، چون در تاریخ ۱۴۰۵/۰۸/۰۱ هیچ‌کدام در مخزن نبود): `src/server/auth/admin-session.ts`، `/api/admin/login`، `/api/admin/logout`، `/api/admin/session`
 - ✅ **محافظ جلسه**: در `src/app/admin/layout.tsx` یک بار `GET /api/admin/session` می‌سنجد؛
-  ۴۰۱/۴۰۳ → `/admin/login?next=…`؛ ۴۰۴/۵۰۰/خطای شبکه → **هیچ ریدایرکتی** (بدون حلقهٔ ریدایرکت تا آماده شدن سرویس)
+  ۴۰۱/۴۰۳ → `/admin/login?next=…`؛ ۴۰۴/۵۰۰/خطای شبکه → **هیچ ریدایرکتی** (بدون حلقهٔ ریدایرکت)
 - ✅ مسیر `next` فقط برای مسیرهای داخلی `/admin/**` ساخته می‌شود؛ ورودی خارجی/پروتکل‌نسبی دور ریخته می‌شود (جلوگیری از open redirect)
-- ⏳ باقی‌مانده (امیر): `/api/admin/login`، `/api/admin/logout`، `/api/admin/session`، `LoginForm`، `AdminSidebar`
-- 🔌 اتصال: نام `ADMIN_SESSION_ENDPOINT` در `login-rules.ts` تنها جایی است که با آمدن سرویس امیر ممکن است عوض شود.
+- ✅ **احراز هویت**: توکن HS256 (`header.payload.signature`) با `node:crypto` در کوکی `HttpOnly; SameSite=Lax; Secure` (در production)، عمر ۸ ساعت
+- ✅ اعتبارنامه‌ها فقط از env: `ADMIN_USERNAME` + `ADMIN_PASSWORD_HASH` (یا `ADMIN_PASSWORD` محلی) + `ADMIN_SESSION_SECRET`؛ بدون آن‌ها ورود **۵۰۳** می‌دهد (fail-closed)
+- ✅ مقایسهٔ ثابت‌زمان نام کاربری و گذرواژه؛ rate limit ۵ بار در دقیقه برای هر IP (۴۲۹)
+- ✅ داشبورد حداقلی `/admin`: بدون جلسه → ۳۰۷ به صفحهٔ ورود؛ با جلسه → نام، نقش، پایان جلسه و دکمهٔ خروج (جایگزین موقت داشبورد فاز ۱۰)
+- 📊 تست: `tests/amirali/admin-login-phase09.test.ts` (۲۲) + `admin-gate-phase09.test.ts` (۹) + `admin-auth-phase09.test.ts` (۱۵) — ۴۶ تست سبز
+- ⏳ باقی‌مانده (فاز ۱۰ — امیر): داشبورد آمار اتاق‌ها/بازیکنان و `AdminSidebar`؛ صفحهٔ فعلی `/admin` فقط پوستهٔ احراز هویت است.
 
 # 📋 فاز ۱۰ — پنل ادمین: آمار و مشاهده
 
@@ -540,7 +555,8 @@ Materialهای PBR با normal map، roughness map، AO map رویه‌ای. س�
 - ✅ **اتصال به صحنه انجام شد**: `PresenceHud` + `usePresenceFeed` در `AlleyRoomThreeIntegration` mount شدند و از `room.players` نام هم‌تیمی‌ها را می‌گیرند.
 - ✅ **لایهٔ قرارداد** در `presence-contract.ts`: `POST /api/rooms/{code}/presence` با `x-seat-token` و بدنهٔ `{position, yaw(rad), phase}` (بدون `playerId`/`seatIndex` — هویت از توکن)، دریافت `presence_update` = `{presences, serverNow}`، یاو رادیان↔درجه، هم‌جوشی ۵۰ms، throttle ۱۰Hz، `keepalive` ۱s.
 - ✅ **fail-safe سرویس غایب**: probe اولیه با `AbortSignal.timeout(3000)`؛ اگر سرویس حضور وجود نداشت (۴۰۴/۴۰۵)، hook یک بار بررسی می‌کند و **بی‌صدا خاموش** می‌ماند — نه ۴۰۴ پشت‌سرهم، نه EventSource دوم. پس از ۵ خطای پیاپی هم ارسال متوقف می‌شود.
-- ⚠️ **شکاف واقعی (باید به #76 گزارش شود)**: `src/app/api/rooms/[code]/presence/route.ts` و `src/contracts/presence.ts` در هیچ کامیتی از مخزن نیستند و `stream/route.ts` رویداد `presence_update` نمی‌فرستد. کلاینت آماده است؛ با اضافه شدن سرور بدون تغییر کلاینت روشن می‌شود.
+- ✅ **سرور حضور وصل شد**: `src/app/api/rooms/[code]/presence/route.ts` + `presence-service.ts` + `presence-tracker.ts` و رویداد `presence_update` روی استریم. اکنون مسیر کامل «کلاینت → سرور → استریم → HUD» با smoke زنده تأیید شده است.
+- ℹ️ `src/contracts/presence.ts` ساخته نشد (نوع‌ها در دو لایهٔ مجاز خودشان تعریف شده‌اند)؛ اگر توحید قرارداد مشترک را ساخت، `presence-contract.ts` همان شکل سیمی را دارد و تغییری لازم نیست.
 - 📊 تست: `tests/amirali/presence-phase12.test.ts` (۳۲) + `presence-contract.test.ts` (۱۹)
 
 # 📋 فاز ۱۳ — ابزارهای مدیریتی

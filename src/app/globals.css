@@ -8171,3 +8171,67 @@ button:disabled {
 .admin-login-pending-link:hover {
   color: var(--text-primary);
 }
+
+/* ==========================================================================
+   فاز ۰۹ — صفحهٔ ورود به پنل پس از احراز هویت (جایگزین موقت داشبورد فاز ۱۰)
+   ========================================================================== */
+.admin-home {
+  display: flex;
+  justify-content: center;
+  padding: 32px 16px;
+  direction: rtl;
+}
+
+.admin-home-card {
+  width: min(560px, 100%);
+  padding: 28px;
+  text-align: start;
+  background: rgba(18, 13, 16, 0.72);
+  border: 1px solid rgba(212, 175, 99, 0.28);
+  border-radius: 16px;
+}
+
+.admin-home-badge {
+  margin: 0 0 8px;
+  font-size: var(--text-xs);
+  color: var(--gold);
+  letter-spacing: 0.04em;
+}
+
+.admin-home-title {
+  margin: 0 0 16px;
+  font-size: var(--text-xl);
+  color: var(--text-primary);
+}
+
+.admin-home-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin: 0 0 16px;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.28);
+  border-radius: 10px;
+}
+
+.admin-home-meta dt {
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+}
+
+.admin-home-meta dd {
+  margin: 2px 0 0;
+  font-size: var(--text-sm);
+  color: var(--gold);
+}
+
+.admin-home-note {
+  margin: 0 0 18px;
+  font-size: var(--text-sm);
+  line-height: 1.9;
+  color: var(--text-secondary);
+}
+
+.admin-home-logout {
+  min-width: 160px;
+}
