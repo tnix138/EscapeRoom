@@ -121,7 +121,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۱** — ✅ Archive: **۹۵** — 🧾 مجموع: **۹۶** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۹:۱۴:۳۰ (`2026-10-21T15:44:30.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۲** — ✅ Archive: **۹۵** — 🧾 مجموع: **۹۷** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۱۹:۱۴:۳۰ (`2026-10-21T15:44:30.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -132,6 +132,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | 🕒 زمان (ایران / UTC) | رویداد | شناسه لاگ | توسط |
 | --- | --- | --- | --- |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۱۴:۳۰<br>`2026-10-21T15:44:30.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-14-30_alireza_fix-conflict-archive`](./logs/pending/1405-07-29_19-14-30_alireza_fix-conflict-archive.md) | **علیرضا** |
+| ۱۴۰۵/۰۷/۲۹ — ۱۹:۱۴:۳۰<br>`2026-10-21T15:44:30.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_19-14-30_alireza_push`](./logs/pending/1405-07-29_19-14-30_alireza_push.md) | **علیرضا** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۱۴:۲۶<br>`2026-10-21T15:44:26.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_18-56-26_tohid_push-pr31-log`](./logs/archive/1405-07-29_18-56-26_tohid_push-pr31-log.md) | **علیرضا** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۱۴:۲۶<br>`2026-10-21T15:44:26.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_18-56-22_tohid_fix-pr31-log-format`](./logs/archive/1405-07-29_18-56-22_tohid_fix-pr31-log-format.md) | **علیرضا** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۱۴:۲۶<br>`2026-10-21T15:44:26.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_18-56-07_tohid_pr31-wave1-audit`](./logs/archive/1405-07-29_18-56-07_tohid_pr31-wave1-audit.md) | **علیرضا** |
@@ -142,7 +143,6 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۱۴:۲۵<br>`2026-10-21T15:44:25.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_18-54-13_tohid_sync-main-wave10-alireza`](./logs/archive/1405-07-29_18-54-13_tohid_sync-main-wave10-alireza.md) | **علیرضا** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۱۴:۲۵<br>`2026-10-21T15:44:25.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_18-53-42_tohid_push-after-wave7-9`](./logs/archive/1405-07-29_18-53-42_tohid_push-after-wave7-9.md) | **علیرضا** |
 | ۱۴۰۵/۰۷/۲۹ — ۱۹:۱۴:۲۴<br>`2026-10-21T15:44:24.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_18-53-33_tohid_sync-main-wave7-9`](./logs/archive/1405-07-29_18-53-33_tohid_sync-main-wave7-9.md) | **علیرضا** |
-| ۱۴۰۵/۰۷/۲۹ — ۱۹:۱۴:۲۴<br>`2026-10-21T15:44:24.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_18-51-22_tohid_push-after-wave5-6-sync`](./logs/archive/1405-07-29_18-51-22_tohid_push-after-wave5-6-sync.md) | **علیرضا** |
 <!-- WORKLOG:EVENTS:END -->
 
 ---
@@ -155,6 +155,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- |
 | [`1405-07-29_19-14-30_alireza_fix-conflict-archive`](./logs/pending/1405-07-29_19-14-30_alireza_fix-conflict-archive.md) | اصلاح کانفلیکت PR آخر — آرشیو ۲۳ لاگ Pending | `Commit` | **علیرضا** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۱۴:۳۰<br>`2026-10-21T15:44:30.000Z` | شاخه arena/346044cf-escaperoom |
+| [`1405-07-29_19-14-30_alireza_push`](./logs/pending/1405-07-29_19-14-30_alireza_push.md) | پوش شاخه arena/346044cf-escaperoom — 8392597 | `Push` | **علیرضا** | ۱۴۰۵/۰۷/۲۹ — ۱۹:۱۴:۳۰<br>`2026-10-21T15:44:30.000Z` | origin/arena/346044cf-escaperoom (origin/main..8392597) |
 <!-- WORKLOG:PENDING:END -->
 
 ---
