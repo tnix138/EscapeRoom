@@ -1,7 +1,7 @@
 ---
 agent: Tohid
 wave: 6
-status: IMPLEMENTED_PENDING_REVIEW
+status: COMPLETE
 intended_audience: coding_agents_only
 ---
 
@@ -28,3 +28,7 @@ intended_audience: coding_agents_only
 ## محدودیت
 
 Rate limiter موجود حافظه‌ای و process-local است؛ تغییر دوام آن بین restartها یا پیاده‌سازی distributed limiting خارج از این regression test است و نیازمند تصمیم جداگانهٔ مالک سرور/زیرساخت است.
+
+## تکمیل
+
+PR #51 در main ادغام شد (merge commit `ddde895`).
