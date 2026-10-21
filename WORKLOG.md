@@ -121,7 +121,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 ---
 
 <!-- WORKLOG:STATS:START -->
-> 🔢 **آمار زنده:** ⏳ Pending: **۲۵** — ✅ Archive: **۱۵۴** — 🧾 مجموع: **۱۷۹** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۵:۵۲ (`2026-10-21T16:55:52.000Z`)
+> 🔢 **آمار زنده:** ⏳ Pending: **۲۶** — ✅ Archive: **۱۵۴** — 🧾 مجموع: **۱۸۰** — 🕒 آخرین رویداد ثبت‌شده: ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۶:۱۷ (`2026-10-21T16:56:17.000Z`)
 <!-- WORKLOG:STATS:END -->
 
 ---
@@ -131,6 +131,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:EVENTS:START -->
 | 🕒 زمان (ایران / UTC) | رویداد | شناسه لاگ | توسط |
 | --- | --- | --- | --- |
+| ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۶:۱۷<br>`2026-10-21T16:56:17.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-26-17_amirali_push`](./logs/pending/1405-07-29_20-26-17_amirali_push.md) | **امیرعلی** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۵:۵۲<br>`2026-10-21T16:55:52.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-25-52_amirali_wave6-ticket-puzzle`](./logs/pending/1405-07-29_20-25-52_amirali_wave6-ticket-puzzle.md) | **امیرعلی** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۹:۱۶<br>`2026-10-21T16:49:16.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-19-16_tohid_push`](./logs/pending/1405-07-29_20-19-16_tohid_push.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۹:۱۵<br>`2026-10-21T16:49:15.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-19-15_tohid_final-archive-pr59`](./logs/pending/1405-07-29_20-19-15_tohid_final-archive-pr59.md) | **توحید** |
@@ -142,7 +143,6 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۸:۰۲<br>`2026-10-21T16:48:02.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-18-02_tohid_push`](./logs/archive/1405-07-29_20-18-02_tohid_push.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۷:۴۷<br>`2026-10-21T16:47:47.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-17-47_tohid_push`](./logs/archive/1405-07-29_20-17-47_tohid_push.md) | **توحید** |
 | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۷:۴۷<br>`2026-10-21T16:47:47.000Z` | 🟡 ایجاد و ثبت در `Pending` | [`1405-07-29_20-17-47_tohid_wave8-10-hardening-and-archive`](./logs/archive/1405-07-29_20-17-47_tohid_wave8-10-hardening-and-archive.md) | **توحید** |
-| ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۶:۴۹<br>`2026-10-21T16:46:49.000Z` | 🟢 تبدیل به `Archive` | [`1405-07-29_20-13-43_tohid_pr-wave10-final-audit`](./logs/archive/1405-07-29_20-13-43_tohid_pr-wave10-final-audit.md) | **توحید** |
 <!-- WORKLOG:EVENTS:END -->
 
 ---
@@ -154,6 +154,7 @@ scripts/worklog/         ← ابزار لاگ (Jalali + رندر + اعتبار
 <!-- WORKLOG:PENDING:START -->
 | شناسه لاگ (لینک) | عنوان | نوع | ساخته‌شده توسط | زمان ایجاد (ایران / UTC) | مرجع |
 | --- | --- | --- | --- | --- | --- |
+| [`1405-07-29_20-26-17_amirali_push`](./logs/pending/1405-07-29_20-26-17_amirali_push.md) | پوش شاخه arena/0956f116-escaperoom — a6b1feb | `Push` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۶:۱۷<br>`2026-10-21T16:56:17.000Z` | origin/arena/0956f116-escaperoom (origin/main..a6b1feb) |
 | [`1405-07-29_20-25-52_amirali_wave6-ticket-puzzle`](./logs/pending/1405-07-29_20-25-52_amirali_wave6-ticket-puzzle.md) | موج ۶ — بلیط و معما: کنترل پانچ دسترس‌پذیر، قفل در با صفحه‌کلید و نجوای گروهی | `Commit` | **امیرعلی** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۲۵:۵۲<br>`2026-10-21T16:55:52.000Z` | شاخه arena/0956f116-escaperoom |
 | [`1405-07-29_20-19-16_tohid_push`](./logs/pending/1405-07-29_20-19-16_tohid_push.md) | پوش شاخه arena/53ea6dd4-escaperoom — 9d17874 | `Push` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۹:۱۶<br>`2026-10-21T16:49:16.000Z` | origin/arena/53ea6dd4-escaperoom (origin/arena/53ea6dd4-escaperoom..9d17874) |
 | [`1405-07-29_20-19-15_tohid_final-archive-pr59`](./logs/pending/1405-07-29_20-19-15_tohid_final-archive-pr59.md) | آرشیو نهایی لاگ‌های PR #59 توحید | `Commit` | **توحید** | ۱۴۰۵/۰۷/۲۹ — ۲۰:۱۹:۱۵<br>`2026-10-21T16:49:15.000Z` | PR #59 — شاخه arena/53ea6dd4-escaperoom |
