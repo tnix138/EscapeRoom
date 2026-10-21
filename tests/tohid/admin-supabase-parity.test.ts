@@ -92,9 +92,17 @@ function setupFetchMock() {
       const roomCode = url.searchParams.get('room_code')?.replace(/^eq\./, '');
       const type = url.searchParams.get('type')?.replace(/^eq\./, '');
       const limit = Number(url.searchParams.get('limit') ?? '100');
-      const rows = events
+      const matching = events
         .filter((event) => (roomCode ? event.room_code === roomCode : true))
-        .filter((event) => (type ? event.type === type : true))
+        .filter((event) => (type ? event.type === type : true));
+      // شمارش: PostgREST تعداد کل را در Content-Range برمی‌گرداند
+      if (headers.get('prefer')?.includes('count=exact')) {
+        return new Response('[]', {
+          status: 200,
+          headers: { 'content-range': `0-0/${matching.length}` },
+        });
+      }
+      const rows = matching
         .sort((a, b) => b.created_at - a.created_at || b.id.localeCompare(a.id))
         .slice(0, limit);
       return Response.json(rows);
@@ -180,6 +188,26 @@ describe('ادمین روی Supabase — رویدادها', () => {
 
     const none = await repo.listAdminEvents({ roomCode: 'ZZZ999' });
     expect(none).toEqual([]);
+  });
+
+  it('تعداد رویدادها را با Content-Range می‌شمارد', async () => {
+    const { events } = setupFetchMock();
+    const repo = makeRepo();
+
+    await repo.recordAdminEvent(
+      createAdminEvent({ type: 'room_created', roomCode: 'AAA111', createdAt: START, id: 'c1' }),
+    );
+    await repo.recordAdminEvent(
+      createAdminEvent({ type: 'error', roomCode: 'AAA111', createdAt: START + 1, id: 'c2' }),
+    );
+    await repo.recordAdminEvent(
+      createAdminEvent({ type: 'error', roomCode: 'BBB222', createdAt: START + 2, id: 'c3' }),
+    );
+
+    expect(events).toHaveLength(3);
+    await expect(repo.countAdminEvents()).resolves.toBe(3);
+    await expect(repo.countAdminEvents({ type: 'error' })).resolves.toBe(2);
+    await expect(repo.countAdminEvents({ roomCode: 'bbb222' })).resolves.toBe(1);
   });
 
   it('در خطای دیتابیس پیام فارسی‌ساز Fail-fast می‌دهد', async () => {

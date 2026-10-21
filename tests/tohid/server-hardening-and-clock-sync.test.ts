@@ -103,6 +103,7 @@ describe('سخت‌سازی کات‌سین و مسیر خواندن اتاق (�
         listRooms: (limit) => sqlite.listRooms(limit),
         recordAdminEvent: (event) => sqlite.recordAdminEvent(event),
         listAdminEvents: (options) => sqlite.listAdminEvents(options),
+        countAdminEvents: (options) => sqlite.countAdminEvents(options),
         deleteSeat: (roomCode, seatIndex) => sqlite.deleteSeat(roomCode, seatIndex),
       };
 

@@ -13,6 +13,23 @@
 - رویداد `presence_update` در استریم SSE (تأخیر اندازه‌گیری‌شده ۵۱ms)
 - ۲۱ تست در `tests/tohid/presence-*.test.ts`
 
+**فاز ۰۹ — احراز هویت پنل ادمین (امیر، #94 / #82)**
+- `src/server/admin/session.ts` — JWT HS256 بدون وابستگی، بررسی رمز scrypt (ثابت‌زمان)، کوکی `httpOnly` با `SameSite=Lax` و `Secure` در production
+- `POST /api/admin/login` و `POST /api/admin/logout` — ورود با `username`/`password` از env، سقف ۵ تلاش در دقیقه، ۴۰۳ برای غیر ادمین
+- `src/components/admin/LoginForm.tsx` و `src/app/admin/guard.ts`
+- ۱۶ تست در `tests/amir/admin-auth.test.ts`
+
+**فاز ۱۰ — داشبورد آمار و مشاهده (امیر، #83)**
+- `GET /api/admin/stats|rooms|players` با آمار هم‌خوان دیتابیس (شامل تعداد خطا و نرخ خطا)
+- صفحات `/admin`، `/admin/rooms`، `/admin/players` و کامپوننت‌های `StatsCard`، `RoomsTable`، `PlayersTable`، `AdminSidebar`
+- `countAdminEvents` در هر دو درایور (SQLite و Supabase)
+- ۷ تست در `tests/amir/admin-stats.test.ts`
+
+**فاز ۱۳ — ابزارهای مدیریتی (امیر، #86)**
+- `DELETE /api/admin/players/[id]` — اخراج بازیکن با باطل‌کردن توکن صندلی و ثبت رویداد `player_removed`
+- `GET /api/admin/errors` و صفحهٔ `/admin/errors` با زمان و کد خطا
+- ۶ تست در `tests/amir/admin-players.test.ts`
+
 **فاز ۰۷ — قرارداد ترس (توحید، پایهٔ کار #90 و #91)**
 - `src/contracts/horror.ts` — `HorrorIntensity`، `HorrorSignal`، تبدیل تهدید/فاصله به سطح، اعتبارسنجی zod
 - ۹ تست در `tests/tohid/horror-contract.test.ts`

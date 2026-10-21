@@ -123,12 +123,28 @@ export function createAdminEvent(input: {
   };
 }
 
+/** نمای یک بازیکن برای جدول پنل ادمین (فاز ۱۰ و ۱۳) */
+export interface AdminPlayerView {
+  playerId: string;
+  playerName: string;
+  roomCode: string;
+  seatIndex: number;
+  seatLabel: string;
+  phase: GamePhase;
+  isOnline: boolean;
+  lastSeenAt: number | null;
+}
+
 /** خروجی endpointهای ادمین — هم‌شکل با قرارداد ۴ (ApiError) */
 export interface AdminStatsView {
   rooms: number;
   players: number;
   online: number;
   events: number;
+  /** تعداد رویدادهای نوع `error` در جدول admin_events */
+  errors: number;
+  /** نسبت خطا به کل رویدادها (۰ تا ۱)؛ برای کارت «نرخ خطا» */
+  errorRate: number;
   phases: Record<GamePhase, number>;
   serverNow: number;
 }

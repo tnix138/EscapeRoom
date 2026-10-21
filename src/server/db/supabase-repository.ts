@@ -156,6 +156,27 @@ export class SupabaseRoomRepository implements RoomRepository {
     }));
   }
 
+  async countAdminEvents(
+    options: Omit<ListAdminEventsOptions, 'limit'> = {},
+  ): Promise<number> {
+    const filters: string[] = ['select=id', 'limit=1'];
+    if (options.roomCode) {
+      filters.push(`room_code=eq.${encodeURIComponent(options.roomCode.toUpperCase())}`);
+    }
+    if (options.type) filters.push(`type=eq.${encodeURIComponent(options.type)}`);
+
+    const res = await fetch(`${this.url}/rest/v1/admin_events?${filters.join('&')}`, {
+      headers: this.headers({ Prefer: 'count=exact' }),
+    });
+    if (!res.ok) {
+      throw new Error(`Supabase countAdminEvents failed: ${res.status} ${await res.text()}`);
+    }
+    // PostgREST تعداد را در Content-Range برمی‌گرداند: «0-0/42»
+    const range = res.headers.get('content-range') ?? '';
+    const total = Number(range.split('/')[1]);
+    return Number.isFinite(total) ? total : 0;
+  }
+
   async deleteSeat(roomCode: string, seatIndex: number): Promise<boolean> {
     const code = roomCode.toUpperCase();
     for (let attempt = 0; attempt < MAX_DELETE_ATTEMPTS; attempt++) {

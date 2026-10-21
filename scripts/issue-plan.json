@@ -117,7 +117,8 @@
         "phase",
         "owner:amir",
         "owner:amirali",
-        "priority:medium"
+        "priority:medium",
+        "status:done"
       ],
       "milestone": "هفته ۲ — CI، نورپردازی، ادمین، داستان"
     },
@@ -126,7 +127,8 @@
       "labels": [
         "phase",
         "owner:amir",
-        "priority:medium"
+        "priority:medium",
+        "status:done"
       ],
       "milestone": "هفته ۳ — حضور، مواد، آمار، HUD"
     },
@@ -155,7 +157,8 @@
       "labels": [
         "phase",
         "owner:amir",
-        "priority:low"
+        "priority:low",
+        "status:done"
       ],
       "milestone": "هفته ۴ — کلاینت حضور، ترس، ابزارهای مدیریتی"
     },
@@ -204,7 +207,8 @@
       "labels": [
         "split",
         "owner:amir",
-        "priority:medium"
+        "priority:medium",
+        "status:done"
       ],
       "milestone": "هفته ۲ — CI، نورپردازی، ادمین، داستان",
       "assignee": "emirhamzehlou"
@@ -383,6 +387,31 @@
       "number": 88,
       "marker": "<!-- issue-sync:multi-instance-risk -->",
       "body": "<!-- issue-sync:multi-instance-risk -->\n⚠️ **ریسک معماری برای انتشار روی Vercel — باید قبل از انتشار تصمیم گرفته شود**\n\nبلادرنگ فعلی در `src/server/realtime/room-hub.ts` و `src/server/presence/presence-store.ts` **در حافظهٔ پروسه** کار می‌کند و همچنین درایور پیش‌فرض `sqlite` است.\n\nپیامدها:\n- روی Vercel، هر نمونه (instance/سرورلس) حافظهٔ جدا دارد؛ اگر دو بازیکن یک اتاق به دو نمونهٔ مختلف برسند، `room_update` و `presence_update` را از هم نمی‌گیرند.\n- مسیر `.data/escaperoom.db` روی Vercel پایدار نیست؛ برای production باید `STORAGE_DRIVER=supabase` باشد.\n- SSE روی محیط serverless به پلن/زمان اجرا محدود است (`vercel.json` روی `maxDuration: 60` است).\n\nگزینه‌های پیشنهادی (یکی انتخاب شود):\n1. **Supabase Realtime** — اتاق‌ها از `supabase` بخوانند و تغییرات را از کانال Realtime پخش کنیم (بیشترین کار، بهترین نتیجه).\n2. **شارژ single-instance** — روی یک نمونهٔ همیشه‌بیدار اجرا شود (ساده، اما مقیاس‌پذیر نیست).\n3. **Polling کوتاه** — کلاینت هر ۳۰۰–۵۰۰ms وضعیت را بخواند و SSE فقط delta بدهد (کمترین تغییر، تأخیر بیشتر).\n\nتا انتخاب این گزینه، انتشار production عمداً انجام نمی‌شود."
+    },
+    {
+      "number": 94,
+      "marker": "<!-- issue-sync:done-09-amir -->",
+      "body": "<!-- issue-sync:done-09-amir -->\n✅ **فاز ۰۹ (بخش امیر) پیاده‌سازی و تست شد.**\n\n| فایل | کار |\n|---|---|\n| `src/server/admin/session.ts` | JWT HS256 بدون وابستگی بیرونی، بررسی رمز scrypt (ثابت‌زمان)، کوکی `httpOnly` + `SameSite=Lax` + `Secure` در production، سقف نرخ ورود |\n| `src/app/api/admin/login/route.ts` | ورود با `username`/`password`؛ موفق: ۲۰۰ + کوکی، اشتباه: **۴۰۳**، بدنهٔ ناقص: ۴۰۰، تلاش ششم در دقیقه: ۴۲۹، بدون env: ۵۰۳ |\n| `src/app/api/admin/logout/route.ts` | خروج با پاک‌کردن کوکی (`Max-Age=0`) |\n| `src/components/admin/LoginForm.tsx` | فرم ورود با پیام خطای فارسی و وضعیت «در حال بررسی» |\n| `src/app/admin/guard.ts` | نگهبان صفحات: بدون نشست معتبر → `/admin/login` |\n\n**تست:** ۱۶ مورد در `tests/amir/admin-auth.test.ts` (ورود درست، رمز اشتباه، نام کاربری ناشناس، بدنهٔ ناقص، ۴۲۹، ۵۰۳، کوکی دست‌کاری‌شده، جلسهٔ منقضی، خروج، توابع نشست).\n\n**تنظیم لازم روی Vercel:** `ADMIN_USERNAME`، `ADMIN_PASSWORD_HASH` (با `npm run hash:admin -- 'رمز'`) و `ADMIN_SESSION_SECRET`؛ نقش اختیاری `ADMIN_ROLE` (`superadmin`|`moderator`|`viewer`، پیش‌فرض `superadmin`)."
+    },
+    {
+      "number": 82,
+      "marker": "<!-- issue-sync:done-09 -->",
+      "body": "<!-- issue-sync:done-09 -->\n✅ **فاز ۰۹ کامل شد و پنل ادمین قابل استفاده است.**\n\n- بخش امیر (احراز هویت، سرور، فرم ورود): #94 — ۱۶ تست سبز.\n- دو فایل بخش امیرعلی (`src/app/admin/layout.tsx` و `src/app/admin/login/page.tsx`) چون ایشان در دسترس نبود، به‌صورت **حداقلی و بدون منطق** ساخته شدند تا پنل از ابتدا تا انتها کار کند؛ محتوای فعلی فقط `LoginForm` را وسط صفحه می‌گذارد. امیرعلی هر زمان برگشت می‌تواند آزادانه جایگزینشان کند — هیچ منطقی به آن‌ها وابسته نیست.\n\nمعیارهای موفقیت فاز: ورود با username/password ✓ · غیر ادمین ۴۰۳ ✓ · کوکی `httpOnly` ✓ · خروج ✓ · تست `tests/amir/admin-auth.test.ts` سبز ✓"
+    },
+    {
+      "number": 83,
+      "marker": "<!-- issue-sync:done-10 -->",
+      "body": "<!-- issue-sync:done-10 -->\n✅ **فاز ۱۰ پیاده‌سازی و تست شد.**\n\n- `GET /api/admin/stats` → `AdminStatsView` (اتاق‌ها، بازیکنان، آنلاین‌ها، رویدادها، **تعداد خطا و نرخ خطا**) — آمار از همان جدول‌های دیتابیس خوانده می‌شود.\n- `GET /api/admin/rooms` → لیست خلاصهٔ اتاق‌ها (کد، فاز، بازیکنان، آنلاین، نسخه، آخرین فعالیت).\n- `GET /api/admin/players` → بازیکنان نشسته با نام، صندلی، فاز و آخرین فعالیت.\n- صفحات `/admin`، `/admin/rooms`، `/admin/players` + کامپوننت‌های `StatsCard`، `RoomsTable`، `PlayersTable`، `AdminSidebar`.\n- `countAdminEvents` به هر دو درایور اضافه شد (SQLite: `COUNT(*)`، Supabase: `Prefer: count=exact` + `Content-Range`).\n\n**تست:** ۷ مورد در `tests/amir/admin-stats.test.ts` — از جمله هم‌خوانی آمار با دیتابیس، نبود توکن صندلی در خروجی، و ۴۰۱ برای هر چهار endpoint بدون نشست."
+    },
+    {
+      "number": 86,
+      "marker": "<!-- issue-sync:done-13 -->",
+      "body": "<!-- issue-sync:done-13 -->\n✅ **فاز ۱۳ پیاده‌سازی و تست شد.**\n\n- `DELETE /api/admin/players/[id]` — اخراج بازیکن: توکن صندلی **باطل** می‌شود، صندلی آزاد و نامش به «صندلی N» برمی‌گردد؛ رویداد `player_removed` با `byAdmin` در `admin_events` ثبت می‌شود. فقط نقش `moderator`/`superadmin` مجاز است (بقیه ۴۰۳).\n- `GET /api/admin/errors` — آخرین خطاهای نوع `error` با کد، اتاق، زمان و توضیح (`?limit=`, `?roomCode=`).\n- صفحهٔ `/admin/errors` + `ErrorsTable`، و دکمهٔ حذف با تأیید در `PlayersTable`.\n\n**تست:** ۶ مورد در `tests/amir/admin-players.test.ts` — حذف واقعی، بی‌اعتبار شدن توکن، ثبت رویداد، ۴۰۴ برای شناسهٔ ناشناس، ۴۰۳ برای نقش viewer، و ۴۰۱ بدون نشست."
+    },
+    {
+      "number": 101,
+      "marker": "<!-- issue-sync:amir-roadmap-status -->",
+      "body": "<!-- issue-sync:amir-roadmap-status -->\n📦 **وضعیت مسیر امیر — هر سه فاز تحویل شد.**\n\n| فاز | Issue | وضعیت |\n|---|---|---|\n| ۰۹ | #94 / #82 | ✅ احراز هویت، نشست، فرم ورود — ۱۶ تست |\n| ۱۰ | #83 | ✅ آمار، اتاق‌ها، بازیکنان، داشبورد — ۷ تست |\n| ۱۳ | #86 | ✅ حذف بازیکن، لیست خطاها — ۶ تست |\n\n- همهٔ endpointها شکل `{ ok, data }` / `{ ok: false, error: { code, message } }` دارند و بدون نشست ۴۰۱ می‌دهند.\n- `npm run typecheck`، `npm run lint`، `npm run build` و کل تست‌ها سبزند.\n- **تنها جای باقی‌مانده:** `src/app/admin/layout.tsx` و `src/app/admin/login/page.tsx` که طبق `docs/PHASE.md` مالکشان امیرعلی است؛ نسخهٔ حداقلی فعلی کار می‌کند و با نسخهٔ اصلی او قابل تعویض است.\n- برای فعال شدن روی production: سه env پنل ادمین در Vercel و ست‌کردن `ADMIN_*` (در #88 پیگیری می‌شود)."
     }
   ],
   "close": [
@@ -406,6 +435,26 @@
       "number": 98,
       "marker": "<!-- issue-sync:tracker-tohid-done -->",
       "body": "<!-- issue-sync:tracker-tohid-done -->\n✅ **همهٔ کارهای این مسیر انجام شد؛ Issue بسته می‌شود.**\n\n| کار | نتیجه |\n|---|---|\n| قرارداد ترس برای فاز ۰۷ | `src/contracts/horror.ts` + ۹ تست → #90 و #91 آنبلاک شدند |\n| مدل دادهٔ پنل ادمین | `src/contracts/admin.ts`، متدهای هر دو درایور، `002_admin_events.sql`، ۱۹ تست → #101 آماده کار |\n| ابزار رمز ادمین | `npm run hash:admin` + `.env.example` → #94 |\n| تصمیم مستندات | #74 منسوخ و بسته شد |\n| ابزار انتشار | `npm run smoke` و اتصال به `deploy.yml`، `CHANGELOG.md` → #88 |\n\n**باقی‌مانده‌هایی که نیاز به دسترسی بیرونی دارند** (در #88 پیگیری می‌شوند): تنظیم secrets وریسل/Supabase، اولین merge به `main`، و انتشار نهایی بعد از تکمیل فازهای ۰۴ تا ۱۴."
+    },
+    {
+      "number": 94,
+      "marker": "<!-- issue-sync:close-09-amir -->",
+      "body": "<!-- issue-sync:close-09-amir -->\n✅ فاز ۰۹ (بخش امیر) کامل شد: نشست ادمین، login/logout، فرم ورود و نگهبان صفحات — ۱۶ تست سبز. جزئیات در کامنت بالا."
+    },
+    {
+      "number": 82,
+      "marker": "<!-- issue-sync:close-09 -->",
+      "body": "<!-- issue-sync:close-09 -->\n✅ فاز ۰۹ کامل شد و پنل ادمین سرتاسر کار می‌کند. دو فایل بخش امیرعلی حداقلی ساخته شدند تا پنل بلاک نماند و قابل جایگزینی‌اند."
+    },
+    {
+      "number": 83,
+      "marker": "<!-- issue-sync:close-10 -->",
+      "body": "<!-- issue-sync:close-10 -->\n✅ فاز ۱۰ کامل شد: آمار، اتاق‌ها، بازیکنان و داشبورد — ۷ تست سبز."
+    },
+    {
+      "number": 86,
+      "marker": "<!-- issue-sync:close-13 -->",
+      "body": "<!-- issue-sync:close-13 -->\n✅ فاز ۱۳ کامل شد: حذف بازیکن با باطل‌کردن توکن و ثبت رویداد، لیست خطاها — ۶ تست سبز."
     }
   ]
 }

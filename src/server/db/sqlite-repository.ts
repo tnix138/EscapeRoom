@@ -165,6 +165,26 @@ export class SqliteRoomRepository implements RoomRepository {
     }));
   }
 
+  async countAdminEvents(
+    options: Omit<ListAdminEventsOptions, 'limit'> = {},
+  ): Promise<number> {
+    const conditions: string[] = [];
+    const params: string[] = [];
+    if (options.roomCode) {
+      conditions.push('room_code = ?');
+      params.push(options.roomCode.toUpperCase());
+    }
+    if (options.type) {
+      conditions.push('type = ?');
+      params.push(options.type);
+    }
+    const where = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+    const row = this.db
+      .prepare(`SELECT COUNT(*) AS total FROM admin_events ${where}`)
+      .get(...params) as unknown as { total: number } | undefined;
+    return row?.total ?? 0;
+  }
+
   async deleteSeat(roomCode: string, seatIndex: number): Promise<boolean> {
     const code = roomCode.toUpperCase();
     for (let attempt = 0; attempt < 3; attempt++) {

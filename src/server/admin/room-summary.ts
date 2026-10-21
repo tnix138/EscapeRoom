@@ -40,6 +40,7 @@ export function buildAdminStats(
   summaries: readonly RoomSummary[],
   eventCount: number,
   now = Date.now(),
+  errorCount = 0,
 ): AdminStatsView {
   const phases: Record<GamePhase, number> = {
     alley_puzzle: 0,
@@ -54,11 +55,15 @@ export function buildAdminStats(
     players += summary.occupiedSeats;
     online += summary.onlineCount;
   }
+  const events = Math.max(0, eventCount);
+  const errors = Math.max(0, Math.min(errorCount, events));
   return {
     rooms: summaries.length,
     players,
     online,
-    events: eventCount,
+    events,
+    errors,
+    errorRate: events > 0 ? errors / events : 0,
     phases,
     serverNow: now,
   };

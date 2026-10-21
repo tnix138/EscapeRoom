@@ -29,6 +29,8 @@ export interface RoomRepository {
   recordAdminEvent(event: AdminEvent): Promise<void>;
   /** رویدادها به ترتیب جدیدترین. */
   listAdminEvents(options?: ListAdminEventsOptions): Promise<AdminEvent[]>;
+  /** شمارش رویدادها برای کارت‌های آمار (فاز ۱۰). */
+  countAdminEvents(options?: Omit<ListAdminEventsOptions, 'limit'>): Promise<number>;
   /**
    * حذف (اخراج) یک بازیکن از اتاق: توکن صندلی باطل و صندلی آزاد می‌شود.
    * در صورت وجود صندلی و موفقیت true برمی‌گرداند.
