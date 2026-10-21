@@ -6,7 +6,7 @@ import AlleyFirstPersonScene from '@/components/alley/AlleyFirstPersonScene';
 import { AlleyRoomView, PlayActNumber, RowRomanCode, TicketPunchSelection, TheaterEmblemId } from '@/components/alley/contracts';
 import { isCorrectTicketSelection } from '@/components/alley/puzzle';
 
-const AlleyThreeScene = dynamic(() => import('@/components/alley/AlleyThreeScene'), { ssr: false });
+const AlleyRoomThreeIntegration = dynamic(() => import('@/components/alley/AlleyRoomThreeIntegration'), { ssr: false });
 
 const rowChart = [
   { rowTitle: 'ردیف سرخ', romanCode: 'I' as RowRomanCode },
@@ -53,7 +53,6 @@ export default function PreviewAlley({ name, seatLabel, initialSeatIndex }: { na
   const [doorUnlocked, setDoorUnlocked] = useState(false);
 
   const [mode, setMode] = useState<'css' | 'three'>('three');
-  const [threeAnchor, setThreeAnchor] = useState<string | null>(null);
 
   const room: AlleyRoomView = useMemo(() => {
     const players = names.map((playerName, seatIndex) => ({
@@ -71,7 +70,6 @@ export default function PreviewAlley({ name, seatLabel, initialSeatIndex }: { na
       lastSeenAt: Date.now(),
     }));
     const solution = solutions[activeSeat];
-    const actInfo = playbill[solution.actNumber - 1];
     const rowInfo = rowChart.find((row) => row.romanCode === solution.rowCode)!;
     const targetSeat = (activeSeat + 1) % names.length;
     const targetSolution = solutions[targetSeat];
@@ -144,20 +142,25 @@ export default function PreviewAlley({ name, seatLabel, initialSeatIndex }: { na
 
   return <div className="alley-preview-wrap">
     <section className="preview-seat-switcher" aria-label="تغییر بازیکن پیش‌نمایش">
-      <div className="preview-switcher-copy"><span className="preview-demo-tag">پیش‌نمایش تعاملی — موج ۴ سه‌بعدی</span><strong>برای آزمودن معمای گروهی، میان صندلی‌ها جابه‌جا شوید.</strong><small>راه‌حل نمایشی: گل سرخ ← صندلی ۱ · ویولن ← صندلی ۲ · زنگ ← صندلی ۳ — حالت سه‌بعدی: W/A/S/D حرکت واقعی</small></div>
+      <div className="preview-switcher-copy"><span className="preview-demo-tag">پیش‌نمایش تعاملی کوچهٔ تماشاخانه</span><strong>برای آزمودن معمای گروهی، میان صندلی‌ها جابه‌جا شوید و متن واقعی روی تابلوهای دیوار چپ و گیشهٔ راست را مستقیم در کوچه بخوانید.</strong><small>راه‌حل نمایشی: گل سرخ ← صندلی ۱ · ویولن ← صندلی ۲ · زنگ ← صندلی ۳ — حرکت: W/A/S/D و نگاه آزاد با ماوس</small></div>
       <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
-        <button type="button" onClick={() => setMode('three')} style={{ padding: '6px 12px', borderRadius: 6, border: mode === 'three' ? '2px solid #c9a86a' : '1px solid #555', background: mode === 'three' ? '#1a1a2e' : '#222', color: '#e8dcc8' }}>🌐 سه‌بعدی واقعی (Three.js)</button>
-        <button type="button" onClick={() => setMode('css')} style={{ padding: '6px 12px', borderRadius: 6, border: mode === 'css' ? '2px solid #c9a86a' : '1px solid #555', background: mode === 'css' ? '#1a1a2e' : '#222', color: '#e8dcc8' }}>🎨 نمای کلاسیک CSS</button>
+        <button type="button" onClick={() => setMode('three')} style={{ padding: '6px 12px', borderRadius: 6, border: mode === 'three' ? '2px solid #c9a86a' : '1px solid #555', background: mode === 'three' ? '#1a1a2e' : '#222', color: '#e8dcc8', cursor: 'pointer' }}>🌐 سه‌بعدی واقعی (Three.js)</button>
+        <button type="button" onClick={() => setMode('css')} style={{ padding: '6px 12px', borderRadius: 6, border: mode === 'css' ? '2px solid #c9a86a' : '1px solid #555', background: mode === 'css' ? '#1a1a2e' : '#222', color: '#e8dcc8', cursor: 'pointer' }}>🎨 نمای کلاسیک CSS</button>
       </div>
       <div className="preview-seat-buttons">{names.map((playerName, index) => <button type="button" key={playerName} onClick={() => setActiveSeat(index)} className={`${activeSeat === index ? 'active-preview-seat' : ''} ${punchedSeats[index] ? 'completed-preview-seat' : ''}`}><span>{punchedSeats[index] ? '✓' : String(index + 1).padStart(2, '۰')}</span>{playerName}</button>)}</div>
-      {mode === 'three' && threeAnchor && <div style={{ marginTop: 8, color: '#c9a86a', fontSize: 12 }}>🎯 نزدیک {threeAnchor === 'playbill' ? 'تابلوی اعلانات' : threeAnchor === 'rowChart' ? 'گیشه' : 'در تئاتر'} — در بازی واقعی UI امیرعلی اینجا باز می‌شود</div>}
     </section>
     {doorUnlocked && <div className="preview-unlock-banner"><span>✧</span> درِ تماشاخانه گشوده شد. آماده‌اید پرده را بالا ببرید؟</div>}
     {mode === 'three' ? (
-      <div style={{ height: '68vh', minHeight: 520, border: '1px solid #2a2a3a', borderRadius: 12, overflow: 'hidden', marginBottom: 16 }}>
-        <AlleyThreeScene onAnchorFocus={(id) => setThreeAnchor(id)} />
+      <div style={{ height: '78vh', minHeight: 620, border: '1px solid #2a2a3a', borderRadius: 12, overflow: 'hidden', marginBottom: 16 }}>
+        <AlleyRoomThreeIntegration
+          room={room}
+          onPunchTicket={punchTicket}
+          onUnlockDoor={unlockDoor}
+          onSendWhisper={sendWhisper}
+        />
       </div>
-    ) : null}
-    <AlleyFirstPersonScene room={room} onPunchTicket={punchTicket} onUnlockDoor={unlockDoor} onSendWhisper={sendWhisper} onReplayInvitation={() => { window.location.href = `/preview/invitation?name=${encodeURIComponent(names[activeSeat])}&seat=${encodeURIComponent(room.me.seatLabel)}`; }} />
+    ) : (
+      <AlleyFirstPersonScene room={room} onPunchTicket={punchTicket} onUnlockDoor={unlockDoor} onSendWhisper={sendWhisper} onReplayInvitation={() => { window.location.href = `/preview/invitation?name=${encodeURIComponent(names[activeSeat])}&seat=${encodeURIComponent(room.me.seatLabel)}`; }} />
+    )}
   </div>;
 }
