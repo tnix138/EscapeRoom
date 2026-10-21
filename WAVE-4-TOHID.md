@@ -1,7 +1,7 @@
 ---
 agent: Tohid
 wave: 4
-status: IMPLEMENTED_PENDING_REVIEW
+status: COMPLETE
 intended_audience: coding_agents_only
 ---
 
@@ -28,3 +28,7 @@ intended_audience: coding_agents_only
 ## محدودیت
 
 localStorage فقط همان مرورگر/دستگاه را پوشش می‌دهد. بازیابی مختصات دقیق روی دستگاه دیگر همچنان خارج از نیاز/قرارداد تأییدشده است و اگر لازم شد باید جداگانه با مالکان توافق شود.
+
+## تکمیل
+
+PR #47 در main ادغام شد (merge commit `31168df`).
