@@ -132,7 +132,7 @@ describe('چیدمان Issueها — یکپارچگی طرح', () => {
 
   it('Issueهای انجام‌شده در طرح به‌عنوان بسته‌شدنی مشخص شده‌اند', () => {
     expect(plan.close.map((item) => item.number).sort((a, b) => a - b)).toEqual([
-      74, 75, 76, 82, 83, 86, 94, 98,
+      74, 75, 76, 82, 83, 86, 94, 95, 98,
     ]);
     // فقط Issueهای فاز ۰۲ کامیت مرجع مشخص دارند؛ بقیه کامیت خودشان را در کامنت دارند
     const withCommit = new Set([75, 76]);
@@ -147,7 +147,7 @@ describe('چیدمان Issueها — یکپارچگی طرح', () => {
     expect(reasons).toEqual([74]);
     expect((plan.close[0] as { reason?: string }).reason).toBeUndefined();
     const done = plan.issues.filter((issue) => issue.labels?.includes('status:done'));
-    expect(done.map((issue) => issue.number).sort()).toEqual([75, 76, 82, 83, 86, 94]);
+    expect(done.map((issue) => issue.number).sort()).toEqual([75, 76, 82, 83, 86, 94, 95]);
   });
 
   it('workflow همگام‌سازی دسترسی نوشتن Issue دارد و قابل اجرای دستی است', () => {
