@@ -62,6 +62,8 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
   const [showRowChart, setShowRowChart] = useState(false);
   const [visitedClues, setVisitedClues] = useState<string[]>([]);
   const [chatOpen, setChatOpen] = useState(false);
+  /* روی گوشی برگهٔ بلیط پیش‌فرض بسته است تا صحنه دیده شود (دسکتاپ همیشه باز است). */
+  const [ticketsOpen, setTicketsOpen] = useState(false);
 
   const initialTransform = resolveInitialTransform(room.roomCode, room.me.playerId, room.me.seatIndex);
 
@@ -320,9 +322,10 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
 
   if (!isWebGLAvailable) {
     return (
-      <div dir="rtl" style={{ padding: 24, background: '#0a0a12', color: '#e8dcc8' }}>
-        WebGL در دسترس نیست — لطفاً از نمای کلاسیک استفاده کنید.
-        {error && <div style={{ color: '#ff8a8a', marginTop: 8 }}>{error}</div>}
+      <div className="scene-fallback">
+        <h2>🖥️ WebGL در دسترس نیست</h2>
+        <p>نمای سه‌بعدی کوچه روی این مرورگر اجرا نمی‌شود؛ با دکمهٔ «نمای کلاسیک» همان کوچه را ببینید.</p>
+        {error && <pre>{error}</pre>}
       </div>
     );
   }
@@ -377,7 +380,7 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
   };
 
   return (
-    <div style={{ width: '100%', height: '100%', position: 'relative', background: '#0b101c' }}>
+    <div className="alley3d-surface">
       <canvas
         ref={canvasRef}
         style={{ width: '100%', height: '100%', display: 'block' }}
@@ -418,26 +421,39 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
       />
 
       {/* HUD پایین */}
-      <div style={{ position: 'absolute', bottom: 12, left: 12, right: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', pointerEvents: 'none', direction: 'rtl' }}>
-        <div style={{ background: 'rgba(8,11,18,0.76)', color: '#e8dcc8', padding: '8px 14px', borderRadius: 8, border: '1px solid rgba(201,168,106,0.28)', fontSize: 12, lineHeight: 1.65, pointerEvents: 'auto', fontFamily: 'Vazirmatn' }}>
-          <div>🎮 W/A/S/D + Shift — پیاده‌روی و دویدن در کوچه | درگ ماوس — نگاه به اطراف و بالا</div>
-          <div>📍 موقعیت: {transform.x.toFixed(1)}, {transform.z.toFixed(1)} — زاویه {transform.yawDeg.toFixed(0)}° {isPointerLocked ? '🔒' : ''}</div>
+      <div className="alley3d-controls">
+        <div className="alley3d-hint">
+          <div className="alley3d-hint-keys">🎮 <span className="alley3d-desktop-only">W/A/S/D + Shift — پیاده‌روی و دویدن</span><span className="alley3d-touch-only">پد جهت‌دار — راه رفتن · کشیدن انگشت — نگاه</span> | <span className="alley3d-desktop-only">درگ ماوس — نگاه به اطراف</span></div>
+          <div className="alley3d-hint-pos">📍 موقعیت: {transform.x.toFixed(1)}, {transform.z.toFixed(1)} — زاویه {transform.yawDeg.toFixed(0)}° {isPointerLocked ? '🔒' : ''}</div>
           {focusedAnchor === 'theaterDoor' && (
-            <div style={{ color: '#f0cc84', marginTop: 4, display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span>🚪 مقابل درِ تماشاخانه — کلید E برای وارد کردن رمز قفل</span>
+            <div className="alley3d-door-hint">
+              <span>🚪 مقابل درِ تماشاخانه — <span className="alley3d-desktop-only">کلید E برای وارد کردن رمز قفل</span><span className="alley3d-touch-only">دکمهٔ «باز کردن قفل» را بزنید</span></span>
               <button
                 type="button"
+                className="alley3d-small-button"
                 onClick={() => setDoorModalOpen(true)}
-                style={{ padding: '2px 10px', borderRadius: 5, border: '1px solid #c9a86a', background: 'rgba(60,34,20,0.85)', color: '#fff3da', cursor: 'pointer', fontSize: 12 }}
               >
                 باز کردن قفل
               </button>
             </div>
           )}
-          {ticketFeedback && <div style={{ marginTop: 6, color: isTicketPunched ? '#8aff8a' : '#ffd080' }}>{ticketFeedback}</div>}
+          {ticketFeedback && <div className={isTicketPunched ? 'alley3d-feedback is-success' : 'alley3d-feedback'}>{ticketFeedback}</div>}
         </div>
-        <div style={{ display: 'flex', gap: 8, pointerEvents: 'auto' }}>
-          <button type="button" onClick={() => { void startHorrorAudio(); requestPointerLock(); }} style={{ padding: '8px 12px', borderRadius: 8, border: '1px solid #c9a86a', background: 'rgba(18,22,36,0.92)', color: '#e8dcc8', cursor: 'pointer', fontSize: 12 }}>
+        <div className="alley3d-actions">
+          <button
+            type="button"
+            className="alley3d-small-button alley3d-tickets-toggle"
+            aria-expanded={ticketsOpen}
+            aria-controls="alley-tickets-sheet"
+            onClick={() => setTicketsOpen((value) => !value)}
+          >
+            🎟️ {ticketsOpen ? 'بستن بلیط' : 'بلیط من'}
+          </button>
+          <button
+            type="button"
+            className="alley3d-small-button alley3d-action-lock"
+            onClick={() => { void startHorrorAudio(); requestPointerLock(); }}
+          >
             {isPointerLocked ? '🔓 خروج (Esc)' : '🔒 قفل ماوس'}
           </button>
         </div>
@@ -469,10 +485,13 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
       )}
 
       {/* بلیط و چت */}
-      <div style={{ position: 'absolute', bottom: 84, left: 12, right: 12, display: 'flex', gap: 12, pointerEvents: 'none', direction: 'rtl' }}>
-        <div style={{ pointerEvents: 'auto', flex: 1, maxWidth: 380 }}>
-          <div style={{ background: 'rgba(8,11,18,0.72)', borderRadius: 8, padding: 8, border: '1px solid rgba(201,168,106,0.22)' }}>
-            <div style={{ color: '#e8dcc8', fontSize: 14, marginBottom: 6 }}>
+      <div
+        id="alley-tickets-sheet"
+        className={ticketsOpen ? 'alley3d-panels is-open' : 'alley3d-panels'}
+      >
+        <div className="alley3d-ticket">
+          <div className="alley3d-ticket-inner">
+            <div className="alley3d-ticket-title">
               🎟️ بلیط {room.me.playerName} — {room.me.seatLabel} {isTicketPunched && revealedDigit != null ? `— رقم: ${revealedDigit}` : ''}
             </div>
             <HeldTicketsDrawer
@@ -499,16 +518,18 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
             />
           </div>
         </div>
-        <div style={{ pointerEvents: 'auto', flex: 1, maxWidth: 360 }}>
-          <WhisperChatPanel
-            messages={room.messages}
-            currentPlayerName={room.me.playerName}
-            couponText={couponText}
-            onSendWhisper={onSendWhisper}
-            open={chatOpen}
-            onOpenChange={setChatOpen}
-          />
-        </div>
+      </div>
+
+      {/* نجوای گروهی جدا از برگهٔ بلیط است تا با بسته‌شدن برگه (گوشی) از دست نرود. */}
+      <div className="alley3d-chat">
+        <WhisperChatPanel
+          messages={room.messages}
+          currentPlayerName={room.me.playerName}
+          couponText={couponText}
+          onSendWhisper={onSendWhisper}
+          open={chatOpen}
+          onOpenChange={setChatOpen}
+        />
       </div>
 
       {/* مودال قفل در */}
@@ -538,7 +559,7 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
 export default function AlleyRoomThreeIntegration(props: ThreeCoreProps) {
   return (
     <ThreeErrorBoundary>
-      <div style={{ width: '100%', height: '100%', minHeight: 600, background: '#0b101c', position: 'relative' }}>
+      <div className="alley3d-stage">
         <AlleyThreeSceneCore {...props} />
       </div>
     </ThreeErrorBoundary>

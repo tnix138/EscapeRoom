@@ -167,8 +167,9 @@ function SceneInner({
 
   if (error) {
     return (
-      <div dir="rtl" style={{ padding: 24, color: '#ff8a8a', background: '#0b101c' }}>
-        خطا در موتور سه‌بعدی: {error}
+      <div className="scene-fallback">
+        <h2>⚠️ خطا در موتور سه‌بعدی</h2>
+        <pre>{error}</pre>
       </div>
     );
   }
@@ -213,8 +214,9 @@ function SceneInner({
             pointerEvents: 'auto',
           }}
         >
-          <div>🎮 W/A/S/D — حرکت در کوچه | Shift — دویدن</div>
-          <div>🖱️ درگ ماوس — چرخش نگاه به اطراف و آسمان | دابل‌کلیک — قفل ماوس {isPointerLocked ? '(فعال)' : ''}</div>
+          <div className="alley3d-desktop-only">🎮 W/A/S/D — حرکت در کوچه | Shift — دویدن</div>
+          <div className="alley3d-desktop-only">🖱️ درگ ماوس — چرخش نگاه به اطراف و آسمان | دابل‌کلیک — قفل ماوس {isPointerLocked ? '(فعال)' : ''}</div>
+          <div className="alley3d-touch-only">🎮 پد جهت‌دار پایین صفحه — راه رفتن | کشیدن انگشت — نگاه</div>
           <div>📍 {transform.x.toFixed(1)}, {transform.z.toFixed(1)} — زاویه {transform.yawDeg.toFixed(0)}°</div>
           {focusedAnchor === 'theaterDoor' && (
             <div style={{ marginTop: 6, color: '#f0cc84' }}>

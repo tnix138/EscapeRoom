@@ -200,7 +200,7 @@ export default function DarkAuditoriumScene({
 
         <div className={styles.stageDark}>
           <div className={styles.tornCurtain} />
-          <div className={styles.stageMouth}>سِن چپ</div>
+          <div className={`${styles.stageMouth} ${styles.stageMouthSide}`}>سِن چپ</div>
         </div>
         <div className={`${styles.stageDark} ${styles.stageDarkMain}`}>
           <div className={styles.tornCurtain} />
@@ -208,7 +208,7 @@ export default function DarkAuditoriumScene({
         </div>
         <div className={styles.stageDark}>
           <div className={styles.tornCurtain} />
-          <div className={styles.stageMouth}>سِن راست</div>
+          <div className={`${styles.stageMouth} ${styles.stageMouthSide}`}>سِن راست</div>
         </div>
 
         <div className={`${styles.wall} ${styles.wallSide}`}>
@@ -243,7 +243,8 @@ export default function DarkAuditoriumScene({
       <div className={styles.flicker} aria-hidden="true" />
       <div className={styles.vignette} aria-hidden="true" />
 
-      {/* بنر وضعیت فصل + حضور تیم */}
+      {/* بنر وضعیت فصل + حضور تیم (روی گوشی زیر هم می‌آیند تا روی هم نیفتند) */}
+      <div className={styles.hudTop}>
       <div className={styles.topBar}>
         <div className={styles.banner}>
           🌑 {auditorium?.chapterStatusBanner ?? 'بازی در سالن تاریک از سر گرفته شد؛ زن و مرد غیب شده‌اند اما آهنگ ترسناک ادامه دارد…'}
@@ -273,6 +274,7 @@ export default function DarkAuditoriumScene({
           </span>
         ))}
         <span className={styles.presenceHint}>↔ سرت را بچرخان و روی نشانه‌های سالن کلیک کن</span>
+      </div>
       </div>
 
       {!audioRunning && (

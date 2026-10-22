@@ -177,7 +177,12 @@ function TheaterCore({ room, elapsedMs = 0, showAllSeats = false, onSeatClick }:
   }
 
   if (error) {
-    return <div style={{ padding: 24, color: '#ff8a8a', background: '#0a0a12' }}>خطا: {error}</div>;
+    return (
+      <div className="scene-fallback">
+        <h2>⚠️ خطا در موتور سه‌بعدی</h2>
+        <pre>{error}</pre>
+      </div>
+    );
   }
 
   return (
@@ -196,7 +201,7 @@ function TheaterCore({ room, elapsedMs = 0, showAllSeats = false, onSeatClick }:
       </div>
 
       {/* لیست بازیکنان */}
-      <div style={{ position: 'absolute', bottom: 12, left: 12, display: 'flex', gap: 6, direction: 'rtl', pointerEvents: 'none' }}>
+      <div className="darkhall-players" style={{ bottom: 12, left: 12, display: 'flex', gap: 6, direction: 'rtl', pointerEvents: 'none', position: 'absolute', maxWidth: 'calc(100% - 24px)', flexWrap: 'wrap' }}>
         {room.players.map((p) => (
           <div
             key={p.playerId}
@@ -224,7 +229,7 @@ function TheaterCore({ room, elapsedMs = 0, showAllSeats = false, onSeatClick }:
 export default function AuditoriumThreeScene(props: AuditoriumThreeSceneProps) {
   return (
     <ThreeErrorBoundary>
-      <div style={{ width: '100%', height: '100%', minHeight: 560, background: '#0a0a12', position: 'relative' }}>
+      <div className="darkhall-stage">
         <TheaterCore {...props} />
       </div>
     </ThreeErrorBoundary>

@@ -149,15 +149,17 @@ function RoomExperience({ roomCode }: { roomCode: string }) {
   if (displayPhase === 'in_theater') {
     return (
       <main className={styles.page}>
-        <div style={{ position: 'absolute', top: 8, right: 8, zIndex: 50 }}>
+        <div className={styles.sceneToolbar} role="group" aria-label="تغییر نمای صحنه">
           <button
             type="button"
+            className={styles.sceneToolbarButton}
+            aria-pressed={!useThree}
             onClick={() => setUseThree((v) => !v)}
-            style={{ padding: '6px 12px', borderRadius: 6, border: '1px solid #c9a86a', background: 'rgba(0,0,0,0.7)', color: '#e8dcc8', fontSize: 11, cursor: 'pointer' }}
           >
-            {useThree ? '🎨 کلاسیک' : '🌐 سه‌بعدی'}
+            {useThree ? '🎨 نمای کلاسیک' : '🌐 نمای سه‌بعدی'}
           </button>
         </div>
+        <div className={useThree ? styles.stage : styles.stageScrollable}>
         {useThree ? (
           <DarkAuditoriumThreeScene
             room={room}
@@ -177,6 +179,7 @@ function RoomExperience({ roomCode }: { roomCode: string }) {
             onSendWhisper={sendWhisper}
           />
         )}
+        </div>
       </main>
     );
   }
@@ -199,23 +202,17 @@ function RoomExperience({ roomCode }: { roomCode: string }) {
   /* alley_puzzle — کوچه سه‌بعدی واقعی (موج ۵) با fallback به CSS امیرعلی */
   return (
     <main className={styles.page}>
-      <div style={{ position: 'absolute', top: 8, right: 8, zIndex: 50, display: 'flex', gap: 8 }}>
+      <div className={styles.sceneToolbar} role="group" aria-label="تغییر نمای صحنه">
         <button
           type="button"
+          className={styles.sceneToolbarButton}
+          aria-pressed={!useThree}
           onClick={() => setUseThree((v) => !v)}
-          style={{
-            padding: '6px 12px',
-            borderRadius: 6,
-            border: '1px solid #c9a86a',
-            background: 'rgba(0,0,0,0.7)',
-            color: '#e8dcc8',
-            fontSize: 11,
-            cursor: 'pointer',
-          }}
         >
           {useThree ? '🎨 نمای کلاسیک' : '🌐 نمای سه‌بعدی'}
         </button>
       </div>
+      <div className={useThree ? styles.stage : styles.stageScrollable}>
       {useThree ? (
         <AlleyRoomThreeIntegration
           room={room}
@@ -242,6 +239,7 @@ function RoomExperience({ roomCode }: { roomCode: string }) {
           }}
         />
       )}
+        </div>
     </main>
   );
 }

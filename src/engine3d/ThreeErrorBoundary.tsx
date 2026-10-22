@@ -30,51 +30,11 @@ export class ThreeErrorBoundary extends React.Component<Props, State> {
     if (this.state.hasError) {
       return (
         this.props.fallback ?? (
-          <div
-            style={{
-              width: '100%',
-              height: '100%',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              background: '#0a0a12',
-              color: '#e8dcc8',
-              padding: 24,
-              textAlign: 'center',
-              fontFamily: 'Vazirmatn, sans-serif',
-            }}
-            dir="rtl"
-          >
-            <h2 style={{ marginBottom: 12 }}>⚠️ خطا در موتور سه‌بعدی</h2>
-            <p style={{ maxWidth: 480, lineHeight: 1.8 }}>
-              رندر سه‌بعدی با مشکل مواجه شد. لطفاً صفحه را تازه‌سازی کنید یا به نمای کلاسیک برگردید.
-            </p>
-            <pre
-              style={{
-                marginTop: 16,
-                fontSize: 12,
-                opacity: 0.7,
-                maxWidth: 600,
-                overflow: 'auto',
-                direction: 'ltr',
-              }}
-            >
-              {this.state.error?.message ?? 'Unknown error'}
-            </pre>
-            <button
-              type="button"
-              onClick={() => this.setState({ hasError: false, error: null })}
-              style={{
-                marginTop: 20,
-                padding: '10px 18px',
-                borderRadius: 8,
-                border: '1px solid #c9a86a',
-                background: '#1a1a2e',
-                color: '#e8dcc8',
-                cursor: 'pointer',
-              }}
-            >
+          <div className="scene-fallback" dir="rtl">
+            <h2>⚠️ خطا در موتور سه‌بعدی</h2>
+            <p>رندر سه‌بعدی با مشکل مواجه شد. لطفاً صفحه را تازه کنید یا به نمای کلاسیک برگردید.</p>
+            <pre>{this.state.error?.message ?? 'Unknown error'}</pre>
+            <button type="button" onClick={() => this.setState({ hasError: false, error: null })}>
               تلاش مجدد
             </button>
           </div>

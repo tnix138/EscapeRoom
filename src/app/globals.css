@@ -2051,6 +2051,16 @@ h1 em {
   .invitation-copy > p:last-child {
     font-size: var(--text-sm);
   }
+
+  /* لایهٔ زیرنویس روی فوتر کنترل‌ها می‌افتاد؛ بالاتر از آن می‌نشیند. */
+  .invitation-narration {
+    padding-bottom: 172px;
+  }
+
+  .invitation-narration .narration-caption {
+    font-size: var(--text-base);
+    padding: 8px 12px 9px;
+  }
   .invitation-object {
     width: min(95vw, 410px);
     height: 345px;
@@ -8234,4 +8244,1487 @@ button:disabled {
 
 .admin-home-logout {
   min-width: 160px;
+}
+
+/* ==========================================================================
+   موج ۱۳ — ریسپانسیو واقعی موبایل (بازبینی صفحه‌به‌صفحه)
+   --------------------------------------------------------------------------
+   قاعده‌ها:
+   ۱) هیچ صفحه‌ای در عرض ۳۲۰px اسکرول افقی نداشته باشد.
+   ۲) ارتفاع صحنه‌های بازی با dvh هم‌اندازهٔ دید باشد، نه یک عدد ثابت.
+   ۳) لایه‌های شناور (HUD) از env(safe-area-inset-*) فاصله بگیرند تا زیر
+      نوار خانهٔ آیفون و بریدگی بالای صفحه نروند.
+   ۴) روی صفحهٔ لمسی (pointer: coarse) راهنمای کیبورد پنهان و هدف لمس ≥۴۴px.
+   ۵) پد حرکت لمسی فقط روی دستگاه لمسی ساخته می‌شود (touch-controls.ts).
+   ========================================================================== */
+
+/* --- ۰. پایه: بدون سرریز افقی، بدون زوم ناخواستهٔ متن --- */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+img,
+svg,
+video,
+table {
+  max-width: 100%;
+}
+
+/* راهنمای کیبورد روی دسکتاپ دیده می‌شود، نسخهٔ لمسی روی گوشی. */
+.alley3d-touch-only {
+  display: none;
+}
+
+@media (pointer: coarse) {
+  .alley3d-desktop-only {
+    display: none !important;
+  }
+
+  .alley3d-touch-only {
+    display: inline;
+  }
+}
+
+/* ==========================================================================
+   ۱. صحنهٔ سه‌بعدی کوچه — HUD پایین
+   ========================================================================== */
+
+.alley3d-stage,
+.darkhall-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  background: #0b101c;
+}
+
+.darkhall-stage {
+  background: #050508;
+}
+
+.alley3d-surface {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #0b101c;
+}
+
+.alley3d-surface canvas {
+  max-width: none; /* بوم سه‌بعدی با اندازهٔ واقعی viewport رندر می‌شود */
+}
+
+.alley3d-controls {
+  position: absolute;
+  z-index: 14;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
+  left: calc(env(safe-area-inset-left, 0px) + 12px);
+  right: calc(env(safe-area-inset-right, 0px) + 12px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 8px;
+  direction: rtl;
+  pointer-events: none;
+}
+
+.alley3d-hint {
+  min-width: 0;
+  max-width: min(560px, 100%);
+  padding: 8px 14px;
+  border: 1px solid rgba(201, 168, 106, 0.28);
+  border-radius: 8px;
+  background: rgba(8, 11, 18, 0.76);
+  color: #e8dcc8;
+  font-family: 'Vazirmatn Variable', Tahoma, sans-serif;
+  font-size: var(--text-xs);
+  line-height: 1.65;
+  pointer-events: auto;
+}
+
+.alley3d-hint-pos {
+  color: #b9a98f;
+}
+
+.alley3d-door-hint {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  color: #f0cc84;
+}
+
+.alley3d-feedback {
+  margin-top: 6px;
+  color: #ffd080;
+}
+
+.alley3d-feedback.is-success {
+  color: #8aff8a;
+}
+
+.alley3d-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  flex: none;
+  pointer-events: auto;
+}
+
+.alley3d-small-button {
+  min-height: 36px;
+  padding: 6px 12px;
+  border: 1px solid #c9a86a;
+  border-radius: 8px;
+  background: rgba(18, 22, 36, 0.92);
+  color: #e8dcc8;
+  font: inherit;
+  font-size: var(--text-xs);
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.alley3d-small-button:hover {
+  background: rgba(60, 34, 20, 0.9);
+}
+
+/* پنل بلیط و چت */
+.alley3d-panels {
+  position: absolute;
+  z-index: 12;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 84px);
+  left: calc(env(safe-area-inset-left, 0px) + 12px);
+  right: calc(env(safe-area-inset-right, 0px) + 12px);
+  display: flex;
+  gap: 12px;
+  direction: rtl;
+  pointer-events: none;
+}
+
+.alley3d-ticket {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 380px;
+  pointer-events: auto;
+}
+
+.alley3d-ticket-inner {
+  padding: 8px;
+  border: 1px solid rgba(201, 168, 106, 0.22);
+  border-radius: 8px;
+  background: rgba(8, 11, 18, 0.72);
+}
+
+.alley3d-ticket-title {
+  margin-bottom: 6px;
+  color: #e8dcc8;
+  font-size: var(--text-sm);
+  line-height: 1.6;
+}
+
+/* نگه‌دارندهٔ پنل نجوا — خودِ پنل fixed است و این لایه فقط جایگاه منطقی است */
+.alley3d-chat {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+/* دکمهٔ باز کردن برگهٔ بلیط — فقط روی گوشی */
+.alley3d-tickets-toggle {
+  display: none;
+}
+
+@media (pointer: coarse) {
+  .alley3d-tickets-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* روی گوشی قفل ماوس کاربردی ندارد */
+  .alley3d-action-lock {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .alley3d-panels {
+    gap: 8px;
+  }
+
+  .alley3d-ticket {
+    max-width: none;
+  }
+}
+
+/* --- گوشی: HUD فشرده، پد حرکت پایین-راست، برگهٔ بلیط تاشو --- */
+@media (max-width: 720px) {
+  .alley3d-controls {
+    left: 8px;
+    right: 8px;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    /* جای پد حرکت لمسی در گوشهٔ پایین-راست باز می‌ماند */
+    right: calc(env(safe-area-inset-right, 0px) + 162px);
+  }
+
+  /* وقتی راهنمای زمینه‌ای (در/بازخورد) نیست، نوار خالی وسط صحنه نماند */
+  .alley3d-hint:not(:has(.alley3d-door-hint, .alley3d-feedback)) {
+    display: none;
+  }
+
+  .alley3d-hint {
+    width: 100%;
+    max-width: 100%;
+    padding: 7px 10px;
+    font-size: var(--text-xs);
+  }
+
+  .alley3d-hint-keys,
+  .alley3d-hint-pos {
+    display: none;
+  }
+
+  .alley3d-small-button {
+    min-height: 44px;
+    font-size: var(--text-sm);
+  }
+
+  /* برگهٔ بلیط: پیش‌فرض بسته تا صحنه دیده شود */
+  /* روی گوشی برگهٔ بلیط پیش‌فرض بسته است؛ نجوای گروهی جدا و همیشه در دسترس. */
+  .alley3d-panels {
+    display: none;
+  }
+
+  .alley3d-panels.is-open {
+    display: flex;
+    flex-direction: column;
+    left: 8px;
+    right: 8px;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 74px);
+    max-height: 58svh;
+    max-height: 58dvh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    gap: 8px;
+    /* برگهٔ باز بالاتر از بقیهٔ HUDها می‌نشیند تا با آن‌ها قاطی نشود */
+    z-index: 30;
+    padding: 8px;
+    border: 1px solid rgba(212, 175, 99, 0.32);
+    border-radius: 12px;
+    background: rgba(10, 7, 10, 0.94);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.6);
+  }
+
+  .alley3d-panels.is-open .alley3d-ticket {
+    max-width: none;
+    flex: 0 0 auto;
+  }
+
+  .alley3d-panels.is-open .alley3d-ticket-inner {
+    background: transparent;
+    border: 0;
+    padding: 0;
+  }
+
+  .alley3d-panels.is-open .held-tickets-scroll {
+    max-height: none;
+    overflow: visible;
+  }
+
+  .alley3d-panels.is-open .held-tickets {
+    padding: 0;
+  }
+}
+
+/* ==========================================================================
+   ۲. صحنهٔ سالن تاریک (Three.js) — HUD فشرده و لایه‌های قابل لمس
+   ========================================================================== */
+
+.darkhall-hud {
+  position: absolute;
+  z-index: 14;
+  top: calc(env(safe-area-inset-top, 0px) + 12px);
+  left: calc(env(safe-area-inset-left, 0px) + 12px);
+  right: calc(env(safe-area-inset-right, 0px) + 12px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  direction: rtl;
+  pointer-events: none;
+}
+
+.darkhall-hint {
+  min-width: 0;
+  max-width: min(560px, 68%);
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.7);
+  color: #e8dcc8;
+  font-size: var(--text-xs);
+  line-height: 1.7;
+  pointer-events: auto;
+}
+
+.darkhall-banner {
+  display: block;
+}
+
+.darkhall-keys {
+  display: block;
+  margin-top: 4px;
+  font-size: var(--text-xs);
+  opacity: 0.8;
+}
+
+.darkhall-near {
+  margin-top: 6px;
+  color: #c9a86a;
+}
+
+.darkhall-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+  flex: none;
+  max-width: 40%;
+}
+
+.darkhall-button {
+  min-height: 36px;
+  padding: 6px 12px;
+  border: 1px solid #c9a86a;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.66);
+  color: #e8dcc8;
+  font: inherit;
+  font-size: var(--text-xs);
+  line-height: 1.4;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.darkhall-button:disabled {
+  opacity: 0.45;
+}
+
+/* دکمهٔ بررسی فقط روی صفحهٔ لمسی لازم است؛ روی دسکتاپ کلید E هست. */
+.darkhall-inspect {
+  display: none;
+}
+
+@media (pointer: coarse) {
+  .darkhall-inspect {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  .darkhall-lock {
+    display: none;
+  }
+
+  .darkhall-button {
+    font-size: var(--text-sm);
+  }
+}
+
+.darkhall-card {
+  position: absolute;
+  z-index: 15;
+  top: calc(env(safe-area-inset-top, 0px) + 80px);
+  inset-inline-end: calc(env(safe-area-inset-right, 0px) + 20px);
+  width: min(320px, calc(100vw - 32px));
+  padding: 16px;
+  border: 1px solid #c9a86a;
+  border-radius: 12px;
+  background: rgba(15, 10, 10, 0.92);
+  color: #e8dcc8;
+  direction: rtl;
+  pointer-events: auto;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+}
+
+.darkhall-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.darkhall-card-close {
+  flex: none;
+  min-width: 36px;
+  min-height: 36px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #e8dcc8;
+  font-size: var(--text-base);
+  cursor: pointer;
+}
+
+.darkhall-card p {
+  margin: 10px 0 0;
+  font-size: var(--text-sm);
+  line-height: 1.8;
+}
+
+.darkhall-card-meta {
+  margin-top: 12px;
+  font-size: var(--text-xs);
+  color: #cdbfa8;
+}
+
+.darkhall-chat {
+  position: absolute;
+  z-index: 13;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
+  left: calc(env(safe-area-inset-left, 0px) + 12px);
+  width: min(340px, calc(100vw - 24px));
+  padding: 8px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.65);
+  direction: rtl;
+  pointer-events: auto;
+}
+
+.darkhall-chat-log {
+  max-height: 120px;
+  overflow: auto;
+  margin-bottom: 8px;
+}
+
+.darkhall-chat-form {
+  display: flex;
+  gap: 6px;
+}
+
+.darkhall-chat-input {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 8px;
+  border: 1px solid #444;
+  border-radius: 6px;
+  background: #1a1a2e;
+  color: #e8dcc8;
+  font: inherit;
+  font-size: var(--text-sm);
+}
+
+.darkhall-chat-send {
+  flex: none;
+  padding: 6px 12px;
+  border: 1px solid #c9a86a;
+  border-radius: 6px;
+  background: #2a1a1a;
+  color: #e8dcc8;
+  font: inherit;
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+
+@media (max-width: 720px) {
+  .darkhall-hud {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+
+  .darkhall-hint {
+    max-width: 100%;
+    font-size: var(--text-xs);
+  }
+
+  .darkhall-actions {
+    max-width: 100%;
+    justify-content: flex-start;
+  }
+
+  .darkhall-card {
+    inset-inline: 8px;
+    width: auto;
+    top: calc(env(safe-area-inset-top, 0px) + 150px);
+    max-height: 56svh;
+    max-height: 56dvh;
+    overflow-y: auto;
+    padding: 13px;
+  }
+
+  .darkhall-chat {
+    left: 8px;
+    right: calc(env(safe-area-inset-right, 0px) + 162px);
+    width: auto;
+  }
+
+  .darkhall-chat-log {
+    max-height: 84px;
+  }
+
+  .darkhall-chat-input {
+    font-size: var(--text-base); /* ≥۱۶px تا iOS زوم نکند */
+  }
+
+  .darkhall-players {
+    left: 8px !important;
+    bottom: 8px !important;
+    max-width: calc(100% - 16px) !important;
+    font-size: var(--text-xs);
+  }
+}
+
+/* ==========================================================================
+   ۳. پد حرکت لمسی صحنه‌های سه‌بعدی
+   ========================================================================== */
+
+.touch-move-pad {
+  position: absolute;
+  z-index: 24;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 14px);
+  right: calc(env(safe-area-inset-right, 0px) + 14px);
+  display: grid;
+  grid-template-columns: repeat(3, 44px);
+  grid-template-rows: repeat(3, 44px);
+  gap: 4px;
+  padding: 6px;
+  border: 1px solid rgba(212, 175, 99, 0.32);
+  border-radius: 26px;
+  background: rgba(10, 7, 10, 0.42);
+  backdrop-filter: blur(6px);
+  direction: ltr;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.touch-pad-button {
+  display: grid;
+  place-items: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: 1px solid rgba(212, 175, 99, 0.3);
+  border-radius: 14px;
+  background: rgba(24, 17, 20, 0.82);
+  color: #f3ead8;
+  font: inherit;
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  touch-action: none;
+  transition: background 0.12s, transform 0.12s;
+}
+
+.touch-pad-button.is-pressed {
+  background: rgba(143, 33, 50, 0.95);
+  border-color: var(--gold);
+  transform: scale(0.94);
+}
+
+.touch-pad-up {
+  grid-area: 1 / 2;
+}
+
+.touch-pad-left {
+  grid-area: 2 / 1;
+}
+
+.touch-pad-right {
+  grid-area: 2 / 3;
+}
+
+.touch-pad-down {
+  grid-area: 3 / 2;
+}
+
+.touch-pad-sprint {
+  grid-area: 3 / 3;
+  font-size: 18px;
+  color: var(--gold-light);
+}
+
+@media (max-width: 380px) {
+  .touch-move-pad {
+    grid-template-columns: repeat(3, 40px);
+    grid-template-rows: repeat(3, 40px);
+    gap: 3px;
+    padding: 5px;
+  }
+
+  .touch-pad-button {
+    min-width: 40px;
+    min-height: 40px;
+  }
+
+  .alley3d-controls {
+    right: calc(env(safe-area-inset-right, 0px) + 146px);
+  }
+
+  .darkhall-chat {
+    right: calc(env(safe-area-inset-right, 0px) + 146px);
+  }
+}
+
+/* حالت افقی گوشی: ارتفاع کم است، پس HUD و پد جمع‌وجور می‌شوند */
+@media (max-height: 480px) and (orientation: landscape) {
+  .touch-move-pad {
+    grid-template-columns: repeat(3, 38px);
+    grid-template-rows: repeat(3, 38px);
+    gap: 3px;
+    padding: 4px;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 8px);
+    right: calc(env(safe-area-inset-right, 0px) + 8px);
+  }
+
+  .touch-pad-button {
+    min-width: 38px;
+    min-height: 38px;
+    font-size: 13px;
+  }
+
+  .alley3d-panels {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 62px);
+  }
+
+  .alley3d-panels.is-open {
+    max-height: 68svh;
+    max-height: 68dvh;
+  }
+
+  .alley3d-controls {
+    right: calc(env(safe-area-inset-right, 0px) + 136px);
+  }
+
+  .darkhall-chat {
+    right: calc(env(safe-area-inset-right, 0px) + 136px);
+  }
+
+  .darkhall-chat-log {
+    max-height: 52px;
+  }
+}
+
+/* ==========================================================================
+   ۴. کوچهٔ کلاسیک (CSS) روی گوشی — پنل‌های کناریِ فعال قابل دیدن و لمس
+   --------------------------------------------------------------------------
+   پیش‌تر در عرض ≤۶۸۰px هر دو پنل کناری (`target-left` / `target-right`)
+   با display:none پنهان می‌شدند؛ نتیجه این بود که بازیکن موبایل هیچ راهی
+   برای خواندن پوستر و جدول ردیف‌ها نداشت. حالا فقط پنلِ فعال نمایش داده
+   می‌شود و پنلِ میانه جای آن را می‌دهد.
+   ========================================================================== */
+
+@media (max-width: 680px) {
+  .alley-panorama.view-left .target-center,
+  .alley-panorama.view-right .target-center {
+    display: none;
+  }
+
+  .alley-panorama.view-left .target-left,
+  .alley-panorama.view-right .target-right {
+    display: flex;
+    top: 10%;
+    bottom: 12%;
+    left: 6%;
+    right: 6%;
+    width: auto;
+    transform: none;
+    filter: none;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .alley-panorama.view-left .playbill-board,
+  .alley-panorama.view-right .row-chart-window {
+    width: min(100%, 320px);
+    height: auto;
+    max-height: 44svh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  /* پنل فعال روی گوشی نباید از ارتفاع قاب کوچه بیرون بزند */
+  .alley-panorama {
+    height: min(560px, calc(100svh - 150px));
+    min-height: 380px;
+    max-height: none;
+  }
+
+  .alley-panorama.view-left .clue-inspect-button,
+  .alley-panorama.view-right .clue-inspect-button {
+    min-height: 44px;
+    width: 100%;
+    max-width: 320px;
+  }
+
+  /* راهنمای کشیدن در پایین قاب با برچسب نما هم‌پوشانی نکند */
+  .panorama-hint {
+    max-width: calc(100% - 20px);
+    line-height: 1.6;
+  }
+
+  .panorama-hint small {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   ۵. دعوت‌نامهٔ اول‌شخص — صفحه‌های کوتاه و باریک
+   --------------------------------------------------------------------------
+   قاب دعوت‌نامه ارتفاع ثابت داشت (۴۱۰px برای شیء و ۵۰۰px برای بوم)؛ روی
+   گوشی‌های کوتاه (iPhone SE افقی، صفحه‌کلید باز) متن و پاکت روی هم می‌افتادند.
+   ========================================================================== */
+
+.invitation-video,
+.invitation-finish {
+  min-height: 100svh;
+  min-height: 100dvh;
+}
+
+.invitation-canvas {
+  min-height: min(500px, calc(100svh - 220px));
+}
+
+@media (max-width: 620px), (max-height: 700px) {
+  .invitation-canvas {
+    min-height: 0;
+    padding: 78px 14px 8px;
+    overflow-y: auto;
+    justify-content: flex-start;
+  }
+
+  /* عنوان در جریان عادی می‌آید تا روی پاکت نیفتد (قبلاً absolute بود و
+     روی صفحهٔ کوتاه متن روی تصویر پاکت می‌نشست). */
+  .invitation-copy {
+    position: static;
+    order: 0;
+    width: 100%;
+    margin-bottom: 6px;
+    animation: none;
+  }
+
+  .invitation-copy h1,
+  .invitation-finish h1 {
+    font-size: clamp(21px, 6vw, 30px);
+    line-height: 1.45;
+  }
+
+  .invitation-copy > p:last-child {
+    font-size: var(--text-sm);
+  }
+
+  .invitation-object {
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+    width: min(94vw, 420px);
+    height: clamp(270px, 52svh, 380px);
+    margin: 12px auto 0;
+  }
+
+  .velvet-envelope {
+    top: 26px;
+    width: min(78%, 300px);
+    height: clamp(150px, 30svh, 210px);
+  }
+
+  .envelope-letter {
+    top: 4%;
+    height: 108%;
+    padding: 7px;
+  }
+
+  .mini-stage {
+    height: 38px;
+  }
+
+  .mini-singer,
+  .mini-dancer {
+    font-size: 15px;
+  }
+
+  .invitation-controls {
+    min-height: 0;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 12px 14px calc(env(safe-area-inset-bottom, 0px) + 12px);
+    text-align: center;
+  }
+
+  .invitation-controls > * {
+    justify-self: center;
+  }
+
+  .sequence-status {
+    text-align: center;
+  }
+
+  .invitation-topline {
+    padding-inline: 14px;
+    gap: 6px 12px;
+  }
+
+  .invitation-sequence {
+    display: none; /* جای کم؛ شمارهٔ مرحله در پایین صفحه هست */
+  }
+
+  .sound-toggle {
+    min-height: 44px;
+  }
+
+  .invitation-primary,
+  .invitation-secondary,
+  .invitation-continue {
+    width: 100%;
+    max-width: 360px;
+  }
+
+  .paper-ticket {
+    width: 92px;
+    height: 140px;
+    margin-left: -46px;
+  }
+}
+
+/* صفحه‌های کوتاه‌تر از ۵۰۰px (افقی): متن بالای پاکت جمع می‌شود */
+@media (max-height: 500px) {
+  .invitation-canvas {
+    padding-top: 58px;
+  }
+
+  .invitation-kicker {
+    margin-bottom: 4px;
+  }
+
+  .invitation-copy h1,
+  .invitation-finish h1 {
+    font-size: clamp(18px, 4vw, 24px);
+  }
+
+  .invitation-object {
+    height: 230px;
+    margin-top: 4px;
+  }
+
+  .velvet-envelope {
+    height: 150px;
+  }
+}
+
+/* ==========================================================================
+   ۶. صفحهٔ اصلی، رزرو و فوتر — تنظیم‌های باریک‌ترین عرض‌ها (۳۲۰–۴۲۰px)
+   ========================================================================== */
+
+@media (max-width: 480px) {
+  .topbar,
+  .hero,
+  .reservation-section,
+  .footer {
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+
+  .footer {
+    row-gap: 8px;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .topbar-note {
+    gap: 6px;
+  }
+
+  .hero {
+    padding-top: 20px;
+    padding-bottom: 34px;
+    gap: 10px;
+  }
+
+  .hero h1 {
+    font-size: clamp(28px, 9vw, 36px);
+    line-height: 1.45;
+  }
+
+  .hero-description {
+    line-height: 1.95;
+  }
+
+  .hero-meta {
+    margin-top: 18px;
+    gap: 6px;
+  }
+
+  .text-link {
+    justify-content: space-between;
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .theater-art {
+    height: 215px;
+  }
+
+  .art-frame {
+    height: 200px;
+  }
+
+  .art-stamp {
+    width: 44px;
+    height: 44px;
+    font-size: var(--text-xs);
+    padding-top: 8px;
+  }
+
+  .section-heading {
+    grid-template-columns: 30px 1fr;
+    gap: 6px;
+  }
+
+  .section-heading h2 {
+    font-size: 18px;
+  }
+
+  .section-aside {
+    grid-column: 2;
+    text-align: start;
+    margin-top: 2px;
+  }
+
+  .reservation-form {
+    padding: 16px 13px;
+  }
+
+  .form-topline {
+    flex-wrap: wrap;
+    gap: 6px;
+    font-size: var(--text-sm);
+  }
+
+  .count-picker {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+
+  .count-option {
+    min-height: 54px;
+  }
+
+  .reservation-aside {
+    padding: 18px 14px;
+  }
+
+  .invite-deck {
+    padding: 22px 12px;
+  }
+
+  .invite-card {
+    flex-wrap: wrap;
+  }
+
+  .invite-details code,
+  .room-code-line code {
+    word-break: break-all;
+  }
+
+  .deck-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .deck-actions .button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 360px) {
+  .topbar {
+    gap: 6px;
+  }
+
+  .brand small {
+    font-size: var(--text-xs);
+  }
+
+  .topbar-note {
+    font-size: var(--text-xs);
+  }
+
+  .count-picker {
+    gap: 4px;
+  }
+
+  .count-option small {
+    font-size: var(--text-xs);
+  }
+}
+
+/* ==========================================================================
+   ۷. پنل‌های شناور بازی — نوار ایمن پایین/بالا و نگه‌داشتن پنل‌ها در قاب
+   ========================================================================== */
+
+.whisper-panel {
+  max-width: calc(100vw - 16px);
+}
+
+.exploration-hud {
+  max-width: calc(100vw - 16px);
+}
+
+.theater-companion-hud {
+  /* در چیدمان بازی داخل صحنه است؛ روی گوشی ارتفاع کمتری بگیرد */
+  max-height: min(72svh, 520px);
+}
+
+@media (max-width: 720px) {
+  .exploration-hud {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 96px);
+  }
+
+  .whisper-panel {
+    top: calc(env(safe-area-inset-top, 0px) + 56px);
+    left: 8px;
+  }
+
+  .theater-companion-hud {
+    top: calc(env(safe-area-inset-top, 0px) + 108px);
+    right: 8px;
+  }
+
+  .controls-help-trigger {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 10px);
+    min-height: 44px;
+    font-size: var(--text-sm);
+  }
+
+  .controls-help {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 64px);
+    max-height: min(72svh, 480px);
+    max-height: min(72dvh, 480px);
+    padding: 14px 14px 12px;
+  }
+
+  .door-modal,
+  .clue-reading {
+    max-height: 88svh;
+    max-height: 88dvh;
+    overflow-y: auto;
+  }
+}
+
+/* ==========================================================================
+   ۸. پنل ادمین روی گوشی — جدول‌های پهن و فرم‌های بلند
+   ========================================================================== */
+
+@media (max-width: 720px) {
+  .admin-shell {
+    padding: 10px;
+  }
+
+  .admin-header {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .admin-content {
+    padding: 0;
+  }
+
+  .admin-header .admin-home-link {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* جدول‌ها داخل ظرف اسکرول خودشان می‌مانند؛ فقط سلول‌ها کوتاه‌تر می‌شوند
+     تا جدول عرض قاب را نشکند. */
+  .admin-shell th,
+  .admin-shell td {
+    padding: 6px 8px;
+    font-size: var(--text-xs);
+    white-space: nowrap;
+  }
+}
+
+/* ==========================================================================
+   ۹. دسترس‌پذیری لمس — هدف‌های کوچک و راهنمای کیبورد
+   ========================================================================== */
+
+@media (pointer: coarse) {
+  kbd {
+    display: none;
+  }
+
+  .icon-button,
+  .alley-head-button,
+  .alley3d-small-button,
+  .darkhall-button,
+  .touch-pad-button {
+    min-height: 44px;
+  }
+}
+
+/* در حالت فشردهٔ ارتفاعی، راهنماهای بلند پنهان می‌شوند تا صحنه بماند */
+@media (max-height: 480px) and (orientation: landscape) {
+  .alley3d-hint-keys,
+  .darkhall-keys {
+    display: none;
+  }
+
+  .theater-companion-hud {
+    top: calc(env(safe-area-inset-top, 0px) + 52px);
+    max-height: 74svh;
+  }
+
+  .exploration-hud {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 58px);
+  }
+}
+
+/* بوم سه‌بعدی روی گوشی نباید با کشیدن انگشت صفحه را اسکرول/رفرش کند */
+.alley3d-surface canvas,
+.alley3d-stage canvas,
+.darkhall-stage canvas {
+  touch-action: none;
+}
+
+/* ==========================================================================
+   ۱۰. یکدست‌سازی: هیچ صفحه‌ای پهن‌تر از دید نباشد (جلوگیری از ۳۲۰px سرریز)
+   ========================================================================== */
+
+@supports (overflow: clip) {
+  .site-shell,
+  .alley-game-shell,
+  .invitation-video {
+    overflow-x: clip;
+  }
+}
+
+/* ==========================================================================
+   ۱۱. گوشی: پنل‌های بالای صحنه روی هم نیفتند
+   --------------------------------------------------------------------------
+   نجوای گروهی (بالا-چپ) و همراهِ تماشاخانه (بالا-راست) هر دو عریض‌اند؛ در
+   عرض ۳۹۰px روی هم می‌افتادند و دکمهٔ یکی زیر دیگری می‌رفت. نجوای بسته به
+   اندازهٔ محتوای خودش جمع می‌شود، وقتی باز شد بالاتر از بقیه می‌نشیند و
+   همراهِ تماشاخانه زیر آن جابه‌جا می‌شود.
+   ========================================================================== */
+
+@media (max-width: 720px) {
+  .whisper-panel {
+    width: auto;
+    min-width: 0;
+    max-width: calc(100vw - 16px);
+    top: calc(env(safe-area-inset-top, 0px) + 54px);
+    left: calc(env(safe-area-inset-left, 0px) + 8px);
+    z-index: 16;
+  }
+
+  .whisper-panel.whisper-expanded {
+    width: min(340px, calc(100vw - 16px));
+  }
+
+  /* چیدمان جمع‌وجور سربرگ تا پنل بسته کم‌عرض بماند */
+  .whisper-panel:not(.whisper-expanded) .whisper-toggle-text small {
+    display: none;
+  }
+
+  .whisper-panel:not(.whisper-expanded) .whisper-toggle {
+    width: auto;
+    gap: 7px;
+    padding: 0 10px;
+    min-height: 44px;
+  }
+
+  .whisper-panel:not(.whisper-expanded) .whisper-count {
+    margin-inline-start: 2px;
+  }
+
+  /* پنل باز، بقیهٔ HUDهای بالا را می‌پوشاند؛ پس آن‌ها را جابه‌جا می‌کنیم */
+  .whisper-panel.whisper-expanded ~ .theater-companion-hud,
+  .whisper-panel.whisper-expanded ~ .exploration-hud {
+    z-index: 10;
+  }
+
+  .theater-companion-hud {
+    top: calc(env(safe-area-inset-top, 0px) + 106px);
+  }
+}
+
+/* ==========================================================================
+   ۱۲. کوچهٔ کلاسیک روی گوشی باریک — سربرگ و نشانگرها روی هم نیفتند
+   ========================================================================== */
+
+@media (max-width: 480px) {
+  .alley-topbar {
+    row-gap: 8px;
+  }
+
+  .alley-top-actions {
+    flex: 1 1 100%;
+    justify-content: space-between;
+  }
+
+  .alley-head-button {
+    white-space: nowrap;
+    font-size: var(--text-xs);
+    padding: 0 10px;
+  }
+
+  .alley-room-badge {
+    font-size: var(--text-xs);
+  }
+
+  /* راهنمای «بکشید» جای کافی ندارد و زیر HUD همراهان می‌رود؛ فقط نشانهٔ ↕ می‌ماند.
+     خودِ اسلایدر دوربین با دکمه‌های ‹ › روی گوشی در دسترس است. */
+  .panorama-hint {
+    top: 8px;
+    left: 8px;
+    max-width: 40px;
+    padding: 4px 6px;
+    font-size: 0;
+  }
+
+  .panorama-hint .drag-symbol {
+    font-size: var(--text-base);
+  }
+
+  .camera-controls {
+    padding: 4px 6px;
+  }
+
+  .camera-controls button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .camera-controls input {
+    width: 96px;
+  }
+}
+
+/* ==========================================================================
+   ۱۳. کوچهٔ کلاسیک روی گوشی — پنل سرنخ، اسلایدر دوربین و برچسب نما روی هم نمانند
+   --------------------------------------------------------------------------
+   اسلایدر دوربین ته قاب می‌نشست و دکمهٔ «بررسی پوستر/گیشه» را می‌پوشاند؛
+   روی گوشی اسلایدر به بالای قاب می‌رود و دکمهٔ بررسی ته پنل آزاد می‌ماند.
+   ========================================================================== */
+
+@media (max-width: 680px) {
+  /* اسلایدر دوربین روی گوشی جای کافی ندارد و با پنل سرنخ تصادم می‌کند؛
+     فقط دو دکمهٔ چرخش (۴۴px) در گوشهٔ پایین-چپ می‌ماند و کشیدن انگشت هم کار می‌کند. */
+  .alley-panorama .camera-controls {
+    left: 8px;
+    right: auto;
+    bottom: 8px;
+    top: auto;
+    transform: none;
+    padding: 2px;
+    gap: 0;
+    border-radius: 999px;
+    background: rgba(13, 9, 11, 0.72);
+  }
+
+  .alley-panorama .camera-controls input {
+    display: none;
+  }
+
+  .alley-panorama .camera-controls button {
+    width: 44px;
+    height: 44px;
+    font-size: 22px;
+  }
+
+  .alley-panorama .panorama-view-tag {
+    right: auto;
+    left: 10px;
+    bottom: auto;
+    top: 52px;
+    font-size: var(--text-xs);
+  }
+
+  /* دکمهٔ بررسی سرنخ ته پنل فعال، بالاتر از نوار پایین بماند */
+  .alley-panorama.view-left .target-left,
+  .alley-panorama.view-right .target-right {
+    bottom: 14%;
+    justify-content: flex-start;
+  }
+
+  .alley-panorama.view-left .playbill-board,
+  .alley-panorama.view-right .row-chart-window {
+    max-height: 38svh;
+  }
+
+  .clue-inspect-button {
+    position: relative;
+    z-index: 6;
+  }
+}
+
+/* ==========================================================================
+   ۱۴. صفحهٔ جانشین صحنهٔ سه‌بعدی (بدون WebGL / خطای موتور)
+   --------------------------------------------------------------------------
+   پیام خام خطا در گوشی از لبهٔ صفحه بیرون می‌زد و دکمهٔ «نمای کلاسیک» را
+   می‌پوشاند؛ این کلاس پیام را وسط‌چین، شکستنی و اسکرول‌پذیر می‌کند.
+   ========================================================================== */
+
+.scene-fallback {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 10px;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  padding: calc(env(safe-area-inset-top, 0px) + 20px) 16px
+    calc(env(safe-area-inset-bottom, 0px) + 20px);
+  overflow: auto;
+  text-align: center;
+  background: #0a0a12;
+  color: #e8dcc8;
+  font-size: var(--text-sm);
+  line-height: 1.9;
+  direction: rtl;
+}
+
+.scene-fallback h2 {
+  margin: 0;
+  font-size: var(--text-lg);
+  line-height: 1.6;
+}
+
+.scene-fallback p {
+  margin: 0;
+  max-width: 46ch;
+  color: var(--text-secondary);
+}
+
+.scene-fallback pre {
+  margin: 0;
+  max-width: 100%;
+  padding: 8px 10px;
+  overflow-x: auto;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.35);
+  font-size: var(--text-xs);
+  line-height: 1.7;
+  text-align: left;
+  direction: ltr;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.scene-fallback button {
+  min-height: 44px;
+  padding: 10px 18px;
+  border: 1px solid #c9a86a;
+  border-radius: 8px;
+  background: #1a1a2e;
+  color: #e8dcc8;
+  font: inherit;
+  cursor: pointer;
+}
+
+/* قاب صحنهٔ کلاسیک سالن تاریک هم‌اندازهٔ دید است (نه یک عدد ثابت ۴۸۰px) */
+@media (max-width: 720px) {
+  .alley-panorama {
+    height: min(540px, calc(100svh - 140px));
+    min-height: 340px;
+  }
+}
+
+@media (max-height: 520px) and (orientation: landscape) {
+  .alley-panorama {
+    height: calc(100svh - 96px);
+    min-height: 260px;
+  }
+}
+
+/* ==========================================================================
+   ۱۵. دعوت‌نامه روی گوشی — زیرنویس خوانا و بدون هم‌پوشانی
+   --------------------------------------------------------------------------
+   لایهٔ زیرنویس (روایت) روی کاغذ روشن نامه می‌افتاد و متن کم‌کنتراست می‌شد؛
+   اعلان فاز هم با اسلایدر صدا قاطی می‌شد. زیرنویس پس‌زمینهٔ مات می‌گیرد،
+   اعلان تکراری پنهان می‌شود و پاکت کمی جمع‌تر می‌نشیند.
+   ========================================================================== */
+
+@media (max-width: 620px), (max-height: 700px) {
+  .invitation-object {
+    height: clamp(230px, 42svh, 330px);
+    margin-top: 8px;
+  }
+
+  .velvet-envelope {
+    height: clamp(140px, 26svh, 195px);
+  }
+
+  .invitation-narration .narration-caption {
+    background: rgba(10, 7, 9, 0.92);
+    border-color: rgba(212, 175, 99, 0.35);
+    max-width: 100%;
+  }
+
+  /* برچسب فاز در فوتر پایین صفحه هست؛ تکرارش روی اسلایدر صدا می‌افتاد. */
+  .invitation-narration .narration-phase-notice {
+    display: none;
+  }
+}
+
+/* دعوت‌نامه: پایین‌ترین لایهٔ روایت روی کاغذ روشن نامه می‌افتاد. در صفحهٔ
+   باریک/کوتاه، کپشن به بالای قاب (زیر عنوان) می‌رود تا همیشه روی پس‌زمینهٔ تیره
+   و مستقل از ارتفاع قاب دیده شود. */
+@media (max-width: 620px), (max-height: 700px) {
+  /* لایهٔ روایت از حالت شناور خارج و در جریان عادی بین بوم و فوتر می‌نشیند؛
+     این‌طور زیرنویس و کنترل صدا هیچ‌وقت روی پاکت/کاغذ نامه نمی‌افتند. */
+  .invitation-narration {
+    position: static;
+    inset: auto;
+    padding: 6px 12px 2px;
+    gap: 6px;
+  }
+
+  .invitation-narration .narration-caption {
+    max-width: 100%;
+    padding: 7px 10px 8px;
+    font-size: var(--text-sm);
+    line-height: 1.75;
+  }
+
+  .invitation-narration .narration-controls {
+    pointer-events: auto;
+    padding: 4px 6px;
+  }
+
+  .invitation-canvas {
+    padding-top: 8px;
+  }
+
+  /* در باز شدن، لنگهٔ بالایی پاکت (flap) دور محور بالا می‌چرخد و حدود
+     ۵۵٪ ارتفاع پاکت بالاتر از آن می‌ایستد؛ پس همان‌قدر جای خالی رزرو می‌شود
+     تا روی عنوان و زیرنویس نیفتد. */
+  .invitation-object {
+    height: clamp(180px, 30svh, 230px);
+    margin-top: 74px;
+  }
+
+  .velvet-envelope {
+    top: 18px;
+    height: clamp(128px, 22svh, 168px);
+  }
 }
