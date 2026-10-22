@@ -10518,3 +10518,285 @@ table {
     height: 206px;
   }
 }
+
+/* ==========================================================================
+   بازبینی امیرعلی — چیدمان فشرده و بدون تداخلِ HUD
+   --------------------------------------------------------------------------
+   ۱) اندازه‌ها یک‌جا توکن شده‌اند تا CSS و تست یک منبع داشته باشند.
+   ۲) دو پنل بالای صحنه (نجوای گروهی در چپ، همسفرانِ تماشاخانه در راست)
+      هم‌تراز و باریک‌تر شده‌اند و اعلان حرکت بین آن دو جا می‌گیرد؛ اگر عرض
+      کم بیاید، اعلان زیر پنل‌ها می‌رود (z پایین‌تر) و دیده نمی‌شود.
+   ۳) هر ستون عمودی بین دو پنلش نصف می‌شود؛ یعنی «همسفران» بالا و «بلیط من»
+      پایین هرگز به هم نمی‌رسند، و همین‌طور «نجوا» و «کاوش» در ستون چپ.
+   ۴) نشانگر هم‌تیمی‌های شناور در صحنه از همهٔ پنل‌ها و از مودال معما پایین‌تر
+      می‌نشیند؛ پیش‌تر z-index ۴۴ داشت و روی دکمه‌ها و صفحه‌کلید می‌افتاد.
+   ۵) صفحهٔ رمز (کیپد معما) جمع‌وجورتر شد. هدف لمسی ۴۴px دست‌نخورده مانده؛
+      نسخهٔ فشرده‌تر فقط برای ماوس (`pointer: fine`) اعمال می‌شود.
+   ========================================================================== */
+
+:root {
+  --hud-edge: 14px;
+  --hud-top: 76px;
+  --hud-bottom: 92px;
+  --hud-w-companion: 272px;
+  --hud-w-whisper: 276px;
+  --hud-w-whisper-open: 300px;
+  --hud-w-explore: 320px;
+  --hud-w-ticket: 332px;
+  --hud-w-modal: 372px;
+  --hud-w-keypad: 200px;
+  /* سهم هر پنل از ستون عمودی، تا پنل بالا و پایین هیچ‌وقت به هم نرسند. */
+  --hud-column-budget: calc((100dvh - var(--hud-top) - var(--hud-bottom) - 44px - 46px - 24px) / 2);
+  /* سقف یک پنل باز، وقتی پنل روبه‌رویش جمع است. */
+  --hud-panel-cap: calc(100dvh - var(--hud-top) - var(--hud-bottom) - 44px - 70px);
+}
+
+/* ۱) نام هم‌تیمی‌ها زیر پنل‌ها، زیر مودال معما و زیر زیرنویس می‌ماند، نه رویشان. */
+.presence-hud {
+  z-index: 7;
+}
+
+@media (min-width: 721px) and (min-height: 560px) {
+  /* ۲) ستون بالا: هم‌تراز، باریک‌تر و جمع‌تر. */
+  .whisper-panel {
+    top: var(--hud-top);
+    left: var(--hud-edge);
+    width: var(--hud-w-whisper);
+  }
+
+  .whisper-panel.whisper-expanded {
+    width: var(--hud-w-whisper-open);
+    max-height: var(--hud-panel-cap);
+    overflow-y: auto;
+  }
+
+  /* سربرگ نجوا هم‌قدِ سربرگ همسفران می‌شود تا خط بالای دو پنل یکی باشد. */
+  .whisper-panel .whisper-toggle {
+    height: auto;
+    min-height: 44px;
+    padding: 5px 10px;
+  }
+
+  .whisper-panel .whisper-messages {
+    max-height: 190px;
+  }
+
+  .theater-companion-hud {
+    top: var(--hud-top);
+    right: var(--hud-edge);
+    width: var(--hud-w-companion);
+  }
+
+  .companion-toggle {
+    min-height: 44px;
+    padding: 5px 10px;
+    gap: 7px;
+  }
+
+  .companion-crest {
+    width: 24px;
+    height: 24px;
+    font-size: var(--text-sm);
+  }
+
+  .companion-body {
+    padding: 8px 9px 10px;
+    max-height: min(300px, var(--hud-column-budget));
+  }
+
+  .companion-row {
+    min-height: 38px;
+    padding: 4px 6px;
+    gap: 7px;
+  }
+
+  .companion-avatar {
+    width: 24px;
+    height: 24px;
+  }
+
+  .story-cue {
+    margin-bottom: 8px;
+    padding: 7px 8px 8px;
+  }
+
+  /* ۳) اعلان حرکت: بین دو پنل بالا جا می‌شود و زیر پنل‌ها می‌نشیند. */
+  .movement-notice {
+    z-index: 10;
+    top: var(--hud-top);
+    max-width: clamp(180px, calc(100vw - 2 * (var(--hud-w-whisper) + var(--hud-edge) + 16px)), 460px);
+    padding: 6px 12px;
+  }
+
+  /* ۴) ستون چپ: کاوش پایین‌چپ، هم‌لبه با نجوا. */
+  .exploration-hud {
+    bottom: var(--hud-bottom);
+    left: var(--hud-edge);
+    width: min(var(--hud-w-explore), calc(100vw - var(--hud-edge) * 2));
+  }
+
+  .exploration-toggle {
+    gap: 7px;
+    padding: 5px 10px;
+  }
+
+  .exploration-panel {
+    padding: 8px 10px 10px;
+    max-height: min(380px, var(--hud-panel-cap));
+  }
+
+  .exploration-hide {
+    margin-top: 8px;
+  }
+
+  /* ۵) ستون راست: بلیط پایین‌راست؛ فهرست بلیط هم‌قد سهم خودش می‌شود. */
+  .alley3d-panels {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + var(--hud-bottom));
+  }
+
+  .alley3d-ticket {
+    max-width: var(--hud-w-ticket);
+  }
+
+  .alley3d-ticket .held-tickets-scroll {
+    max-height: min(300px, var(--hud-column-budget));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .alley3d-controls {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 10px);
+  }
+
+  .alley3d-hint {
+    padding: 6px 11px;
+    max-width: min(520px, 100%);
+  }
+
+  /* ۶) مودال رمز/کیپد معما: باریک‌تر و کم‌ارتفاع‌تر تا در قاب جا شود. */
+  .door-modal {
+    width: min(100%, var(--hud-w-modal));
+    padding: 16px 18px 12px;
+  }
+
+  .lock-emblem {
+    width: 28px;
+    height: 28px;
+    margin-bottom: 4px;
+    font-size: var(--text-sm);
+  }
+
+  .door-modal h2 {
+    font-size: 19px;
+  }
+
+  .door-modal-desc {
+    max-width: 300px;
+    margin: 4px auto 10px;
+    font-size: var(--text-sm);
+    line-height: 1.7;
+  }
+
+  .lock-team-status {
+    padding: 8px 9px;
+  }
+
+  .lock-status-lights {
+    flex-wrap: nowrap;
+    gap: 5px 10px;
+    margin-top: 6px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+  }
+
+  .lock-seat-light {
+    font-size: var(--text-xs);
+  }
+
+  .code-display-label {
+    margin: 8px 0 4px;
+    font-size: var(--text-xs);
+  }
+
+  .lock-slots {
+    gap: 5px;
+    margin: 6px 0 5px;
+  }
+
+  .lock-slot {
+    width: 26px;
+    height: 34px;
+    font-size: 16px;
+  }
+
+  .code-display-row {
+    gap: 5px;
+  }
+
+  .code-display-row input {
+    height: 42px;
+    font-size: 17px;
+  }
+
+  .code-backspace {
+    width: 36px;
+  }
+
+  .lock-progress {
+    margin-top: 4px;
+    font-size: var(--text-xs);
+  }
+
+  .keypad-toggle {
+    margin-top: 2px;
+    padding: 4px 12px;
+    font-size: var(--text-xs);
+  }
+
+  .brass-keypad {
+    width: min(100%, var(--hud-w-keypad));
+    gap: 4px;
+    margin: 8px auto 6px;
+  }
+
+  .brass-keypad .keypad-util {
+    font-size: var(--text-xs);
+  }
+
+  .door-feedback {
+    min-height: 18px;
+    margin: 3px 0;
+    font-size: var(--text-xs);
+  }
+
+  .unlock-button {
+    min-height: 44px;
+    font-size: var(--text-sm);
+  }
+}
+
+/* ماوس: ارتفاع کلیدهای کیپد کمی کمتر از لمس، ولی نه کمتر از ۳۸px. */
+@media (min-width: 721px) and (min-height: 560px) and (pointer: fine) {
+  .door-modal .brass-keypad button {
+    height: 36px;
+    min-height: 36px;
+    font-size: 17px;
+  }
+
+  .alley3d-small-button {
+    min-height: 32px;
+    padding: 4px 10px;
+  }
+}
+
+/* عرض کم: جزئیات اعلان حرکت پنهان می‌شود تا از ستون پنل‌ها بیرون نزند. */
+@media (min-width: 721px) and (max-width: 1040px) {
+  .movement-notice {
+    padding: 5px 10px;
+    font-size: var(--text-xs);
+  }
+
+  .movement-notice-text small {
+    display: none;
+  }
+}
