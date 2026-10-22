@@ -50,6 +50,7 @@ import {
   createWoodPlankMaps,
   withUv2,
 } from './alley-materials';
+import { createEntranceTorch, type EntranceTorchInstance } from './alley-entrance-torch';
 import {
   DEFAULT_ALLEY_SIGN_CLUES,
   createPlaybillSignTexture,
@@ -804,21 +805,22 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
     theaterGroup.add(handleRing);
   }
 
-  // فانوس‌های برنجی دو طرف در ورودی
-  const sconceMat = new THREE.MeshStandardMaterial({
-    color: 0xffe4ad,
-    emissive: new THREE.Color(0xffb457),
-    emissiveIntensity: 1.6,
-    roughness: 0.2,
-  });
-  for (const sx of [-1.95, 1.95]) {
-    const lanternGlass = new THREE.Mesh(new THREE.OctahedronGeometry(0.18, 1), sconceMat);
-    lanternGlass.position.set(sx, 2.75, anchors.theaterDoor.z + 0.24);
-    theaterGroup.add(lanternGlass);
-
-    const bracket = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.34, 0.28), antiqueBrassMat);
-    bracket.position.set(sx, 2.52, anchors.theaterDoor.z + 0.12);
-    theaterGroup.add(bracket);
+  // دو چراغ کنار در ورودی به شکل مشعل: پیالهٔ برنزی-آهنی، بازوی هشت‌ضلعی
+  // بیرون‌آمده از نما و فانوس چراغِ هشت‌ضلعی روی آن (به‌جای فانوس‌های لوزی قبلی).
+  // هر دو دقیقاً قرینه‌اند و روی نمای تماشاخانه (z = −۱۴٫۱) نصب می‌شوند.
+  const entranceTorches: EntranceTorchInstance[] = [];
+  for (const side of [-1, 1] as const) {
+    const torch = createEntranceTorch({
+      id: side < 0 ? 'EntranceLeft' : 'EntranceRight',
+      // نمای تماشاخانه ۰٫۱ متر جلوتر از لنگر در است (ضخامت بدنه ۱٫۶ با مرکز −۰٫۹)
+      position: { x: side * 1.95, y: 0, z: anchors.theaterDoor.z - 0.1 },
+      facing: 1,
+      seed: side < 0 ? 2.4 : 7.1,
+      haloTexture: lampHaloTexture,
+      environmentMap,
+    });
+    theaterGroup.add(torch.group);
+    entranceTorches.push(torch);
   }
 
   // ردیف چراغ‌های وضعیت پانچ بلیط بازیکنان بالای چهارچوب در
@@ -1233,6 +1235,7 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
   lights.push(moon);
 
   utilityPoles.forEach((pole) => lights.push(pole.spotLight));
+  entranceTorches.forEach((torch) => lights.push(torch.light));
 
   const doorSpot = new THREE.SpotLight(0xffcb88, 14.0, 16, Math.PI / 4.2, 0.55, 1.4);
   doorSpot.name = 'TheaterEntranceSpotLight';
@@ -1285,6 +1288,9 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
     for (const pole of utilityPoles) {
       pole.update(elapsedSeconds);
     }
+    for (const torch of entranceTorches) {
+      torch.update(elapsedSeconds);
+    }
 
     if (Number.isFinite(elapsedSeconds)) {
       const marqueePulse = 0.94 + 0.06 * Math.sin(elapsedSeconds * 5.3) * Math.cos(elapsedSeconds * 11.7);
@@ -1320,12 +1326,15 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
     const disposedMats = new Set<THREE.Material>();
 
     group.traverse((obj) => {
-      const mesh = obj as THREE.Mesh;
-      if (mesh.geometry && !disposedGeos.has(mesh.geometry)) {
-        disposedGeos.add(mesh.geometry);
-        mesh.geometry.dispose();
+      // اسپرایت‌ها هندسه ندارند ولی متریال دارند (هالهٔ چراغ‌ها و مشعل‌ها)؛
+      // پس هم هندسه و هم متریال هر گره آزاد می‌شود
+      const renderable = obj as THREE.Mesh & { material?: THREE.Material | THREE.Material[] };
+      const geometry = (renderable as THREE.Mesh).geometry;
+      if (geometry && !disposedGeos.has(geometry)) {
+        disposedGeos.add(geometry);
+        geometry.dispose();
       }
-      const mat = mesh.material as THREE.Material | THREE.Material[] | undefined;
+      const mat = renderable.material;
       if (mat) {
         const list = Array.isArray(mat) ? mat : [mat];
         for (const m of list) {
