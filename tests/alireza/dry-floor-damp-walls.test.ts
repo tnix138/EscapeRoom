@@ -133,7 +133,9 @@ describe('کف خشک و دیوارهای ماتِ کوچه (بازبینی طب
     for (const gutter of gutters) {
       expect(gutter.material.roughness).toBeGreaterThanOrEqual(0.5);
       expect(gutter.material.metalness).toBeLessThanOrEqual(0.05);
-      expect(gutter.material.clearcoat ?? 0).toBeLessThanOrEqual(0.2);
+      // جوی دیگر clearcoat ندارد؛ اگر متریال فیزیکی بود هم باید صفر بماند
+      const clearcoat = (gutter.material as Partial<THREE.MeshPhysicalMaterial>).clearcoat ?? 0;
+      expect(clearcoat).toBeLessThanOrEqual(0.2);
       expect(gutter.material.opacity).toBeLessThanOrEqual(0.45);
     }
 
@@ -169,7 +171,9 @@ describe('کف خشک و دیوارهای ماتِ کوچه (بازبینی طب
       // هاله نمناک است ولی براق نیست — بین آب و سنگ خشک
       expect(ring.material.roughness).toBeGreaterThan(0.3);
       expect(ring.material.roughness).toBeLessThan(0.6);
-      expect(ring.material.clearcoat ?? 0).toBe(0);
+      // هاله با متریال استاندارد و بدون clearcoat ساخته می‌شود
+      expect(ring.material).toBeInstanceOf(THREE.MeshStandardMaterial);
+      expect(ring.material.type).toBe('MeshStandardMaterial');
       expect(ring.material.transparent).toBe(true);
       expect(ring.material.alphaMap).not.toBeNull();
       // هاله کمی بزرگ‌تر از خود چاله و کمی پایین‌تر از سطح آب است
