@@ -1012,68 +1012,31 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
   const polesGroup = new THREE.Group();
   polesGroup.name = 'UtilityPolesGroup';
 
-  const utilityPoles: UtilityPoleInstance[] = [
-    // تیر برق ۱ — پیاده‌روی راست نزدیک اسپاون (لرزش عصبی ملایم)
+  // چهار چراغ کاملاً یکسان: همه کلاسیک گالوانیزهٔ دایره‌ای، در دو جفت روبه‌روی هم.
+  // هر جفت روی یک خط z نشسته و بازوی هر چراغ به سمت مرکز کوچه است، پس دو چراغ
+  // هر جفت دقیقاً رو‌به‌روی هم قرار می‌گیرند و آینهٔ هم‌اند.
+  const utilityPoleSpecs = [
+    { id: 'SouthLeft', x: -5.95, z: 3.6, armSide: 1 as const, seed: 1.7 },
+    { id: 'SouthRight', x: 5.95, z: 3.6, armSide: -1 as const, seed: 5.2 },
+    { id: 'NorthLeft', x: -5.95, z: -7.0, armSide: 1 as const, seed: 8.9 },
+    { id: 'NorthRight', x: 5.95, z: -7.0, armSide: -1 as const, seed: 12.4 },
+  ] as const;
+
+  const utilityPoles: UtilityPoleInstance[] = utilityPoleSpecs.map((spec) =>
     createUtilityPole({
-      id: 'SouthRight',
-      position: { x: 5.95, y: 0.13, z: 3.6 },
-      armSide: -1,
+      id: spec.id,
+      position: { x: spec.x, y: 0.13, z: spec.z },
+      armSide: spec.armSide,
+      // هر چهار چراغ یک پروفایل سوسوزدن یکسان دارند (فقط فازشان با seed فرق می‌کند)
       profile: 'nervous',
-      seed: 1.7,
-      baseIntensity: 13.5,
-      castShadow: false,
-      woodMaps: crateDarkWoodMaps,
-      beamTexture,
-      environmentMap,
-      poolTexture: lampPoolTexture,
-    }),
-    // تیر برق ۲ — پیاده‌روی چپ میانهٔ کوچه (چراغ معیوب با اتصالی و سوسوزدن شدید + سایهٔ زنده!)
-    createUtilityPole({
-      id: 'MidLeftFlicker',
-      position: { x: -5.95, y: 0.13, z: -3.8 },
-      armSide: 1,
-      profile: 'broken',
-      seed: 4.3,
-      baseIntensity: 18.0,
-      castShadow: true,
-      woodMaps: crateDarkWoodMaps,
-      beamTexture,
-      environmentMap,
-      poolTexture: lampPoolTexture,
-    }),
-    // تیر برق ۳ — پیاده‌روی راست نزدیک تماشاخانه (نوسان کند حباب نیمه‌سوخته)
-    createUtilityPole({
-      id: 'NorthRight',
-      position: { x: 5.95, y: 0.13, z: -10.2 },
-      armSide: -1,
-      profile: 'dying',
-      seed: 8.9,
-      baseIntensity: 12.0,
-      castShadow: false,
-      woodMaps: crateDarkWoodMaps,
-      beamTexture,
-      environmentMap,
-      poolTexture: lampPoolTexture,
-    }),
-    // تیر برق ۴ — چهارمین چراغ کوچه در پیاده‌روی چپ، بین تیر چپ میانه و دسته‌جعبه‌های
-    // شمالی (z=-9.8) یعنی «نزدیک تیرهای چپ و پیش از جعبه‌ها».
-    // سبک گالوانیزهٔ کلاسیک: ستون کاملاً دایره‌ای، بازوی قوس‌دار لوله‌ای و سر چراغ
-    // گرد با گوی شیشه‌ای مات (خواستهٔ بازبینی)
-    createUtilityPole({
-      id: 'MidLeftGalvanized',
-      position: { x: -5.95, y: 0.13, z: -7.0 },
-      armSide: 1,
-      style: 'galvanized',
-      profile: 'nervous',
-      seed: 12.4,
+      seed: spec.seed,
       baseIntensity: 15.0,
       castShadow: false,
-      woodMaps: crateDarkWoodMaps,
       beamTexture,
       environmentMap,
       poolTexture: lampPoolTexture,
     }),
-  ];
+  );
 
   utilityPoles.forEach((pole) => polesGroup.add(pole.group));
 
@@ -1081,12 +1044,12 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
   const moteCount = 90;
   const motePositions = new Float32Array(moteCount * 3);
   const moteBase = new Float32Array(moteCount * 3);
+  // مرکز چهار استخر نور (سر چراغ‌ها) — دو جفت روبه‌روی هم
   const lampCenters: ReadonlyArray<[number, number, number]> = [
-    [4.57, 2.6, 3.6],
-    [-4.57, 2.6, -3.8],
-    [4.57, 2.6, -10.2],
-    // چراغ گالوانیزهٔ چهارم (پیاده‌روی چپ، پیش از جعبه‌های شمالی)
+    [-4.73, 2.6, 3.6],
+    [4.73, 2.6, 3.6],
     [-4.73, 2.6, -7.0],
+    [4.73, 2.6, -7.0],
   ];
   for (let i = 0; i < moteCount; i++) {
     const [cx, cy, cz] = lampCenters[i % lampCenters.length];
@@ -1124,21 +1087,26 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
     metalness: 0.45,
   });
 
+  // ترتیب utilityPoles: [0]=SouthLeft، [1]=SouthRight، [2]=NorthLeft، [3]=NorthRight
+  // کابل‌ها: از ساختمان‌های جنوبی به جفت جنوبی، در طول هر پیاده‌رو به جفت شمالی،
+  // دو اسپن عرضی بین دو چراغ هر جفت، و اتصال انتهای شمالی به عمارت تماشاخانه.
   const cableSpans: Array<[THREE.Vector3, THREE.Vector3, number]> = [
-    [new THREE.Vector3(5.29, 6.02, 9.2), utilityPoles[0].insulatorWorldPositions[0], 0.34],
-    [new THREE.Vector3(6.61, 6.02, 9.2), utilityPoles[0].insulatorWorldPositions[2], 0.38],
-    [utilityPoles[0].insulatorWorldPositions[0], utilityPoles[2].insulatorWorldPositions[0], 0.72],
-    [utilityPoles[0].insulatorWorldPositions[1], utilityPoles[2].insulatorWorldPositions[1], 0.65],
-    [utilityPoles[0].insulatorWorldPositions[2], utilityPoles[2].insulatorWorldPositions[2], 0.78],
-    [utilityPoles[0].insulatorWorldPositions[0], utilityPoles[1].insulatorWorldPositions[2], 0.62],
-    [utilityPoles[1].insulatorWorldPositions[1], utilityPoles[2].insulatorWorldPositions[0], 0.58],
-    [utilityPoles[1].insulatorWorldPositions[0], new THREE.Vector3(-8.6, 5.4, -9.8), 0.36],
-    [utilityPoles[1].insulatorWorldPositions[2], new THREE.Vector3(8.6, 5.6, -2.8), 0.54],
-    [utilityPoles[2].insulatorWorldPositions[1], new THREE.Vector3(0.0, 5.3, -13.3), 0.30],
-    // کابل‌های چراغ گالوانیزهٔ چهارم: وصل به تیر چپ میانه و به جعبه‌های شمالی
-    [utilityPoles[3].insulatorWorldPositions[0], utilityPoles[1].insulatorWorldPositions[0], 0.42],
-    [utilityPoles[3].insulatorWorldPositions[1], new THREE.Vector3(-8.55, 5.7, -10.4), 0.28],
-    [utilityPoles[3].insulatorWorldPositions[2], new THREE.Vector3(-5.95, 5.55, -13.2), 0.5],
+    // ورودی از ساختمان‌های پشت سر بازیکن به جفت جنوبی
+    [new THREE.Vector3(-7.9, 6.05, 9.1), utilityPoles[0].insulatorWorldPositions[0], 0.36],
+    [new THREE.Vector3(7.9, 6.05, 9.1), utilityPoles[1].insulatorWorldPositions[0], 0.36],
+    // طول پیاده‌روی چپ و راست: جفت جنوبی → جفت شمالی
+    [utilityPoles[0].insulatorWorldPositions[0], utilityPoles[2].insulatorWorldPositions[0], 0.68],
+    [utilityPoles[0].insulatorWorldPositions[1], utilityPoles[2].insulatorWorldPositions[1], 0.58],
+    [utilityPoles[0].insulatorWorldPositions[2], utilityPoles[2].insulatorWorldPositions[2], 0.62],
+    [utilityPoles[1].insulatorWorldPositions[0], utilityPoles[3].insulatorWorldPositions[0], 0.68],
+    [utilityPoles[1].insulatorWorldPositions[1], utilityPoles[3].insulatorWorldPositions[1], 0.58],
+    [utilityPoles[1].insulatorWorldPositions[2], utilityPoles[3].insulatorWorldPositions[2], 0.62],
+    // اسپن عرضی روی سر هر دو جفت (سیم‌های عبوری از عرض کوچه)
+    [utilityPoles[0].insulatorWorldPositions[2], utilityPoles[1].insulatorWorldPositions[2], 0.74],
+    [utilityPoles[2].insulatorWorldPositions[2], utilityPoles[3].insulatorWorldPositions[2], 0.74],
+    // اتصال انتهای شمالی به نمای تماشاخانه و دیوارهای دو طرف
+    [utilityPoles[2].insulatorWorldPositions[2], new THREE.Vector3(-2.6, 5.55, -13.25), 0.28],
+    [utilityPoles[3].insulatorWorldPositions[2], new THREE.Vector3(2.6, 5.55, -13.25), 0.28],
   ];
 
   for (const [from, to, sag] of cableSpans) {

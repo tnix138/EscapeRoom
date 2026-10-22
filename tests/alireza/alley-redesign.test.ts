@@ -65,9 +65,10 @@ describe('بازطراحی کامل کوچهٔ سه‌بعدی تماشاخان�
     expect(alley.group.getObjectByName('AlleyBackGate')).toBeDefined();
     expect(alley.group.getObjectByName('TheaterMarqueeSign')).toBeDefined();
 
-    // ۳ تیر چراغ برق + کابل‌های هوایی
+    // ۴ تیر چراغ برق (دو جفت رو‌به‌روی هم) + کابل‌های هوایی
+    expect(alley.group.getObjectByName('UtilityPole_SouthLeft')).toBeDefined();
     expect(alley.group.getObjectByName('UtilityPole_SouthRight')).toBeDefined();
-    expect(alley.group.getObjectByName('UtilityPole_MidLeftFlicker')).toBeDefined();
+    expect(alley.group.getObjectByName('UtilityPole_NorthLeft')).toBeDefined();
     expect(alley.group.getObjectByName('UtilityPole_NorthRight')).toBeDefined();
     expect(alley.group.getObjectByName('OverheadPowerCable')).toBeDefined();
 
@@ -78,8 +79,8 @@ describe('بازطراحی کامل کوچهٔ سه‌بعدی تماشاخان�
     expect(alley.group.getObjectByName('CrateCluster_RightSouth')).toBeDefined();
 
     // بررسی سوسوزدن هم‌گام نور چراغ برق، حباب و پرتو مه
-    const flickerLight = alley.group.getObjectByName('PoleSpotLight_MidLeftFlicker') as THREE.SpotLight;
-    const flickerBulb = alley.group.getObjectByName('LampBulb_MidLeftFlicker') as THREE.Mesh<
+    const flickerLight = alley.group.getObjectByName('PoleSpotLight_NorthRight') as THREE.SpotLight;
+    const flickerBulb = alley.group.getObjectByName('LampBulb_NorthRight') as THREE.Mesh<
       THREE.SphereGeometry,
       THREE.MeshStandardMaterial
     >;

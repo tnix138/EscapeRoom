@@ -12,11 +12,12 @@ import { ALLEY_STATIC_OBSTACLES, checkAABBCollision } from '@/engine3d/collision
 
 /**
  * خواستهٔ بازبینی:
- * ۱) سه چراغ برق کوچه (دو راست، یکی چپ) حالا یک چراغ چهارم هم روی پیاده‌روی چپ،
- *    نزدیک تیر چپ و پیش از دسته‌جعبه‌های شمالی دارد.
- * ۲) ستون و سر چراغ آن کلاسیک گالوانیزه و کاملاً دایره‌ای است.
- * ۳) نور چراغ‌ها دیگر لکهٔ دایره‌ای با «خط» تیز روی سنگ‌فرش نمی‌سازد؛ پخش آن نرم
- *    و طبیعی است (penumbra کامل، زاویهٔ بازتر، رنگ ملایم‌تر).
+ * ۱) هر چهار چراغ برق کوچه کلاسیک گالوانیزهٔ دایره‌ای‌اند و دقیقاً یک شکل و
+ *    یک اندازه‌اند (تیرهای چوبی قبلی هم به همین سبک تبدیل شدند).
+ * ۲) چراغ‌ها در دو جفت رو‌به‌روی هم نشسته‌اند: جفت جنوبی و جفت شمالی، هر جفت
+ *    روی یک خط z با فاصلهٔ مساوی از محور کوچه و بازو به سمت مرکز.
+ * ۳) نور چراغ‌ها لکهٔ دایره‌ای با «خط» تیز روی سنگ‌فرش نمی‌سازد؛ پخش آن نرم
+ *    و طبیعی است (penumbra کامل، زاویهٔ باز، رنگ ملایم‌تر و هالهٔ آلی روی زمین).
  */
 
 /**
@@ -45,83 +46,106 @@ function geometryRadialSegments(mesh: THREE.Mesh): number {
 }
 
 describe('چراغ برق چهارم (گالوانیزهٔ دایره‌ای) و پخش نرم نور', () => {
-  it('چهار چراغ برق دارد: دو سمت راست، یکی چپ چوبی و یکی چپ گالوانیزه', () => {
+  it('هر چهار چراغ برق یک شکل و گالوانیزه‌اند — هیچ تیر چوبی نمانده', () => {
     const alley = createAlleyGeometry();
     const poles = poleRoots(alley);
 
     expect(poles).toHaveLength(4);
-    expect(alley.group.getObjectByName('UtilityPole_SouthRight')).toBeDefined();
-    expect(alley.group.getObjectByName('UtilityPole_MidLeftFlicker')).toBeDefined();
-    expect(alley.group.getObjectByName('UtilityPole_NorthRight')).toBeDefined();
+    for (const id of ['SouthLeft', 'SouthRight', 'NorthLeft', 'NorthRight']) {
+      expect(alley.group.getObjectByName(`UtilityPole_${id}`), id).toBeDefined();
+    }
 
-    const galvanized = alley.group.getObjectByName('UtilityPole_MidLeftGalvanized');
-    expect(galvanized).toBeDefined();
+    // هیچ تیر چوبی/چدنی قدیمی (با تراورس جعبه‌ای و مقرهٔ چینی) نمانده است
+    for (const oldId of ['MidLeftFlicker', 'MidLeftGalvanized']) {
+      expect(alley.group.getObjectByName(`UtilityPole_${oldId}`)).toBeUndefined();
+    }
 
-    // دو تیر سمت راست و دو تیر سمت چپ
-    const xs = poles.map((pole) => Math.sign(pole.position.x));
-    expect(xs.filter((side) => side > 0)).toHaveLength(2);
-    expect(xs.filter((side) => side < 0)).toHaveLength(2);
+    // ترکیب هندسی هر چهار چراغ باید دقیقاً یکسان باشد (هم‌شکل و هم‌اندازه)
+    const signatures = poles.map((pole) => {
+      const counts: Record<string, number> = {};
+      pole.traverse((object) => {
+        if (object instanceof THREE.Mesh) {
+          counts[object.geometry.type] = (counts[object.geometry.type] ?? 0) + 1;
+        }
+      });
+      return JSON.stringify(counts, Object.keys(counts).sort());
+    });
+    expect(new Set(signatures).size).toBe(1);
 
-    // چراغ چهارم روی پیاده‌روی چپ، بین تیر چپ میانه (z=-3.8) و دسته‌جعبه‌های شمالی (z=-9.8)
-    const newPole = galvanized as THREE.Group;
-    expect(newPole.position.x).toBeCloseTo(-5.95, 5);
-    expect(newPole.position.z).toBeLessThan(-3.8);
-    expect(newPole.position.z).toBeGreaterThan(-9.8);
-    // «پیش از جعبه‌ها»: دست‌کم یک متر مانده به شروع جعبه‌های شمالی (maxZ = -8.6)
-    expect(newPole.position.z - -8.6).toBeGreaterThanOrEqual(1);
+    for (const pole of poles) {
+      const id = pole.name.replace('UtilityPole_', '');
+      const shaft = pole.getObjectByName(`PoleShaft_${id}`) as THREE.Mesh<
+        THREE.CylinderGeometry,
+        THREE.MeshStandardMaterial
+      >;
+      const hood = pole.getObjectByName(`LampHood_${id}`) as THREE.Mesh;
+      const globe = pole.getObjectByName(`LampBulb_${id}`) as THREE.Mesh;
+      const arm = pole.getObjectByName(`LampArm_${id}`) as THREE.Mesh;
+
+      // ستون کاملاً گرد گالوانیزه
+      expect(shaft.geometry.type).toBe('CylinderGeometry');
+      expect(geometryRadialSegments(shaft)).toBeGreaterThanOrEqual(20);
+      expect(shaft.material.metalness).toBeGreaterThanOrEqual(0.6);
+      expect(shaft.material.roughness).toBeGreaterThanOrEqual(0.35);
+      expect(shaft.material.roughness).toBeLessThanOrEqual(0.6);
+      expect(shaft.material.color.getHex()).toBe(0x9ba1a4);
+
+      // سر چراغ گرد کلاسیک + بازوی لوله‌ای منحنی
+      expect(hood.geometry.type).toBe('SphereGeometry');
+      expect(globe.geometry.type).toBe('SphereGeometry');
+      expect(arm.geometry.type).toBe('TubeGeometry');
+
+      // هیچ وجه جعبه‌ای (تراورس چوبی/جعبهٔ تقسیم قدیمی) روی تیر نیست
+      let boxes = 0;
+      pole.traverse((object) => {
+        if (object instanceof THREE.Mesh && object.geometry.type === 'BoxGeometry') boxes++;
+      });
+      expect(boxes).toBe(0);
+    }
 
     alley.dispose();
   });
 
-  it('ستون و سر چراغ چهارم کلاسیک گالوانیزه و کاملاً دایره‌ای است', () => {
+  it('چراغ‌ها دو جفت رو‌به‌روی هم‌اند: هم‌تراز روی z و آینهٔ دقیق هم', () => {
     const alley = createAlleyGeometry();
-    const pole = alley.group.getObjectByName('UtilityPole_MidLeftGalvanized') as THREE.Group;
-    expect(pole).toBeDefined();
 
-    // ستون: استوانهٔ کاملاً گرد با ۲۴ ضلع (نه چوبی و نه چندضلعی)
-    const shaft = pole.getObjectByName('PoleShaft_MidLeftGalvanized') as THREE.Mesh<
-      THREE.CylinderGeometry,
-      THREE.MeshStandardMaterial
-    >;
-    expect(shaft).toBeDefined();
-    expect(shaft.geometry.type).toBe('CylinderGeometry');
-    expect(geometryRadialSegments(shaft)).toBeGreaterThanOrEqual(20);
+    const pairs: Array<[string, string]> = [
+      ['SouthLeft', 'SouthRight'],
+      ['NorthLeft', 'NorthRight'],
+    ];
 
-    // گالوانیزه: خاکستری فلزی با زبری متوسط (نه آینه و نه چوب)
-    expect(shaft.material.metalness).toBeGreaterThanOrEqual(0.6);
-    expect(shaft.material.roughness).toBeGreaterThanOrEqual(0.35);
-    expect(shaft.material.roughness).toBeLessThanOrEqual(0.6);
-    // خاکستری خنثی گالوانیزه (مؤلفهٔ آبی و قرمز تقریباً برابر) — نه چوب قهوه‌ای
-    expect(shaft.material.color.getHex()).toBe(0x9ba1a4);
-    const srgb = shaft.material.color.clone().convertLinearToSRGB();
-    expect(Math.abs(srgb.r - srgb.b)).toBeLessThan(0.12);
+    for (const [leftId, rightId] of pairs) {
+      const left = alley.group.getObjectByName(`UtilityPole_${leftId}`) as THREE.Group;
+      const right = alley.group.getObjectByName(`UtilityPole_${rightId}`) as THREE.Group;
+      expect(left, leftId).toBeDefined();
+      expect(right, rightId).toBeDefined();
 
-    // سر چراغ گرد: کلاهک کره‌ای + حلقهٔ گرد لبه + گوی شیشه‌ای
-    const hood = pole.getObjectByName('LampHood_MidLeftGalvanized') as THREE.Mesh;
-    const globe = pole.getObjectByName('LampBulb_MidLeftGalvanized') as THREE.Mesh;
-    expect(hood).toBeDefined();
-    expect(globe).toBeDefined();
-    expect(hood.geometry.type).toBe('SphereGeometry');
-    expect(globe.geometry.type).toBe('SphereGeometry');
+      // هر دو روی یک خط z و قرینهٔ هم حول محور کوچه
+      expect(left.position.z).toBeCloseTo(right.position.z, 6);
+      expect(left.position.x).toBeCloseTo(-right.position.x, 6);
+      expect(left.position.x).toBeLessThan(0);
+      expect(right.position.x).toBeGreaterThan(0);
 
-    // هیچ تراورس چوبی یا مقرهٔ چینی روی تیر گالوانیزه نیست
-    const boxCount = (() => {
-      let count = 0;
-      pole.traverse((object) => {
-        if (object instanceof THREE.Mesh && object.geometry.type === 'BoxGeometry') count++;
-      });
-      return count;
-    })();
-    const cylinderCount = (() => {
-      let count = 0;
-      pole.traverse((object) => {
-        if (object instanceof THREE.Mesh && object.geometry.type === 'CylinderGeometry') count++;
-      });
-      return count;
-    })();
-    expect(boxCount).toBe(0);
-    // پایه، فلنج، پیچ‌ها، ستون، بست، بازو و حلقه‌ها همه استوانه/حلقه‌اند
-    expect(cylinderCount).toBeGreaterThanOrEqual(8);
+      // سر چراغ هر دو به سمت مرکز کوچه است، پس دقیقاً رو‌به‌روی هم‌اند
+      const leftGlobe = left.getObjectByName(`LampBulb_${leftId}`) as THREE.Mesh;
+      const rightGlobe = right.getObjectByName(`LampBulb_${rightId}`) as THREE.Mesh;
+      const leftLampX = left.position.x + leftGlobe.position.x;
+      const rightLampX = right.position.x + rightGlobe.position.x;
+      expect(leftLampX).toBeCloseTo(-rightLampX, 6);
+      expect(leftLampX).toBeGreaterThan(left.position.x); // به سمت داخل
+      expect(rightLampX).toBeLessThan(right.position.x);
+
+      // ارتفاع سر چراغ و شدت نور هر دو یکسان است
+      expect(leftGlobe.position.y).toBeCloseTo(rightGlobe.position.y, 6);
+      const leftSpot = left.getObjectByName(`PoleSpotLight_${leftId}`) as THREE.SpotLight;
+      const rightSpot = right.getObjectByName(`PoleSpotLight_${rightId}`) as THREE.SpotLight;
+      expect(leftSpot.intensity).toBeCloseTo(rightSpot.intensity, 6);
+    }
+
+    // جفت جنوبی و شمالی هر دو وجود دارند و از هم فاصله دارند
+    const south = alley.group.getObjectByName('UtilityPole_SouthLeft') as THREE.Group;
+    const north = alley.group.getObjectByName('UtilityPole_NorthLeft') as THREE.Group;
+    expect(Math.abs(south.position.z - north.position.z)).toBeGreaterThan(5);
 
     alley.dispose();
   });
@@ -183,8 +207,8 @@ describe('چراغ برق چهارم (گالوانیزهٔ دایره‌ای) و
     expect(poolRadius).toBeLessThan(9);
 
     const alley = createAlleyGeometry();
-    const pole = alley.group.getObjectByName('UtilityPole_MidLeftGalvanized') as THREE.Group;
-    const beam = pole.getObjectByName('LampVolumetricBeam_MidLeftGalvanized') as THREE.Mesh<
+    const pole = alley.group.getObjectByName('UtilityPole_NorthLeft') as THREE.Group;
+    const beam = pole.getObjectByName('LampVolumetricBeam_NorthLeft') as THREE.Mesh<
       THREE.ConeGeometry
     >;
     expect(beam).toBeDefined();
@@ -242,7 +266,7 @@ describe('چراغ برق چهارم (گالوانیزهٔ دایره‌ای) و
 
   it('هالهٔ نور روی تاج ملایم کف می‌خوابد و ذره‌ای شناور نیست', () => {
     const alley = createAlleyGeometry();
-    const pool = alley.group.getObjectByName('LampGroundPool_MidLeftGalvanized') as THREE.Mesh<
+    const pool = alley.group.getObjectByName('LampGroundPool_NorthLeft') as THREE.Mesh<
       THREE.PlaneGeometry,
       THREE.MeshBasicMaterial
     >;
@@ -250,7 +274,8 @@ describe('چراغ برق چهارم (گالوانیزهٔ دایره‌ای) و
     alley.group.updateMatrixWorld(true);
 
     const positions = pool.geometry.attributes.position as THREE.BufferAttribute;
-    const poolCenterX = -5.95 + pool.position.x;
+    const poleX = (alley.group.getObjectByName('UtilityPole_NorthLeft') as THREE.Group).position.x;
+    const poolCenterX = poleX + pool.position.x;
 
     // پایین‌ترین و بالاترین نقطهٔ هاله، هر دو فقط چند میلی‌متر بالای کف همان نقطه‌اند
     for (const index of [0, Math.floor(positions.count / 2), positions.count - 1]) {
@@ -303,7 +328,7 @@ describe('چراغ برق چهارم (گالوانیزهٔ دایره‌ای) و
 
   it('نور هاله با سوسوزدن چراغ هم‌گام می‌شود', () => {
     const alley = createAlleyGeometry();
-    const pool = alley.group.getObjectByName('LampGroundPool_MidLeftFlicker') as THREE.Mesh<
+    const pool = alley.group.getObjectByName('LampGroundPool_NorthRight') as THREE.Mesh<
       THREE.PlaneGeometry,
       THREE.MeshBasicMaterial
     >;
@@ -319,11 +344,30 @@ describe('چراغ برق چهارم (گالوانیزهٔ دایره‌ای) و
     alley.dispose();
   });
 
-  it('پایهٔ چراغ چهارم مانع عبور است و مسیر بازیکن و اسپاون‌ها باز می‌مانند', () => {
-    // داخل پایه برخورد دارد
-    expect(checkAABBCollision(-5.95, -7.0, 0.35, ALLEY_STATIC_OBSTACLES)).toBe(true);
-    // ولی وسط کوچه و جلوی جعبه‌ها آزاد است
-    expect(checkAABBCollision(-4.6, -7.0, 0.35, ALLEY_STATIC_OBSTACLES)).toBe(false);
-    expect(checkAABBCollision(0, -7.0, 0.35, ALLEY_STATIC_OBSTACLES)).toBe(false);
+  it('پایهٔ هر چهار چراغ مانع عبور است ولی مسیر کوچه و اسپاون‌ها باز می‌ماند', () => {
+    // داخل هر چهار پایه برخورد دارد (قرینهٔ کامل)
+    for (const [x, z] of [
+      [-5.95, 3.6],
+      [5.95, 3.6],
+      [-5.95, -7.0],
+      [5.95, -7.0],
+    ]) {
+      expect(checkAABBCollision(x, z, 0.35, ALLEY_STATIC_OBSTACLES), `${x},${z}`).toBe(true);
+    }
+
+    // وسط کوچه روی همان دو خط و جلوی جعبه‌ها آزاد است
+    for (const z of [3.6, -7.0]) {
+      expect(checkAABBCollision(0, z, 0.35, ALLEY_STATIC_OBSTACLES)).toBe(false);
+      expect(checkAABBCollision(-4.6, z, 0.35, ALLEY_STATIC_OBSTACLES)).toBe(false);
+      expect(checkAABBCollision(4.6, z, 0.35, ALLEY_STATIC_OBSTACLES)).toBe(false);
+    }
+
+    // جای پایه‌های قدیمی حالا باز است (هیچ مانع باقی‌مانده‌ای نمانده)
+    expect(checkAABBCollision(-5.95, -3.8, 0.35, ALLEY_STATIC_OBSTACLES)).toBe(false);
+    expect(checkAABBCollision(5.95, -10.2, 0.35, ALLEY_STATIC_OBSTACLES)).toBe(false);
+
+    // جای ایستادن رو‌به‌روی تابلوهای راهنما همچنان باز است
+    expect(checkAABBCollision(-5.8, -2, 0.35, ALLEY_STATIC_OBSTACLES)).toBe(false);
+    expect(checkAABBCollision(5.8, -1.5, 0.35, ALLEY_STATIC_OBSTACLES)).toBe(false);
   });
 });
