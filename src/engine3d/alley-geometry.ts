@@ -15,12 +15,22 @@
  * ۵) دسته‌های جعبه‌های چوبی میخ‌کوب، پالت‌های باربری و بشکه‌های فلزی در حاشیهٔ کوچه
  * ۶) متن واقعی و باکیفیت سه‌بعدی مستقیم روی تابلوی اعلانات (چپ) و جدول ردیف‌های گیشه (راست)
  *    با چراغ مطالعهٔ برنجی اختصاصی تا بازیکن بدون نیاز به زدن کلید E مستقیم از روی تابلو بخواند
+ *    — هر دو تابلو با یک فاصلهٔ مساوی (۰٫۸۶۵ متر) به دیوار خودشان چسبیده‌اند و چیدمانشان
+ *      از یک منبع واحد در `alley-guide-layout.ts` می‌آید (پیش‌تر گیشهٔ راست ۰٫۶۵ متر جلوتر بود)
  */
 
 import * as THREE from 'three';
 import type { AlleyAnchors, WorldBounds } from './types';
 import { DEFAULT_ALLEY_ANCHORS, DEFAULT_ALLEY_BOUNDS } from './types';
 import { WetSurfaceMaterial } from './materials/wet-surface-material';
+import {
+  ALLEY_FACADE_BASE_X,
+  ALLEY_GUIDE_BOARD_FRAME_CLEARANCE,
+  ALLEY_GUIDE_BOARD_SURFACE_X,
+  ALLEY_GUIDE_LAMP_X,
+  ALLEY_GUIDE_WALL_INSET,
+  ALLEY_ROW_CHART_LOCAL_OFFSET_X,
+} from './alley-guide-layout';
 import {
   ALLEY_MOON_DIRECTION,
   createAlleyEnvironmentMap,
@@ -90,14 +100,14 @@ interface BuildingSpec {
 
 const LEFT_BUILDINGS: readonly BuildingSpec[] = [
   { zCenter: -10.5, length: 6.8, height: 10.6, xInset: 0.0, variant: 0, floors: 3, hasBalcony: true, litWindowFloor: 2 },
-  { zCenter: -3.4, length: 7.5, height: 9.2, xInset: 0.12, variant: 1, floors: 3 },
+  { zCenter: -3.4, length: 7.5, height: 9.2, xInset: ALLEY_GUIDE_WALL_INSET.left, variant: 1, floors: 3 },
   { zCenter: 4.1, length: 7.6, height: 11.2, xInset: -0.06, variant: 0, floors: 4, hasBalcony: true, litWindowFloor: 3 },
   { zCenter: 12.2, length: 8.8, height: 9.8, xInset: 0.10, variant: 1, floors: 3 },
 ];
 
 const RIGHT_BUILDINGS: readonly BuildingSpec[] = [
   { zCenter: -10.2, length: 7.4, height: 9.6, xInset: 0.08, variant: 1, floors: 3, hasBalcony: true },
-  { zCenter: -2.6, length: 7.9, height: 11.4, xInset: -0.04, variant: 0, floors: 4, litWindowFloor: 2 },
+  { zCenter: -2.6, length: 7.9, height: 11.4, xInset: ALLEY_GUIDE_WALL_INSET.right, variant: 0, floors: 4, litWindowFloor: 2 },
   { zCenter: 5.0, length: 7.4, height: 8.9, xInset: 0.12, variant: 1, floors: 3, hasBalcony: true },
   { zCenter: 12.6, length: 8.2, height: 10.4, xInset: 0.0, variant: 0, floors: 3, litWindowFloor: 2 },
 ];
@@ -411,7 +421,7 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
       bGroup.name = `${side < 0 ? 'BuildingLeft' : 'BuildingRight'}_${index}`;
 
       const wallDepth = 3.2;
-      const facadeFaceX = side * (8.72 + b.xInset);
+      const facadeFaceX = side * (ALLEY_FACADE_BASE_X + b.xInset);
       const centerX = facadeFaceX + side * (wallDepth / 2);
       const wallMat = b.variant === 0 ? brickMatWarm : brickMatSlate;
 
@@ -849,7 +859,9 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
     }),
   );
   posterPlane.rotation.y = Math.PI / 2;
-  posterPlane.position.set(-0.475, -0.22, 0);
+  // فاصلهٔ صفحهٔ پوستر از دیوار از ماژول چیدمان می‌آید تا با جدول ردیف‌های سمت
+  // راست دقیقاً یکی باشد (هر دو تابلو با یک فاصلهٔ مساوی به دیوار می‌چسبند).
+  posterPlane.position.set(ALLEY_GUIDE_BOARD_SURFACE_X.playbill - anchors.playbill.x, -0.22, 0);
   posterPlane.name = 'PlaybillPosterTextMesh';
   playbillGroup.add(posterPlane);
 
@@ -864,6 +876,11 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
   // --- ب) اتاقک گیشهٔ مکانیکی برنجی متصل به دیوار راست و جدول تبدیل ردیف (رو به -X) ---
   const boothGroup = new THREE.Group();
   boothGroup.name = 'TicketBoothGroup';
+  // کل اتاقک گیشه به اندازهٔ لازم به دیوار راست نزدیک می‌شود تا سطح جدول ردیف‌ها
+  // دقیقاً هم‌فاصلهٔ پوستر چپ از دیوار چپ باشد؛ پیش‌تر گیشه حدود ۰٫۶۵ متر جلوتر
+  // ایستاده بود و تابلو از دیوار فاصله داشت در حالی‌که پوستر چسبیده بود.
+  boothGroup.position.x =
+    ALLEY_GUIDE_BOARD_SURFACE_X.rowChart - (anchors.rowChart.x + ALLEY_ROW_CHART_LOCAL_OFFSET_X);
 
   const counter = new THREE.Mesh(
     withUv2(new THREE.BoxGeometry(2.05, 1.12, 3.05)),
@@ -881,8 +898,19 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
   marbleLedge.castShadow = true;
   boothGroup.add(marbleLedge);
 
-  const boothUpperFrame = new THREE.Mesh(new THREE.BoxGeometry(1.92, 1.98, 2.98), antiqueBrassMat);
-  boothUpperFrame.position.set(anchors.rowChart.x + 0.68, 2.16, anchors.rowChart.z);
+  // قاب برنجی جدول، دقیقاً به همان الگوی ویترین چپ روی دیوار می‌نشیند:
+  // صفحهٔ جدول ۴٫۵ سانتی‌متر جلوتر از قاب و لبهٔ قاب ۰٫۸۲ متر از دیوار.
+  const boothFrameDepth = 1.92;
+  const boothUpperFrame = new THREE.Mesh(new THREE.BoxGeometry(boothFrameDepth, 1.98, 2.98), antiqueBrassMat);
+  boothUpperFrame.name = 'RowChartBrassFrame';
+  boothUpperFrame.position.set(
+    ALLEY_GUIDE_BOARD_SURFACE_X.rowChart
+      + ALLEY_GUIDE_BOARD_FRAME_CLEARANCE
+      + boothFrameDepth / 2
+      - boothGroup.position.x,
+    2.16,
+    anchors.rowChart.z,
+  );
   boothUpperFrame.castShadow = true;
   boothGroup.add(boothUpperFrame);
 
@@ -907,7 +935,7 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
     }),
   );
   chart.rotation.y = -Math.PI / 2;
-  chart.position.set(anchors.rowChart.x - 0.34, 2.12, anchors.rowChart.z);
+  chart.position.set(anchors.rowChart.x + ALLEY_ROW_CHART_LOCAL_OFFSET_X, 2.12, anchors.rowChart.z);
   chart.name = 'RowChartBoard';
   boothGroup.add(chart);
 
@@ -1137,13 +1165,14 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
 
   const playbillLamp = new THREE.PointLight(0xffdfad, 3.6, 7.5, 1.6);
   playbillLamp.name = 'PlaybillReadingLight';
-  playbillLamp.position.set(anchors.playbill.x + 0.65, anchors.playbill.y + 0.85, anchors.playbill.z);
+  // چراغ مطالعهٔ هر دو تابلو دقیقاً هم‌فاصله از سطح خودشان است (قرینهٔ کامل)
+  playbillLamp.position.set(ALLEY_GUIDE_LAMP_X.playbill, anchors.playbill.y + 0.85, anchors.playbill.z);
   group.add(playbillLamp);
   lights.push(playbillLamp);
 
   const rowChartLamp = new THREE.PointLight(0xffdfad, 3.6, 7.5, 1.6);
   rowChartLamp.name = 'RowChartReadingLight';
-  rowChartLamp.position.set(anchors.rowChart.x - 1.15, anchors.rowChart.y + 0.85, anchors.rowChart.z);
+  rowChartLamp.position.set(ALLEY_GUIDE_LAMP_X.rowChart, anchors.rowChart.y + 0.85, anchors.rowChart.z);
   group.add(rowChartLamp);
   lights.push(rowChartLamp);
 
