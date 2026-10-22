@@ -14,6 +14,7 @@ import type { PlayerTransform, WorldBounds, MovementConfig } from './types';
 import { DEFAULT_ALLEY_BOUNDS, DEFAULT_ALLEY_SPAWN, DEFAULT_MOVEMENT_CONFIG } from './types';
 import type { ThreeEngine } from './three-engine';
 import { attachTouchControls, EMPTY_TOUCH_MOVE, prefersTouchControls, type TouchMoveVector } from './touch-controls';
+import { lookTarget, pointerLookDelta } from './look-input';
 
 export interface UsePlayerControlsOptions {
   engine: ThreeEngine | null;
@@ -93,12 +94,15 @@ export function usePlayerControls({
       if (!controllerRef.current) return;
       const sensitivity = config.mouseSensitivity ?? DEFAULT_MOVEMENT_CONFIG.mouseSensitivity;
       if (isPointerLocked) {
-        controllerRef.current.addLookDelta(e.movementX * sensitivity, -e.movementY * sensitivity);
+        /* حرکت ماوس به راست = نگاه به راست (قرارداد look-input) */
+        const look = pointerLookDelta(e.movementX, e.movementY, sensitivity);
+        controllerRef.current.addLookDelta(look.deltaYawDeg, look.deltaPitchDeg);
       } else if (mouseDownRef.current && lastMouseRef.current) {
         const dx = e.clientX - lastMouseRef.current.x;
         const dy = e.clientY - lastMouseRef.current.y;
         lastMouseRef.current = { x: e.clientX, y: e.clientY };
-        controllerRef.current.addLookDelta(dx * sensitivity, -dy * sensitivity);
+        const look = pointerLookDelta(dx, dy, sensitivity);
+        controllerRef.current.addLookDelta(look.deltaYawDeg, look.deltaPitchDeg);
       }
     };
 
@@ -135,7 +139,9 @@ export function usePlayerControls({
       const dy = e.touches[0].clientY - lastTouch.y;
       lastTouch = { x: e.touches[0].clientX, y: e.touches[0].clientY };
       const sensitivity = (config.mouseSensitivity ?? DEFAULT_MOVEMENT_CONFIG.mouseSensitivity) * 0.6;
-      controllerRef.current.addLookDelta(dx * sensitivity, -dy * sensitivity);
+      /* کشیدن انگشت به راست = نگاه به راست (همان قرارداد ماوس) */
+      const look = pointerLookDelta(dx, dy, sensitivity);
+      controllerRef.current.addLookDelta(look.deltaYawDeg, look.deltaPitchDeg);
     };
     const onTouchEnd = () => {
       lastTouch = null;
@@ -195,15 +201,10 @@ export function usePlayerControls({
       );
       setTransform(t);
 
-      // اعمال به دوربین Three
+      // اعمال به دوربین Three — محاسبهٔ جهت در look-input.ts است (منبع واحد)
       engine.camera.position.set(t.x, t.y, t.z);
-      const yawRad = (t.yawDeg * Math.PI) / 180;
-      const pitchRad = (t.pitchDeg * Math.PI) / 180;
-      // نگاه به جلو با yaw/pitch
-      const lookX = t.x - Math.sin(yawRad) * Math.cos(pitchRad);
-      const lookY = t.y + Math.sin(pitchRad);
-      const lookZ = t.z - Math.cos(yawRad) * Math.cos(pitchRad);
-      engine.camera.lookAt(lookX, lookY, lookZ);
+      const target = lookTarget(t);
+      engine.camera.lookAt(target.x, target.y, target.z);
     };
 
     loop();

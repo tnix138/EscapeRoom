@@ -10,6 +10,12 @@ import ExplorationHud from '../hud/ExplorationHud';
 import type { ExplorationInput } from '../hud/exploration-hud';
 import ClueReadingPanel from './ClueReadingPanel';
 import { inspectHint, type ClueKind } from './clue-reading-data';
+import {
+  clampPanoramaYaw,
+  panoramaView,
+  panoramaYawFromDrag,
+  panoramaYawFromKey,
+} from './panorama-look';
 import { resolveOwnRevealedDigit } from './puzzle-rules';
 import { AlleyRoomView, PlayActNumber, RowRomanCode, THEATER_EMBLEMS, TheaterEmblemId, TicketPunchSelection } from './contracts';
 
@@ -20,8 +26,6 @@ export interface AlleyFirstPersonSceneProps {
   onSendWhisper: (text: string, shareStub?: boolean) => Promise<void>;
   onReplayInvitation: () => void;
 }
-
-function clamp(value: number, min: number, max: number) { return Math.min(max, Math.max(min, value)); }
 
 export default function AlleyFirstPersonScene({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onReplayInvitation }: AlleyFirstPersonSceneProps) {
   const [yaw, setYaw] = useState(0);
@@ -35,7 +39,7 @@ export default function AlleyFirstPersonScene({ room, onPunchTicket, onUnlockDoo
   const [visitedClues, setVisitedClues] = useState<string[]>([]);
   const [chatOpen, setChatOpen] = useState(false);
   const pointerX = useRef<number | null>(null);
-  const activeView = yaw < -12 ? 'left' : yaw > 12 ? 'right' : 'center';
+  const activeView = panoramaView(yaw);
   const currentEmblem = THEATER_EMBLEMS.find((item) => item.id === room.myHeldTickets.companionStub.targetEmblem);
   const mainTicket = room.myHeldTickets.mainTicket;
   const isTicketPunched = room.me.ticketPunched || mainTicket.isValidated || localPunched;
@@ -97,8 +101,9 @@ export default function AlleyFirstPersonScene({ room, onPunchTicket, onUnlockDoo
       if (event.target instanceof HTMLElement && ['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON'].includes(event.target.tagName)) return;
       // وقتی مودال قفل یا پنل سرنخ باز است، دوربین نباید زیر آن بچرخد.
       if (doorOpen || openClue) return;
-      if (event.key === 'ArrowLeft' || event.key.toLowerCase() === 'a') { event.preventDefault(); setYaw((value) => clamp(value - 9, -42, 42)); }
-      if (event.key === 'ArrowRight' || event.key.toLowerCase() === 'd') { event.preventDefault(); setYaw((value) => clamp(value + 9, -42, 42)); }
+      /* یک قرارداد برای همه: ← / A = نمای چپ، → / D = نمای راست */
+      if (event.key === 'ArrowLeft' || event.key.toLowerCase() === 'a') { event.preventDefault(); setYaw((value) => panoramaYawFromKey(value, 'ArrowLeft')); }
+      if (event.key === 'ArrowRight' || event.key.toLowerCase() === 'd') { event.preventDefault(); setYaw((value) => panoramaYawFromKey(value, 'ArrowRight')); }
       if (event.key.toLowerCase() === 'e' && !event.metaKey && !event.ctrlKey && !event.altKey) {
         const target: ClueKind | null = activeView === 'left' ? 'playbill' : activeView === 'right' ? 'rowChart' : null;
         if (!target) return;
@@ -120,7 +125,8 @@ export default function AlleyFirstPersonScene({ room, onPunchTicket, onUnlockDoo
     if (pointerX.current === null) return;
     const delta = event.clientX - pointerX.current;
     pointerX.current = event.clientX;
-    setYaw((value) => clamp(value - delta * 0.22, -42, 42));
+    // کشیدن به راست = نگاه به راست (هم‌جهت با کلید ← → و اسلایدر «جهت نگاه»)
+    setYaw((value) => panoramaYawFromDrag(value, delta));
   }
   function onPointerEnd() { pointerX.current = null; setIsDragging(false); }
 
@@ -211,9 +217,9 @@ export default function AlleyFirstPersonScene({ room, onPunchTicket, onUnlockDoo
         <div className="panorama-hint"><span className="drag-symbol">↔</span><span>برای چرخاندن دید، بکشید <small>یا از کلیدهای ← → استفاده کنید</small></span></div>
         <div className="scene-crosshair" aria-hidden="true"><i /></div>
         <div className="pan-ignore camera-controls">
-          <button type="button" aria-label="چرخش به چپ" onClick={() => setYaw((value) => clamp(value - 12, -42, 42))}>‹</button>
-          <input type="range" min={-42} max={42} value={yaw} onChange={(event) => setYaw(Number(event.target.value))} aria-label="جهت نگاه" />
-          <button type="button" aria-label="چرخش به راست" onClick={() => setYaw((value) => clamp(value + 12, -42, 42))}>›</button>
+          <button type="button" aria-label="چرخش به چپ" onClick={() => setYaw((value) => clampPanoramaYaw(value - 12))}>‹</button>
+          <input type="range" min={-42} max={42} value={yaw} onChange={(event) => setYaw(clampPanoramaYaw(Number(event.target.value)))} aria-label="جهت نگاه" />
+          <button type="button" aria-label="چرخش به راست" onClick={() => setYaw((value) => clampPanoramaYaw(value + 12))}>›</button>
         </div>
         <div className="panorama-view-tag"><span>{activeView === 'left' ? 'سمت چپ · پوستر' : activeView === 'right' ? 'سمت راست · گیشه' : 'روبه‌رو · ورودی'}</span><i /></div>
       </section>

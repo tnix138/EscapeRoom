@@ -12,7 +12,8 @@
  *
  * ورودی‌های پشتیبانی‌شده:
  *  - دسکتاپ: حرکت ماوس روی صحنه (موقعیت افقی ماوس نسبت به مرکز صحنه ← زاویه هدف)
- *  - موبایل/قلم: کشیدن انگشت (Touch/Pen Drag با Pointer Events + Pointer Capture)
+ *  - موبایل/قلم: کشیدن انگشت (Touch/Pen Drag با Pointer Events + Pointer Capture) —
+ *    قرارداد یکسان با ماوس: کشیدن به راست = چرخش سر به راست
  *  - کیبورد: نگه‌داشتن ArrowLeft / ArrowRight (چرخش پیوسته با سرعت ثابت)
  *
  * نرمی حرکت: زاویه فعلی با میرایی نمایی مستقل از نرخ فریم (Exponential Damping)
@@ -48,6 +49,15 @@ export function clampYaw(yawDeg: number): number {
 }
 
 /** تبدیل زاویه سر به مقدار نرمال‌شده در بازه [-1, +1] (چپ کامل = -1، مرکز = 0، راست کامل = +1) */
+/**
+ * yaw هدف بعد از کشیدن افقی انگشت/قلم.
+ * yaw مثبت در این ریگ یعنی «سر به راست چرخیده»؛ پس dx مثبت (کشیدن به راست)
+ * باید yaw را زیاد کند — همان رفتار حرکت ماوس روی صحنه.
+ */
+export function yawFromDrag(yawDeg: number, dx: number, sensitivityDegPerPx: number): number {
+  return clampYaw(yawDeg + dx * sensitivityDegPerPx);
+}
+
 export function yawToNormalized(yawDeg: number): number {
   return clampYaw(yawDeg) / POV_YAW_MAX_DEG;
 }
@@ -262,9 +272,12 @@ export function usePovHeadPan(
       if (!drag || drag.pointerId !== event.pointerId) return;
       const dx = event.clientX - drag.lastX;
       drag.lastX = event.clientX;
-      // کشیدن انگشت به سمت چپ = چرخش سر به سمت راست (حرکت طبیعی پانوراما)
-      targetYawRef.current = clampYaw(
-        targetYawRef.current - dx * dragSensitivityDegPerPx,
+      // قرارداد یکسان در کل بازی: کشیدن به راست = چرخش سر به راست.
+      // (پیش‌تر علامت منفی بود و درگ لمسی برخلاف حرکت ماوس عمل می‌کرد.)
+      targetYawRef.current = yawFromDrag(
+        targetYawRef.current,
+        dx,
+        dragSensitivityDegPerPx,
       );
     },
     [dragSensitivityDegPerPx],
