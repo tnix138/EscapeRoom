@@ -75,6 +75,8 @@ export const ALLEY_STATIC_OBSTACLES: AABB[] = [
   { minX: 5.62, maxX: 6.28, minZ: 3.28, maxZ: 3.92 },
   { minX: -6.28, maxX: -5.62, minZ: -4.12, maxZ: -3.48 },
   { minX: 5.62, maxX: 6.28, minZ: -10.52, maxZ: -9.88 },
+  // پایهٔ چراغ گالوانیزهٔ چهارم — پیاده‌روی چپ، پیش از دسته‌جعبه‌های شمالی
+  { minX: -6.28, maxX: -5.62, minZ: -7.32, maxZ: -6.68 },
 ];
 
 const COLLISION_EPS = 1e-4;

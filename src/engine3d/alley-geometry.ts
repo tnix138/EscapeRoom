@@ -25,6 +25,7 @@ import * as THREE from 'three';
 import type { AlleyAnchors, WorldBounds } from './types';
 import { DEFAULT_ALLEY_ANCHORS, DEFAULT_ALLEY_BOUNDS } from './types';
 import { WetSurfaceMaterial } from './materials/wet-surface-material';
+import { alleyGroundCrownAt } from './alley-ground-profile';
 import {
   ALLEY_FACADE_BASE_X,
   ALLEY_GUIDE_BOARD_FRAME_CLEARANCE,
@@ -56,6 +57,7 @@ import {
   type AlleySignCluesData,
 } from './alley-signs';
 import {
+  createLampPoolAlphaTexture,
   createLightConeAlphaTexture,
   createOverheadCable,
   createRustyBarrel,
@@ -136,6 +138,8 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
   const crateLightWoodMaps = createWoodPlankMaps(0x7c5a3a, 128);
   const crateDarkWoodMaps = createWoodPlankMaps(0x563c27, 128);
   const beamTexture = createLightConeAlphaTexture(64);
+  // هالهٔ نرم نور روی سنگ‌فرش، یک تکسچر مشترک برای هر چهار چراغ (یک draw call)
+  const lampPoolTexture = createLampPoolAlphaTexture(71, 128);
   const puddleMaskA = createPuddleAlphaMap(307, 128);
   const puddleMaskB = createPuddleAlphaMap(613, 128);
   // هالهٔ نمناک باریک پیرامون چاله‌ها (کف جز این نواحی خشک است)
@@ -228,11 +232,10 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
 
   const groundGeo = withUv2(new THREE.PlaneGeometry(13.2, 42, 24, 48));
   // قوس بسیار ملایم تاج کوچه برای هدایت طبیعی آب باران به جوی کنار جدول
+  // (منبع مشترک با هالهٔ نور چراغ‌ها در alley-ground-profile.ts)
   const posAttr = groundGeo.attributes.position;
   for (let i = 0; i < posAttr.count; i++) {
-    const lx = posAttr.getX(i);
-    const crown = Math.max(0, 1 - Math.pow(lx / 6.2, 2)) * 0.045;
-    posAttr.setZ(i, crown);
+    posAttr.setZ(i, alleyGroundCrownAt(posAttr.getX(i)));
   }
   groundGeo.computeVertexNormals();
 
@@ -1022,6 +1025,7 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
       woodMaps: crateDarkWoodMaps,
       beamTexture,
       environmentMap,
+      poolTexture: lampPoolTexture,
     }),
     // تیر برق ۲ — پیاده‌روی چپ میانهٔ کوچه (چراغ معیوب با اتصالی و سوسوزدن شدید + سایهٔ زنده!)
     createUtilityPole({
@@ -1035,6 +1039,7 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
       woodMaps: crateDarkWoodMaps,
       beamTexture,
       environmentMap,
+      poolTexture: lampPoolTexture,
     }),
     // تیر برق ۳ — پیاده‌روی راست نزدیک تماشاخانه (نوسان کند حباب نیمه‌سوخته)
     createUtilityPole({
@@ -1048,6 +1053,25 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
       woodMaps: crateDarkWoodMaps,
       beamTexture,
       environmentMap,
+      poolTexture: lampPoolTexture,
+    }),
+    // تیر برق ۴ — چهارمین چراغ کوچه در پیاده‌روی چپ، بین تیر چپ میانه و دسته‌جعبه‌های
+    // شمالی (z=-9.8) یعنی «نزدیک تیرهای چپ و پیش از جعبه‌ها».
+    // سبک گالوانیزهٔ کلاسیک: ستون کاملاً دایره‌ای، بازوی قوس‌دار لوله‌ای و سر چراغ
+    // گرد با گوی شیشه‌ای مات (خواستهٔ بازبینی)
+    createUtilityPole({
+      id: 'MidLeftGalvanized',
+      position: { x: -5.95, y: 0.13, z: -7.0 },
+      armSide: 1,
+      style: 'galvanized',
+      profile: 'nervous',
+      seed: 12.4,
+      baseIntensity: 15.0,
+      castShadow: false,
+      woodMaps: crateDarkWoodMaps,
+      beamTexture,
+      environmentMap,
+      poolTexture: lampPoolTexture,
     }),
   ];
 
@@ -1061,6 +1085,8 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
     [4.57, 2.6, 3.6],
     [-4.57, 2.6, -3.8],
     [4.57, 2.6, -10.2],
+    // چراغ گالوانیزهٔ چهارم (پیاده‌روی چپ، پیش از جعبه‌های شمالی)
+    [-4.73, 2.6, -7.0],
   ];
   for (let i = 0; i < moteCount; i++) {
     const [cx, cy, cz] = lampCenters[i % lampCenters.length];
@@ -1109,6 +1135,10 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
     [utilityPoles[1].insulatorWorldPositions[0], new THREE.Vector3(-8.6, 5.4, -9.8), 0.36],
     [utilityPoles[1].insulatorWorldPositions[2], new THREE.Vector3(8.6, 5.6, -2.8), 0.54],
     [utilityPoles[2].insulatorWorldPositions[1], new THREE.Vector3(0.0, 5.3, -13.3), 0.30],
+    // کابل‌های چراغ گالوانیزهٔ چهارم: وصل به تیر چپ میانه و به جعبه‌های شمالی
+    [utilityPoles[3].insulatorWorldPositions[0], utilityPoles[1].insulatorWorldPositions[0], 0.42],
+    [utilityPoles[3].insulatorWorldPositions[1], new THREE.Vector3(-8.55, 5.7, -10.4), 0.28],
+    [utilityPoles[3].insulatorWorldPositions[2], new THREE.Vector3(-5.95, 5.55, -13.2), 0.5],
   ];
 
   for (const [from, to, sag] of cableSpans) {
@@ -1310,6 +1340,7 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
     crateLightWoodMaps.dispose();
     crateDarkWoodMaps.dispose();
     beamTexture.dispose();
+    lampPoolTexture.dispose();
     puddleMaskA.dispose();
     puddleMaskB.dispose();
     dampRingMaskA.dispose();
