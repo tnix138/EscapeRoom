@@ -9,7 +9,6 @@ import MovementNotice from '../hud/MovementNotice';
 import ExplorationHud from '../hud/ExplorationHud';
 import type { ExplorationInput } from '../hud/exploration-hud';
 import ClueReadingPanel from './ClueReadingPanel';
-import SideDrawer, { type SideDrawerItem } from '../hud/SideDrawer';
 import { inspectHint, type ClueKind } from './clue-reading-data';
 import {
   clampPanoramaYaw,
@@ -146,45 +145,6 @@ export default function AlleyFirstPersonScene({ room, onPunchTicket, onUnlockDoo
     }
   }
 
-  // منوی کشویی لبهٔ راست — در نمای کلاسیک هم همهٔ کارها از یک‌جا در دسترس‌اند.
-  const drawerItems: SideDrawerItem[] = [
-    {
-      id: 'playbill',
-      icon: '📜',
-      label: 'تابلوی اعلانات',
-      hint: 'سرنخ‌های پوستر نمایش‌نامه',
-      onSelect: () => openCluePanel('playbill'),
-    },
-    {
-      id: 'rowChart',
-      icon: '🗺️',
-      label: 'جدول ردیف‌ها',
-      hint: 'سرنخ‌های گیشهٔ برنجی',
-      onSelect: () => openCluePanel('rowChart'),
-    },
-    {
-      id: 'door',
-      icon: '🚪',
-      label: 'قفل درِ تماشاخانه',
-      hint: 'وارد کردن رمز ورود',
-      onSelect: () => setDoorOpen(true),
-    },
-    {
-      id: 'chat',
-      icon: '💬',
-      label: 'نجوای هم‌تیمی‌ها',
-      hint: 'گفت‌وگوی گروهی',
-      onSelect: () => setChatOpen(true),
-    },
-    {
-      id: 'invitation',
-      icon: '✉️',
-      label: 'بازپخش دعوت‌نامه',
-      hint: 'دیدن دوبارهٔ دعوت ابتدای بازی',
-      onSelect: () => onReplayInvitation(),
-    },
-  ];
-
   return (
     <main className="alley-game-shell">
       <header className="alley-topbar">
@@ -290,7 +250,6 @@ export default function AlleyFirstPersonScene({ room, onPunchTicket, onUnlockDoo
         />
       )}
       <div className="alley-screen-reader" aria-live="polite">{activeView === 'left' ? 'اکنون به پوستر نمایش‌نامه نگاه می‌کنید.' : activeView === 'right' ? 'اکنون به جدول تبدیل ردیف صندلی‌ها نگاه می‌کنید.' : 'اکنون به درِ ورودی تماشاخانه نگاه می‌کنید.'}</div>
-      <SideDrawer items={drawerItems} />
     </main>
   );
 }
