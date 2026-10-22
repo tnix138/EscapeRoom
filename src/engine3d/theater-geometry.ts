@@ -13,6 +13,8 @@
 
 import * as THREE from 'three';
 import { resolvePlayerHumanPalette } from './presence/RemotePlayer';
+import { HumanAvatar } from './characters/human-avatar';
+import { resolveHumanLook } from './characters/human-presets';
 import { createTheaterSeat, createTheaterSeatKit } from './theater-seat';
 
 export {
@@ -32,242 +34,46 @@ export interface SeatedPlayerCharacterOptions {
 
 /**
  * ساخت کاراکتر سه‌بعدی انسان در حالت نشسته روی صندلی تئاتر (نگاه به سمت صحنه در جهت -Z)
+ *
+ * این تابع دیگر کپسول و کره نمی‌چیند؛ همان HumanAvatar را با ژست «نشسته» می‌سازد تا
+ * تماشاگر سالن هم همان چهره، مو، دستِ انگشت‌دار و پلک‌زنِ حالت ایستاده را داشته باشد.
+ * قرارداد نام‌ها (avatar-body/head/arm-leg) برای HUD و تست‌ها حفظ شده است.
  */
 export function createSeatedPlayerCharacter(
   options: SeatedPlayerCharacterOptions,
 ): THREE.Group {
-  const palette = resolvePlayerHumanPalette(
-    options.playerId,
-    options.seatIndex,
-    options.isLocalPlayer ? 0xc9a86a : undefined,
-  );
+  const look = resolveHumanLook(options.playerId, options.seatIndex, {
+    name: options.playerName,
+  });
+  if (options.isLocalPlayer) look.coatHex = 0xc9a86a;
 
+  const avatar = new HumanAvatar({ look, pose: 'seated', displayName: options.playerName });
   const root = new THREE.Group();
   root.name = `Avatar_${options.playerName}`;
   root.userData.playerId = options.playerId;
   root.userData.playerName = options.playerName;
   root.userData.seatIndex = options.seatIndex;
+  root.userData.humanAvatar = avatar;
+  root.add(avatar);
 
-  const coatMat = new THREE.MeshStandardMaterial({
-    color: palette.coatColor,
-    roughness: 0.74,
-    metalness: 0.06,
-  });
-  const trimMat = new THREE.MeshStandardMaterial({
-    color: palette.coatTrimColor,
-    roughness: 0.8,
-  });
-  const skinMat = new THREE.MeshStandardMaterial({
-    color: palette.skinColor,
-    roughness: 0.66,
-  });
-  const hairMat = new THREE.MeshStandardMaterial({
-    color: palette.hairColor,
-    roughness: 0.86,
-  });
-  const trouserMat = new THREE.MeshStandardMaterial({
-    color: palette.trouserColor,
-    roughness: 0.85,
-  });
-  const shoeMat = new THREE.MeshStandardMaterial({
-    color: palette.shoeColor,
-    roughness: 0.5,
-    metalness: 0.14,
-  });
-  const shirtMat = new THREE.MeshStandardMaterial({
-    color: palette.shirtColor,
-    roughness: 0.78,
-  });
-  const cravatMat = new THREE.MeshStandardMaterial({
-    color: palette.cravatColor,
-    roughness: 0.72,
-  });
-  const eyeMat = new THREE.MeshStandardMaterial({
-    color: 0x161219,
-    roughness: 0.4,
-  });
-
-  // ۱. تنه در حالت نشسته (روی تشک صندلی در ارتفاع y=0.45)
-  const torsoGroup = new THREE.Group();
-  torsoGroup.name = 'avatar-body';
-  torsoGroup.position.set(0, 0.78, 0.04);
-
-  const chest = new THREE.Mesh(
-    new THREE.CapsuleGeometry(0.16, 0.32, 6, 12),
-    coatMat,
+  // سازگاری با کد قبلی: پالت در userData می‌ماند
+  root.userData.palette = resolvePlayerHumanPalette(
+    options.playerId,
+    options.seatIndex,
+    options.isLocalPlayer ? 0xc9a86a : undefined,
   );
-  chest.scale.set(1.2, 1, 0.78);
-  chest.castShadow = true;
-  chest.receiveShadow = true;
-  torsoGroup.add(chest);
-
-  const shirtFront = new THREE.Mesh(
-    new THREE.BoxGeometry(0.11, 0.2, 0.024),
-    shirtMat,
-  );
-  shirtFront.position.set(0, 0.08, -0.12);
-  torsoGroup.add(shirtFront);
-
-  const cravat = new THREE.Mesh(
-    new THREE.BoxGeometry(0.044, 0.13, 0.028),
-    cravatMat,
-  );
-  cravat.position.set(0, 0.07, -0.128);
-  torsoGroup.add(cravat);
-
-  for (const side of [-1, 1] as const) {
-    const lapel = new THREE.Mesh(
-      new THREE.BoxGeometry(0.05, 0.22, 0.026),
-      trimMat,
-    );
-    lapel.position.set(side * 0.064, 0.07, -0.124);
-    lapel.rotation.z = side * 0.22;
-    torsoGroup.add(lapel);
-
-    const shoulder = new THREE.Mesh(
-      new THREE.SphereGeometry(0.074, 10, 8),
-      coatMat,
-    );
-    shoulder.position.set(side * 0.205, 0.16, 0);
-    shoulder.castShadow = true;
-    torsoGroup.add(shoulder);
-  }
-  root.add(torsoGroup);
-
-  // ۲. سر، گردن، صورت و مو (avatar-head)
-  const headGroup = new THREE.Group();
-  headGroup.name = 'avatar-head';
-  headGroup.position.set(0, 1.2, 0.03);
-
-  const neck = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.052, 0.062, 0.11, 10),
-    skinMat,
-  );
-  neck.position.set(0, -0.1, 0);
-  headGroup.add(neck);
-
-  const skull = new THREE.Mesh(
-    new THREE.SphereGeometry(0.118, 16, 14),
-    skinMat,
-  );
-  skull.scale.set(0.92, 1.08, 0.98);
-  skull.castShadow = true;
-  headGroup.add(skull);
-
-  for (const side of [-1, 1] as const) {
-    const ear = new THREE.Mesh(
-      new THREE.SphereGeometry(0.024, 8, 8),
-      skinMat,
-    );
-    ear.scale.set(0.45, 1.1, 0.7);
-    ear.position.set(side * 0.108, -0.008, 0);
-    headGroup.add(ear);
-
-    const eye = new THREE.Mesh(
-      new THREE.SphereGeometry(0.012, 8, 8),
-      eyeMat,
-    );
-    eye.position.set(side * 0.04, 0.016, -0.11);
-    headGroup.add(eye);
-  }
-
-  const nose = new THREE.Mesh(
-    new THREE.ConeGeometry(0.017, 0.048, 6),
-    skinMat,
-  );
-  nose.rotation.x = -Math.PI / 2;
-  nose.position.set(0, -0.004, -0.12);
-  headGroup.add(nose);
-
-  const hairCap = new THREE.Mesh(
-    new THREE.SphereGeometry(0.124, 14, 12, 0, Math.PI * 2, 0, Math.PI * 0.6),
-    hairMat,
-  );
-  hairCap.scale.set(0.95, 1.08, 1.02);
-  hairCap.position.set(0, 0.012, 0.006);
-  hairCap.castShadow = true;
-  headGroup.add(hairCap);
-
-  const hairBack = new THREE.Mesh(
-    new THREE.SphereGeometry(0.11, 12, 10),
-    hairMat,
-  );
-  hairBack.scale.set(0.94, 1.05, 0.88);
-  hairBack.position.set(0, -0.012, 0.032);
-  headGroup.add(hairBack);
-
-  root.add(headGroup);
-
-  // ۳. بازوها و دست‌ها در حالت نشسته روی پا/دسته صندلی
-  for (const side of [-1, 1] as const) {
-    const armGroup = new THREE.Group();
-    armGroup.name = side < 0 ? 'avatar-arm-left' : 'avatar-arm-right';
-    armGroup.position.set(side * 0.22, 0.94, 0.04);
-
-    const upperArm = new THREE.Mesh(
-      new THREE.CapsuleGeometry(0.048, 0.19, 5, 10),
-      coatMat,
-    );
-    upperArm.position.set(0, -0.11, -0.02);
-    upperArm.rotation.x = 0.22;
-    upperArm.castShadow = true;
-    armGroup.add(upperArm);
-
-    const forearm = new THREE.Mesh(
-      new THREE.CapsuleGeometry(0.042, 0.18, 5, 10),
-      coatMat,
-    );
-    forearm.position.set(-side * 0.03, -0.22, -0.14);
-    forearm.rotation.x = Math.PI / 2.3;
-    forearm.rotation.z = side * 0.18;
-    forearm.castShadow = true;
-    armGroup.add(forearm);
-
-    const hand = new THREE.Mesh(
-      new THREE.SphereGeometry(0.04, 8, 8),
-      skinMat,
-    );
-    hand.scale.set(0.85, 0.65, 1.2);
-    hand.position.set(-side * 0.055, -0.24, -0.26);
-    armGroup.add(hand);
-
-    root.add(armGroup);
-  }
-
-  // ۴. ران‌ها (افقی روی صندلی) و ساق پاها (عمودی تا کف زمین)
-  for (const side of [-1, 1] as const) {
-    const legGroup = new THREE.Group();
-    legGroup.name = side < 0 ? 'avatar-leg-left' : 'avatar-leg-right';
-
-    const thigh = new THREE.Mesh(
-      new THREE.CapsuleGeometry(0.068, 0.24, 5, 10),
-      trouserMat,
-    );
-    thigh.rotation.x = Math.PI / 2;
-    thigh.position.set(side * 0.105, 0.51, -0.08);
-    thigh.castShadow = true;
-    legGroup.add(thigh);
-
-    const calf = new THREE.Mesh(
-      new THREE.CapsuleGeometry(0.055, 0.25, 5, 10),
-      trouserMat,
-    );
-    calf.position.set(side * 0.105, 0.28, -0.25);
-    calf.castShadow = true;
-    legGroup.add(calf);
-
-    const shoe = new THREE.Mesh(
-      new THREE.BoxGeometry(0.09, 0.065, 0.19),
-      shoeMat,
-    );
-    shoe.position.set(side * 0.105, 0.04, -0.29);
-    shoe.castShadow = true;
-    legGroup.add(shoe);
-
-    root.add(legGroup);
-  }
 
   return root;
+}
+
+/** یک فریم از زندگیِ تماشاگر نشسته (تنفس، پلک، نگاه) را جلو می‌برد. */
+export function updateSeatedPlayerCharacter(
+  root: THREE.Object3D,
+  deltaSeconds: number,
+  options: { pitchDeg?: number } = {},
+): void {
+  const avatar = root.userData.humanAvatar as HumanAvatar | undefined;
+  avatar?.update(deltaSeconds, { speed: 0, pitchDeg: options.pitchDeg ?? 0 });
 }
 
 export interface TheaterGeometryResult {
@@ -281,79 +87,43 @@ export interface TheaterGeometryResult {
   dispose: () => void;
 }
 
-// صندلی‌ها از ماژول مشترک theater-seat ساخته می‌شوند: تماشاگر رو به ‎-Z‎ (صحنه)
-// می‌نشیند و پشتی در ‎+Z‎ «پشت» بدن اوست، با ارتفاع واقعی ≈۰٫۹۹ متر.
-// (پیش‌تر همین‌جا پشتی روی ‎z=-0.38‎ یعنی جلوی صندلی ساخته می‌شد.)
-
-function createAdultCharacter(
-  type: 'dancer' | 'darkMan',
-): THREE.Group {
+/**
+ * دو شخصیت صحنه: بانوی ایتالیایی و مرد سیاه‌پوش.
+ *
+ * پیش‌تر هر دو از یک کپسول تنه + دو کرهٔ چشم ساخته می‌شدند و از نزدیک شبیه
+ * مانکن بودند. حالا هر دو همان HumanAvatar را با «ظاهر» اختصاصی می‌گیرند:
+ * رقصنده با موی بلند و لباس مخملی قرمز، مرد سیاه‌پوش با قد بلندتر، موی صاف و
+ * کت تیره. قلاب‌های انیمیشن در userData می‌مانند تا صحنه دست‌ها را تکان دهد.
+ */
+function createAdultCharacter(type: 'dancer' | 'darkMan'): THREE.Group {
   const group = new THREE.Group();
   group.name = type === 'dancer' ? 'DancerCharacter' : 'DarkManCharacter';
+  const isDancer = type === 'dancer';
 
-  const height = type === 'dancer' ? 1.72 : 1.95;
-  const skinColor = type === 'dancer' ? 0xe8c4a8 : 0xd0d0d0;
-  const costumeColor = type === 'dancer' ? 0xc94a4a : 0x111111;
+  const look = resolveHumanLook(isDancer ? 'npc-dancer' : 'npc-darkman', isDancer ? 0 : 3, {
+    name: isDancer ? 'بانوی ایتالیایی' : 'مرد سیاه‌پوش',
+  });
+  look.heightMeters = isDancer ? 1.72 : 1.95;
+  look.build = isDancer ? 0.94 : 1.06;
+  look.feminine = isDancer;
+  look.coatHex = isDancer ? 0x9c1f28 : 0x14100f;
+  look.hairHex = isDancer ? 0x2a160e : 0x0d0b0c;
+  look.hair = {
+    style: isDancer ? 'long' : 'slick',
+    volume: isDancer ? 1.25 : 0.85,
+    sidePart: isDancer ? -0.2 : 0.3,
+  };
+  look.facialHair = isDancer ? 'none' : 'moustache';
+  look.accessory = 'none';
+  look.skinHex = isDancer ? 0xefcfb2 : 0xb9b2ad;
 
-  // تنه — تناسب بزرگسال باورپذیر (نه کارتونی)
-  const torsoGeo = new THREE.CapsuleGeometry(0.28, height * 0.45, 4, 12);
-  const torsoMat = new THREE.MeshStandardMaterial({ color: costumeColor, roughness: 0.7 });
-  const torso = new THREE.Mesh(torsoGeo, torsoMat);
-  torso.position.y = height * 0.55;
-  torso.castShadow = true;
-  group.add(torso);
-
-  // سر — نسبت واقعی 1/7.5 قد
-  const headGeo = new THREE.SphereGeometry(height * 0.11, 16, 16);
-  const headMat = new THREE.MeshStandardMaterial({ color: skinColor, roughness: 0.6 });
-  const head = new THREE.Mesh(headGeo, headMat);
-  head.position.y = height * 0.92;
-  head.castShadow = true;
-  group.add(head);
-
-  // بازوها
-  const armGeo = new THREE.CapsuleGeometry(0.08, height * 0.35, 4, 8);
-  const armMat = new THREE.MeshStandardMaterial({ color: skinColor, roughness: 0.6 });
-  const leftArm = new THREE.Mesh(armGeo, armMat);
-  leftArm.position.set(-0.38, height * 0.55, 0);
-  leftArm.rotation.z = -0.2;
-  group.add(leftArm);
-  const rightArm = leftArm.clone();
-  rightArm.position.set(0.38, height * 0.55, 0);
-  rightArm.rotation.z = 0.2;
-  group.add(rightArm);
-
-  // پاها
-  const legGeo = new THREE.CapsuleGeometry(0.11, height * 0.45, 4, 8);
-  const legMat = new THREE.MeshStandardMaterial({ color: type === 'dancer' ? 0xe8c4a8 : 0x222222, roughness: 0.7 });
-  const leftLeg = new THREE.Mesh(legGeo, legMat);
-  leftLeg.position.set(-0.15, height * 0.22, 0);
-  group.add(leftLeg);
-  const rightLeg = leftLeg.clone();
-  rightLeg.position.set(0.15, height * 0.22, 0);
-  group.add(rightLeg);
-
-  // دامن برای رقصنده — پف‌دار
-  if (type === 'dancer') {
-    const skirtGeo = new THREE.ConeGeometry(0.65, 0.6, 16, 1, true);
-    const skirtMat = new THREE.MeshStandardMaterial({ color: 0xc94a4a, roughness: 0.8, side: THREE.DoubleSide });
-    const skirt = new THREE.Mesh(skirtGeo, skirtMat);
-    skirt.position.y = height * 0.35;
-    skirt.rotation.x = Math.PI;
-    group.add(skirt);
-  }
-
-  // کلاه/مو برای مرد سیاه‌پوش
-  if (type === 'darkMan') {
-    const hatGeo = new THREE.CylinderGeometry(0.22, 0.25, 0.18, 16);
-    const hatMat = new THREE.MeshStandardMaterial({ color: 0x0a0a0a, roughness: 0.9 });
-    const hat = new THREE.Mesh(hatGeo, hatMat);
-    hat.position.y = height * 1.02;
-    group.add(hat);
-  }
-
-  group.userData.height = height;
-  group.userData.type = type;
+  const avatar = new HumanAvatar({ look, displayName: look.displayName });
+  group.add(avatar);
+  group.userData.humanAvatar = avatar;
+  group.userData.leftArm = avatar.getObjectByName('avatar-arm-left');
+  group.userData.rightArm = avatar.getObjectByName('avatar-arm-right');
+  group.userData.body = avatar.getObjectByName('avatar-body');
+  group.userData.height = look.heightMeters;
 
   return group;
 }
