@@ -25,7 +25,8 @@ const component = read('../../src/components/hud/WhisperChatPanel.tsx');
 
 const MARKER = 'بازبینی امیرعلی — نجوای گروهی: کلیک‌پذیر شدن + منوی جمع‌وجورتر';
 const markerAt = css.indexOf(MARKER);
-const block = markerAt >= 0 ? css.slice(markerAt) : '';
+const nextSection = markerAt >= 0 ? css.indexOf('\n/* ====', markerAt + 1) : -1;
+const block = markerAt >= 0 ? css.slice(markerAt, nextSection > 0 ? nextSection : undefined) : '';
 const beforeBlock = markerAt >= 0 ? css.slice(0, markerAt) : css;
 
 describe('نجوای گروهی — کلیک‌پذیری روی دسکتاپ', () => {
