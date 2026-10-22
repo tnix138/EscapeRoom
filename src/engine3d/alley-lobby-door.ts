@@ -20,35 +20,61 @@ import * as THREE from 'three';
 
 /** اندازه‌های مشترک در لابی — تنها منبع حقیقت برای ساخت و تست */
 export const LOBBY_DOOR = {
-  /** عرض هر لنگه */
-  leafWidth: 1.265,
-  /** ارتفاع لنگه‌ها؛ نیم‌دایره دقیقاً روی همین ارتفاع می‌نشیند */
-  leafHeight: 2.2,
+  /**
+   * عرض هر لنگه — بازبینی: در باریک‌تر شد (۱٫۲۶۵ → ۱٫۰۰)؛ بازشوی کل در
+   * ۲٫۵۴ → ۲٫۰۱ متر. نیم‌دایره متناسب با همین عرض کوچک می‌شود.
+   */
+  leafWidth: 1.0,
+  /**
+   * ارتفاع لنگه‌ها — بازبینی: در بلندتر شد (۲٫۲۰ → ۲٫۵۰).
+   * نیم‌دایره دقیقاً روی همین ارتفاع می‌نشیند.
+   */
+  leafHeight: 2.5,
   leafThickness: 0.14,
   /** شکاف باریک بین دو لنگه در وسط */
   leafGap: 0.012,
-  /** شعاع داخلی و بیرونی نوار نیم‌دایره‌ای شیشه */
-  arcInnerRadius: 1.0,
-  arcOuterRadius: 1.271,
+  /**
+   * شعاع داخلی و بیرونی نوار نیم‌دایره‌ای شیشه.
+   * شعاع بیرونی = نیم‌عرض در (leafWidth + leafGap / 2) تا لبه‌ها هم‌تراز بمانند؛
+   * ضخامت نوار ~۲۲ سانت است تا با نیم‌دایرهٔ باریک‌ترِ تازه هم‌نسبت بماند.
+   */
+  arcInnerRadius: 0.79,
+  arcOuterRadius: 1.006,
   /** مستطیل عمودی شیشه در میانهٔ هر لنگه */
-  windowWidth: 0.46,
-  windowHeight: 1.02,
-  windowCenterY: 1.6,
+  windowWidth: 0.42,
+  windowHeight: 1.08,
+  windowCenterY: 1.72,
   /** نیمهٔ پایین چوبی: پنل برجستهٔ پایین لنگه */
-  lowerPanelHeight: 0.9,
-  lowerPanelCenterY: 0.55,
+  lowerPanelHeight: 1.0,
+  lowerPanelCenterY: 0.56,
   /** دستگیرهٔ استوانه‌ای برنجی */
   handleRadius: 0.035,
-  handleLength: 0.6,
-  handleCenterY: 1.12,
+  handleLength: 0.62,
+  handleCenterY: 1.26,
   /** فاصلهٔ محور دستگیره از لبهٔ داخلی لنگه (کنار شکاف وسط در) */
   handleGapFromSeam: 0.083,
   /** ضخامت میله‌های نقش‌نگاری آهنی */
   barThickness: 0.018,
   /** قاب سنگی پیرامون در */
-  surroundWidth: 3.05,
-  surroundHeight: 3.7,
+  surroundWidth: 2.6,
+  surroundHeight: 3.72,
   surroundDepth: 0.22,
+} as const;
+
+/**
+ * جای ردیف چراغ‌های وضعیت بازیکنان (سه نقطهٔ قرمز/سبز).
+ * بازبینی: از بالای قوس به **داخل نیم‌دایرهٔ بالای در** منتقل شد؛ سه‌تا روی
+ * تیمپانوم چوبی تیره می‌نشینند تا از پشت شیشه دیده شوند.
+ */
+export const LOBBY_DOOR_STATUS_LAMPS = {
+  /** ارتفاع مرکز چراغ‌ها از کف (محلیِ گروه در) — کمی بالای کتیبه، داخل قوس */
+  centerY: LOBBY_DOOR.leafHeight + 0.4,
+  /** فاصلهٔ افقی چراغ‌ها از هم */
+  spacing: 0.24,
+  /** شعاع هر چراغ */
+  bulbRadius: 0.05,
+  /** z محلی: هم‌سطح دهانهٔ در، کمی جلوی تیمپانوم چوبی (−۰٫۰۴۵) */
+  z: 0,
 } as const;
 
 /** تعداد بازوهای شعاعی نقش‌نگاری نیم‌دایره */
@@ -419,7 +445,8 @@ export function createLobbyDoor(options: LobbyDoorOptions = {}): LobbyDoorInstan
     // نقش‌نگاری آهنی روی شیشهٔ مستطیلی: دو میلهٔ عمودی + دو میلهٔ افقی + گل‌سر میانی
     const tracery = new THREE.Group();
     tracery.name = `${leaf.name}_WindowTracery`;
-    for (const offset of [-0.115, 0.115]) {
+    const vBarOffset = LOBBY_DOOR.windowWidth * 0.25;
+    for (const offset of [-vBarOffset, vBarOffset]) {
       const vBar = new THREE.Mesh(
         new THREE.BoxGeometry(LOBBY_DOOR.barThickness, LOBBY_DOOR.windowHeight, LOBBY_DOOR.barThickness),
         ironTraceryMat,
@@ -427,7 +454,8 @@ export function createLobbyDoor(options: LobbyDoorOptions = {}): LobbyDoorInstan
       tracery.add(vBar);
       vBar.position.set(offset, LOBBY_DOOR.windowCenterY, frontZ + 0.048);
     }
-    for (const offset of [-0.24, 0.24]) {
+    const hBarOffset = LOBBY_DOOR.windowHeight * 0.24;
+    for (const offset of [-hBarOffset, hBarOffset]) {
       const hBar = new THREE.Mesh(
         new THREE.BoxGeometry(LOBBY_DOOR.windowWidth, LOBBY_DOOR.barThickness, LOBBY_DOOR.barThickness),
         ironTraceryMat,
@@ -435,7 +463,7 @@ export function createLobbyDoor(options: LobbyDoorOptions = {}): LobbyDoorInstan
       tracery.add(hBar);
       hBar.position.set(0, LOBBY_DOOR.windowCenterY + offset, frontZ + 0.048);
     }
-    const rosette = new THREE.Mesh(new THREE.TorusGeometry(0.075, 0.011, 6, 20), ironTraceryMat);
+    const rosette = new THREE.Mesh(new THREE.TorusGeometry(0.068, 0.011, 6, 20), ironTraceryMat);
     rosette.name = `${leaf.name}_WindowRosette`;
     rosette.position.set(0, LOBBY_DOOR.windowCenterY, frontZ + 0.056);
     tracery.add(rosette);
