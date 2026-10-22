@@ -13,6 +13,15 @@
 
 import * as THREE from 'three';
 import { resolvePlayerHumanPalette } from './presence/RemotePlayer';
+import { createTheaterSeat, createTheaterSeatKit } from './theater-seat';
+
+export {
+  THEATER_SEAT_DIMENSIONS,
+  THEATER_SEAT_COLORS,
+  createInstancedTheaterSeats,
+  createTheaterSeat,
+  createUpholsteredCushionGeometry,
+} from './theater-seat';
 
 export interface SeatedPlayerCharacterOptions {
   playerId: string;
@@ -272,44 +281,9 @@ export interface TheaterGeometryResult {
   dispose: () => void;
 }
 
-function createSeat(row: number, col: number): THREE.Group {
-  const group = new THREE.Group();
-  group.name = `Seat_${row}_${col}`;
-
-  // پایه صندلی مخملی — تناسب واقعی
-  const baseGeo = new THREE.BoxGeometry(0.85, 0.45, 0.85);
-  const baseMat = new THREE.MeshStandardMaterial({ color: 0x4a1a1a, roughness: 0.8 });
-  const base = new THREE.Mesh(baseGeo, baseMat);
-  base.position.y = 0.225;
-  base.castShadow = true;
-  base.receiveShadow = true;
-  group.add(base);
-
-  const backGeo = new THREE.BoxGeometry(0.85, 0.9, 0.12);
-  const backMat = new THREE.MeshStandardMaterial({ color: 0x5a2222, roughness: 0.75 });
-  const back = new THREE.Mesh(backGeo, backMat);
-  back.position.set(0, 0.8, -0.38);
-  back.castShadow = true;
-  group.add(back);
-
-  // پلاک ردیف
-  const labelCanvas = document.createElement('canvas');
-  labelCanvas.width = 128;
-  labelCanvas.height = 32;
-  const ctx = labelCanvas.getContext('2d')!;
-  ctx.fillStyle = '#c9a86a';
-  ctx.font = 'bold 20px Vazirmatn';
-  ctx.textAlign = 'center';
-  ctx.fillText(`R${row} C${col}`, 64, 22);
-  const tex = new THREE.CanvasTexture(labelCanvas);
-  const labelMat = new THREE.MeshBasicMaterial({ map: tex, transparent: true });
-  const labelGeo = new THREE.PlaneGeometry(0.6, 0.15);
-  const label = new THREE.Mesh(labelGeo, labelMat);
-  label.position.set(0, 0.5, 0.43);
-  group.add(label);
-
-  return group;
-}
+// صندلی‌ها از ماژول مشترک theater-seat ساخته می‌شوند: تماشاگر رو به ‎-Z‎ (صحنه)
+// می‌نشیند و پشتی در ‎+Z‎ «پشت» بدن اوست، با ارتفاع واقعی ≈۰٫۹۹ متر.
+// (پیش‌تر همین‌جا پشتی روی ‎z=-0.38‎ یعنی جلوی صندلی ساخته می‌شد.)
 
 function createAdultCharacter(
   type: 'dancer' | 'darkMan',
@@ -415,16 +389,41 @@ export function createTheaterGeometry(): TheaterGeometryResult {
   group.add(ceiling);
 
   // صندلی‌ها — ۴ ردیف × ۵ ستون پلکانی
+  // گام واقعی ردیف تئاتر ≈۱٫۰۵ متر و فاصله مرکز تا مرکز صندلی‌ها ≈۰٫۸۸ متر است؛
+  // فاصله قبلی (۱٫۶×۱٫۴) صندلی‌ها را مثل مبل‌های جداافتاده کارتونی نشان می‌داد.
   const seats: THREE.Group[] = [];
-  const rowSpacing = 1.6;
-  const colSpacing = 1.4;
+  const seatKit = createTheaterSeatKit();
+  const rowSpacing = 1.08;
+  const colSpacing = 0.88;
   const startZ = 4; // نزدیک‌ترین ردیف به صحنه
+  const riserMat = new THREE.MeshStandardMaterial({ color: 0x201822, roughness: 0.94 });
+  const riserEdgeMat = new THREE.MeshStandardMaterial({
+    color: 0x6d5626,
+    roughness: 0.45,
+    metalness: 0.55,
+  });
 
   for (let row = 1; row <= 4; row++) {
-    const rowY = (row - 1) * 0.35; // پلکانی
+    const rowY = (row - 1) * 0.32; // پلکانی
     const rowZ = startZ + (row - 1) * rowSpacing;
+
+    // سکوی پلکانی زیر ردیف تا پایه‌های صندلی روی کف بنشینند، نه در هوا
+    if (rowY > 0) {
+      const riser = new THREE.Mesh(new THREE.BoxGeometry(5.6, rowY, rowSpacing + 0.24), riserMat);
+      riser.name = `SeatRiser_${row}`;
+      riser.position.set(0, rowY / 2, rowZ);
+      riser.castShadow = true;
+      riser.receiveShadow = true;
+      group.add(riser);
+      const nosing = new THREE.Mesh(new THREE.BoxGeometry(5.6, 0.035, 0.06), riserEdgeMat);
+      nosing.name = `SeatRiserNosing_${row}`;
+      nosing.position.set(0, rowY - 0.018, rowZ - (rowSpacing + 0.24) / 2 + 0.03);
+      nosing.receiveShadow = true;
+      group.add(nosing);
+    }
+
     for (let col = 1; col <= 5; col++) {
-      const seat = createSeat(row, col);
+      const seat = createTheaterSeat(row, col, seatKit);
       const colX = (col - 3) * colSpacing; // مرکز
       seat.position.set(colX, rowY, rowZ);
       seat.userData.row = row;
@@ -538,15 +537,27 @@ export function createTheaterGeometry(): TheaterGeometryResult {
   lights.push(moon);
 
   const dispose = () => {
+    // هندسه/متریال صندلی‌ها بین هر ۲۰ صندلی مشترک‌اند؛ با Set هرکدام فقط یک‌بار آزاد می‌شوند
+    const geometries = new Set<THREE.BufferGeometry>();
+    const materials = new Set<THREE.Material>();
+    const textures = new Set<THREE.Texture>();
     group.traverse((obj) => {
       const mesh = obj as THREE.Mesh;
-      if (mesh.geometry) mesh.geometry.dispose();
+      if (mesh.geometry) geometries.add(mesh.geometry);
       const mat = mesh.material as THREE.Material | THREE.Material[] | undefined;
       if (mat) {
-        if (Array.isArray(mat)) mat.forEach((m) => m.dispose());
-        else mat.dispose();
+        (Array.isArray(mat) ? mat : [mat]).forEach((m) => {
+          materials.add(m);
+          Object.values(m as unknown as Record<string, unknown>).forEach((value) => {
+            if (value instanceof THREE.Texture) textures.add(value);
+          });
+        });
       }
     });
+    geometries.forEach((geometry) => geometry.dispose());
+    materials.forEach((material) => material.dispose());
+    textures.forEach((texture) => texture.dispose());
+    seatKit.dispose();
   };
 
   return {

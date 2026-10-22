@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { HorrorPostProcessor } from '../../engine3d/horror/vignette';
 import { getCameraKeyframe } from '../../engine3d/cinema/camera-path';
+import { createInstancedTheaterSeats } from '../../engine3d/theater-seat';
 import { getStoryDialogueAt } from './story-script';
 import styles from './ThreeCutsceneView.module.css';
 
@@ -134,11 +135,29 @@ export default function ThreeCutsceneView({ elapsedMs, yaw, onReady }: ThreeCuts
       resizeObserver?.disconnect();
       if (!resizeObserver) window.removeEventListener('resize', resize);
       post.dispose();
+      const disposedGeometries = new Set<THREE.BufferGeometry>();
+      const disposedMaterials = new Set<THREE.Material>();
+      const disposedTextures = new Set<THREE.Texture>();
       scene.traverse((object) => {
+        const seatKit = (object.userData as { seatKit?: { dispose: () => void } }).seatKit;
+        seatKit?.dispose();
         if (object instanceof THREE.Mesh) {
-          object.geometry.dispose();
+          if (!disposedGeometries.has(object.geometry)) {
+            disposedGeometries.add(object.geometry);
+            object.geometry.dispose();
+          }
           const materials = Array.isArray(object.material) ? object.material : [object.material];
-          materials.forEach((material) => material.dispose());
+          materials.forEach((material) => {
+            if (disposedMaterials.has(material)) return;
+            disposedMaterials.add(material);
+            Object.values(material as unknown as Record<string, unknown>).forEach((value) => {
+              if (value instanceof THREE.Texture && !disposedTextures.has(value)) {
+                disposedTextures.add(value);
+                value.dispose();
+              }
+            });
+            material.dispose();
+          });
         }
       });
       renderer.dispose();
@@ -183,7 +202,6 @@ function createTheaterSet(scene: THREE.Scene): SceneActors {
   const floorMaterial = new THREE.MeshStandardMaterial({ color: 0x17151d, roughness: 0.8, metalness: 0.08 });
   const redVelvet = new THREE.MeshStandardMaterial({ color: 0x671627, roughness: 0.88 });
   const gold = new THREE.MeshStandardMaterial({ color: 0x9b7838, roughness: 0.38, metalness: 0.72 });
-  const seatVelvet = new THREE.MeshStandardMaterial({ color: 0x491522, roughness: 0.9 });
   const wood = new THREE.MeshStandardMaterial({ color: 0x372222, roughness: 0.83 });
 
   const floor = new THREE.Mesh(new THREE.PlaneGeometry(25, 52), floorMaterial);
@@ -212,29 +230,20 @@ function createTheaterSet(scene: THREE.Scene): SceneActors {
   addBox(doorRight, gold, [-1.32, 1.65, -0.11], [0.08, 0.08, 0.08]);
   scene.add(doorRight);
 
-  // 20 upholstered seats via two instanced meshes to keep draw calls low.
-  const seatGeometry = new THREE.BoxGeometry(1.05, 0.34, 0.92);
-  const backGeometry = new THREE.BoxGeometry(1.0, 1.12, 0.25);
-  const seatBases = new THREE.InstancedMesh(seatGeometry, seatVelvet, 20);
-  const seatBacks = new THREE.InstancedMesh(backGeometry, seatVelvet, 20);
-  const matrix = new THREE.Object3D();
-  let index = 0;
+  // همان ۲۰ صندلی ماژول مشترک theater-seat با چند InstancedMesh:
+  // پشتی پشتِ تماشاگر (+Z، خلاف جهت صحنه در ‎-Z‎) و ارتفاع کل واقعی ≈۰٫۹۹ متر است.
+  // پیش‌تر اینجا دو مکعب شناور با پشتیِ ۱٫۷۱ متری ساخته می‌شد که جلوی دید صحنه را می‌گرفت.
+  const seatPositions: { x: number; z: number }[] = [];
   for (let row = 0; row < 4; row++) {
     for (let column = 0; column < 5; column++) {
-      const x = (column - 2) * 1.45;
-      const z = -8.5 - row * 1.55;
-      matrix.position.set(x, 0.45, z);
-      matrix.updateMatrix();
-      seatBases.setMatrixAt(index, matrix.matrix);
-      matrix.position.set(x, 1.15, z + 0.47);
-      matrix.updateMatrix();
-      seatBacks.setMatrixAt(index, matrix.matrix);
-      index++;
+      seatPositions.push({
+        x: (column - 2) * 0.88,
+        // ردیف عقب کنار دوربین نشسته است و ردیف‌ها با گام واقعی ≈۱٫۰۸م به سمت صحنه می‌روند
+        z: -8.5 - row * 1.08,
+      });
     }
   }
-  seatBases.castShadow = true;
-  seatBacks.castShadow = true;
-  scene.add(seatBases, seatBacks);
+  scene.add(createInstancedTheaterSeats(seatPositions));
 
   // Raised stage, backdrop, and two curtain wings.
   addBox(scene, wood, [0, 0.42, -21], [14, 0.84, 5.4]);

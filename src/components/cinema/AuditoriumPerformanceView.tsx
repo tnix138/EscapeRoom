@@ -169,6 +169,59 @@ function PlayerBust({ player, small = false }: { player: PlayerSeatPublicView; s
 }
 
 /**
+ * پشت سر هم‌تیمی ردیف جلو: او رو به صحنه نشسته، پس از دید POV فقط پشت سر،
+ * گردن و شانه‌هایش بالای پشتی صندلی دیده می‌شود — نه چهره‌اش رو به ما.
+ */
+function PlayerBackOfHead({ player }: { player: PlayerSeatPublicView }) {
+  const idx = Math.max(0, player.seatIndex);
+  const color = PLAYER_COLORS[idx % PLAYER_COLORS.length];
+  const skin = PLAYER_SKINS[idx % PLAYER_SKINS.length];
+  const hair = PLAYER_HAIRS[idx % PLAYER_HAIRS.length];
+  const hairVariant = idx % 3;
+
+  return (
+    <svg
+      viewBox="0 0 120 98"
+      className={styles.bustSvgSmall}
+      role="img"
+      aria-label={`پشت سر هم‌تیمی: ${player.playerName}`}
+    >
+      {/* شانه‌ها و پشت کت (بدون پیراهن/کراواتِ نمای روبه‌رو) */}
+      <path d="M14 98 C19 76 36 68 60 68 C84 68 101 76 106 98 Z" fill={color} />
+      <path d="M60 70 L60 98" stroke="rgba(8,5,10,0.35)" strokeWidth="1.6" />
+      <path d="M44 69 Q60 76 76 69 L74 75 Q60 81 46 75 Z" fill="rgba(10,6,12,0.4)" />
+
+      {/* گردن زیر خط رویش مو */}
+      <rect x="52" y="60" width="16" height="13" rx="6" fill={skin} />
+
+      {/* گوش‌ها از دو طرف سر */}
+      <ellipse cx="37.5" cy="50" rx="4" ry="6.2" fill={skin} />
+      <ellipse cx="82.5" cy="50" rx="4" ry="6.2" fill={skin} />
+
+      {/* فرم سر — سطح پشتی آن تقریباً کامل با مو پوشیده است */}
+      <path
+        d="M38 44 C38 27 47 20 60 20 C73 20 82 27 82 44 C82 56 73 66 60 67 C47 66 38 56 38 44 Z"
+        fill={skin}
+      />
+      {hairVariant === 0 && (
+        <path d="M37 46 C36 25 46 17 60 17 C74 17 84 25 83 46 C82 56 76 62 68 64 C70 58 70 54 69 50 L51 50 C50 54 50 58 52 64 C44 62 38 56 37 46 Z" fill={hair} />
+      )}
+      {hairVariant === 1 && (
+        <path d="M36 44 C36 24 46 16 60 16 C74 16 84 24 84 44 C84 58 86 68 82 78 L38 78 C34 68 36 58 36 44 Z" fill={hair} />
+      )}
+      {hairVariant === 2 && (
+        <>
+          <circle cx="60" cy="15" r="7.5" fill={hair} />
+          <path d="M37 45 C37 26 47 18 60 18 C73 18 83 26 83 45 C82 55 76 61 68 63 C69 57 69 53 68 49 L52 49 C51 53 51 57 52 63 C44 61 38 55 37 45 Z" fill={hair} />
+        </>
+      )}
+      {/* برق ملایم مو زیر نور سالن */}
+      <path d="M46 30 Q54 23 64 23" stroke="rgba(255,240,220,0.14)" strokeWidth="2.4" fill="none" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+/**
  * پیکره بانوی ایتالیایی — هم روی سِن (رقص/آواز/ترس) و هم در لایه پرتاب سالن (قربانی)
  * استفاده می‌شود تا در فریم شروع خفگی، بدن بدون هیچ پرشی از صحنه به هوا منتقل شود.
  */
@@ -596,7 +649,7 @@ export default function AuditoriumPerformanceView({
                         transform: `translateY(${((1 - settle) * 20 + tl.playerPushPulse * 7).toFixed(1)}px)`,
                       }}
                     >
-                      <PlayerBust player={occupant} small />
+                      <PlayerBackOfHead player={occupant} />
                       <div className={styles.nameChipSmall}>{occupant.playerName}</div>
                     </div>
                   )}
