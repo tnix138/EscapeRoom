@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { createAlleyGeometry } from '@/engine3d/alley-geometry';
 import {
   SOFT_STREETLIGHT,
+  createLampHaloAlphaTexture,
   createLampPoolAlphaTexture,
   createLightConeAlphaTexture,
   streetlightBeamRadius,
@@ -18,6 +19,9 @@ import { ALLEY_STATIC_OBSTACLES, checkAABBCollision } from '@/engine3d/collision
  *    روی یک خط z با فاصلهٔ مساوی از محور کوچه و بازو به سمت مرکز.
  * ۳) نور چراغ‌ها لکهٔ دایره‌ای با «خط» تیز روی سنگ‌فرش نمی‌سازد؛ پخش آن نرم
  *    و طبیعی است (penumbra کامل، زاویهٔ باز، رنگ ملایم‌تر و هالهٔ آلی روی زمین).
+ * ۴) خودِ پرتو مه هم نباید «نوار» داشته باشد: مخروط شیشه‌ای با آلفای یکنواخت
+ *    جای خود را به هاله داده — آلفا در لبهٔ مماسی صفر می‌شود، پخش روی زمین
+ *    دنبالهٔ پهن و ملایم دارد و دور سر چراغ یک هالهٔ گردِ دو‌لایه می‌درخشد.
  */
 
 /**
@@ -209,12 +213,89 @@ describe('چراغ برق چهارم (گالوانیزهٔ دایره‌ای) و
     const alley = createAlleyGeometry();
     const pole = alley.group.getObjectByName('UtilityPole_NorthLeft') as THREE.Group;
     const beam = pole.getObjectByName('LampVolumetricBeam_NorthLeft') as THREE.Mesh<
-      THREE.ConeGeometry
+      THREE.ConeGeometry,
+      THREE.ShaderMaterial
     >;
     expect(beam).toBeDefined();
     // مخروط مه از گسترهٔ واقعی نور باریک‌تر است و با ۳۲ ضلع گرد می‌شود
     expect(beam.geometry.parameters.radius).toBeLessThan(poolRadius);
     expect(beam.geometry.parameters.radialSegments).toBeGreaterThanOrEqual(24);
+
+    alley.dispose();
+  });
+
+  it('پرتو مه «هاله» است نه مخروط شیشه‌ای: آلفا در لبهٔ مماسی صفر می‌شود', () => {
+    const alley = createAlleyGeometry();
+    const pole = alley.group.getObjectByName('UtilityPole_NorthLeft') as THREE.Group;
+    const beam = pole.getObjectByName('LampVolumetricBeam_NorthLeft') as THREE.Mesh<
+      THREE.ConeGeometry,
+      THREE.ShaderMaterial
+    >;
+
+    // پیش‌تر یک MeshBasicMaterial با آلفای یکنواخت بود؛ همان یکنواختی باعث می‌شد
+    // سطحِ مخروط در جاهایی که مماس بر دید می‌شود مثل یک «نوار» روشن دیده شود
+    expect(beam.material).toBeInstanceOf(THREE.ShaderMaterial);
+    expect(beam.material.name).toBe('LampBeamHaloMaterial');
+    expect(beam.material.blending).toBe(THREE.AdditiveBlending);
+    expect(beam.material.transparent).toBe(true);
+    expect(beam.material.depthWrite).toBe(false);
+    expect(beam.material.side).toBe(THREE.DoubleSide);
+
+    // آلفا وابسته به زاویهٔ دید است، نه یک عدد ثابت
+    expect(beam.material.fragmentShader).toContain('vFacing');
+    expect(beam.material.vertexShader).toContain('abs(dot(viewNormal, viewDirection))');
+    expect(beam.material.fragmentShader).toMatch(/smoothstep\(\s*0\.0,\s*0\.62,\s*vFacing\s*\)/);
+    // نویز ملایم چگالی غبار تا پرتو یکدست و پلاستیکی نباشد
+    expect(beam.material.fragmentShader).toContain('dustDensity');
+
+    // شدت هاله کم است (نور اضافه و ملایم) و پروفایل ارتفاعی مشترک را می‌گیرد
+    expect(beam.material.uniforms.uOpacity.value).toBeLessThan(0.2);
+    expect(beam.material.uniforms.uProfile.value).toBeDefined();
+
+    alley.dispose();
+  });
+
+  it('هر چراغ یک هالهٔ گردِ دو‌لایه دور گوی دارد و با سوسوزدن هم‌گام می‌شود', () => {
+    const alley = createAlleyGeometry();
+
+    for (const id of ['SouthLeft', 'SouthRight', 'NorthLeft', 'NorthRight']) {
+      const pole = alley.group.getObjectByName(`UtilityPole_${id}`) as THREE.Group;
+      const bulb = pole.getObjectByName(`LampBulb_${id}`) as THREE.Mesh;
+      for (const [prefix, maxOpacity] of [
+        ['LampHalo_', 0.2],
+        ['LampHaloCore_', 0.32],
+      ] as const) {
+        const halo = pole.getObjectByName(`${prefix}${id}`) as THREE.Sprite;
+        expect(halo, `${prefix}${id}`).toBeInstanceOf(THREE.Sprite);
+        const material = halo.material as THREE.SpriteMaterial;
+        expect(material.map).not.toBeNull();
+        expect(material.blending).toBe(THREE.AdditiveBlending);
+        expect(material.depthWrite).toBe(false);
+        expect(material.opacity).toBeGreaterThan(0);
+        expect(material.opacity).toBeLessThanOrEqual(maxOpacity);
+        // هاله دقیقاً دور گوی شیشه‌ای می‌نشیند، نه جای دیگر
+        expect(halo.position.x).toBeCloseTo(bulb.position.x, 6);
+        expect(halo.position.y).toBeCloseTo(bulb.position.y, 6);
+        expect(halo.position.z).toBeCloseTo(bulb.position.z, 6);
+      }
+    }
+
+    // هستهٔ هاله کوچک‌تر ولی روشن‌تر از لایهٔ پهن است
+    const pole = alley.group.getObjectByName('UtilityPole_NorthLeft') as THREE.Group;
+    const wide = pole.getObjectByName('LampHalo_NorthLeft') as THREE.Sprite;
+    const core = pole.getObjectByName('LampHaloCore_NorthLeft') as THREE.Sprite;
+    expect(core.scale.x).toBeLessThan(wide.scale.x);
+    expect((core.material as THREE.SpriteMaterial).opacity).toBeGreaterThan(
+      (wide.material as THREE.SpriteMaterial).opacity,
+    );
+
+    // سوسوزدن چراغ باید هاله را هم کم‌رنگ/پرت‌رنگ کند
+    const samples = new Set<string>();
+    for (let i = 0; i < 60; i++) {
+      alley.update(0.05, i * 0.13);
+      samples.add((wide.material as THREE.SpriteMaterial).opacity.toFixed(3));
+    }
+    expect(samples.size).toBeGreaterThan(2);
 
     alley.dispose();
   });
@@ -312,6 +393,14 @@ describe('چراغ برق چهارم (گالوانیزهٔ دایره‌ای) و
       previous = value;
     }
 
+    // پخش ملایم و پهن: نور با یک دنبالهٔ کم‌رنگ تا نزدیک لبه ادامه دارد و
+    // یک‌دفعه تمام نمی‌شود (وگرنه لبه‌اش مثل یک حلقه خوانده می‌شد)
+    const atRadius = (ratio: number) =>
+      alphaAt(Math.round(size / 2 + (size / 2) * ratio), size / 2);
+    expect(atRadius(0.45)).toBeGreaterThan(0.15);
+    expect(atRadius(0.75)).toBeGreaterThan(0.02);
+    expect(atRadius(0.75)).toBeLessThan(0.2);
+
     // لبهٔ آلی: آلفا روی یک دایرهٔ ثابت یکنواخت نیست (دایرهٔ ماشینی نیست)
     const ringRadius = Math.floor(size * 0.38);
     const ringSamples: number[] = [];
@@ -322,6 +411,34 @@ describe('چراغ برق چهارم (گالوانیزهٔ دایره‌ای) و
       ringSamples.push(alphaAt(px, py));
     }
     expect(Math.max(...ringSamples) - Math.min(...ringSamples)).toBeGreaterThan(0.05);
+
+    texture.dispose();
+  });
+
+  it('ماسک هالهٔ گرد از مرکز روشن به لبهٔ صفر می‌رسد و هیچ پله‌ای ندارد', () => {
+    const texture = createLampHaloAlphaTexture(311, 128);
+    const data = texture.image.data as Uint8Array;
+    const size = 128;
+    const alphaAt = (px: number, py: number) => data[(py * size + px) * 4] / 255;
+
+    // مرکز روشن‌ترین نقطه و گوشه‌ها کاملاً محو
+    expect(alphaAt(size / 2, size / 2)).toBeGreaterThan(0.95);
+    expect(alphaAt(0, 0)).toBe(0);
+    expect(alphaAt(size - 1, size - 1)).toBe(0);
+
+    // افت پیوسته از مرکز به بیرون، بدون پرش: لبهٔ نرم، نه یک دیسک تخت
+    let previous = alphaAt(size / 2, size / 2);
+    for (let step = 1; step < size / 2; step++) {
+      const value = alphaAt(size / 2, size / 2 + step);
+      expect(previous - value).toBeLessThanOrEqual(0.06);
+      expect(value).toBeLessThanOrEqual(previous + 0.02);
+      previous = value;
+    }
+
+    // میانهٔ هاله هنوز نور دارد: پخش ملایم و پهن، نه یک نقطهٔ کوچک و تیز
+    const radius = (ratio: number) => Math.round((size / 2) * ratio);
+    expect(alphaAt(size / 2, size / 2 + radius(0.25))).toBeGreaterThan(0.3);
+    expect(alphaAt(size / 2, size / 2 + radius(0.6))).toBeGreaterThan(0.1);
 
     texture.dispose();
   });
