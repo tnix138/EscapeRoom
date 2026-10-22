@@ -57,6 +57,7 @@ import {
   type AlleySignCluesData,
 } from './alley-signs';
 import {
+  createLampHaloAlphaTexture,
   createLampPoolAlphaTexture,
   createLightConeAlphaTexture,
   createOverheadCable,
@@ -140,6 +141,8 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
   const beamTexture = createLightConeAlphaTexture(64);
   // هالهٔ نرم نور روی سنگ‌فرش، یک تکسچر مشترک برای هر چهار چراغ (یک draw call)
   const lampPoolTexture = createLampPoolAlphaTexture(71, 128);
+  // هالهٔ گردِ دور سر چراغ‌ها — یک تکسچر مشترک برای هشت اسپرایت (دو لایه × چهار چراغ)
+  const lampHaloTexture = createLampHaloAlphaTexture(311, 128);
   const puddleMaskA = createPuddleAlphaMap(307, 128);
   const puddleMaskB = createPuddleAlphaMap(613, 128);
   // هالهٔ نمناک باریک پیرامون چاله‌ها (کف جز این نواحی خشک است)
@@ -1035,6 +1038,7 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
       beamTexture,
       environmentMap,
       poolTexture: lampPoolTexture,
+      haloTexture: lampHaloTexture,
     }),
   );
 
@@ -1309,6 +1313,7 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
     crateDarkWoodMaps.dispose();
     beamTexture.dispose();
     lampPoolTexture.dispose();
+    lampHaloTexture.dispose();
     puddleMaskA.dispose();
     puddleMaskB.dispose();
     dampRingMaskA.dispose();

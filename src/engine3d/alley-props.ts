@@ -105,12 +105,100 @@ export function createLightConeAlphaTexture(size = 64): THREE.DataTexture {
 }
 
 /**
+ * شیدر پرتو مهِ چراغ برق — «هاله» به‌جای مخروط شیشه‌ای.
+ *
+ * مخروطِ نیمه‌شفاف با آلفای یکنواخت دقیقاً در جایی که سطحش مماس بر راستای دید
+ * می‌شود یک «نوار» روشن می‌سازد؛ همان لبهٔ مصنوعی که دیده می‌شد. این شیدر آلفا را
+ * در |dot(N, V)| ضرب می‌کند، یعنی در آن لبه به صفر می‌رسد و پرتو فقط جایی دیده
+ * می‌شود که رو به دوربین است — یک هالهٔ نرم و محو، بدون هیچ مرزی.
+ * نویز کم‌دامنهٔ چگالی هم مانع می‌شود پرتو مثل یک پلاستیک یکدست دیده شود.
+ */
+const LAMP_BEAM_VERTEX_SHADER = `
+varying float vHeight;
+varying float vFacing;
+varying vec2 vSurface;
+
+void main() {
+  vHeight = uv.y;
+  vSurface = vec2(position.x, position.y) * 1.7 + vec2(position.z * 2.3);
+  vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+  vec3 viewDirection = normalize(-mvPosition.xyz);
+  vec3 viewNormal = normalize(normalMatrix * normal);
+  vFacing = abs(dot(viewNormal, viewDirection));
+  gl_Position = projectionMatrix * mvPosition;
+}
+`;
+
+const LAMP_BEAM_FRAGMENT_SHADER = `
+uniform sampler2D uProfile;
+uniform vec3 uColor;
+uniform float uOpacity;
+uniform float uSeed;
+
+varying float vHeight;
+varying float vFacing;
+varying vec2 vSurface;
+
+/** چگالی نرم و ارزان غبار معلق (بدون بافت اضافه) */
+float dustDensity(vec2 p) {
+  float grain = sin(p.x * 1.9 + uSeed * 3.1) * sin(p.y * 1.7 - uSeed * 1.3);
+  grain += 0.6 * sin(p.x * 0.8 - p.y * 1.1 + uSeed * 2.7);
+  return clamp(0.5 + 0.26 * grain, 0.0, 1.0);
+}
+
+void main() {
+  // ۱. پروفایل ارتفاعی: صفر روی زمین و نزدیک سر چراغ، اوج در میانه
+  float profile = texture2D(uProfile, vec2(0.5, vHeight)).a;
+  // ۲. محو شدن کامل در زاویهٔ مماسی — نوارِ لبهٔ مخروط همین‌جا از بین می‌رود
+  float facing = smoothstep(0.0, 0.62, vFacing);
+  // ۳. ناهمگونی ملایم چگالی تا پرتو یکدست و مصنوعی نباشد
+  float grain = mix(0.84, 1.0, dustDensity(vSurface));
+
+  float alpha = uOpacity * profile * facing * grain;
+  if (alpha < 0.0015) discard;
+
+  gl_FragColor = vec4(uColor, alpha);
+  #include <tonemapping_fragment>
+  #include <colorspace_fragment>
+}
+`;
+
+/**
+ * متریال پرتو مه: یک ShaderMaterial سبک روی همان مخروط، با آلفای وابسته به زاویهٔ
+ * دید. `uOpacity` را چرخهٔ سوسوزدن هر فریم به‌روز می‌کند.
+ */
+export function createLampBeamMaterial(profile: THREE.Texture, seed = 0): THREE.ShaderMaterial {
+  const material = new THREE.ShaderMaterial({
+    uniforms: {
+      uProfile: { value: profile },
+      uColor: { value: new THREE.Color(SOFT_STREETLIGHT.color) },
+      uOpacity: { value: 0.1 },
+      uSeed: { value: seed },
+    },
+    vertexShader: LAMP_BEAM_VERTEX_SHADER,
+    fragmentShader: LAMP_BEAM_FRAGMENT_SHADER,
+    transparent: true,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+    side: THREE.DoubleSide,
+    fog: false,
+  });
+  material.name = 'LampBeamHaloMaterial';
+  return material;
+}
+
+/**
  * ماسک آلفای «هالهٔ نور» چراغ برق روی سنگ‌فرش.
  *
  * مخروط SpotLight ذاتاً یک لبهٔ هندسی دارد؛ حتی با penumbra کامل هم مرز استخر
  * نور روی زمین یک منحنی دقیق و ماشینی است. این هاله یک لکهٔ گرمِ کاملاً نرم و
  * کمی نامنظم است که زیر چراغ روی زمین می‌نشیند؛ چون لبه‌اش ارگانیک و محو است،
  * «خط نور» روی سنگ‌فرش دیگر مستقیم و مصنوعی دیده نمی‌شود.
+ *
+ * پروفایل شعاعی دو ترم است: یک «هستهٔ» کوچک‌تر که سریع افت می‌کند و یک «دنبالهٔ»
+ * پهن و کم‌رنگ که تا لبه کشیده می‌شود. تک‌ترم بودن باعث می‌شد نور روی زمین
+ * یک‌دفعه تمام شود و لبهٔ استخر به‌شکل یک حلقه خوانده شود؛ دنبالهٔ دوم پخش را
+ * ملایم می‌کند، درحالی‌که هسته هنوز لکهٔ نور را مشخص و قابل‌تشخیص نگه می‌دارد.
  */
 export function createLampPoolAlphaTexture(seed = 17, size = 128): THREE.DataTexture {
   const data = new Uint8Array(size * size * 4);
@@ -123,13 +211,17 @@ export function createLampPoolAlphaTexture(seed = 17, size = 128): THREE.DataTex
     for (let px = 0; px < size; px++) {
       const nx = (px / (size - 1)) * 2 - 1;
       const dist = Math.hypot(nx, ny * 0.92);
-      // لبهٔ آلی و نامنظم (دو موج با فرکانس متفاوت) تا استخر نور دایرهٔ ماشینی نباشد
+      // لبهٔ آلی و نامنظم (دو موج با فرکانس متفاوت) تا استخر نور دایرهٔ ماشینی نباشد؛
+      // موج نزدیک مرکز صفر می‌شود تا نقطهٔ زیر چراغ دقیقاً روشن‌ترین جا بماند
       const warp =
-        (valueNoise(nx * 2.6 + 5, ny * 2.6 + 9, seed) - 0.5) * 0.26 +
-        (valueNoise(nx * 6.4 + 21, ny * 6.4 + 3, seed + 37) - 0.5) * 0.1;
+        ((valueNoise(nx * 2.6 + 5, ny * 2.6 + 9, seed) - 0.5) * 0.26 +
+          (valueNoise(nx * 6.4 + 21, ny * 6.4 + 3, seed + 37) - 0.5) * 0.12) *
+        Math.min(1, dist * 2.2);
       const t = Math.max(0, Math.min(1, dist + warp));
-      // افت نرم و پیوسته از مرکز تا لبه، با شیب صفر در هر دو سر
-      const alpha = Math.pow(1 - smoothstep(0, 1, t), 1.6);
+      // هستهٔ وسیع + دنبالهٔ پهن: جمع دو افتِ S-شکل که هر دو شیب صفر در لبه دارند
+      const core = Math.pow(1 - smoothstep(0, 0.85, t), 1.8);
+      const tail = Math.pow(1 - smoothstep(0.15, 1, t), 1.2);
+      const alpha = core * 0.6 + tail * 0.4;
       const b = Math.round(Math.max(0, Math.min(1, alpha)) * 255);
       const off = (py * size + px) * 4;
       data[off] = b;
@@ -144,6 +236,50 @@ export function createLampPoolAlphaTexture(seed = 17, size = 128): THREE.DataTex
   tex.generateMipmaps = true;
   tex.needsUpdate = true;
   tex.name = 'StreetlampGroundPoolAlpha';
+  return tex;
+}
+
+/**
+ * ماسک آلفای «هالهٔ گردِ» سر چراغ (برای اسپرایت رو‌به‌دوربین).
+ *
+ * چراغ در شب نه فقط زمین را روشن می‌کند، بلکه خودش یک گویِ محو از نور دارد که
+ * هوا/مه اطرافش را روشن می‌کند. این بافت همان هاله است: مرکز روشن، افتِ نرم و
+ * پیوسته (نمایی) و لبه‌ای که با شیب صفر تمام می‌شود؛ هیچ حلقه یا پله‌ای در آن
+ * نیست تا اسپرایت به‌شکل یک دیسک تخت دیده نشود.
+ */
+export function createLampHaloAlphaTexture(seed = 31, size = 128): THREE.DataTexture {
+  const data = new Uint8Array(size * size * 4);
+  const smoothstep = (edge0: number, edge1: number, value: number) => {
+    const t = Math.max(0, Math.min(1, (value - edge0) / (edge1 - edge0)));
+    return t * t * (3 - 2 * t);
+  };
+  for (let py = 0; py < size; py++) {
+    const ny = (py / (size - 1)) * 2 - 1;
+    for (let px = 0; px < size; px++) {
+      const nx = (px / (size - 1)) * 2 - 1;
+      const dist = Math.hypot(nx, ny);
+      // لبهٔ کمی نامنظم تا هاله دایرهٔ هندسی دقیق نباشد
+      const wobble = (valueNoise(nx * 2.4 + 3, ny * 2.4 + 11, seed) - 0.5) * 0.12;
+      const r = Math.max(0, dist + wobble);
+      // هستهٔ نمایی نرم + دنبالهٔ کم‌رنگ، سپس پنجرهٔ محو شدن در لبه (شیب صفر)
+      const core = Math.exp(-4.4 * r * r) * 0.74;
+      const tail = Math.pow(1 - smoothstep(0.12, 1, r), 2.1) * 0.32;
+      const window = 1 - smoothstep(0.78, 1, r);
+      const alpha = Math.max(0, Math.min(1, (core + tail) * window));
+      const b = Math.round(alpha * 255);
+      const off = (py * size + px) * 4;
+      data[off] = b;
+      data[off + 1] = b;
+      data[off + 2] = b;
+      data[off + 3] = 255;
+    }
+  }
+  const tex = new THREE.DataTexture(data, size, size, THREE.RGBAFormat, THREE.UnsignedByteType);
+  tex.magFilter = THREE.LinearFilter;
+  tex.minFilter = THREE.LinearMipmapLinearFilter;
+  tex.generateMipmaps = true;
+  tex.needsUpdate = true;
+  tex.name = 'StreetlampHaloAlpha';
   return tex;
 }
 
@@ -183,6 +319,8 @@ export interface UtilityPoleOptions {
   environmentMap: THREE.Texture;
   /** تکسچر هالهٔ نور روی زمین؛ اگر نیامده باشد خودِ تیر یکی می‌سازد */
   poolTexture?: THREE.DataTexture;
+  /** تکسچر هالهٔ گردِ دور سر چراغ؛ اگر نیامده باشد خودِ تیر یکی می‌سازد */
+  haloTexture?: THREE.DataTexture;
 }
 
 export interface UtilityPoleInstance {
@@ -412,25 +550,43 @@ export function createUtilityPole(opts: UtilityPoleOptions): UtilityPoleInstance
   const body = buildGalvanizedPoleBody(root, opts);
   const { armReach, lampY, bulbMat, insulatorWorldPositions } = body;
 
-  // ۵. مخروط نور در مه شب زیر چراغ برق — پهن‌تر و کم‌رنگ‌تر از قبل تا لبهٔ
-  // مخروط به‌جای «خط» یک محو شدن نرم باشد
-  const beamMat = new THREE.MeshBasicMaterial({
-    map: opts.beamTexture,
-    transparent: true,
-    opacity: 0.055,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false,
-    side: THREE.DoubleSide,
-    fog: true,
-  });
+  // ۵. پرتو مهِ شب زیر چراغ برق — دیگر یک مخروط نیمه‌شفاف با آلفای یکنواخت نیست
+  // (آن حالت روی سطح مخروط یک «نوار» روشن می‌ساخت)؛ شیدر آلفا را در لبهٔ مماسی
+  // صفر می‌کند، پس پرتو مثل یک هالهٔ نرم و محو دیده می‌شود و مرز هندسی ندارد
+  const beamMat = createLampBeamMaterial(opts.beamTexture, opts.seed);
   // مخروط مه باریک‌تر از گسترهٔ واقعی نور است (مه با فاصله رقیق می‌شود) و با
-  // ۳۲ ضلع کاملاً گرد دیده می‌شود؛ لبهٔ آن هم با پروفایل نرم تکسچر محو است
+  // ۳۲ ضلع کاملاً گرد دیده می‌شود
   const beamRadius = streetlightBeamRadius(lampY - 0.2) * 0.58;
   const beamHeight = lampY - 0.25;
   const beam = new THREE.Mesh(new THREE.ConeGeometry(beamRadius, beamHeight, 32, 1, true), beamMat);
   beam.position.set(armReach, beamHeight * 0.5, 0);
   beam.name = `LampVolumetricBeam_${opts.id}`;
   root.add(beam);
+
+  // ۵-ب. هالهٔ گردِ دور گوی چراغ: همان چیزی که چشم در شب به‌عنوان «هالهٔ نور»
+  // می‌بیند. دو لایه — یک پهنِ بسیار محو برای پخش نور در مه و یک هستهٔ کوچک‌تر
+  // برای اینکه هاله با وجود ملایم بودن، مشخص و خوانا بماند
+  const haloTexture =
+    opts.haloTexture ?? createLampHaloAlphaTexture(Math.round(opts.seed * 7) + 11);
+  const makeHalo = (name: string, scale: number, color: number, opacity: number) => {
+    const material = new THREE.SpriteMaterial({
+      map: haloTexture,
+      color,
+      transparent: true,
+      opacity,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+    });
+    material.name = `${name}Material`;
+    const sprite = new THREE.Sprite(material);
+    sprite.scale.set(scale, scale, 1);
+    sprite.position.set(armReach, lampY - 0.2, 0);
+    sprite.name = name;
+    root.add(sprite);
+    return material;
+  };
+  const haloWideMat = makeHalo(`LampHalo_${opts.id}`, 2.9, 0xffb877, 0.13);
+  const haloCoreMat = makeHalo(`LampHaloCore_${opts.id}`, 1.25, 0xffd9a8, 0.26);
 
   // ۶. SpotLight فیزیکی با لبهٔ کاملاً محو؛ penumbra = ۱ یعنی روشنایی از مرکز
   // مخروط تا لبه پیوسته کم می‌شود و هیچ مرز تیز یا لکهٔ مصنوعی روی سنگ‌فرش نمی‌ماند
@@ -459,7 +615,9 @@ export function createUtilityPole(opts: UtilityPoleOptions): UtilityPoleInstance
 
   // ۷. هالهٔ نور نرم روی سنگ‌فرش: لکه‌ای گرم با لبهٔ آلی و کاملاً محو که مرز
   // هندسی مخروط را می‌پوشاند؛ روی تاج ملایم کف می‌خوابد تا ذره‌ای شناور نباشد
-  const poolRadius = streetlightBeamRadius(lampY - 0.2) * 0.92;
+  // شعاع هاله برابر گسترهٔ واقعی همان SpotLight است، پس نور جایی که چراغ
+  // نمی‌تابد تمام نمی‌شود؛ لبه‌اش هم با پروفایل دوترمی تقریباً به صفر می‌رسد
+  const poolRadius = streetlightBeamRadius(lampY - 0.2);
   const poolTex = opts.poolTexture ?? createLampPoolAlphaTexture(Math.round(opts.seed * 13) + 7);
   const poolMat = new THREE.MeshBasicMaterial({
     color: 0xffb877,
@@ -495,7 +653,11 @@ export function createUtilityPole(opts: UtilityPoleOptions): UtilityPoleInstance
       const factor = computeStreetlampFlicker(elapsedSeconds, opts.seed, opts.profile);
       spotLight.intensity = opts.baseIntensity * SOFT_STREETLIGHT.intensityFactor * factor;
       bulbMat.emissiveIntensity = Math.max(0.08, 2.75 * factor);
-      beamMat.opacity = Math.max(0.003, 0.052 * factor);
+      // هاله، پرتو مه و استخر زمین همه با یک ضریب هم‌گام می‌شوند تا سوسوزدن
+      // طبیعی بماند (نه اینکه فقط لکهٔ زمین چشمک بزند)
+      beamMat.uniforms.uOpacity.value = Math.max(0.003, 0.1 * factor);
+      haloWideMat.opacity = Math.max(0.005, 0.13 * factor);
+      haloCoreMat.opacity = Math.max(0.01, 0.26 * factor);
       poolMat.opacity = Math.max(0.008, 0.155 * factor);
       return factor;
     },
