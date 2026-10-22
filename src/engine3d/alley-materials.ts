@@ -369,6 +369,125 @@ export function createWoodPlankMaps(baseHex = 0x6f5034, size = 128): ProceduralS
   return buildMapsFromHeightAndColor(size, heights, colorData, roughness, ao, 1, 1, 2.6);
 }
 
+/**
+ * چوب درِ اصلی لابی — کیفیت بالا برای سطح نزدیک به بازیکن.
+ *
+ * برخلاف الوار جعبه‌ها (۱۲۸ پیکسل با درز تخته)، این بافت **۵۱۲ پیکسل** است و
+ * درز تخته ندارد: یک تکهٔ چوب یک‌دست با رگهٔ عمودی ریز، خط‌های رشد مواج،
+ * منافذ ریز و لکه‌های طبیعی روشن/تیره. UV متری در ماژول در، کل لنگه را در
+ * یک کاشی می‌نشاند تا هیچ درز تکرار دیده نشود.
+ *
+ * @param baseHex رنگ پایهٔ چوب (رنگ نهایی روی متریال سفید)
+ */
+export function createLobbyDoorWoodMaps(
+  baseHex = 0x54331f,
+  size = 512,
+  seed = 4242,
+): ProceduralSurfaceMaps {
+  const count = size * size;
+  const heights = new Float32Array(count);
+  const colorData = new Uint8Array(count * 4);
+  const roughness = new Float32Array(count);
+  const ao = new Float32Array(count);
+
+  // رنگ پایه به فضای sRGB برگردانده می‌شود تا بایت‌های بافت دقیقاً همان رنگ
+  // انتخاب‌شده باشند (Color داخلی three خطی است و بی‌تبدیل، چوب را سیاه می‌کند)
+  // گره‌چوب‌ها: مرکز، شعاع افقی/عمودی و فاز حلقه‌ها — قطعی و تکرارپذیر
+  const KNOTS: ReadonlyArray<readonly [number, number, number, number, number]> = [
+    [0.22, 0.18, 0.075, 0.065, 1.7],
+    [0.68, 0.63, 0.088, 0.074, 3.1],
+    [0.44, 0.88, 0.062, 0.07, 5.4],
+  ];
+
+  const base = new THREE.Color(baseHex).convertLinearToSRGB();
+  const baseR = base.r * 255;
+  const baseG = base.g * 255;
+  const baseB = base.b * 255;
+
+  for (let py = 0; py < size; py++) {
+    const v = py / size;
+    for (let px = 0; px < size; px++) {
+      const u = px / size;
+      const idx = py * size + px;
+
+      // رگهٔ طبیعی چوب از نویزِ کشیده در راستای عمود ساخته می‌شود (نه سینوس
+      // موازی): سه لایهٔ درشت/ریز/مویی که هرکدام در ارتفاع، آرام جابه‌جا می‌شوند.
+      // نتیجه رگه‌های نامنظم با ضخامت متغیر است، نه راه‌راه ماشینی.
+      const coarse = valueNoise(u * 30, v * 0.9, seed + 3);
+      const fine = valueNoise(u * 118, v * 2.2, seed + 21);
+      const hair = valueNoise(u * 290, v * 4.4, seed + 33);
+
+      // منافذ ریز چوب — نقاط تیرهٔ پراکنده
+      const poreNoise = valueNoise(u * 210, v * 150, seed + 57);
+      const pore = clamp((poreNoise - 0.76) / 0.24, 0, 1);
+
+      // لکه‌های بزرگ کهنگی و تفاوت تنهٔ چوب
+      const mottle = valueNoise(u * 2.4, v * 1.2, seed + 71);
+
+      // چند رگهٔ تیرهٔ کشیده که از بالای در تا پایین کشیده می‌شوند
+      const streakNoise = valueNoise(u * 26, v * 0.6, seed + 89);
+      const streak = clamp((streakNoise - 0.64) / 0.36, 0, 1);
+
+      // گره‌چوب: چند حلقهٔ هم‌مرکز بیضی‌شکل که رگه را دور خود می‌پیچند
+      let knot = 0;
+      for (let k = 0; k < KNOTS.length; k++) {
+        const [kx, ky, krx, kry, kseed] = KNOTS[k];
+        const dx = (u - kx) / krx;
+        const dy = (v - ky) / kry;
+        const dist = Math.hypot(dx, dy);
+        if (dist < 1.6) {
+          const rings = 0.5 + 0.5 * Math.sin(dist * 22 + kseed);
+          knot += rings * Math.max(0, 1 - dist / 1.6) ** 1.5;
+          knot += Math.max(0, 1 - dist) * 0.6;
+        }
+      }
+      knot = clamp(knot, 0, 1.6);
+
+      const shade = clamp(
+        0.94 +
+          (coarse - 0.5) * 0.34 +
+          (fine - 0.5) * 0.5 +
+          (hair - 0.5) * 0.28 +
+          (mottle - 0.5) * 0.16 -
+          streak * 0.4 -
+          knot * 0.34 -
+          pore * 0.3,
+        0.24,
+        1.55,
+      );
+      // رگه‌های روشن کمی گرم‌ترند، منافذ سردتر و تیره‌تر
+      const warm = 0.97 + (coarse - 0.5) * 0.12 - knot * 0.04;
+
+      const off = idx * 4;
+      colorData[off] = byte(baseR * shade * (1.05 * warm));
+      colorData[off + 1] = byte(baseG * shade * (0.99 * warm));
+      colorData[off + 2] = byte(baseB * shade * (0.92 * warm));
+      colorData[off + 3] = 255;
+
+      heights[idx] = clamp(
+        0.42 +
+          (fine - 0.5) * 0.34 +
+          (hair - 0.5) * 0.26 +
+          (coarse - 0.5) * 0.16 -
+          streak * 0.14 -
+          knot * 0.3 -
+          pore * 0.34,
+        0,
+        1,
+      );
+      roughness[idx] = clamp(
+        0.7 - (fine - 0.5) * 0.12 + pore * 0.16 + streak * 0.06 + knot * 0.1 + (mottle - 0.5) * 0.08,
+        0.52,
+        0.9,
+      );
+      ao[idx] = clamp(1 - pore * 0.32 - streak * 0.12 - knot * 0.18, 0.55, 1);
+    }
+  }
+
+  // یک کاشی روی کل در: UV متری خودش مقیاس را تعیین می‌کند، پس تکرار ۱×۱
+  return buildMapsFromHeightAndColor(size, heights, colorData, roughness, ao, 1, 1, 2.1);
+}
+
 /** ماسک آلفای ارگانیک برای لبهٔ نرم چاله‌های آب باران روی سنگ‌فرش */
 export function createPuddleAlphaMap(seed = 307, size = 128): THREE.DataTexture {
   const data = new Uint8Array(size * size * 4);

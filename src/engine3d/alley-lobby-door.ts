@@ -106,6 +106,81 @@ export interface LobbyDoorInstance {
   update(elapsedSeconds: number): void;
 }
 
+/**
+ * مقیاس UV متری چوب: یک کاشی بافت روی ۲٫۵ متر.
+ * کل لنگه (۲٫۵ متر) دقیقاً در یک کاشی جا می‌شود، پس هیچ درز تکرار روی در نمی‌افتد.
+ */
+export const WOOD_UV_SCALE = 0.4;
+
+/**
+ * UV متریک برای چوب در: به‌جای UV پیش‌فرض جعبه (۰..۱ روی هر رخ، که بافت را
+ * می‌کشد)، u و v از مختصات متری همان رخ ساخته می‌شوند. نتیجه: رگهٔ چوب روی
+ * همهٔ قطعات — لنگه، پنل پایین و لبه‌ها — با یک مقیاس فیزیکی یکسان می‌نشیند و
+ * بین پنل پایین و چوب کنار شیشه پیوستگی دارد.
+ */
+export function applyMetricWoodUv(
+  geometry: THREE.BufferGeometry,
+  options: { x?: number; y?: number; z?: number; uOffset?: number } = {},
+): THREE.BufferGeometry {
+  const position = geometry.getAttribute('position');
+  const normal = geometry.getAttribute('normal');
+  if (!position || !normal) return geometry;
+
+  const ox = options.x ?? 0;
+  const oy = options.y ?? 0;
+  const oz = options.z ?? 0;
+  const uOffset = options.uOffset ?? 0;
+  const uv = new Float32Array(position.count * 2);
+
+  for (let i = 0; i < position.count; i++) {
+    const nx = Math.abs(normal.getX(i));
+    const ny = Math.abs(normal.getY(i));
+    const nz = Math.abs(normal.getZ(i));
+    const x = position.getX(i) + ox;
+    const y = position.getY(i) + oy;
+    const z = position.getZ(i) + oz;
+
+    let u: number;
+    let v: number;
+    if (nz >= nx && nz >= ny) {
+      // رخ روبه‌رو/پشت: عرض افقی × ارتفاع — رگه عمودی می‌ماند
+      u = x;
+      v = y;
+    } else if (nx >= ny) {
+      // رخ جانبی: عمق × ارتفاع
+      u = z;
+      v = y;
+    } else {
+      // رخ بالا/پایین: عرض × عمق
+      u = x;
+      v = z;
+    }
+    uv[i * 2] = u * WOOD_UV_SCALE + uOffset;
+    uv[i * 2 + 1] = v * WOOD_UV_SCALE;
+  }
+
+  geometry.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
+  return geometry;
+}
+
+/** مستطیل با گوشه‌های گرد برای پنل برجستهٔ نیمهٔ پایین */
+function roundedRectShape(width: number, height: number, radius: number): THREE.Shape {
+  const w = width / 2;
+  const h = height / 2;
+  const r = Math.min(radius, w, h);
+  const shape = new THREE.Shape();
+  shape.moveTo(-w + r, -h);
+  shape.lineTo(w - r, -h);
+  shape.quadraticCurveTo(w, -h, w, -h + r);
+  shape.lineTo(w, h - r);
+  shape.quadraticCurveTo(w, h, w - r, h);
+  shape.lineTo(-w + r, h);
+  shape.quadraticCurveTo(-w, h, -w, h - r);
+  shape.lineTo(-w, -h + r);
+  shape.quadraticCurveTo(-w, -h, -w + r, -h);
+  return shape;
+}
+
 /** تغییر ملایم درخشش شیشه‌ها؛ همیشه نزدیک ۱ و هرگز صفر نمی‌شود */
 export function lobbyDoorGlowPulse(elapsedSeconds: number): number {
   if (!Number.isFinite(elapsedSeconds)) return 1;
@@ -123,14 +198,21 @@ export function createLobbyDoor(options: LobbyDoorOptions = {}): LobbyDoorInstan
   const frontZ = LOBBY_DOOR.leafThickness / 2;
 
   // ------------------------------------------------------------------ متریال
-  // قهوه‌ای تیرهٔ در: بدون هیچ براقیت اضافه، با بافت چوب تیرهٔ کوچه
+  // قهوه‌ای تیرهٔ در: چوب یک‌دست با بافت ۵۱۲ پیکسلی، رگهٔ عمودی و منافذ ریز.
+  // وقتی بافت می‌آید، رنگ از خود بافت می‌خوانده می‌شود و تینت متریال روشن و
+  // گرم می‌ماند؛ بدون بافت، همان قهوه‌ای تیرهٔ پایه.
+  const hasWoodMaps = Boolean(options.woodMaps?.colorMap);
   const woodMat = new THREE.MeshStandardMaterial({
-    color: 0x40281a,
+    color: hasWoodMaps ? 0xfff1e2 : 0x40281a,
     map: options.woodMaps?.colorMap ?? null,
     normalMap: options.woodMaps?.normalMap ?? null,
     roughnessMap: options.woodMaps?.roughnessMap ?? null,
-    roughness: 0.72,
-    metalness: 0.06,
+    normalScale: new THREE.Vector2(1.25, 1.25),
+    // زبری نهایی = ضریب × نقشهٔ زبری؛ نقشه خودش ۰٫۵–۰٫۸۶ می‌دهد
+    roughness: hasWoodMaps ? 0.92 : 0.72,
+    metalness: 0.03,
+    envMap: options.environmentMap ?? null,
+    envMapIntensity: hasWoodMaps ? 0.34 : 0,
   });
   woodMat.name = 'LobbyDoorWood';
 
@@ -359,56 +441,71 @@ export function createLobbyDoor(options: LobbyDoorOptions = {}): LobbyDoorInstan
   const handles: THREE.Mesh[] = [];
 
   const buildLeaf = (side: -1 | 1): THREE.Group => {
+    // هر لنگه از ناحیهٔ متفاوتی از بافت نمونه می‌گیرد تا دو لنگه دوقلوی هم‌رگه نباشند
+    const grainUOffset = side < 0 ? 0 : 0.37;
     const leaf = new THREE.Group();
     leaf.name = side < 0 ? 'LobbyDoorLeafLeft' : 'LobbyDoorLeafRight';
     leaf.position.set(side * leafCenterX, 0, 0);
 
-    // بدنهٔ چوبی قهوه‌ای تیره
-    const slab = new THREE.Mesh(
+    // بدنهٔ چوبی قهوه‌ای تیره — UV متری تا رگه در مقیاس واقعی بنشیند
+    const slabGeo = applyMetricWoodUv(
       new THREE.BoxGeometry(LOBBY_DOOR.leafWidth, LOBBY_DOOR.leafHeight, LOBBY_DOOR.leafThickness),
-      woodMat,
+      { y: LOBBY_DOOR.leafHeight / 2, uOffset: grainUOffset },
     );
+    const slab = new THREE.Mesh(slabGeo, woodMat);
     slab.name = `${leaf.name}_Slab`;
     slab.position.y = LOBBY_DOOR.leafHeight / 2;
     slab.castShadow = true;
     slab.receiveShadow = true;
     leaf.add(slab);
 
-    // نیمهٔ پایین چوبی: پنل برجسته + قاب باریک
-    const lowerPanel = new THREE.Mesh(
-      new THREE.BoxGeometry(
-        LOBBY_DOOR.leafWidth - 0.26,
-        LOBBY_DOOR.lowerPanelHeight,
-        0.04,
-      ),
-      woodDeepMat,
+    // نیمهٔ پایین چوبی: همان **چوب کنار شیشه** (نه چوب تیره‌تر جدا) با پنل
+    // برجستهٔ لبه‌پخ‌خورده و UV متری پیوسته با بدنهٔ لنگه
+    const panelGeometry = new THREE.ExtrudeGeometry(
+      roundedRectShape(LOBBY_DOOR.leafWidth - 0.26, LOBBY_DOOR.lowerPanelHeight, 0.045),
+      {
+        depth: 0.02,
+        bevelEnabled: true,
+        bevelThickness: 0.01,
+        bevelSize: 0.01,
+        bevelSegments: 3,
+        curveSegments: 6,
+      },
     );
+    panelGeometry.center();
+    applyMetricWoodUv(panelGeometry, {
+      y: LOBBY_DOOR.lowerPanelCenterY,
+      uOffset: grainUOffset,
+    });
+    const lowerPanel = new THREE.Mesh(panelGeometry, woodMat);
     lowerPanel.name = `${leaf.name}_LowerPanel`;
-    lowerPanel.position.set(0, LOBBY_DOOR.lowerPanelCenterY, frontZ + 0.018);
+    lowerPanel.position.set(0, LOBBY_DOOR.lowerPanelCenterY, frontZ + 0.012);
     lowerPanel.castShadow = true;
     leaf.add(lowerPanel);
 
-    // قاب تزئینی پنل پایین (چهار نوار برنجی نازک)
-    const panelFrameWidth = LOBBY_DOOR.leafWidth - 0.18;
-    const panelFrameHeight = LOBBY_DOOR.lowerPanelHeight + 0.08;
+    // نوار برنجی نازک دقیقاً روی لبهٔ پنل (قلاب‌بندی)، نه شناور روی سطح در
+    const panelWidth = LOBBY_DOOR.leafWidth - 0.26;
+    const panelHeight = LOBBY_DOOR.lowerPanelHeight;
+    const bead = 0.022;
+    const beadZ = frontZ + 0.03;
     for (const py of [-1, 1] as const) {
       const rail = new THREE.Mesh(
-        new THREE.BoxGeometry(panelFrameWidth, 0.03, 0.028),
+        new THREE.BoxGeometry(panelWidth, bead, 0.022),
         brassMat,
       );
       rail.position.set(
         0,
-        LOBBY_DOOR.lowerPanelCenterY + py * (panelFrameHeight / 2),
-        frontZ + 0.012,
+        LOBBY_DOOR.lowerPanelCenterY + py * (panelHeight / 2 - bead / 2),
+        beadZ,
       );
       leaf.add(rail);
     }
     for (const px of [-1, 1] as const) {
-      const stile = new THREE.Mesh(new THREE.BoxGeometry(0.03, panelFrameHeight, 0.028), brassMat);
+      const stile = new THREE.Mesh(new THREE.BoxGeometry(bead, panelHeight, 0.022), brassMat);
       stile.position.set(
-        px * (panelFrameWidth / 2),
+        px * (panelWidth / 2 - bead / 2),
         LOBBY_DOOR.lowerPanelCenterY,
-        frontZ + 0.012,
+        beadZ,
       );
       leaf.add(stile);
     }
