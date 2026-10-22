@@ -147,17 +147,32 @@ describe('درِ اصلی لابی: نیم‌دایرهٔ شیشه‌ای، دو
     expect(leftBox.max.y).toBeCloseTo(LOBBY_DOOR.leafHeight, 3);
     expect(leftBox.min.y).toBeGreaterThanOrEqual(-0.001);
 
-    // قهوه‌ای تیره و مات
+    // قهوه‌ای تیره و مات — رنگ از بافت چوب می‌آید و تینت متریال روشن و گرم است
     const slab = alley.group.getObjectByName('LobbyDoorLeafLeft_Slab') as THREE.Mesh<
       THREE.BoxGeometry,
       THREE.MeshStandardMaterial
     >;
     expect(slab).toBeDefined();
     const wood = slab.material;
+    expect(wood.map).toBeInstanceOf(THREE.DataTexture);
     expect(wood.color.r).toBeGreaterThan(wood.color.b);
-    expect(wood.color.getHex()).toBeLessThan(0x6a5a4a);
     expect(wood.roughness).toBeGreaterThan(0.5);
     expect(wood.metalness).toBeLessThan(0.2);
+    // خودِ بافت قهوه‌ای تیره و گرم است (R > G > B و میانگین تاریک)
+    const texture = wood.map as THREE.DataTexture;
+    const pixels = texture.image.data as Uint8Array;
+    let sumR = 0;
+    let sumG = 0;
+    let sumB = 0;
+    for (let i = 0; i < pixels.length; i += 4) {
+      sumR += pixels[i];
+      sumG += pixels[i + 1];
+      sumB += pixels[i + 2];
+    }
+    const total = pixels.length / 4;
+    expect(sumR / total).toBeGreaterThan(sumG / total);
+    expect(sumG / total).toBeGreaterThan(sumB / total);
+    expect(sumR / total).toBeLessThan(120);
     // هر دو لنگه از یک جنس‌اند
     const rightSlab = alley.group.getObjectByName('LobbyDoorLeafRight_Slab') as THREE.Mesh;
     expect(rightSlab.material).toBe(wood);
@@ -380,6 +395,104 @@ describe('درِ اصلی لابی: نیم‌دایرهٔ شیشه‌ای، دو
 
     // دیگر بالای قوس (جای قبلی) چراغی نیست
     expect(lamps.position.y).toBeLessThan(arcApexY - 0.2);
+
+    alley.dispose();
+  });
+
+  it('چوب در کیفیت بالا دارد: بافت ۵۱۲ پیکسلی اختصاصی با رگه، برجستگی و زبری', () => {
+    const alley = buildAlley();
+    const slab = alley.group.getObjectByName('LobbyDoorLeafLeft_Slab') as THREE.Mesh<
+      THREE.BoxGeometry,
+      THREE.MeshStandardMaterial
+    >;
+    const wood = slab.material;
+
+    // بافت اختصاصی در — ۵۱۲ پیکسل، نه ۱۲۸ پیکسلِ الوار جعبه‌ها
+    expect(wood.map).toBeInstanceOf(THREE.DataTexture);
+    expect((wood.map as THREE.DataTexture).image.width).toBe(512);
+    expect(wood.normalMap).toBeInstanceOf(THREE.DataTexture);
+    expect((wood.normalMap as THREE.DataTexture).image.width).toBe(512);
+    expect(wood.roughnessMap).toBeInstanceOf(THREE.DataTexture);
+    // برجستگی رگه واضح است
+    expect(wood.normalScale.x).toBeGreaterThan(1);
+
+    // رگه واقعاً دیده می‌شود: روشنایی بافت پراکندگی محسوس دارد و تیره و گرم است
+    const px = (wood.map as THREE.DataTexture).image.data as Uint8Array;
+    const lum: number[] = [];
+    for (let i = 0; i < px.length; i += 4) {
+      lum.push(0.2126 * px[i] + 0.7152 * px[i + 1] + 0.0722 * px[i + 2]);
+    }
+    const mean = lum.reduce((a, l) => a + l, 0) / lum.length;
+    const sd = Math.sqrt(lum.reduce((a, l) => a + (l - mean) ** 2, 0) / lum.length);
+    expect(mean).toBeGreaterThan(25);
+    expect(mean).toBeLessThan(110);
+    // رگه و گره‌چوب کنتراست محسوس دارند (حداقل ~۲۰٪ میانگین)
+    expect(sd).toBeGreaterThan(6);
+    expect(sd / mean).toBeGreaterThan(0.18);
+
+    // زبری هم نقاشی دارد، نه عدد ثابت
+    const rp = (wood.roughnessMap as THREE.DataTexture).image.data as Uint8Array;
+    let rmin = 255;
+    let rmax = 0;
+    for (let i = 0; i < rp.length; i += 4) {
+      rmin = Math.min(rmin, rp[i]);
+      rmax = Math.max(rmax, rp[i]);
+    }
+    expect(rmax - rmin).toBeGreaterThan(30);
+
+    alley.dispose();
+  });
+
+  it('چوب نیمهٔ پایین همان چوب کنار شیشه است و رگه پیوسته ادامه دارد', () => {
+    const alley = buildAlley();
+    // فقط رخ روبه‌روی چوب (نرمال +z) را می‌سنجیم؛ رخ‌های کناری UV مختصات عمق دارند
+    const range = (geometry: THREE.BufferGeometry) => {
+      const uv = geometry.getAttribute('uv');
+      const normal = geometry.getAttribute('normal');
+      const out = { uMin: Infinity, uMax: -Infinity, vMin: Infinity, vMax: -Infinity };
+      for (let i = 0; i < uv.count; i++) {
+        if (normal.getZ(i) < 0.9) continue;
+        out.uMin = Math.min(out.uMin, uv.getX(i));
+        out.uMax = Math.max(out.uMax, uv.getX(i));
+        out.vMin = Math.min(out.vMin, uv.getY(i));
+        out.vMax = Math.max(out.vMax, uv.getY(i));
+      }
+      return out;
+    };
+
+    for (const id of ['Left', 'Right']) {
+      const slab = alley.group.getObjectByName(`LobbyDoorLeaf${id}_Slab`) as THREE.Mesh<
+        THREE.BoxGeometry,
+        THREE.MeshStandardMaterial
+      >;
+      const panel = alley.group.getObjectByName(`LobbyDoorLeaf${id}_LowerPanel`) as THREE.Mesh<
+        THREE.BufferGeometry,
+        THREE.MeshStandardMaterial
+      >;
+
+      // یک متریال مشترک — نه چوب تیره‌ترِ جدا برای نیمهٔ پایین
+      expect(panel.material, id).toBe(slab.material);
+      expect(panel.material.name).toBe('LobbyDoorWood');
+
+      const slabUv = range(slab.geometry);
+      const panelUv = range(panel.geometry);
+      // پنل زیرمجموعهٔ همان ناحیهٔ UV لنگه است ⇒ رگه بدون پرش ادامه می‌یابد
+      expect(panelUv.uMin).toBeGreaterThanOrEqual(slabUv.uMin + 1e-6);
+      expect(panelUv.uMax).toBeLessThanOrEqual(slabUv.uMax - 1e-6);
+      expect(panelUv.vMin).toBeGreaterThanOrEqual(slabUv.vMin + 1e-6);
+      expect(panelUv.vMax).toBeLessThanOrEqual(slabUv.vMax - 1e-6);
+      // و کل ارتفاع لنگه دقیقاً یک کاشی است ⇒ هیچ درز تکرار روی در نمی‌افتد
+      expect(slabUv.vMax - slabUv.vMin).toBeCloseTo(1, 3);
+    }
+
+    // دو لنگه از ناحیهٔ متفاوت بافت نمونه می‌گیرند، پس دوقلوی هم‌رگه نیستند
+    const leftUv = range(
+      (alley.group.getObjectByName('LobbyDoorLeafLeft_Slab') as THREE.Mesh).geometry,
+    );
+    const rightUv = range(
+      (alley.group.getObjectByName('LobbyDoorLeafRight_Slab') as THREE.Mesh).geometry,
+    );
+    expect(Math.abs(leftUv.uMin - rightUv.uMin)).toBeGreaterThan(0.2);
 
     alley.dispose();
   });
