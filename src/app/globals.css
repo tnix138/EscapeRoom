@@ -10430,3 +10430,53 @@ table {
     min-height: 44px;
   }
 }
+
+/* ==========================================================================
+   بازبینی امیرعلی — «کلید کشویی» صفحه‌کلید قفل
+   قاعده: دکمهٔ کشویی حداقل ۴۴px لمس دارد، `aria-expanded` وضعیت را می‌گوید و
+   صفحه‌کلیدِ بسته با `hidden` کاملاً از چیدمان حذف می‌شود تا مودال شلوغ نباشد.
+   ========================================================================== */
+
+.keypad-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  margin: 4px auto 0;
+  padding: 6px 14px;
+  border: 1px solid rgba(175, 137, 77, 0.4);
+  border-radius: 8px;
+  background: rgba(30, 22, 19, 0.72);
+  color: #d9c39a;
+  font-family: "Vazirmatn Variable", Tahoma, sans-serif;
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  cursor: pointer;
+}
+
+.keypad-toggle:hover {
+  background: rgba(80, 58, 40, 0.72);
+}
+
+.keypad-toggle:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+.keypad-toggle-chevron {
+  display: inline-block;
+  width: 1em;
+  color: #b59452;
+  text-align: center;
+}
+
+.brass-keypad[hidden] {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .keypad-toggle {
+    transition: none;
+  }
+}
