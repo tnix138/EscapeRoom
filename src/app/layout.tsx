@@ -11,6 +11,10 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
+  /* گوشی‌های دارای بریدگی/نوار خانه: صحنه تا زیر لبه کشیده می‌شود و
+     فاصلهٔ ایمن با env(safe-area-inset-*) در CSS تأمین می‌شود. */
+  viewportFit: 'cover',
+  interactiveWidget: 'resizes-content',
   themeColor: '#120d10',
   colorScheme: 'dark',
 };

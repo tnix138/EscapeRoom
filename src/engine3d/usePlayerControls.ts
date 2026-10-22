@@ -13,6 +13,7 @@ import { PlayerController, inputFromKeyboard } from './player-controller';
 import type { PlayerTransform, WorldBounds, MovementConfig } from './types';
 import { DEFAULT_ALLEY_BOUNDS, DEFAULT_ALLEY_SPAWN, DEFAULT_MOVEMENT_CONFIG } from './types';
 import type { ThreeEngine } from './three-engine';
+import { attachTouchControls, EMPTY_TOUCH_MOVE, prefersTouchControls, type TouchMoveVector } from './touch-controls';
 
 export interface UsePlayerControlsOptions {
   engine: ThreeEngine | null;
@@ -32,6 +33,8 @@ export function usePlayerControls({
   const controllerRef = useRef<PlayerController | null>(null);
   const keysRef = useRef<Set<string>>(new Set());
   const mouseDownRef = useRef(false);
+  /* ورودی پد لمسی؛ در نبود ویرچوال‌پد همه‌چیز false است. */
+  const touchMoveRef = useRef<TouchMoveVector>({ ...EMPTY_TOUCH_MOVE });
   const lastMouseRef = useRef<{ x: number; y: number } | null>(null);
   const [transform, setTransform] = useState<PlayerTransform>(() => ({
     x: initialTransform?.x ?? DEFAULT_ALLEY_SPAWN.position.x,
@@ -149,6 +152,22 @@ export function usePlayerControls({
     };
   }, [enabled, engine, config.mouseSensitivity]);
 
+  // پد حرکت لمسی — فقط روی دستگاه‌های با ورودی انگشتی
+  useEffect(() => {
+    if (!enabled || !engine) return;
+    const container = engine.renderer.domElement.parentElement;
+    if (!container) return;
+    if (!prefersTouchControls()) return;
+
+    const handle = attachTouchControls(container, (vector) => {
+      touchMoveRef.current = vector;
+    });
+    return () => {
+      touchMoveRef.current = { ...EMPTY_TOUCH_MOVE };
+      handle.dispose();
+    };
+  }, [enabled, engine]);
+
   // لوپ حرکت
   useEffect(() => {
     if (!enabled || !engine || !controllerRef.current) return;
@@ -162,8 +181,18 @@ export function usePlayerControls({
       const delta = (now - last) / 1000;
       last = now;
 
-      const input = inputFromKeyboard(keysRef.current);
-      const t = controllerRef.current!.tick(input, delta);
+      const keyboard = inputFromKeyboard(keysRef.current);
+      const touch = touchMoveRef.current;
+      const t = controllerRef.current!.tick(
+        {
+          forward: keyboard.forward || touch.forward,
+          backward: keyboard.backward || touch.backward,
+          left: keyboard.left || touch.left,
+          right: keyboard.right || touch.right,
+          sprint: keyboard.sprint || touch.sprint,
+        },
+        delta,
+      );
       setTransform(t);
 
       // اعمال به دوربین Three

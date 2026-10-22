@@ -198,9 +198,22 @@ function DarkCore({ room, onInspectHotspot, onSendWhisper }: DarkAuditoriumThree
   }, [nearHotspot]);
 
   if (!isWebGLAvailable) {
-    return <div dir="rtl" style={{ padding: 24, color: '#e8dcc8', background: '#0a0a12' }}>WebGL در دسترس نیست — نمای کلاسیک فعال است.</div>;
+    return (
+      <div className="scene-fallback">
+        <h2>🖥️ WebGL در دسترس نیست</h2>
+        <p>نمای سه‌بعدی روی این مرورگر اجرا نمی‌شود؛ با دکمهٔ «نمای کلاسیک» همان سالن را ببینید.</p>
+      </div>
+    );
   }
-  if (error) return <div style={{ color: '#ff8a8a' }}>خطا: {error}</div>;
+  if (error) {
+    return (
+      <div className="scene-fallback">
+        <h2>⚠️ خطا در موتور سه‌بعدی</h2>
+        <p>با دکمهٔ «نمای کلاسیک» ادامه دهید یا صفحه را تازه کنید.</p>
+        <pre>{error}</pre>
+      </div>
+    );
+  }
 
   const hotspotMeta: Record<AuditoriumHotspotId, { icon: string; title: string; desc: string }> = {
     'shattered-chandelier': { icon: '💎', title: 'لوستر شکسته', desc: 'لوستر کریستالی وسط سالن خرد شده — زنجیر پاره‌اش آرام تاب می‌خورد.' },
@@ -230,38 +243,54 @@ function DarkCore({ room, onInspectHotspot, onSendWhisper }: DarkAuditoriumThree
       />
 
       {/* HUD */}
-      <div style={{ position: 'absolute', top: 12, left: 12, right: 12, display: 'flex', justifyContent: 'space-between', direction: 'rtl', pointerEvents: 'none' }}>
-        <div style={{ background: 'rgba(0,0,0,0.7)', color: '#e8dcc8', padding: '8px 12px', borderRadius: 8, fontSize: 12, pointerEvents: 'auto' }}>
-          🌑 {auditorium?.chapterStatusBanner ?? 'سالن تاریک — زن و مرد غیب شده‌اند'}
-          <div style={{ marginTop: 4, fontSize: 11, opacity: 0.8 }}>W/A/S/D حرکت — ماوس نگاه — E بررسی</div>
+      <div className="darkhall-hud">
+        <div className="darkhall-hint">
+          <span className="darkhall-banner">🌑 {auditorium?.chapterStatusBanner ?? 'سالن تاریک — زن و مرد غیب شده‌اند'}</span>
+          <span className="darkhall-keys">
+            <span className="alley3d-desktop-only">W/A/S/D حرکت — ماوس نگاه — E بررسی</span>
+            <span className="alley3d-touch-only">پد جهت‌دار حرکت — کشیدن انگشت نگاه</span>
+          </span>
           {nearHotspot && (
-            <div style={{ marginTop: 6, color: '#c9a86a' }}>
-              🎯 {hotspotMeta[nearHotspot].icon} {hotspotMeta[nearHotspot].title} — E برای بررسی {inspecting ? '(در حال ثبت…)' : ''}
+            <div className="darkhall-near">
+              🎯 {hotspotMeta[nearHotspot].icon} {hotspotMeta[nearHotspot].title} —{' '}
+              <span className="alley3d-desktop-only">E برای بررسی</span>
+              <span className="alley3d-touch-only">بررسی کنید</span> {inspecting ? '(در حال ثبت…)' : ''}
             </div>
           )}
         </div>
-        <button type="button" onClick={() => requestPointerLock()} style={{ pointerEvents: 'auto', padding: '6px 12px', borderRadius: 6, border: '1px solid #c9a86a', background: 'rgba(0,0,0,0.6)', color: '#e8dcc8', fontSize: 11, cursor: 'pointer' }}>
-          {isPointerLocked ? '🔓 خروج' : '🔒 قفل ماوس'}
-        </button>
+        <div className="darkhall-actions">
+          {/* روی گوشی کلید E وجود ندارد؛ این دکمه همان بررسی را انجام می‌دهد. */}
+          <button
+            type="button"
+            className="darkhall-button darkhall-inspect"
+            onClick={() => void handleInspect()}
+            disabled={!nearHotspot || inspecting}
+          >
+            🎯 بررسی
+          </button>
+          <button type="button" className="darkhall-button darkhall-lock" onClick={() => requestPointerLock()}>
+            {isPointerLocked ? '🔓 خروج' : '🔒 قفل ماوس'}
+          </button>
+        </div>
       </div>
 
       {/* کارت hotspot */}
       {selectedHotspot && (
-        <div style={{ position: 'absolute', top: 80, right: 20, width: 320, background: 'rgba(15,10,10,0.92)', color: '#e8dcc8', padding: 16, borderRadius: 12, border: '1px solid #c9a86a', direction: 'rtl', pointerEvents: 'auto' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div className="darkhall-card">
+          <div className="darkhall-card-head">
             <strong>{hotspotMeta[selectedHotspot].icon} {hotspotMeta[selectedHotspot].title}</strong>
-            <button type="button" onClick={() => setSelectedHotspot(null)} style={{ background: 'none', border: 'none', color: '#e8dcc8', cursor: 'pointer' }}>✕</button>
+            <button type="button" className="darkhall-card-close" onClick={() => setSelectedHotspot(null)} aria-label="بستن کارت">✕</button>
           </div>
-          <p style={{ marginTop: 10, fontSize: 13, lineHeight: 1.7 }}>{hotspotMeta[selectedHotspot].desc}</p>
-          <div style={{ marginTop: 12, fontSize: 12 }}>
+          <p>{hotspotMeta[selectedHotspot].desc}</p>
+          <div className="darkhall-card-meta">
             بررسی‌شده توسط: {(auditorium?.inspectedHotspots[selectedHotspot] ?? []).join('، ') || 'هیچ‌کس هنوز'}
           </div>
         </div>
       )}
 
       {/* چت */}
-      <div style={{ position: 'absolute', bottom: 12, left: 12, width: 340, background: 'rgba(0,0,0,0.65)', borderRadius: 8, padding: 8, direction: 'rtl', pointerEvents: 'auto' }}>
-        <div style={{ maxHeight: 120, overflow: 'auto', marginBottom: 8 }}>
+      <div className="darkhall-chat">
+        <div className="darkhall-chat-log">
           {room.messages.slice(-10).map((m) => (
             <div key={m.id} style={{ fontSize: 12, color: '#e8dcc8', marginBottom: 4 }}>
               <strong>{m.senderName}:</strong> {m.text}
@@ -275,10 +304,10 @@ function DarkCore({ room, onInspectHotspot, onSendWhisper }: DarkAuditoriumThree
             void onSendWhisper(whisper);
             setWhisper('');
           }}
-          style={{ display: 'flex', gap: 6 }}
+          className="darkhall-chat-form"
         >
-          <input value={whisper} onChange={(e) => setWhisper(e.target.value)} placeholder="نجوا در تاریکی…" style={{ flex: 1, padding: '6px 8px', borderRadius: 6, border: '1px solid #444', background: '#1a1a2e', color: '#e8dcc8', fontSize: 12 }} maxLength={300} />
-          <button type="submit" style={{ padding: '6px 10px', borderRadius: 6, border: '1px solid #c9a86a', background: '#2a1a1a', color: '#e8dcc8', fontSize: 12, cursor: 'pointer' }}>ارسال</button>
+          <input className="darkhall-chat-input" value={whisper} onChange={(e) => setWhisper(e.target.value)} placeholder="نجوا در تاریکی…" maxLength={300} />
+          <button type="submit" className="darkhall-chat-send">ارسال</button>
         </form>
       </div>
     </div>
@@ -288,7 +317,7 @@ function DarkCore({ room, onInspectHotspot, onSendWhisper }: DarkAuditoriumThree
 export default function DarkAuditoriumThreeScene(props: DarkAuditoriumThreeSceneProps) {
   return (
     <ThreeErrorBoundary>
-      <div style={{ width: '100%', height: '100%', minHeight: 600, background: '#050508', position: 'relative' }}>
+      <div className="darkhall-stage">
         <DarkCore {...props} />
       </div>
     </ThreeErrorBoundary>
