@@ -32,6 +32,8 @@ import {
   ALLEY_GUIDE_BOARD_SURFACE_X,
   ALLEY_GUIDE_LAMP_X,
   ALLEY_GUIDE_WALL_INSET,
+  ALLEY_GUIDE_BOARD_SURFACE,
+  ALLEY_GUIDE_LAMP,
   ALLEY_ROW_CHART_LOCAL_OFFSET_X,
 } from './alley-guide-layout';
 import {
@@ -188,6 +190,22 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
     roughness: 0.72,
     metalness: 0.06,
   });
+
+  // سطح هر دو تابلوی راهنما (پوستر چپ و جدول راست) از یک دستور ساخته می‌شود تا
+  // جنس و درخشششان دقیقاً یکی باشد؛ پیش‌تر جدول راست براق‌تر بود و هالهٔ نورش
+  // با پوستر چپ فرق داشت
+  const createGuideBoardSurfaceMaterial = (texture: THREE.Texture) =>
+    new THREE.MeshStandardMaterial({
+      map: texture,
+      emissiveMap: texture,
+      emissive: new THREE.Color(ALLEY_GUIDE_BOARD_SURFACE.emissive),
+      emissiveIntensity: ALLEY_GUIDE_BOARD_SURFACE.emissiveIntensity,
+      roughness: ALLEY_GUIDE_BOARD_SURFACE.roughness,
+      metalness: ALLEY_GUIDE_BOARD_SURFACE.metalness,
+      polygonOffset: true,
+      polygonOffsetFactor: -2,
+      polygonOffsetUnits: -2,
+    });
 
   const cratePlankMat = new THREE.MeshStandardMaterial({
     color: 0x9b7650,
@@ -912,17 +930,7 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
   // صفحهٔ پوستر با رزولوشن بالا، ۴.۵ سانتی‌متر جلوتر از تختهٔ پشتی، رو به +X در ارتفاع چشم بازیکن
   const posterPlane = new THREE.Mesh(
     new THREE.PlaneGeometry(2.82, 2.18),
-    new THREE.MeshStandardMaterial({
-      map: playbillSign.texture,
-      emissiveMap: playbillSign.texture,
-      emissive: new THREE.Color(0xfff1d6),
-      emissiveIntensity: 0.34,
-      roughness: 0.56,
-      metalness: 0.04,
-      polygonOffset: true,
-      polygonOffsetFactor: -2,
-      polygonOffsetUnits: -2,
-    }),
+    createGuideBoardSurfaceMaterial(playbillSign.texture),
   );
   posterPlane.rotation.y = Math.PI / 2;
   // فاصلهٔ صفحهٔ پوستر از دیوار از ماژول چیدمان می‌آید تا با جدول ردیف‌های سمت
@@ -964,21 +972,41 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
   marbleLedge.castShadow = true;
   boothGroup.add(marbleLedge);
 
-  // قاب برنجی جدول، دقیقاً به همان الگوی ویترین چپ روی دیوار می‌نشیند:
-  // صفحهٔ جدول ۴٫۵ سانتی‌متر جلوتر از قاب و لبهٔ قاب ۰٫۸۲ متر از دیوار.
+  // بدنهٔ جدول، دقیقاً به همان الگوی ویترین چپ روی دیوار می‌نشیند:
+  // صفحهٔ جدول ۴٫۵ سانتی‌متر جلوتر از بدنه و لبهٔ بدنه ۰٫۸۲ متر از دیوار.
+  //
+  // جنس بدنه عوض شد: پیش‌تر تمام این پنل برنجِ براق بود و چراغ مطالعه رویش
+  // می‌تابید و «دیواره‌های» سمت راست را روشن نشان می‌داد، در حالی‌که ویترین چپ
+  // چوب تیره است و نوری برنمی‌گرداند. حالا هر دو یک جنس چوب تیره دارند و فقط
+  // چهار بازوی نازک برنجی (هم‌اندازهٔ چپ) دور صفحه می‌ماند.
   const boothFrameDepth = 1.92;
-  const boothUpperFrame = new THREE.Mesh(new THREE.BoxGeometry(boothFrameDepth, 1.98, 2.98), antiqueBrassMat);
-  boothUpperFrame.name = 'RowChartBrassFrame';
-  boothUpperFrame.position.set(
+  const boothFrameLocalX =
     ALLEY_GUIDE_BOARD_SURFACE_X.rowChart
       + ALLEY_GUIDE_BOARD_FRAME_CLEARANCE
       + boothFrameDepth / 2
-      - boothGroup.position.x,
-    2.16,
-    anchors.rowChart.z,
-  );
+      - boothGroup.position.x;
+  const boothUpperFrame = new THREE.Mesh(new THREE.BoxGeometry(boothFrameDepth, 1.98, 2.98), darkWoodMat);
+  boothUpperFrame.name = 'RowChartBoardFrame';
+  boothUpperFrame.position.set(boothFrameLocalX, 2.16, anchors.rowChart.z);
   boothUpperFrame.castShadow = true;
+  boothUpperFrame.receiveShadow = true;
   boothGroup.add(boothUpperFrame);
+
+  // بازوهای برنجی پیرامون جدول — همان ضخامت و همان فاصله‌ای که چهار بازوی ویترین
+  // چپ دارند: مثل آن‌ها ۳٫۵ سانتی‌متر جلوتر از سطح تابلو بیرون می‌زنند
+  const chartTrimX = anchors.rowChart.x + ALLEY_ROW_CHART_LOCAL_OFFSET_X + 0.015;
+  for (const sy of [-1, 1] as const) {
+    const hTrim = new THREE.Mesh(new THREE.BoxGeometry(0.10, 0.11, 3.06), antiqueBrassMat);
+    hTrim.position.set(chartTrimX, 2.16 + sy * 0.90, anchors.rowChart.z);
+    hTrim.name = `RowChartBoardTrim${sy > 0 ? 'Top' : 'Bottom'}`;
+    boothGroup.add(hTrim);
+  }
+  for (const sz of [-1, 1] as const) {
+    const vTrim = new THREE.Mesh(new THREE.BoxGeometry(0.10, 2.00, 0.11), antiqueBrassMat);
+    vTrim.position.set(chartTrimX, 2.16, anchors.rowChart.z + sz * 1.48);
+    vTrim.name = `RowChartBoardTrim${sz > 0 ? 'Right' : 'Left'}`;
+    boothGroup.add(vTrim);
+  }
 
   const boothRoof = new THREE.Mesh(new THREE.BoxGeometry(2.35, 0.20, 3.38), darkIronMat);
   boothRoof.position.set(anchors.rowChart.x + 0.50, 3.22, anchors.rowChart.z);
@@ -988,17 +1016,7 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
   // صفحهٔ اصلی جدول ردیف‌ها با متن واقعی و بسیار خوانا رو به -X (داخل کوچه، ۵ سانتی‌متر جلوتر از قاب)
   const chart = new THREE.Mesh(
     new THREE.PlaneGeometry(2.74, 1.82),
-    new THREE.MeshStandardMaterial({
-      map: rowChartSign.texture,
-      emissiveMap: rowChartSign.texture,
-      emissive: new THREE.Color(0xfff0d0),
-      emissiveIntensity: 0.42,
-      roughness: 0.42,
-      metalness: 0.16,
-      polygonOffset: true,
-      polygonOffsetFactor: -2,
-      polygonOffsetUnits: -2,
-    }),
+    createGuideBoardSurfaceMaterial(rowChartSign.texture),
   );
   chart.rotation.y = -Math.PI / 2;
   chart.position.set(anchors.rowChart.x + ALLEY_ROW_CHART_LOCAL_OFFSET_X, 2.12, anchors.rowChart.z);
@@ -1224,16 +1242,35 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
   group.add(doorSpot);
   lights.push(doorSpot);
 
-  const playbillLamp = new THREE.PointLight(0xffdfad, 3.6, 7.5, 1.6);
+  // چراغ مطالعهٔ هر دو تابلو از یک پیکربندی می‌آید: رنگ، شدت، برد و افت نور
+  // یکی است و هر کدام دقیقاً هم‌فاصله از سطح تابلوی خودش می‌نشیند (قرینهٔ کامل)
+  const playbillLamp = new THREE.PointLight(
+    ALLEY_GUIDE_LAMP.color,
+    ALLEY_GUIDE_LAMP.intensity,
+    ALLEY_GUIDE_LAMP.distance,
+    ALLEY_GUIDE_LAMP.decay,
+  );
   playbillLamp.name = 'PlaybillReadingLight';
-  // چراغ مطالعهٔ هر دو تابلو دقیقاً هم‌فاصله از سطح خودشان است (قرینهٔ کامل)
-  playbillLamp.position.set(ALLEY_GUIDE_LAMP_X.playbill, anchors.playbill.y + 0.85, anchors.playbill.z);
+  playbillLamp.position.set(
+    ALLEY_GUIDE_LAMP_X.playbill,
+    anchors.playbill.y + ALLEY_GUIDE_LAMP.offsetY,
+    anchors.playbill.z,
+  );
   group.add(playbillLamp);
   lights.push(playbillLamp);
 
-  const rowChartLamp = new THREE.PointLight(0xffdfad, 3.6, 7.5, 1.6);
+  const rowChartLamp = new THREE.PointLight(
+    ALLEY_GUIDE_LAMP.color,
+    ALLEY_GUIDE_LAMP.intensity,
+    ALLEY_GUIDE_LAMP.distance,
+    ALLEY_GUIDE_LAMP.decay,
+  );
   rowChartLamp.name = 'RowChartReadingLight';
-  rowChartLamp.position.set(ALLEY_GUIDE_LAMP_X.rowChart, anchors.rowChart.y + 0.85, anchors.rowChart.z);
+  rowChartLamp.position.set(
+    ALLEY_GUIDE_LAMP_X.rowChart,
+    anchors.rowChart.y + ALLEY_GUIDE_LAMP.offsetY,
+    anchors.rowChart.z,
+  );
   group.add(rowChartLamp);
   lights.push(rowChartLamp);
 

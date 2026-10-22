@@ -3,8 +3,10 @@ import { describe, expect, it } from 'vitest';
 import { createAlleyGeometry } from '@/engine3d/alley-geometry';
 import {
   ALLEY_GUIDE_BOARD_FRAME_CLEARANCE,
+  ALLEY_GUIDE_BOARD_SURFACE,
   ALLEY_GUIDE_BOARD_SURFACE_X,
   ALLEY_GUIDE_BOARD_WALL_GAP,
+  ALLEY_GUIDE_LAMP,
   ALLEY_GUIDE_LAMP_DISTANCE,
   ALLEY_GUIDE_LAMP_X,
   ALLEY_GUIDE_WALL_INSET,
@@ -76,7 +78,7 @@ describe('هم‌فاصله بودن دو تابلوی راهنمای کوچه �
   it('قاب هر دو تابلو هم‌اندازه از دیوار بیرون زده و صفحه ۴٫۵ سانتی‌متر جلوتر از قاب است', () => {
     const alley = buildAlley();
     const playbillCase = alley.group.getObjectByName('PlaybillBoard') as THREE.Mesh;
-    const boothFrame = alley.group.getObjectByName('RowChartBrassFrame') as THREE.Mesh;
+    const boothFrame = alley.group.getObjectByName('RowChartBoardFrame') as THREE.Mesh;
     const poster = alley.group.getObjectByName('PlaybillPosterTextMesh') as THREE.Mesh;
     const chart = alley.group.getObjectByName('RowChartBoard') as THREE.Mesh;
 
@@ -103,6 +105,85 @@ describe('هم‌فاصله بودن دو تابلوی راهنمای کوچه �
     alley.dispose();
   });
 
+  it('بدنهٔ هر دو تابلو یک جنس چوب تیره است — دیواره‌های سمت راست دیگر نور ندارند', () => {
+    const alley = buildAlley();
+    const playbillCase = alley.group.getObjectByName('PlaybillBoard') as THREE.Mesh<
+      THREE.BoxGeometry,
+      THREE.MeshStandardMaterial
+    >;
+    const boothFrame = alley.group.getObjectByName('RowChartBoardFrame') as THREE.Mesh<
+      THREE.BoxGeometry,
+      THREE.MeshStandardMaterial
+    >;
+    expect(playbillCase).toBeDefined();
+    expect(boothFrame).toBeDefined();
+
+    const left = playbillCase.material;
+    const right = boothFrame.material;
+
+    // هر دو دقیقاً همان متریال چوب تیره‌اند (نه پنل برنجی براق)
+    expect(right).toBe(left);
+    expect(right.color.getHex()).toBe(0x3b2618);
+    // فلزیت نزدیک صفر و زبری بالا: نوری که چراغ مطالعه می‌تابد برنمی‌گردد
+    expect(right.metalness).toBeLessThan(0.1);
+    expect(right.roughness).toBeGreaterThan(0.6);
+
+    // هیچ پنل برنجی/براقی دور جدول راست نمانده است
+    const brassPanels: THREE.Mesh[] = [];
+    alley.group.traverse((object) => {
+      if (!(object instanceof THREE.Mesh)) return;
+      const material = object.material as THREE.MeshStandardMaterial;
+      if (!material || !('metalness' in material)) return;
+      if (material.metalness > 0.6 && object.geometry instanceof THREE.BoxGeometry) {
+        const box = new THREE.Box3().setFromObject(object);
+        const size = box.getSize(new THREE.Vector3());
+        // پنل بزرگ = سطحی که رو به کوچه است و نور چراغ را برمی‌گرداند
+        if (size.y > 1.5 && size.z > 2.5) brassPanels.push(object);
+      }
+    });
+    expect(brassPanels).toHaveLength(0);
+
+    // چهار بازوی نازک برنجی دور جدول، مثل ویترین چپ
+    const trims: THREE.Mesh[] = [];
+    alley.group.traverse((object) => {
+      if (object.name.startsWith('RowChartBoardTrim')) trims.push(object as THREE.Mesh);
+    });
+    expect(trims).toHaveLength(4);
+
+    alley.dispose();
+  });
+
+  it('سطح هر دو تابلو یک جنس و یک درخشش دارد تا هالهٔ نوری‌شان یکی باشد', () => {
+    const alley = buildAlley();
+    const poster = alley.group.getObjectByName('PlaybillPosterTextMesh') as THREE.Mesh<
+      THREE.PlaneGeometry,
+      THREE.MeshStandardMaterial
+    >;
+    const chart = alley.group.getObjectByName('RowChartBoard') as THREE.Mesh<
+      THREE.PlaneGeometry,
+      THREE.MeshStandardMaterial
+    >;
+    expect(poster.material).not.toBe(chart.material);
+    for (const [label, material] of [
+      ['پوستر', poster.material],
+      ['جدول', chart.material],
+    ] as const) {
+      expect(material.emissive.getHex(), label).toBe(ALLEY_GUIDE_BOARD_SURFACE.emissive);
+      expect(material.emissiveIntensity, label).toBeCloseTo(
+        ALLEY_GUIDE_BOARD_SURFACE.emissiveIntensity,
+        6,
+      );
+      expect(material.roughness, label).toBeCloseTo(ALLEY_GUIDE_BOARD_SURFACE.roughness, 6);
+      expect(material.metalness, label).toBeCloseTo(ALLEY_GUIDE_BOARD_SURFACE.metalness, 6);
+      expect(material.emissiveMap, label).toBe(material.map);
+    }
+    // هر دو سطح مات‌اند؛ هیچ‌کدام بازتاب نقطه‌ای براق نمی‌سازد
+    expect(poster.material.roughness).toBeLessThan(0.7);
+    expect(chart.material.roughness).toBeLessThan(0.7);
+
+    alley.dispose();
+  });
+
   it('چراغ‌های مطالعهٔ دو تابلو قرینه و هم‌فاصله از سطح تابلو هستند', () => {
     const alley = buildAlley();
     const playbillLamp = alley.group.getObjectByName('PlaybillReadingLight') as THREE.PointLight;
@@ -118,6 +199,17 @@ describe('هم‌فاصله بودن دو تابلوی راهنمای کوچه �
     expect(rowChartDistance).toBeCloseTo(ALLEY_GUIDE_LAMP_DISTANCE, 6);
     expect(ALLEY_GUIDE_LAMP_X.playbill).toBeCloseTo(playbillLamp.position.x, 6);
     expect(ALLEY_GUIDE_LAMP_X.rowChart).toBeCloseTo(rowChartLamp.position.x, 6);
+
+    // هالهٔ نوری هر دو چراغ دقیقاً یکی است: رنگ، شدت، برد و افت نور و ارتفاع
+    expect(playbillLamp.color.getHex()).toBe(ALLEY_GUIDE_LAMP.color);
+    expect(rowChartLamp.color.getHex()).toBe(ALLEY_GUIDE_LAMP.color);
+    expect(rowChartLamp.intensity).toBe(playbillLamp.intensity);
+    expect(rowChartLamp.distance).toBe(playbillLamp.distance);
+    expect(rowChartLamp.decay).toBe(playbillLamp.decay);
+    expect(Math.abs(rowChartLamp.position.y - playbillLamp.position.y)).toBeLessThan(1e-9);
+    // هر چراغ روی z تابلوی خودش است (پیشخوان‌ها هم‌تراز نیستند)
+    expect(playbillLamp.position.z).toBeCloseTo(DEFAULT_ALLEY_ANCHORS.playbill.z, 6);
+    expect(rowChartLamp.position.z).toBeCloseTo(DEFAULT_ALLEY_ANCHORS.rowChart.z, 6);
 
     alley.dispose();
   });
