@@ -51,7 +51,12 @@ import {
   withUv2,
 } from './alley-materials';
 import { createEntranceTorch, type EntranceTorchInstance } from './alley-entrance-torch';
-import { createLobbyDoor, type LobbyDoorInstance } from './alley-lobby-door';
+import {
+  LOBBY_DOOR,
+  LOBBY_DOOR_STATUS_LAMPS,
+  createLobbyDoor,
+  type LobbyDoorInstance,
+} from './alley-lobby-door';
 import {
   DEFAULT_ALLEY_SIGN_CLUES,
   createPlaybillSignTexture,
@@ -803,8 +808,13 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
   // ردیف چراغ‌های وضعیت پانچ بلیط بازیکنان بالای چهارچوب در
   const playerStatusLampsGroup = new THREE.Group();
   playerStatusLampsGroup.name = 'DoorPlayerStatusLamps';
-  // ردیف چراغ‌های وضعیت، بالای قوس نیم‌دایرهٔ در و روی قاب سنگی می‌نشیند
-  playerStatusLampsGroup.position.set(0, 3.56, anchors.theaterDoor.z + 0.12);
+  // بازبینی: ردیف از بالای قوس به داخل نیم‌دایرهٔ بالای در منتقل شد — سه‌تا
+  // روی تیمپانوم چوبی تیره می‌نشینند و از پشت شیشه دیده می‌شوند.
+  playerStatusLampsGroup.position.set(
+    0,
+    LOBBY_DOOR_STATUS_LAMPS.centerY,
+    anchors.theaterDoor.z + LOBBY_DOOR_STATUS_LAMPS.z,
+  );
   theaterGroup.add(playerStatusLampsGroup);
 
   const rebuildPlayerStatusLamps = (players?: readonly AlleyPlayerLampStatus[], requiredCount = 3, punchedCount = 0) => {
@@ -813,11 +823,20 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
       playerStatusLampsGroup.remove(child);
     }
     const count = Math.max(1, Math.min(8, players?.length ?? requiredCount));
-    const spacing = 0.34;
+    // فاصله طوری تنظیم می‌شود که هر تعداد چراغ داخل نیم‌دایره بماند
+    const dy = LOBBY_DOOR_STATUS_LAMPS.centerY - LOBBY_DOOR.leafHeight;
+    const halfChord = Math.sqrt(Math.max(0, LOBBY_DOOR.arcInnerRadius ** 2 - dy * dy));
+    const spacing =
+      count > 1
+        ? Math.min(
+            LOBBY_DOOR_STATUS_LAMPS.spacing,
+            (2 * (halfChord - LOBBY_DOOR_STATUS_LAMPS.bulbRadius - 0.02)) / (count - 1),
+          )
+        : 0;
     for (let i = 0; i < count; i++) {
       const ready = players ? Boolean(players[i]?.ticketPunched) : i < punchedCount;
       const bulb = new THREE.Mesh(
-        new THREE.SphereGeometry(0.068, 10, 10),
+        new THREE.SphereGeometry(LOBBY_DOOR_STATUS_LAMPS.bulbRadius, 12, 12),
         new THREE.MeshStandardMaterial({
           color: ready ? 0xa8ffbe : 0x5c1922,
           emissive: new THREE.Color(ready ? 0x35e07a : 0x991b27),

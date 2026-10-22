@@ -4,6 +4,7 @@ import { createAlleyGeometry } from '@/engine3d/alley-geometry';
 import {
   ARC_TRACERY_SPOKES,
   LOBBY_DOOR,
+  LOBBY_DOOR_STATUS_LAMPS,
   createLobbyDoor,
   lobbyDoorGlowPulse,
 } from '@/engine3d/alley-lobby-door';
@@ -318,6 +319,68 @@ describe('درِ اصلی لابی: نیم‌دایرهٔ شیشه‌ای، دو
     for (let i = 0; i < 40; i++) alley.update(0.05, i * 0.1);
     expect(arc.material.emissiveIntensity).not.toBe(before);
     expect(arc.material.emissiveIntensity).toBeGreaterThan(0);
+    alley.dispose();
+  });
+
+  it('بازبینی: در باریک‌تر و بلندتر شد و همان سه بخش را دارد', () => {
+    const alley = buildAlley();
+    const opening = LOBBY_DOOR.leafWidth * 2 + LOBBY_DOOR.leafGap;
+    // باریک‌تر: از ۲٫۵۴ متر قبلی به حدود ۲ متر
+    expect(opening).toBeLessThan(2.2);
+    expect(opening).toBeCloseTo(2.012, 3);
+    // قوس هم متناسب کوچک شده و ضخامت نوارش حفظ شده است
+    expect(LOBBY_DOOR.arcOuterRadius).toBeCloseTo(LOBBY_DOOR.leafWidth + LOBBY_DOOR.leafGap / 2, 6);
+    expect(LOBBY_DOOR.arcOuterRadius - LOBBY_DOOR.arcInnerRadius).toBeGreaterThan(0.2);
+
+    // بلندتر: از ۲٫۲ متر قبلی به ۲٫۵ متر
+    expect(LOBBY_DOOR.leafHeight).toBeGreaterThan(2.4);
+    const left = alley.group.getObjectByName('LobbyDoorLeafLeft') as THREE.Group;
+    const leftBox = worldBox(left);
+    expect(leftBox.max.y).toBeCloseTo(LOBBY_DOOR.leafHeight, 3);
+    expect(leftBox.max.y).toBeGreaterThan(2.4);
+
+    // ارتفاع کل (لنگه + نیم‌دایره) هنوز زیر سایبان می‌ماند
+    const arc = alley.group.getObjectByName('LobbyDoorArcGlass') as THREE.Mesh;
+    const arcBox = worldBox(arc);
+    expect(arcBox.max.y).toBeCloseTo(LOBBY_DOOR.leafHeight + LOBBY_DOOR.arcOuterRadius, 3);
+    const marqueeBox = worldBox(alley.group.getObjectByName('TheaterMarqueeSign') as THREE.Mesh);
+    expect(arcBox.max.y).toBeLessThan(marqueeBox.min.y);
+
+    // قاب سنگی هم باریک‌تر شد و همچنان دور در را می‌گیرد
+    const surroundBox = worldBox(alley.group.getObjectByName('LobbyDoorSurround') as THREE.Mesh);
+    expect(surroundBox.max.x - surroundBox.min.x).toBeLessThan(3);
+    expect(surroundBox.max.x).toBeGreaterThan(LOBBY_DOOR.arcOuterRadius);
+
+    alley.dispose();
+  });
+
+  it('سه چراغ وضعیت داخل نیم‌دایرهٔ بالای در نشسته‌اند، نه بالای آن', () => {
+    const alley = buildAlley();
+    const lamps = alley.group.getObjectByName('DoorPlayerStatusLamps') as THREE.Group;
+    expect(lamps).toBeInstanceOf(THREE.Group);
+    expect(lamps.children).toHaveLength(3);
+
+    // بالای پایهٔ نیم‌دایره (سر لنگه‌ها) و پایین‌تر از نوک قوس
+    const arcApexY = LOBBY_DOOR.leafHeight + LOBBY_DOOR.arcOuterRadius;
+    expect(lamps.position.y).toBeGreaterThan(LOBBY_DOOR.leafHeight);
+    expect(lamps.position.y).toBeLessThan(arcApexY);
+
+    // همهٔ چراغ‌ها داخل مرز داخلی نیم‌دایره (تیمپانوم) می‌مانند
+    const dy = LOBBY_DOOR_STATUS_LAMPS.centerY - LOBBY_DOOR.leafHeight;
+    const halfChord = Math.sqrt(LOBBY_DOOR.arcInnerRadius ** 2 - dy ** 2);
+    for (const bulb of lamps.children) {
+      const pos = worldPos(bulb);
+      expect(Math.abs(pos.x) + LOBBY_DOOR_STATUS_LAMPS.bulbRadius).toBeLessThan(halfChord);
+      expect(pos.y).toBeCloseTo(LOBBY_DOOR_STATUS_LAMPS.centerY, 6);
+    }
+
+    // از پشت شیشه/جلوی تیمپانوم چوبی دیده می‌شوند
+    const tympanum = alley.group.getObjectByName('LobbyDoorTympanum') as THREE.Mesh;
+    expect(worldPos(lamps.children[0]).z).toBeGreaterThan(worldPos(tympanum).z);
+
+    // دیگر بالای قوس (جای قبلی) چراغی نیست
+    expect(lamps.position.y).toBeLessThan(arcApexY - 0.2);
+
     alley.dispose();
   });
 
