@@ -59,7 +59,6 @@ import {
 import {
   createLampHaloAlphaTexture,
   createLampPoolAlphaTexture,
-  createLightConeAlphaTexture,
   createOverheadCable,
   createRustyBarrel,
   createUtilityPole,
@@ -138,7 +137,6 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
   const theaterStoneMaps = createBrickWallMaps(0x5c534c, 5.5, 4.5, 256, 379);
   const crateLightWoodMaps = createWoodPlankMaps(0x7c5a3a, 128);
   const crateDarkWoodMaps = createWoodPlankMaps(0x563c27, 128);
-  const beamTexture = createLightConeAlphaTexture(64);
   // هالهٔ نرم نور روی سنگ‌فرش، یک تکسچر مشترک برای هر چهار چراغ (یک draw call)
   const lampPoolTexture = createLampPoolAlphaTexture(71, 128);
   // هالهٔ گردِ دور سر چراغ‌ها — یک تکسچر مشترک برای هشت اسپرایت (دو لایه × چهار چراغ)
@@ -1035,7 +1033,6 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
       seed: spec.seed,
       baseIntensity: 15.0,
       castShadow: false,
-      beamTexture,
       environmentMap,
       poolTexture: lampPoolTexture,
       haloTexture: lampHaloTexture,
@@ -1311,7 +1308,6 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
     theaterStoneMaps.dispose();
     crateLightWoodMaps.dispose();
     crateDarkWoodMaps.dispose();
-    beamTexture.dispose();
     lampPoolTexture.dispose();
     lampHaloTexture.dispose();
     puddleMaskA.dispose();

@@ -2,10 +2,13 @@ import * as THREE from 'three';
 import { describe, expect, it } from 'vitest';
 import { createAlleyGeometry } from '@/engine3d/alley-geometry';
 import {
+  BEAM_SHAFT_GROUND_RADIUS,
+  BEAM_SHAFT_LAYERS,
+  BEAM_SHAFT_PUFF_OPACITY,
   SOFT_STREETLIGHT,
+  beamShaftEnvelope,
   createLampHaloAlphaTexture,
   createLampPoolAlphaTexture,
-  createLightConeAlphaTexture,
   streetlightBeamRadius,
 } from '@/engine3d/alley-props';
 import { alleyGroundCrownAt } from '@/engine3d/alley-ground-profile';
@@ -19,9 +22,10 @@ import { ALLEY_STATIC_OBSTACLES, checkAABBCollision } from '@/engine3d/collision
  *    روی یک خط z با فاصلهٔ مساوی از محور کوچه و بازو به سمت مرکز.
  * ۳) نور چراغ‌ها لکهٔ دایره‌ای با «خط» تیز روی سنگ‌فرش نمی‌سازد؛ پخش آن نرم
  *    و طبیعی است (penumbra کامل، زاویهٔ باز، رنگ ملایم‌تر و هالهٔ آلی روی زمین).
- * ۴) خودِ پرتو مه هم نباید «نوار» داشته باشد: مخروط شیشه‌ای با آلفای یکنواخت
- *    جای خود را به هاله داده — آلفا در لبهٔ مماسی صفر می‌شود، پخش روی زمین
- *    دنبالهٔ پهن و ملایم دارد و دور سر چراغ یک هالهٔ گردِ دو‌لایه می‌درخشد.
+ * ۴) خودِ پرتو مه هم نباید «نوار» داشته باشد: مخروط با سطح هندسی (که سایه‌روی
+ *    صافش «خط کنار نور» می‌شد) کنار رفته و جایش را چند پفِ نرمِ رو‌به‌دوربین
+ *    گرفته که جمع اضافه‌شونده‌شان یک هالهٔ حجمیِ بی‌مرز می‌سازد. پخش روی زمین
+ *    دنبالهٔ پهن و ملایم دارد و دور سر چراغ یک هالهٔ گردِ دو‌لایهٔ محو می‌درخشد.
  */
 
 /**
@@ -204,53 +208,69 @@ describe('چراغ برق چهارم (گالوانیزهٔ دایره‌ای) و
     expect(Math.abs(nearEdge[0] - nearEdge[2])).toBeLessThan(0.01);
   });
 
-  it('گسترهٔ استخر نور باز و طبیعی است و پخش مه از خود نور باریک‌تر', () => {
+  it('گسترهٔ استخر نور باز است و شفت مه از خودِ نور بیرون نمی‌زند', () => {
     const poolRadius = streetlightBeamRadius(4.66);
     // شعاع استخر نور چند متر است (نه یک نقطهٔ باریک زیر چراغ)
     expect(poolRadius).toBeGreaterThan(4);
     expect(poolRadius).toBeLessThan(9);
+    // شفت مه از گسترهٔ واقعی نور باریک‌تر است تا لبهٔ آن جایی دیده نشود
+    expect(BEAM_SHAFT_GROUND_RADIUS).toBeLessThan(poolRadius);
 
     const alley = createAlleyGeometry();
     const pole = alley.group.getObjectByName('UtilityPole_NorthLeft') as THREE.Group;
-    const beam = pole.getObjectByName('LampVolumetricBeam_NorthLeft') as THREE.Mesh<
-      THREE.ConeGeometry,
-      THREE.ShaderMaterial
-    >;
-    expect(beam).toBeDefined();
-    // مخروط مه از گسترهٔ واقعی نور باریک‌تر است و با ۳۲ ضلع گرد می‌شود
-    expect(beam.geometry.parameters.radius).toBeLessThan(poolRadius);
-    expect(beam.geometry.parameters.radialSegments).toBeGreaterThanOrEqual(24);
+    // هیچ مخروطی زیر چراغ نمانده — همان سطحی که «خط کنار نور» می‌ساخت
+    pole.traverse((object) => {
+      if (!(object instanceof THREE.Mesh)) return;
+      expect(object.geometry.type).not.toBe('ConeGeometry');
+    });
 
     alley.dispose();
   });
 
-  it('پرتو مه «هاله» است نه مخروط شیشه‌ای: آلفا در لبهٔ مماسی صفر می‌شود', () => {
+  it('شفت مه از پف‌های نرمِ رو‌به‌دوربین ساخته می‌شود، نه از یک سطح با لبهٔ صاف', () => {
     const alley = createAlleyGeometry();
     const pole = alley.group.getObjectByName('UtilityPole_NorthLeft') as THREE.Group;
-    const beam = pole.getObjectByName('LampVolumetricBeam_NorthLeft') as THREE.Mesh<
-      THREE.ConeGeometry,
-      THREE.ShaderMaterial
-    >;
+    const shaft = pole.getObjectByName('LampVolumetricBeam_NorthLeft') as THREE.Group;
+    expect(shaft).toBeInstanceOf(THREE.Group);
+    // خودِ شفت هیچ هندسه‌ای ندارد؛ فقط اسپرایت‌های نرم دارد
+    expect((shaft as unknown as THREE.Mesh).geometry).toBeUndefined();
 
-    // پیش‌تر یک MeshBasicMaterial با آلفای یکنواخت بود؛ همان یکنواختی باعث می‌شد
-    // سطحِ مخروط در جاهایی که مماس بر دید می‌شود مثل یک «نوار» روشن دیده شود
-    expect(beam.material).toBeInstanceOf(THREE.ShaderMaterial);
-    expect(beam.material.name).toBe('LampBeamHaloMaterial');
-    expect(beam.material.blending).toBe(THREE.AdditiveBlending);
-    expect(beam.material.transparent).toBe(true);
-    expect(beam.material.depthWrite).toBe(false);
-    expect(beam.material.side).toBe(THREE.DoubleSide);
+    const puffs: THREE.Sprite[] = [];
+    shaft.traverse((object) => {
+      if (object instanceof THREE.Sprite) puffs.push(object);
+    });
+    expect(puffs.length).toBeGreaterThanOrEqual(4);
+    expect(puffs.length).toBeLessThanOrEqual(BEAM_SHAFT_LAYERS);
 
-    // آلفا وابسته به زاویهٔ دید است، نه یک عدد ثابت
-    expect(beam.material.fragmentShader).toContain('vFacing');
-    expect(beam.material.vertexShader).toContain('abs(dot(viewNormal, viewDirection))');
-    expect(beam.material.fragmentShader).toMatch(/smoothstep\(\s*0\.0,\s*0\.62,\s*vFacing\s*\)/);
-    // نویز ملایم چگالی غبار تا پرتو یکدست و پلاستیکی نباشد
-    expect(beam.material.fragmentShader).toContain('dustDensity');
+    for (const puff of puffs) {
+      const material = puff.material as THREE.SpriteMaterial;
+      // هر پف یک گرادیان شعاعی محو است: بدون بافت هیچ لبه‌ای نرم نمی‌شد
+      expect(material.map).not.toBeNull();
+      expect(material.blending).toBe(THREE.AdditiveBlending);
+      expect(material.transparent).toBe(true);
+      expect(material.depthWrite).toBe(false);
+      // کم‌رنگ، چون چند پف روی هم جمع می‌شوند
+      expect(material.opacity).toBeGreaterThan(0);
+      expect(material.opacity).toBeLessThanOrEqual(BEAM_SHAFT_PUFF_OPACITY);
+      // پف‌ها به هم می‌رسند (پوشش پیوسته) نه اینکه مثل توپ‌های جدا دیده شوند
+      expect(puff.scale.x).toBeGreaterThan(0.8);
+    }
 
-    // شدت هاله کم است (نور اضافه و ملایم) و پروفایل ارتفاعی مشترک را می‌گیرد
-    expect(beam.material.uniforms.uOpacity.value).toBeLessThan(0.2);
-    expect(beam.material.uniforms.uProfile.value).toBeDefined();
+    // چیدمان: پایین پهن‌تر، بالا باریک‌تر (شکل مخروط نور، بدون سطح مخروط)
+    const sorted = [...puffs].sort((a, b) => a.position.y - b.position.y);
+    expect(sorted[0].scale.x).toBeGreaterThan(sorted[sorted.length - 1].scale.x);
+    // و ارتفاع‌ها یکنواخت بین زمین و سر چراغ پخش شده‌اند
+    for (let i = 1; i < sorted.length; i++) {
+      expect(sorted[i].position.y).toBeGreaterThan(sorted[i - 1].position.y);
+      // پف‌های همسایه بیشتر از نصف اندازه‌شان روی هم می‌افتند؛ بدون این هم‌پوشانی
+      // شفت به‌شکل چند توپ جدا دیده می‌شد (لبهٔ تازه، همان چیزی که نمی‌خواهیم)
+      const dy = sorted[i].position.y - sorted[i - 1].position.y;
+      expect(dy).toBeLessThan(Math.min(sorted[i].scale.x, sorted[i - 1].scale.x) / 2);
+    }
+
+    // روشنایی کل شفت ملایم است: جمع آلفای پف‌ها زیر ۰٫۲۵ می‌ماند
+    const total = puffs.reduce((sum, puff) => sum + (puff.material as THREE.SpriteMaterial).opacity, 0);
+    expect(total).toBeLessThan(0.25);
 
     alley.dispose();
   });
@@ -300,26 +320,18 @@ describe('چراغ برق چهارم (گالوانیزهٔ دایره‌ای) و
     alley.dispose();
   });
 
-  it('پروفایل ارتفاعی پرتو مه در دو سر صفر است و در میانه نرم اوج می‌گیرد', () => {
-    const texture = createLightConeAlphaTexture(64);
-    const data = texture.image.data as Uint8Array;
-    const size = 64;
-    const alphaAt = (row: number) => data[(row * size + 4) * 4 + 3];
+  it('پوشش ارتفاعی شفت در دو سر صفر است و بدون پرش در میانه اوج می‌گیرد', () => {
+    expect(beamShaftEnvelope(0)).toBe(0);
+    expect(beamShaftEnvelope(1)).toBe(0);
 
-    expect(alphaAt(0)).toBe(0);
-    expect(alphaAt(size - 1)).toBe(0);
+    const samples = Array.from({ length: 41 }, (_, i) => beamShaftEnvelope(i / 40));
+    expect(Math.max(...samples)).toBeGreaterThan(0.85);
 
-    const peak = Math.max(...Array.from({ length: size }, (_, row) => alphaAt(row)));
-    expect(peak).toBeGreaterThan(150);
-
-    // بدون پرش: اختلاف دو سطر مجاور کوچک است (لبهٔ تیز وجود ندارد)
-    for (let row = 1; row < size; row++) {
-      expect(Math.abs(alphaAt(row) - alphaAt(row - 1))).toBeLessThanOrEqual(40);
+    // بدون پرش: اختلاف دو نمونهٔ مجاور کوچک است (لبهٔ تیز وجود ندارد)
+    for (let i = 1; i < samples.length; i++) {
+      expect(Math.abs(samples[i] - samples[i - 1])).toBeLessThan(0.12);
     }
-
-    texture.dispose();
   });
-
 
   it('هر چراغ یک هالهٔ نورِ نرم و آلی روی سنگ‌فرش دارد که مرز هندسی مخروط را می‌پوشاند', () => {
     const alley = createAlleyGeometry();
