@@ -2,14 +2,13 @@
 
 /**
  * alley-props.ts — تجهیزات شهری، تیرهای چراغ برق سوسوزن، کابل‌های هوایی و جعبه‌های کوچه (علیرضا)
- * - تیر چراغ برق قدیمی (پایهٔ بتنی، ستون چوب/چدن، بازوی عایق چینی، تابلو برق، چراغ کلاهک‌دار،
- *   حباب نورانی، پرتو مخروطی مه، و SpotLight سوسوزن واقع‌گرایانه)
+ * - تیر چراغ برق کلاسیک گالوانیزهٔ دایره‌ای (پایهٔ بتنی گرد، فلنج و پیچ، ستون فولادی مخروطی،
+ *   بازوی لوله‌ای منحنی، سر چراغ گرد با گوی شیشه‌ای، پرتو مخروطی مه و SpotLight سوسوزن نرم)
  * - کابل‌های برق شکم‌داده (Catenary) در طول کوچه و عرض آسمان بین ساختمان‌ها
  * - دسته جعبه‌های چوبی میخ‌کوب، پالت باربری، بشکهٔ فلزی زنگ‌زده و چادر برزنتی
  */
 
 import * as THREE from 'three';
-import type { ProceduralSurfaceMaps } from './materials/procedural-textures';
 import { withUv2 } from './alley-materials';
 import { alleyGroundCrownAt } from './alley-ground-profile';
 
@@ -171,20 +170,15 @@ function hash2D(x: number, y: number, seed: number): number {
  * - wood: تیر چوبی-چدنی قدیمی دههٔ ۱۹۲۰ با تراورس و مقرهٔ چینی (سه تیر فعلی کوچه)
  * - galvanized: تیر فولاد گالوانیزهٔ کلاسیک، کاملاً دایره‌ای، با سر چراغ گرد و گوی شیشه‌ای
  */
-export type UtilityPoleStyle = 'wood' | 'galvanized';
-
 export interface UtilityPoleOptions {
   id: string;
   position: { x: number; y: number; z: number };
   /** +1 یعنی بازوی چراغ به سمت +X (برای تیر سمت چپ)، -1 یعنی به سمت -X (برای تیر سمت راست) */
   armSide: 1 | -1;
-  /** پیش‌فرض 'wood' است تا رفتار سه تیر فعلی کوچه دست‌نخورده بماند */
-  style?: UtilityPoleStyle;
   profile: FlickerProfile;
   seed: number;
   baseIntensity: number;
   castShadow?: boolean;
-  woodMaps: ProceduralSurfaceMaps;
   beamTexture: THREE.DataTexture;
   environmentMap: THREE.Texture;
   /** تکسچر هالهٔ نور روی زمین؛ اگر نیامده باشد خودِ تیر یکی می‌سازد */
@@ -235,160 +229,6 @@ interface PoleBodyResult {
   bulbMat: THREE.MeshStandardMaterial;
   /** نقطهٔ نصب کابل‌ها به شکل مختصات جهانی */
   insulatorWorldPositions: THREE.Vector3[];
-  /** آیا چراغ این تیر کلاهک مخروطی دارد (برای اندازهٔ پرتو مه) */
-  beamRadiusScale: number;
-}
-
-/**
- * بدنهٔ کلاسیک چوبی-چدنی تیر برق قدیمی: پایهٔ بتنی هشت‌وجهی، ستون چوبی مخروطی،
- * رکاب‌های بالا رفتن، جعبهٔ تقسیم، دو تراورس با مقرهٔ چینی و بازوی قوس‌دار با
- * کلاهک فلزی بازتابنده.
- */
-function buildWoodenPoleBody(root: THREE.Group, opts: UtilityPoleOptions): PoleBodyResult {
-  const poleWoodMat = new THREE.MeshStandardMaterial({
-    color: 0x5c4634,
-    map: opts.woodMaps.colorMap,
-    normalMap: opts.woodMaps.normalMap,
-    roughnessMap: opts.woodMaps.roughnessMap,
-    roughness: 0.9,
-    metalness: 0.04,
-  });
-
-  const darkIronMat = new THREE.MeshStandardMaterial({
-    color: 0x26292e,
-    roughness: 0.52,
-    metalness: 0.72,
-    envMap: opts.environmentMap,
-    envMapIntensity: 0.7,
-  });
-
-  const concreteMat = new THREE.MeshStandardMaterial({
-    color: 0x4c4d52,
-    roughness: 0.92,
-    metalness: 0.04,
-  });
-
-  const porcelainMat = new THREE.MeshStandardMaterial({
-    color: 0xd6e2e0,
-    roughness: 0.2,
-    metalness: 0.08,
-    envMap: opts.environmentMap,
-  });
-
-  // ۱. پایهٔ بتنی هشت‌وجهی و طوقهٔ فولادی کف تیر برق
-  const plinth = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.30, 0.34, 8), concreteMat);
-  plinth.position.y = 0.17;
-  plinth.castShadow = true;
-  plinth.receiveShadow = true;
-  root.add(plinth);
-
-  const collar = new THREE.Mesh(new THREE.CylinderGeometry(0.165, 0.185, 0.28, 12), darkIronMat);
-  collar.position.y = 0.42;
-  collar.castShadow = true;
-  root.add(collar);
-
-  // ۲. ستون اصلی تیر چراغ برق با مخروط طبیعی (ارتفاع ۶.۴ متر)
-  const poleHeight = 6.35;
-  const poleShaft = new THREE.Mesh(
-    withUv2(new THREE.CylinderGeometry(0.095, 0.155, poleHeight, 12, 1)),
-    poleWoodMat,
-  );
-  poleShaft.position.y = poleHeight * 0.5 + 0.18;
-  poleShaft.castShadow = true;
-  poleShaft.receiveShadow = true;
-  poleShaft.name = `PoleShaft_${opts.id}`;
-  root.add(poleShaft);
-
-  // رکاب‌های آهنی بالا رفتن از تیر برق + جعبه تقسیم فلزی
-  for (let step = 0; step < 7; step++) {
-    const side = step % 2 === 0 ? 1 : -1;
-    const peg = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.025, 0.025), darkIronMat);
-    peg.position.set(0, 1.9 + step * 0.58, side * 0.16);
-    root.add(peg);
-  }
-
-  const junctionBox = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.38, 0.18), darkIronMat);
-  junctionBox.position.set(-opts.armSide * 0.16, 1.55, 0);
-  junctionBox.castShadow = true;
-  root.add(junctionBox);
-
-  const conduit = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 3.3, 6), darkIronMat);
-  conduit.position.set(-opts.armSide * 0.15, 3.35, 0.05);
-  root.add(conduit);
-
-  // ۳. تراورس‌های افقی بالای تیر برق + مهاربند مورب + مقره/عایق‌های چینی
-  const insulatorWorldPositions: THREE.Vector3[] = [];
-  const crossArmHeights = [5.72, 6.22];
-
-  crossArmHeights.forEach((armY, idx) => {
-    const width = idx === 0 ? 1.56 : 1.16;
-    const crossArm = new THREE.Mesh(new THREE.BoxGeometry(width, 0.09, 0.09), poleWoodMat);
-    crossArm.position.set(0, armY, 0);
-    crossArm.castShadow = true;
-    root.add(crossArm);
-
-    for (const braceDir of [-1, 1] as const) {
-      const brace = new THREE.Mesh(new THREE.BoxGeometry(0.52, 0.03, 0.03), darkIronMat);
-      brace.position.set(braceDir * 0.24, armY - 0.19, 0.055);
-      brace.rotation.z = braceDir * 0.68;
-      root.add(brace);
-    }
-
-    const pinOffsets = idx === 0 ? [-0.66, -0.24, 0.24, 0.66] : [-0.46, 0.46];
-    for (const px of pinOffsets) {
-      const pin = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.09, 6), darkIronMat);
-      pin.position.set(px, armY + 0.075, 0);
-      root.add(pin);
-
-      const insulator = new THREE.Mesh(new THREE.CylinderGeometry(0.042, 0.058, 0.095, 10), porcelainMat);
-      insulator.position.set(px, armY + 0.13, 0);
-      root.add(insulator);
-
-      if (idx === 0 && (px === -0.66 || px === 0.24 || px === 0.66)) {
-        insulatorWorldPositions.push(
-          new THREE.Vector3(opts.position.x + px, opts.position.y + armY + 0.16, opts.position.z),
-        );
-      }
-    }
-  });
-
-  // ۴. بازوی قوس‌دار چراغ کوچه + کلاهک لعابی زنگ‌زده + حباب سوسوزن
-  const armReach = opts.armSide * 1.38;
-  const lampY = 4.78;
-
-  const armBar = new THREE.Mesh(new THREE.CylinderGeometry(0.028, 0.032, 1.52, 8), darkIronMat);
-  armBar.position.set(armReach * 0.5, lampY + 0.16, 0);
-  armBar.rotation.z = -opts.armSide * 1.34;
-  armBar.castShadow = true;
-  root.add(armBar);
-
-  const armStrut = new THREE.Mesh(new THREE.CylinderGeometry(0.016, 0.016, 0.96, 6), darkIronMat);
-  armStrut.position.set(armReach * 0.36, lampY - 0.14, 0);
-  armStrut.rotation.z = -opts.armSide * 0.92;
-  root.add(armStrut);
-
-  // کلاهک فلزی بازتابنده
-  const hoodOuter = new THREE.Mesh(
-    new THREE.ConeGeometry(0.34, 0.20, 16, 1, true),
-    darkIronMat,
-  );
-  hoodOuter.position.set(armReach, lampY + 0.04, 0);
-  hoodOuter.castShadow = true;
-  root.add(hoodOuter);
-
-  const bulbMat = new THREE.MeshStandardMaterial({
-    color: 0xffe6bd,
-    emissive: new THREE.Color(0xff9d3b),
-    emissiveIntensity: 2.6,
-    roughness: 0.16,
-    metalness: 0.05,
-  });
-  const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.095, 12, 10), bulbMat);
-  bulb.position.set(armReach, lampY - 0.06, 0);
-  bulb.name = `LampBulb_${opts.id}`;
-  root.add(bulb);
-
-  return { armReach, lampY, bulb, bulbMat, insulatorWorldPositions, beamRadiusScale: 1 };
 }
 
 /**
@@ -561,7 +401,6 @@ function buildGalvanizedPoleBody(root: THREE.Group, opts: UtilityPoleOptions): P
     bulb: globe,
     bulbMat: globeMat,
     insulatorWorldPositions,
-    beamRadiusScale: 1.06,
   };
 }
 
@@ -570,8 +409,7 @@ export function createUtilityPole(opts: UtilityPoleOptions): UtilityPoleInstance
   root.name = `UtilityPole_${opts.id}`;
   root.position.set(opts.position.x, opts.position.y, opts.position.z);
 
-  const body =
-    opts.style === 'galvanized' ? buildGalvanizedPoleBody(root, opts) : buildWoodenPoleBody(root, opts);
+  const body = buildGalvanizedPoleBody(root, opts);
   const { armReach, lampY, bulbMat, insulatorWorldPositions } = body;
 
   // ۵. مخروط نور در مه شب زیر چراغ برق — پهن‌تر و کم‌رنگ‌تر از قبل تا لبهٔ
@@ -587,7 +425,7 @@ export function createUtilityPole(opts: UtilityPoleOptions): UtilityPoleInstance
   });
   // مخروط مه باریک‌تر از گسترهٔ واقعی نور است (مه با فاصله رقیق می‌شود) و با
   // ۳۲ ضلع کاملاً گرد دیده می‌شود؛ لبهٔ آن هم با پروفایل نرم تکسچر محو است
-  const beamRadius = streetlightBeamRadius(lampY - 0.2) * 0.58 * body.beamRadiusScale;
+  const beamRadius = streetlightBeamRadius(lampY - 0.2) * 0.58;
   const beamHeight = lampY - 0.25;
   const beam = new THREE.Mesh(new THREE.ConeGeometry(beamRadius, beamHeight, 32, 1, true), beamMat);
   beam.position.set(armReach, beamHeight * 0.5, 0);
