@@ -31,6 +31,7 @@ import TheaterDoorLockModal from './TheaterDoorLockModal';
 import {
   TICKET_DRAWER_BODY_ID,
   resolveOwnRevealedDigit,
+  ticketDrawerHandleText,
   ticketDrawerStatusLine,
   ticketDrawerToggleHint,
   ticketDrawerToggleLabel,
@@ -522,44 +523,52 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
           </button>
         </div>
         <div className={desktopTicketOpen ? 'alley3d-ticket is-expanded' : 'alley3d-ticket is-collapsed'}>
-          <div className="alley3d-ticket-inner">
+          <button
+            type="button"
+            className="alley3d-ticket-toggle alley3d-ticket-handle"
+            aria-expanded={desktopTicketOpen}
+            aria-controls={TICKET_DRAWER_BODY_ID}
+            aria-label={`بلیط ${room.me.playerName} — ${room.me.seatLabel} — ${ticketDrawerToggleLabel(desktopTicketOpen)}`}
+            title={ticketDrawerToggleHint(desktopTicketOpen)}
+            onClick={() => setDesktopTicketOpen((value) => !value)}
+          >
+            <span className="alley3d-ticket-handle-badge" aria-hidden="true">
+              <span className="alley3d-ticket-key-icon">🎟</span>
+              {isTicketPunched && <i className="alley3d-ticket-handle-dot" />}
+            </span>
+            <span className="alley3d-ticket-handle-label">
+              {ticketDrawerHandleText(desktopTicketOpen)}
+            </span>
+            <span
+              className={desktopTicketOpen ? 'alley3d-ticket-chevron is-open' : 'alley3d-ticket-chevron'}
+              aria-hidden="true"
+            >
+              ❮
+            </span>
+          </button>
+
+          <div
+            id={TICKET_DRAWER_BODY_ID}
+            className="alley3d-ticket-inner"
+            inert={!desktopTicketOpen && !ticketsOpen ? true : undefined}
+          >
             <div className="alley3d-ticket-title alley3d-ticket-mobile-title">
               🎟️ بلیط {room.me.playerName} — {room.me.seatLabel} {isTicketPunched && revealedDigit != null ? `— رقم: ${revealedDigit}` : ''}
             </div>
-            <button
-              type="button"
-              className="alley3d-ticket-toggle"
-              aria-expanded={desktopTicketOpen}
-              aria-controls={TICKET_DRAWER_BODY_ID}
-              aria-label={`بلیط ${room.me.playerName} — ${room.me.seatLabel} — ${ticketDrawerToggleLabel(desktopTicketOpen)}`}
-              title={ticketDrawerToggleHint(desktopTicketOpen)}
-              onClick={() => setDesktopTicketOpen((value) => !value)}
-            >
+            <div className="alley3d-ticket-head">
               <span className="alley3d-ticket-key" aria-hidden="true">
                 <span className="alley3d-ticket-key-icon">🎟</span>
               </span>
-              <span className="alley3d-ticket-heading">
+              <div className="alley3d-ticket-heading">
                 <strong className="alley3d-ticket-owner-line">
                   بلیط {room.me.playerName} — {room.me.seatLabel}
                 </strong>
                 <small className={isTicketPunched ? 'alley3d-ticket-sub is-validated' : 'alley3d-ticket-sub'}>
                   {ticketDrawerStatusLine(isTicketPunched, revealedDigit ?? null)}
                 </small>
-              </span>
-              <span className="alley3d-ticket-pill" aria-hidden="true">
-                <span className="alley3d-ticket-pill-label">
-                  {desktopTicketOpen ? 'بستن' : 'باز کردن'}
-                </span>
-                <span className={desktopTicketOpen ? 'alley3d-ticket-chevron is-open' : 'alley3d-ticket-chevron'}>
-                  ⌃
-                </span>
-              </span>
-            </button>
-            <div
-              id={TICKET_DRAWER_BODY_ID}
-              className="alley3d-ticket-body"
-              hidden={!desktopTicketOpen}
-            >
+              </div>
+            </div>
+            <div className="alley3d-ticket-body">
               <HeldTicketsDrawer
                 ownerName={mainTicket?.ownerName || room.me.playerName}
                 seatLabel={mainTicket?.seatLabel || room.me.seatLabel}
