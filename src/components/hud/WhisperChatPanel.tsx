@@ -1,6 +1,8 @@
 'use client';
 
 import { FormEvent, useEffect, useRef, useState } from 'react';
+import { announcePanelOpen, onOtherPanelOpen } from './panel-focus';
+import { useSwipeDismiss } from './use-swipe-dismiss';
 import {
   WHISPER_MAX_LENGTH,
   describeSendState,
@@ -37,6 +39,8 @@ export default function WhisperChatPanel({
   const inputRef = useRef<HTMLInputElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const unread = isOpen ? 0 : unseenMessageCount(messages.length, lastSeen);
+  /* کشیدنِ سربرگ به سمت لبهٔ چپ (فلشِ تب) پنل را می‌بندد. */
+  const swipe = useSwipeDismiss(isOpen, () => setOpen(false), 'start');
   const draft = whisperDraft(text);
 
   useEffect(() => {
@@ -67,9 +71,16 @@ export default function WhisperChatPanel({
 
   function setOpen(next: boolean) {
     if (open === undefined) setInternalOpen(next);
-    if (next) setLastSeen(messages.length);
+    if (next) {
+      setLastSeen(messages.length);
+      /* روی گوشی پنل‌ها به تب کنار لبه جمع می‌شوند؛ با باز شدن یکی، بقیه بسته شوند. */
+      announcePanelOpen('whisper');
+    }
     onOpenChange?.(next);
   }
+
+  // اگر بازیکن پنل دیگری را باز کند، این پنل جمع می‌شود تا صحنه پوشیده نماند.
+  useEffect(() => onOtherPanelOpen('whisper', () => setOpen(false)), [open]);
 
   function toggle() {
     setOpen(!isOpen);
@@ -94,7 +105,10 @@ export default function WhisperChatPanel({
   }
 
   return (
-    <aside className={`whisper-panel ${isOpen ? 'whisper-expanded' : ''}`} aria-label="نجوای گروهی">
+    <>
+      {/* روی گوشی، زدن بیرونِ کشو آن را می‌بندد و صحنه آزاد می‌شود */}
+      {isOpen && <div className="panel-scrim" aria-hidden="true" onClick={() => setOpen(false)} />}
+      <aside className={`whisper-panel ${isOpen ? 'whisper-expanded' : ''}`} aria-label="نجوای گروهی">
       <button
         ref={toggleRef}
         className="whisper-toggle"
@@ -102,6 +116,7 @@ export default function WhisperChatPanel({
         onClick={toggle}
         aria-expanded={isOpen}
         aria-controls="whisper-body"
+        {...swipe}
       >
         <span className="whisper-icon" aria-hidden="true">♧</span>
         <span className="whisper-toggle-text">
@@ -174,6 +189,7 @@ export default function WhisperChatPanel({
           </div>
         </div>
       )}
-    </aside>
+      </aside>
+    </>
   );
 }

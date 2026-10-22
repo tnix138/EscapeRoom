@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useId, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useRef, useState } from 'react';
+import { announcePanelOpen, onOtherPanelOpen } from './panel-focus';
 import {
   buildExplorationState,
   compactSummary,
@@ -64,6 +65,17 @@ export default function ExplorationHud({ input, onOpenChat, defaultOpen = false,
     return () => document.removeEventListener('keydown', onKeyDown);
   }, [mode]);
 
+  // باز شدن پنل دیگر (نجوا/همراه) این پنل را جمع می‌کند تا روی صحنه نیفتد.
+  useEffect(() => onOtherPanelOpen('exploration', () => setMode((value) => (value === 'open' ? 'collapsed' : value))), []);
+
+  const togglePanel = useCallback(() => {
+    setMode((value) => {
+      if (value === 'open') return 'collapsed';
+      announcePanelOpen('exploration');
+      return 'open';
+    });
+  }, []);
+
   if (!state.visible) return null;
 
   if (mode === 'hidden') {
@@ -92,7 +104,7 @@ export default function ExplorationHud({ input, onOpenChat, defaultOpen = false,
         ref={toggleRef}
         className="exploration-toggle"
         type="button"
-        onClick={() => setMode(isOpen ? 'collapsed' : 'open')}
+        onClick={togglePanel}
         aria-expanded={isOpen}
         aria-controls={panelId}
       >

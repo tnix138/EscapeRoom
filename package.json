@@ -16,6 +16,7 @@
     "docs:index": "node scripts/docs.mjs index",
     "docs:check": "node scripts/docs.mjs check",
     "lint": "node scripts/lint.mjs",
+    "icons": "node scripts/generate-pwa-icons.mjs",
     "ci": "npm run typecheck && npm run lint && npm test",
     "auto-merge": "node scripts/auto-merge.mjs",
     "smoke": "node scripts/smoke-test.mjs",

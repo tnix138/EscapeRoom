@@ -111,6 +111,16 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
     return map;
   }, [room.players]);
 
+  // Esc برگهٔ بلیط را می‌بندد (روی گوشی هم با دکمهٔ ✕ بسته می‌شود).
+  useEffect(() => {
+    if (!ticketsOpen) return undefined;
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') setTicketsOpen(false);
+    }
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [ticketsOpen]);
+
   // ذخیره موقعیت برای reconnect
   useEffect(() => {
     const id = setTimeout(() => {
@@ -488,7 +498,22 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
       <div
         id="alley-tickets-sheet"
         className={ticketsOpen ? 'alley3d-panels is-open' : 'alley3d-panels'}
+        role={ticketsOpen ? 'dialog' : undefined}
+        aria-modal={ticketsOpen ? true : undefined}
+        aria-label={ticketsOpen ? 'برگهٔ بلیط من' : undefined}
       >
+        {/* سربرگ برگهٔ تمام‌صفحه — فقط روی گوشی دیده می‌شود */}
+        <div className="alley-sheet-head">
+          <span className="alley-sheet-title">🎟️ بلیط من</span>
+          <button
+            type="button"
+            className="alley-sheet-close"
+            onClick={() => setTicketsOpen(false)}
+            aria-label="بستن برگهٔ بلیط"
+          >
+            ✕
+          </button>
+        </div>
         <div className="alley3d-ticket">
           <div className="alley3d-ticket-inner">
             <div className="alley3d-ticket-title">
