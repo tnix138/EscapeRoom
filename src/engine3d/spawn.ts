@@ -9,6 +9,7 @@
 
 import type { PlayerSpawn, PlayerTransform, WorldBounds } from './types';
 import { DEFAULT_ALLEY_SPAWN, DEFAULT_ALLEY_BOUNDS } from './types';
+import { ALLEY_STATIC_OBSTACLES, sanitizePosition, type AABB } from './collision';
 
 const STORAGE_KEY = (roomCode: string, playerId: string) => `orfeo:spawn:${roomCode}:${playerId}`;
 
@@ -33,7 +34,12 @@ export function saveTransform(roomCode: string, playerId: string, transform: Pla
   }
 }
 
-export function loadTransform(roomCode: string, playerId: string, bounds: WorldBounds = DEFAULT_ALLEY_BOUNDS): PlayerTransform | null {
+export function loadTransform(
+  roomCode: string,
+  playerId: string,
+  bounds: WorldBounds = DEFAULT_ALLEY_BOUNDS,
+  obstacles: readonly AABB[] = ALLEY_STATIC_OBSTACLES,
+): PlayerTransform | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY(roomCode, playerId));
     if (!raw) return null;
@@ -42,7 +48,11 @@ export function loadTransform(roomCode: string, playerId: string, bounds: WorldB
       typeof parsed.x !== 'number' ||
       typeof parsed.y !== 'number' ||
       typeof parsed.z !== 'number' ||
-      typeof parsed.yawDeg !== 'number'
+      typeof parsed.yawDeg !== 'number' ||
+      !Number.isFinite(parsed.x) ||
+      !Number.isFinite(parsed.y) ||
+      !Number.isFinite(parsed.z) ||
+      !Number.isFinite(parsed.yawDeg)
     )
       return null;
     // اعتبارسنجی مرز
@@ -53,7 +63,14 @@ export function loadTransform(roomCode: string, playerId: string, bounds: WorldB
       parsed.z > bounds.maxZ
     )
       return null;
-    return parsed;
+    // اگر مختصات ذخیره‌شده قبلی روی لبه یا داخل مانعی گیر کرده بود، به نقطهٔ آزاد بیرون رانده شود
+    const safe = sanitizePosition(parsed.x, parsed.z, bounds, 0.35, obstacles);
+    return {
+      ...parsed,
+      x: safe.x,
+      z: safe.z,
+      pitchDeg: typeof parsed.pitchDeg === 'number' && Number.isFinite(parsed.pitchDeg) ? parsed.pitchDeg : 0,
+    };
   } catch {
     return null;
   }

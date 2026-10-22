@@ -78,6 +78,7 @@ export function attachTouchControls(
   const clear = () => {
     pressed.clear();
     state.forward = state.backward = state.left = state.right = false;
+    state.sprint = false;
     emit();
   };
 

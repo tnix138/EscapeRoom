@@ -14,6 +14,9 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { useThreeEngine } from '@/engine3d/useThreeEngine';
 import { usePlayerControls } from '@/engine3d/usePlayerControls';
+import { isTextEntryElement } from '@/engine3d/player-controller';
+import type { AABB } from '@/engine3d/collision';
+import type { PlayerTransform, WorldBounds } from '@/engine3d/types';
 import { createTheaterGeometry } from '@/engine3d/theater-geometry';
 import { RemotePlayerManager } from '@/engine3d/presence/RemotePlayerManager';
 import { toPresenceSnapshots } from '@/client-sdk/presence-avatars';
@@ -28,6 +31,25 @@ export interface DarkAuditoriumThreeSceneProps {
   onSendWhisper: (text: string) => Promise<void>;
 }
 
+const AUDITORIUM_BOUNDS: WorldBounds = {
+  minX: -8.35,
+  maxX: 8.35,
+  minZ: -6.8,
+  maxZ: 9.5,
+  groundY: 0,
+};
+
+// در سالن تاریک تئاتر فقط دیوارهای پیرامونی سالن مرز حرکت هستند تا بازیکن در تاریکی به موانع نامرئی کوچه گیر نکند
+const AUDITORIUM_OBSTACLES: readonly AABB[] = [];
+
+const AUDITORIUM_INITIAL_TRANSFORM: PlayerTransform = {
+  x: 0,
+  y: 1.65,
+  z: 4,
+  yawDeg: 0,
+  pitchDeg: 0,
+};
+
 function DarkCore({ room, onInspectHotspot, onSendWhisper }: DarkAuditoriumThreeSceneProps) {
   const { canvasRef, engine, isWebGLAvailable, error } = useThreeEngine();
   const theaterRef = useRef<ReturnType<typeof createTheaterGeometry> | null>(null);
@@ -37,7 +59,10 @@ function DarkCore({ room, onInspectHotspot, onSendWhisper }: DarkAuditoriumThree
 
   const { transform, requestPointerLock, isPointerLocked } = usePlayerControls({
     engine,
-    enabled: true,
+    initialTransform: AUDITORIUM_INITIAL_TRANSFORM,
+    bounds: AUDITORIUM_BOUNDS,
+    obstacles: AUDITORIUM_OBSTACLES,
+    enabled: !selectedHotspot,
   });
 
   const presence = usePresenceFeed({
@@ -190,6 +215,7 @@ function DarkCore({ room, onInspectHotspot, onSendWhisper }: DarkAuditoriumThree
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      if (isTextEntryElement(e.target)) return;
       if (e.code === 'KeyE' && nearHotspot) void handleInspect();
     };
     window.addEventListener('keydown', onKey);
