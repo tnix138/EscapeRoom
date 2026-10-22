@@ -6,10 +6,14 @@ import {
   ACT_LABELS,
   ACT_NUMBERS,
   DIGIT_PENDING_MESSAGE,
+  PUZZLE_PANEL_ID,
   ROW_CODES,
   ROW_LABELS,
   describePunchSelection,
   isPunchSelectionComplete,
+  puzzleToggleHint,
+  puzzleToggleIcon,
+  puzzleToggleLabel,
   toPersianNumber,
 } from './puzzle-rules';
 
@@ -41,6 +45,8 @@ export default function HeldTicketsDrawer({
   onShareStub,
 }: HeldTicketsDrawerProps) {
   const [showCouponBack, setShowCouponBack] = useState(false);
+  // پاسخ معما (نماد/پرده/ردیف) پیش‌فرض باز است؛ بازیکن با دکمهٔ کنارش جمعش می‌کند.
+  const [puzzleOpen, setPuzzleOpen] = useState(true);
   const [sharedNote, setSharedNote] = useState(false);
   const [emblem, setEmblem] = useState<TheaterEmblemId>(initialSelection?.emblem ?? 'mask');
   const [actNumber, setActNumber] = useState<PlayActNumber>(initialSelection?.actNumber ?? 1);
@@ -107,8 +113,31 @@ export default function HeldTicketsDrawer({
               </div>
               <div className="ticket-perforation" aria-hidden="true"><span>✦</span><i /><span>✦</span></div>
 
-              <div className="punch-form">
-                <p id={`punch-hint-${ownerName}`}>سه نشانه را از سرنخ‌ها پیدا کنید؛ هر سه باید با کوپن و دیوارهای کوچه بخوانند.</p>
+              {/* کارت «پاسخ معما» — هم‌تم با پنل سرنخ‌های کوچه و جمع‌شدنی. */}
+              <section className={`punch-card ${puzzleOpen ? 'is-open' : 'is-collapsed'}`} aria-labelledby="punch-card-title">
+                <header className="punch-card-head">
+                  <span className="punch-card-crest" aria-hidden="true">✦</span>
+                  <div className="punch-card-titles">
+                    <span className="punch-card-kicker">سرنخ‌های کوچه</span>
+                    <h4 className="punch-card-title" id="punch-card-title">پاسخ معما</h4>
+                  </div>
+                  <button
+                    type="button"
+                    className="punch-card-toggle"
+                    aria-expanded={puzzleOpen}
+                    aria-controls={PUZZLE_PANEL_ID}
+                    aria-label={puzzleToggleLabel(puzzleOpen)}
+                    title={puzzleToggleHint(puzzleOpen)}
+                    onClick={() => setPuzzleOpen((value) => !value)}
+                  >
+                    <span className="punch-card-toggle-icon" aria-hidden="true">{puzzleToggleIcon(puzzleOpen)}</span>
+                    <span className="punch-card-toggle-text">{puzzleToggleLabel(puzzleOpen)}</span>
+                  </button>
+                </header>
+
+                <div className="punch-card-body" id={PUZZLE_PANEL_ID} hidden={!puzzleOpen}>
+                  <p className="punch-card-lede" id={`punch-hint-${ownerName}`}>سه نشانه را از سرنخ‌ها پیدا کنید؛ هر سه باید با کوپن و دیوارهای کوچه بخوانند.</p>
+                  <div className="punch-form">
 
                 <fieldset className="punch-group" disabled={isValidated}>
                   <legend className="punch-legend">نماد نمایش</legend>
@@ -208,7 +237,9 @@ export default function HeldTicketsDrawer({
                     <span aria-hidden="true">✣</span>
                   </button>
                 )}
-              </div>
+                  </div>
+                </div>
+              </section>
             </div>
             <div className="ticket-notch bottom" />
           </article>

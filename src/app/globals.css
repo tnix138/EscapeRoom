@@ -10800,3 +10800,323 @@ table {
     display: none;
   }
 }
+
+/* ==========================================================================
+   بازبینی امیرعلی — همسفران بالاتر، پاسخ معما بزرگ‌تر و هم‌تم با سرنخ‌ها
+   --------------------------------------------------------------------------
+   ۱) در نمای کلاسیک، «همسفران تماشاخانه» دیگر شناور نیست: داخل خط سربرگ
+      می‌نشیند (بالاتر از بلیط)، با اسکرول پایین می‌رود و هرگز روی پاسخ معما
+      نمی‌افتد. بدنهٔ بازش هم به‌جای فشار دادن صحنه، رو به پایین باز می‌شود.
+   ۲) «پاسخ معما» (نماد/پرده/ردیف) از دل بلیط بیرون آمد و کارت مستقل با تم
+      سرنخ‌های کوچه شد: مخمل تیره، خط طلایی، کیکر Georgia و هالهٔ سرخِ گوشه.
+   ۳) همان کارت یک دکمهٔ کشویی کنار عنوان دارد (باز/بسته) با aria-expanded؛
+      بسته‌شدن با انیمیشن کوتاه و احترام به prefers-reduced-motion.
+   ۴) کنترل‌های پاسخ بزرگ‌تر شدند (کاشی نماد ۵۲→۶۰، قطعهٔ پرده/ردیف ۵۰→۵۶،
+      دکمهٔ پانچ ۴۴→۴۶) و پنل بلیط سه‌بعدی ۳۳۲→۳۶۰px تا جای نفس‌کشیدن باشد.
+   ۵) مودال قفل در هم همان تم را گرفت؛ صفحه‌کلید برنجی و اندازه‌ها سر جایشان.
+   ========================================================================== */
+
+/* ۱) نمای کلاسیک — همسفران در خط سربرگ، نه شناور روی بلیط. */
+.alley-classic-companion {
+  position: relative;
+  z-index: 6;
+  display: flex;
+  justify-content: flex-start;
+  padding: 10px clamp(14px, 3vw, 38px) 0;
+}
+
+@media (min-width: 721px) {
+  .alley-classic-companion .theater-companion-hud {
+    position: relative;
+    inset: auto;
+    top: auto;
+    right: auto;
+    left: auto;
+    width: min(286px, 100%);
+    max-width: 100%;
+    z-index: 1;
+  }
+
+  .alley-classic-companion .theater-companion-hud.is-open .companion-body {
+    position: absolute;
+    top: 100%;
+    inset-inline: 0;
+    z-index: 3;
+    max-height: min(44vh, 340px);
+    background: rgba(20, 13, 17, 0.985);
+    border: 1px solid rgba(212, 175, 99, 0.32);
+    border-top: 0;
+    box-shadow: 0 20px 44px rgba(0, 0, 0, 0.58);
+  }
+}
+
+/* ۲) کارت «پاسخ معما» — تم سرنخ‌های کوچه. */
+.punch-card {
+  margin-top: 10px;
+  padding: 10px 12px 12px;
+  border: 1px solid rgba(212, 175, 99, 0.4);
+  background:
+    radial-gradient(ellipse at 82% 0, rgba(143, 33, 50, 0.18), transparent 46%),
+    linear-gradient(158deg, #241a1d, #150f12 72%);
+  color: var(--text-primary);
+  box-shadow:
+    0 14px 34px rgba(0, 0, 0, 0.42),
+    inset 0 0 0 4px rgba(212, 175, 99, 0.04);
+  text-align: right;
+}
+
+.punch-card-head {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(212, 175, 99, 0.2);
+}
+
+.punch-card-crest {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgba(212, 175, 99, 0.35);
+  border-radius: 50%;
+  background: rgba(212, 175, 99, 0.06);
+  color: var(--gold-light);
+  font-size: var(--text-sm);
+}
+
+.punch-card-titles {
+  flex: 1;
+  min-width: 0;
+}
+
+.punch-card-kicker {
+  display: block;
+  font-family: Georgia, serif;
+  font-size: var(--text-xs);
+  letter-spacing: 0.14em;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+.punch-card-title {
+  margin: 1px 0 0;
+  font-size: var(--text-base);
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--text-primary);
+}
+
+.punch-card-toggle {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  margin-inline-start: auto;
+  padding: 6px 12px;
+  border: 1px solid rgba(212, 175, 99, 0.45);
+  border-radius: 999px;
+  background: rgba(212, 175, 99, 0.1);
+  color: var(--gold-light);
+  font-family: inherit;
+  font-size: var(--text-xs);
+  line-height: 1.4;
+  cursor: pointer;
+  transition: background 160ms ease, border-color 160ms ease;
+}
+
+.punch-card-toggle:hover {
+  background: rgba(212, 175, 99, 0.2);
+  border-color: rgba(212, 175, 99, 0.7);
+}
+
+.punch-card-toggle:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.punch-card-toggle-icon {
+  font-size: var(--text-sm);
+  line-height: 1;
+}
+
+.punch-card-body[hidden] {
+  display: none;
+}
+
+.punch-card-body:not([hidden]) {
+  animation: punch-card-reveal 240ms ease both;
+}
+
+@keyframes punch-card-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.punch-card-lede {
+  margin: 9px 0 10px;
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+  line-height: 1.75;
+}
+
+/* ۳) داخل کارت: متن روشن روی مخمل، کنترل‌های بزرگ‌تر و لمس‌پذیر. */
+.punch-card .punch-form {
+  gap: 12px;
+}
+
+.punch-card .punch-legend {
+  margin-bottom: 7px;
+  color: var(--gold-light);
+  font-size: var(--text-sm);
+}
+
+.punch-card .emblem-grid,
+.punch-card .segmented-row {
+  gap: 7px;
+}
+
+.punch-card .emblem-option {
+  min-height: 60px;
+  padding: 7px 4px;
+  border-color: rgba(212, 175, 99, 0.28);
+  background: rgba(255, 255, 255, 0.035);
+  color: var(--text-primary);
+}
+
+.punch-card .emblem-option:hover {
+  background: rgba(212, 175, 99, 0.14);
+  border-color: rgba(212, 175, 99, 0.5);
+}
+
+.punch-card .emblem-option.is-selected {
+  border-color: var(--gold);
+  background: rgba(212, 175, 99, 0.18);
+  box-shadow: inset 0 0 0 1px rgba(212, 175, 99, 0.5);
+}
+
+.punch-card .emblem-symbol {
+  font-size: 22px;
+}
+
+.punch-card .emblem-label {
+  color: var(--text-secondary);
+}
+
+.punch-card .segment-option {
+  min-height: 56px;
+  border-color: rgba(212, 175, 99, 0.28);
+  background: rgba(255, 255, 255, 0.035);
+  color: var(--text-primary);
+}
+
+.punch-card .segment-option:hover {
+  background: rgba(212, 175, 99, 0.14);
+  border-color: rgba(212, 175, 99, 0.5);
+}
+
+.punch-card .segment-option.is-selected {
+  border-color: var(--gold);
+  background: rgba(212, 175, 99, 0.18);
+  box-shadow: inset 0 0 0 1px rgba(212, 175, 99, 0.5);
+}
+
+.punch-card .segment-option span {
+  color: var(--text-secondary);
+}
+
+.punch-card .punch-summary {
+  border: 1px dashed rgba(212, 175, 99, 0.42);
+  background: rgba(212, 175, 99, 0.08);
+  color: var(--text-primary);
+}
+
+.punch-card .punch-summary > span {
+  color: var(--text-muted);
+}
+
+.punch-card .ticket-punch-button {
+  min-height: 46px;
+  margin-top: 2px;
+  border-color: rgba(212, 175, 99, 0.55);
+}
+
+.punch-card .ticket-punch-button:disabled {
+  opacity: 0.5;
+}
+
+/* کارت موفقیت و رقم طلایی هم باید روی مخمل خوانا بمانند. */
+.punch-card .ticket-punch-success {
+  border-color: rgba(166, 189, 133, 0.5);
+  background: rgba(166, 189, 133, 0.12);
+  color: var(--text-primary);
+}
+
+.punch-card .punch-success-seal {
+  border-color: rgba(196, 214, 160, 0.6);
+  color: #cfdba9;
+}
+
+.punch-card .revealed-digit {
+  color: var(--text-secondary);
+}
+
+.punch-card .revealed-digit strong {
+  color: var(--gold-light);
+  border-bottom-color: rgba(212, 175, 99, 0.6);
+}
+
+.punch-card .revealed-digit-pending {
+  color: var(--text-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .punch-card-body:not([hidden]) {
+    animation: none;
+  }
+
+  .punch-card-toggle {
+    transition: none;
+  }
+}
+
+/* ۴) پنل بلیط سه‌بعدی یک پله عریض‌تر تا پاسخ معما جا داشته باشد. */
+:root {
+  --hud-w-ticket: 360px;
+}
+
+/* ۵) مودال قفل در با همان تم سرنخ‌های کوچه. */
+.door-modal {
+  background:
+    radial-gradient(ellipse at 78% 2%, rgba(143, 33, 50, 0.2), transparent 46%),
+    linear-gradient(158deg, #241a1d, #150f12 72%);
+  border-color: rgba(212, 175, 99, 0.4);
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.62),
+    inset 0 0 0 6px rgba(212, 175, 99, 0.04);
+}
+
+.door-modal .eyebrow {
+  font-family: Georgia, serif;
+  letter-spacing: 0.14em;
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.door-modal h2 {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.door-modal-desc {
+  color: var(--text-secondary);
+}

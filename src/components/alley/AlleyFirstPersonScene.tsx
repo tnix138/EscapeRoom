@@ -153,12 +153,16 @@ export default function AlleyFirstPersonScene({ room, onPunchTicket, onUnlockDoo
         <div className="alley-top-actions"><button className="alley-head-button" type="button" onClick={onReplayInvitation}>بازپخش دعوت‌نامه</button><span className="alley-phase-label">فصل اول · بیرونِ تماشاخانه</span></div>
       </header>
 
-      <TheaterCompanionHud
-        players={room.players}
-        meId={room.me.playerId}
-        phase={room.phase}
-        punchedCount={players.filter((player) => player.ticketPunched).length}
-      />
+      {/* در نمای کلاسیک، همسفران داخل خط سربرگ می‌نشیند (نه شناور روی بلیط)؛
+          با اسکرول پایین می‌رود و هرگز روی پاسخ معما نمی‌افتد. */}
+      <div className="alley-classic-companion">
+        <TheaterCompanionHud
+          players={room.players}
+          meId={room.me.playerId}
+          phase={room.phase}
+          punchedCount={players.filter((player) => player.ticketPunched).length}
+        />
+      </div>
 
       <MovementNotice modalOpen={doorOpen || openClue !== null} />
 
