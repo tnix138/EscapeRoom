@@ -11,6 +11,11 @@
  */
 
 import type { WorldBounds, PlayerTransform } from './types';
+import {
+  ALLEY_GUIDE_BOARD_SURFACE_X,
+  ALLEY_GUIDE_COLLISION_DEPTH,
+  ALLEY_GUIDE_WALL_X,
+} from './alley-guide-layout';
 
 export interface CollisionResult {
   collided: boolean;
@@ -44,9 +49,20 @@ export const ALLEY_STATIC_OBSTACLES: AABB[] = [
   // نمای تماشاخانه و ستون‌های سنگی انتهای شمالی
   { minX: -9.2, maxX: 9.2, minZ: -18, maxZ: -13.2 },
   // ویترین چوبی-برنجی تابلوی اعلانات روی دیوار چپ (امکان نزدیک شدن مستقیم برای خواندن متن)
-  { minX: -9.0, maxX: -7.9, minZ: -3.6, maxZ: -0.4 },
-  // پیشخوان و اتاقک گیشهٔ برنجی سمت راست (امکان نزدیک شدن مستقیم برای خواندن جدول)
-  { minX: 7.05, maxX: 9.0, minZ: -3.15, maxZ: 0.15 },
+  {
+    minX: ALLEY_GUIDE_WALL_X.left - ALLEY_GUIDE_COLLISION_DEPTH.behindWall,
+    maxX: ALLEY_GUIDE_BOARD_SURFACE_X.playbill + ALLEY_GUIDE_COLLISION_DEPTH.beyondSurface,
+    minZ: -3.6,
+    maxZ: -0.4,
+  },
+  // پیشخوان و اتاقک گیشهٔ برنجی سمت راست — قرینهٔ دقیق تابلو چپ، چون گیشه هم
+  // اکنون با همان فاصلهٔ پوستر به دیوار راست چسبیده است
+  {
+    minX: ALLEY_GUIDE_BOARD_SURFACE_X.rowChart - ALLEY_GUIDE_COLLISION_DEPTH.beyondSurface,
+    maxX: ALLEY_GUIDE_WALL_X.right + ALLEY_GUIDE_COLLISION_DEPTH.behindWall,
+    minZ: -3.15,
+    maxZ: 0.15,
+  },
   // دسته جعبه‌های چوبی A (پیاده‌روی چپ — جنوب)
   { minX: -8.55, maxX: -6.45, minZ: 2.35, maxZ: 4.45 },
   // دسته جعبه‌ها و بشکه B (پیاده‌روی راست — میانه)
