@@ -11180,3 +11180,679 @@ table {
 .door-modal-desc {
   color: var(--text-secondary);
 }
+
+/* ==========================================================================
+   بازبینی امیرعلی — پنل بلیط شیشه‌ای، بزرگ‌تر، جمع‌شدنی و اسکرول هم‌تم
+   --------------------------------------------------------------------------
+   ۱) سربرگ «بلیط [نام] — ردیف ... — صندلی ...» بزرگ‌تر و کاملاً خوانا شد و
+      خودِ پنل بلیط روی دسکتاپ عریض‌تر و بلندتر نفس می‌کشد بدون برخورد با همسفران.
+   ۲) پنل بلیط مثل سایر پنل‌های HUD دکمهٔ باز/بستن از سمت راست دارد تا با یک
+      کلید باز شود و با کلیک دوباره جمع شود.
+   ۳) تمام سطح‌های کرمی/کاغذی داخل بلیط و پشت کوپن حذف شدند و کل مجموعه
+      یک‌دست شیشه‌ای تیره با هالهٔ سرخ-مخملی و خط طلایی شد.
+   ۴) نوارهای اسکرول پایین و چپ و کنترل‌های پایین/چپ صحنه هم‌تم با بقیهٔ
+      پنل‌های شیشه‌ای شدند.
+   ========================================================================== */
+
+:root {
+  --hud-w-ticket-open: 408px;
+  --hud-w-ticket-closed: 376px;
+}
+
+/* ۱) حذف کامل رنگ کرمی و یک‌دست‌سازی شیشه‌ایِ بلیط اصلی و کوپن هم‌تیمی */
+.main-ticket {
+  background:
+    radial-gradient(ellipse at 84% 0%, rgba(156, 38, 58, 0.22), transparent 54%),
+    radial-gradient(ellipse at 14% 100%, rgba(212, 175, 99, 0.08), transparent 50%),
+    linear-gradient(158deg, rgba(30, 19, 25, 0.8), rgba(16, 10, 14, 0.9) 74%);
+  border: 1px solid rgba(212, 175, 99, 0.34);
+  border-radius: 10px;
+  color: var(--text-primary);
+  box-shadow:
+    0 14px 34px rgba(0, 0, 0, 0.44),
+    inset 0 1px 0 rgba(255, 236, 196, 0.1);
+  backdrop-filter: blur(12px) saturate(130%);
+  -webkit-backdrop-filter: blur(12px) saturate(130%);
+}
+
+.main-ticket:before {
+  border-color: rgba(212, 175, 99, 0.16);
+  border-radius: 7px;
+}
+
+.ticket-notch {
+  background: rgba(12, 8, 11, 0.95);
+  box-shadow: inset 0 0 0 1px rgba(212, 175, 99, 0.28);
+}
+
+.main-ticket-inner {
+  border-color: rgba(212, 175, 99, 0.2);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.main-ticket-brand {
+  color: #cfb483;
+  border-bottom-color: rgba(212, 175, 99, 0.2);
+}
+
+.main-ticket-title small {
+  color: var(--text-muted);
+}
+
+.main-ticket-title h3 {
+  color: #f5e8ce;
+}
+
+.ticket-owner {
+  border-top-color: rgba(212, 175, 99, 0.2);
+  border-bottom-color: rgba(212, 175, 99, 0.2);
+}
+
+.ticket-owner small {
+  color: var(--text-muted);
+}
+
+.ticket-owner strong {
+  color: #f7ecd6;
+  font-weight: 600;
+}
+
+.ticket-seat-tag {
+  border: 1px solid rgba(212, 175, 99, 0.46);
+  border-radius: 6px;
+  padding: 4px 9px;
+  background: rgba(212, 175, 99, 0.13);
+  color: var(--gold-light);
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+
+.ticket-perforation {
+  color: #c8ab76;
+}
+
+.ticket-perforation i {
+  border-top-color: rgba(212, 175, 99, 0.3);
+}
+
+.ticket-validated .main-ticket-inner:after {
+  background: radial-gradient(
+    circle,
+    rgba(212, 175, 99, 0.55) 0 36%,
+    rgba(212, 175, 99, 0.18) 40% 50%,
+    transparent 54%
+  );
+  box-shadow:
+    0 21px 0 -1px rgba(212, 175, 99, 0.42),
+    0 42px 0 -1px rgba(212, 175, 99, 0.34);
+}
+
+.main-ticket .punch-card {
+  border-color: rgba(212, 175, 99, 0.28);
+  border-radius: 8px;
+  background:
+    radial-gradient(ellipse at 82% 0%, rgba(143, 33, 50, 0.16), transparent 48%),
+    linear-gradient(160deg, rgba(22, 14, 19, 0.72), rgba(12, 8, 12, 0.82) 74%);
+  box-shadow: inset 0 1px 0 rgba(255, 236, 196, 0.06);
+}
+
+.emblem-option,
+.segment-option {
+  border-color: rgba(212, 175, 99, 0.28);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.035);
+  color: var(--text-primary);
+}
+
+/* پشت و روی کوپن هم‌تیمی — بدون کرمی، شیشه‌ای و هم‌خانواده با سایر پنل‌ها */
+.coupon-face {
+  border: 1px solid rgba(212, 175, 99, 0.34);
+  border-radius: 10px;
+  background:
+    radial-gradient(ellipse at 82% 0%, rgba(156, 38, 58, 0.26), transparent 54%),
+    linear-gradient(155deg, rgba(34, 18, 25, 0.86), rgba(17, 11, 15, 0.92) 72%);
+  box-shadow:
+    0 14px 34px rgba(0, 0, 0, 0.44),
+    inset 0 1px 0 rgba(255, 236, 196, 0.1);
+  backdrop-filter: blur(12px) saturate(130%);
+  -webkit-backdrop-filter: blur(12px) saturate(130%);
+  color: var(--text-primary);
+}
+
+.coupon-face:before {
+  border-color: rgba(212, 175, 99, 0.2);
+  border-radius: 7px;
+}
+
+.coupon-back {
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(156, 38, 58, 0.24), transparent 54%),
+    linear-gradient(155deg, rgba(32, 20, 27, 0.9), rgba(15, 10, 14, 0.95));
+  color: var(--text-primary);
+}
+
+.coupon-back .coupon-topline {
+  color: #cfb483;
+}
+
+.coupon-back h3 {
+  color: #f4e6ca;
+}
+
+.coupon-back > p:not(.coupon-note) {
+  color: var(--text-secondary);
+}
+
+.coupon-back-ornament {
+  color: rgba(212, 175, 99, 0.22);
+}
+
+.coupon-recipient {
+  border-top-color: rgba(212, 175, 99, 0.24);
+  border-bottom-color: rgba(212, 175, 99, 0.24);
+  border-radius: 6px;
+  background: rgba(212, 175, 99, 0.06);
+  color: var(--text-secondary);
+}
+
+.coupon-recipient strong {
+  color: var(--gold-light);
+}
+
+.coupon-back .coupon-note {
+  color: var(--text-secondary);
+}
+
+.coupon-flip-button,
+.coupon-back .coupon-flip-button {
+  border-radius: 6px;
+  border-color: rgba(212, 175, 99, 0.4);
+  background: rgba(212, 175, 99, 0.1);
+  color: var(--gold-light);
+  transition: background 160ms ease, border-color 160ms ease;
+}
+
+.coupon-flip-button:hover,
+.coupon-back .coupon-flip-button:hover {
+  background: rgba(212, 175, 99, 0.2);
+  border-color: rgba(212, 175, 99, 0.68);
+}
+
+.coupon-back .share-clue-button {
+  border: 1px solid rgba(212, 175, 99, 0.48);
+  border-radius: 6px;
+  background: linear-gradient(110deg, rgba(114, 34, 48, 0.82), rgba(146, 46, 60, 0.88));
+  color: #f6e8ca;
+  transition: background 160ms ease, border-color 160ms ease;
+}
+
+.coupon-back .share-clue-button:hover {
+  border-color: rgba(212, 175, 99, 0.74);
+  background: linear-gradient(110deg, rgba(136, 42, 58, 0.9), rgba(168, 56, 70, 0.94));
+}
+
+.ticket-punch-button {
+  border-radius: 6px;
+}
+
+/* ۲) پوستهٔ شیشه‌ای پنل بلیط + کلید باز و بستن از سمت راست */
+.alley3d-ticket-inner {
+  padding: 0;
+  border: 1px solid rgba(212, 175, 99, 0.36);
+  border-radius: 12px;
+  background:
+    radial-gradient(ellipse at 86% 0%, rgba(156, 38, 58, 0.24), transparent 52%),
+    radial-gradient(ellipse at 12% 100%, rgba(212, 175, 99, 0.08), transparent 48%),
+    linear-gradient(160deg, rgba(25, 16, 21, 0.86), rgba(13, 9, 13, 0.93));
+  box-shadow:
+    0 20px 48px rgba(0, 0, 0, 0.56),
+    inset 0 1px 0 rgba(255, 236, 196, 0.12);
+  backdrop-filter: blur(14px) saturate(135%);
+  -webkit-backdrop-filter: blur(14px) saturate(135%);
+  overflow: hidden;
+}
+
+.alley3d-ticket-mobile-title {
+  display: none;
+}
+
+.alley3d-ticket-toggle {
+  width: 100%;
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border: 0;
+  background:
+    linear-gradient(90deg, rgba(212, 175, 99, 0.09), transparent 56%);
+  color: var(--text-primary);
+  font-family: inherit;
+  text-align: right;
+  cursor: pointer;
+  transition: background 180ms ease;
+}
+
+.alley3d-ticket.is-expanded .alley3d-ticket-toggle {
+  border-bottom: 1px solid rgba(212, 175, 99, 0.22);
+}
+
+.alley3d-ticket-toggle:hover {
+  background:
+    linear-gradient(90deg, rgba(212, 175, 99, 0.17), rgba(156, 38, 58, 0.12) 68%, transparent);
+}
+
+.alley3d-ticket-toggle:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: -3px;
+}
+
+.alley3d-ticket-key {
+  flex: none;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(212, 175, 99, 0.52);
+  border-radius: 10px;
+  background:
+    linear-gradient(145deg, rgba(212, 175, 99, 0.22), rgba(143, 33, 50, 0.24));
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.32),
+    inset 0 1px 0 rgba(255, 240, 200, 0.22);
+  color: var(--gold-light);
+}
+
+.alley3d-ticket-key-icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.alley3d-ticket-heading {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.alley3d-ticket-owner-line {
+  display: block;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.45;
+  color: #f8efe0;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.alley3d-ticket-sub {
+  display: block;
+  font-size: var(--text-xs);
+  line-height: 1.5;
+  color: #cbb896;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.alley3d-ticket-sub.is-validated {
+  color: #cfe0a6;
+}
+
+.alley3d-ticket-pill {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 32px;
+  padding: 4px 10px;
+  border: 1px solid rgba(212, 175, 99, 0.44);
+  border-radius: 999px;
+  background: rgba(212, 175, 99, 0.11);
+  color: var(--gold-light);
+  font-size: var(--text-xs);
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.alley3d-ticket-chevron {
+  display: inline-block;
+  font-size: var(--text-sm);
+  line-height: 1;
+  transition: transform 200ms ease;
+}
+
+.alley3d-ticket-chevron.is-open {
+  transform: rotate(180deg);
+}
+
+.alley3d-ticket-body[hidden] {
+  display: none;
+}
+
+.alley3d-ticket-body:not([hidden]) {
+  animation: ticket-drawer-reveal 220ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes ticket-drawer-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.alley3d-ticket .held-tickets {
+  max-width: none;
+  margin: 0;
+  padding: 8px 10px 10px;
+}
+
+.alley3d-ticket .tickets-header {
+  margin-bottom: 8px;
+  color: #cfb483;
+}
+
+.alley3d-ticket .ticket-pair {
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.alley3d-ticket .main-ticket {
+  padding: 5px;
+}
+
+.alley3d-ticket .main-ticket-inner {
+  padding: 10px 11px 11px;
+}
+
+/* ۳) هماهنگ‌سازی پنل پایین-چپ، نوارهای کنترل پایین و بقیهٔ پنل‌های HUD با همان تم شیشه‌ای */
+.theater-companion-hud,
+.whisper-panel {
+  border-color: rgba(212, 175, 99, 0.34);
+  border-radius: 10px;
+  background:
+    radial-gradient(ellipse at 84% 0%, rgba(156, 38, 58, 0.22), transparent 54%),
+    linear-gradient(160deg, rgba(24, 15, 20, 0.86), rgba(13, 9, 13, 0.93));
+  box-shadow:
+    0 18px 44px rgba(0, 0, 0, 0.52),
+    inset 0 1px 0 rgba(255, 236, 196, 0.1);
+  backdrop-filter: blur(14px) saturate(135%);
+  -webkit-backdrop-filter: blur(14px) saturate(135%);
+}
+
+.exploration-toggle {
+  border-color: rgba(212, 175, 99, 0.34);
+  border-radius: 10px;
+  background:
+    radial-gradient(ellipse at 84% 0%, rgba(156, 38, 58, 0.22), transparent 54%),
+    linear-gradient(160deg, rgba(24, 15, 20, 0.86), rgba(13, 9, 13, 0.93));
+  box-shadow:
+    0 14px 34px rgba(0, 0, 0, 0.48),
+    inset 0 1px 0 rgba(255, 236, 196, 0.1);
+  backdrop-filter: blur(14px) saturate(135%);
+  -webkit-backdrop-filter: blur(14px) saturate(135%);
+}
+
+.exploration-panel {
+  border-color: rgba(212, 175, 99, 0.34);
+  border-radius: 10px;
+  background:
+    radial-gradient(ellipse at 82% 0%, rgba(156, 38, 58, 0.2), transparent 52%),
+    linear-gradient(160deg, rgba(24, 15, 20, 0.9), rgba(13, 9, 13, 0.95));
+  box-shadow:
+    0 20px 46px rgba(0, 0, 0, 0.54),
+    inset 0 1px 0 rgba(255, 236, 196, 0.1);
+  backdrop-filter: blur(14px) saturate(135%);
+  -webkit-backdrop-filter: blur(14px) saturate(135%);
+}
+
+.alley3d-hint {
+  border-color: rgba(212, 175, 99, 0.32);
+  border-radius: 10px;
+  background:
+    radial-gradient(ellipse at 85% 0%, rgba(156, 38, 58, 0.18), transparent 56%),
+    linear-gradient(160deg, rgba(23, 15, 20, 0.82), rgba(12, 8, 12, 0.9));
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.46),
+    inset 0 1px 0 rgba(255, 236, 196, 0.08);
+  backdrop-filter: blur(12px) saturate(130%);
+  -webkit-backdrop-filter: blur(12px) saturate(130%);
+}
+
+.alley3d-small-button {
+  border-color: rgba(212, 175, 99, 0.44);
+  border-radius: 10px;
+  background:
+    radial-gradient(ellipse at 80% 0%, rgba(156, 38, 58, 0.22), transparent 60%),
+    linear-gradient(160deg, rgba(26, 17, 22, 0.88), rgba(14, 9, 13, 0.94));
+  color: var(--text-primary);
+  box-shadow:
+    0 10px 24px rgba(0, 0, 0, 0.44),
+    inset 0 1px 0 rgba(255, 236, 196, 0.1);
+  backdrop-filter: blur(12px) saturate(130%);
+  -webkit-backdrop-filter: blur(12px) saturate(130%);
+  transition: background 160ms ease, border-color 160ms ease;
+}
+
+.alley3d-small-button:hover {
+  border-color: rgba(212, 175, 99, 0.72);
+  background:
+    radial-gradient(ellipse at 80% 0%, rgba(156, 38, 58, 0.32), transparent 60%),
+    linear-gradient(160deg, rgba(38, 24, 29, 0.92), rgba(20, 12, 17, 0.96));
+}
+
+.camera-controls {
+  border-color: rgba(212, 175, 99, 0.34);
+  border-radius: 999px;
+  background:
+    linear-gradient(160deg, rgba(24, 15, 20, 0.88), rgba(13, 9, 13, 0.94));
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.48),
+    inset 0 1px 0 rgba(255, 236, 196, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* ۴) اسکرول‌بار شیشه‌ای تیره-طلایی برای حذف کامل نوار سفید/خاکستری پایین و چپ */
+.held-tickets-scroll,
+.alley3d-ticket .held-tickets-scroll,
+.exploration-panel,
+.companion-body,
+.whisper-messages,
+.whisper-panel.whisper-expanded,
+.coupon-back,
+.alley3d-panels.is-open .alley3d-ticket-inner {
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(212, 175, 99, 0.52) rgba(18, 11, 15, 0.62);
+}
+
+@supports selector(::-webkit-scrollbar) {
+  .held-tickets-scroll,
+  .alley3d-ticket .held-tickets-scroll,
+  .exploration-panel,
+  .companion-body,
+  .whisper-messages,
+  .whisper-panel.whisper-expanded,
+  .coupon-back,
+  .alley3d-panels.is-open .alley3d-ticket-inner {
+    scrollbar-width: auto;
+    scrollbar-color: auto;
+  }
+
+  :is(
+    .held-tickets-scroll,
+    .exploration-panel,
+    .companion-body,
+    .whisper-messages,
+    .whisper-panel.whisper-expanded,
+    .coupon-back,
+    .alley3d-panels.is-open .alley3d-ticket-inner
+  )::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+  }
+
+  :is(
+    .held-tickets-scroll,
+    .exploration-panel,
+    .companion-body,
+    .whisper-messages,
+    .whisper-panel.whisper-expanded,
+    .coupon-back,
+    .alley3d-panels.is-open .alley3d-ticket-inner
+  )::-webkit-scrollbar-button {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  :is(
+    .held-tickets-scroll,
+    .exploration-panel,
+    .companion-body,
+    .whisper-messages,
+    .whisper-panel.whisper-expanded,
+    .coupon-back,
+    .alley3d-panels.is-open .alley3d-ticket-inner
+  )::-webkit-scrollbar-track {
+    background: rgba(16, 10, 14, 0.62);
+    border-radius: 999px;
+    margin-block: 6px;
+    box-shadow: inset 0 0 0 1px rgba(212, 175, 99, 0.14);
+  }
+
+  :is(
+    .held-tickets-scroll,
+    .exploration-panel,
+    .companion-body,
+    .whisper-messages,
+    .whisper-panel.whisper-expanded,
+    .coupon-back,
+    .alley3d-panels.is-open .alley3d-ticket-inner
+  )::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, rgba(212, 175, 99, 0.54), rgba(143, 96, 50, 0.72));
+    border: 1px solid rgba(245, 218, 158, 0.3);
+    border-radius: 999px;
+  }
+
+  :is(
+    .held-tickets-scroll,
+    .exploration-panel,
+    .companion-body,
+    .whisper-messages,
+    .whisper-panel.whisper-expanded,
+    .coupon-back,
+    .alley3d-panels.is-open .alley3d-ticket-inner
+  )::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, rgba(232, 198, 126, 0.8), rgba(176, 122, 64, 0.9));
+  }
+
+  :is(
+    .held-tickets-scroll,
+    .exploration-panel,
+    .companion-body,
+    .whisper-messages,
+    .whisper-panel.whisper-expanded,
+    .coupon-back,
+    .alley3d-panels.is-open .alley3d-ticket-inner
+  )::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+}
+
+/* ۵) چیدمان دسکتاپ: بلیط بزرگ‌تر در ستون راست بدون برخورد با همسفران بالا یا کاوش چپ */
+@media (min-width: 721px) and (min-height: 560px) {
+  .alley3d-panels {
+    justify-content: flex-start;
+  }
+
+  .alley3d-ticket {
+    flex: 0 1 auto;
+    width: min(
+      var(--hud-w-ticket-open),
+      calc(100vw - var(--hud-w-explore) - var(--hud-edge) * 2 - 20px)
+    );
+    max-width: min(
+      var(--hud-w-ticket-open),
+      calc(100vw - var(--hud-w-explore) - var(--hud-edge) * 2 - 20px)
+    );
+  }
+
+  .alley3d-ticket.is-collapsed {
+    width: min(
+      var(--hud-w-ticket-closed),
+      calc(100vw - var(--hud-w-explore) - var(--hud-edge) * 2 - 20px)
+    );
+    max-width: min(
+      var(--hud-w-ticket-closed),
+      calc(100vw - var(--hud-w-explore) - var(--hud-edge) * 2 - 20px)
+    );
+  }
+
+  .alley3d-ticket .held-tickets-scroll {
+    max-height: min(
+      390px,
+      calc(
+        100dvh - var(--hud-companion-top) - var(--hud-bottom) - 44px - 58px -
+          min(300px, var(--hud-column-budget)) - 20px
+      )
+    );
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-inline-end: 6px;
+  }
+}
+
+/* ۶) سازگاری کامل با برگهٔ تمام‌صفحهٔ گوشی (بدون اسکرول دوتایی یا دکمهٔ تکراری) */
+@media (max-width: 720px), (max-height: 560px) {
+  .alley3d-ticket-toggle {
+    display: none;
+  }
+
+  .alley3d-ticket-mobile-title {
+    display: block;
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: #f6ecda;
+  }
+
+  .alley3d-panels.is-open .alley3d-ticket-inner {
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .alley3d-panels.is-open .alley3d-ticket-body[hidden] {
+    display: block;
+    animation: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .alley3d-ticket-body:not([hidden]) {
+    animation: none;
+  }
+
+  .alley3d-ticket-toggle,
+  .alley3d-ticket-chevron,
+  .alley3d-small-button,
+  .coupon-flip-button,
+  .coupon-back .coupon-flip-button {
+    transition: none;
+  }
+}
+

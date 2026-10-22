@@ -28,7 +28,13 @@ import type { TheaterEmblemId, PlayActNumber, RowRomanCode, AlleyRoomView } from
 import HeldTicketsDrawer from './HeldTicketsDrawer';
 import ClueReadingPanel from './ClueReadingPanel';
 import TheaterDoorLockModal from './TheaterDoorLockModal';
-import { resolveOwnRevealedDigit } from './puzzle-rules';
+import {
+  TICKET_DRAWER_BODY_ID,
+  resolveOwnRevealedDigit,
+  ticketDrawerStatusLine,
+  ticketDrawerToggleHint,
+  ticketDrawerToggleLabel,
+} from './puzzle-rules';
 import WhisperChatPanel from '../hud/WhisperChatPanel';
 import TheaterCompanionHud from '../hud/TheaterCompanionHud';
 import MovementNotice from '../hud/MovementNotice';
@@ -62,8 +68,9 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
   const [showRowChart, setShowRowChart] = useState(false);
   const [visitedClues, setVisitedClues] = useState<string[]>([]);
   const [chatOpen, setChatOpen] = useState(false);
-  /* روی گوشی برگهٔ بلیط پیش‌فرض بسته است تا صحنه دیده شود (دسکتاپ همیشه باز است). */
+  /* روی گوشی برگهٔ بلیط پیش‌فرض بسته است تا صحنه دیده شود (دسکتاپ با کلید راست باز/بسته می‌شود). */
   const [ticketsOpen, setTicketsOpen] = useState(false);
+  const [desktopTicketOpen, setDesktopTicketOpen] = useState(true);
 
   const initialTransform = resolveInitialTransform(room.roomCode, room.me.playerId, room.me.seatIndex);
 
@@ -514,33 +521,68 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
             ✕
           </button>
         </div>
-        <div className="alley3d-ticket">
+        <div className={desktopTicketOpen ? 'alley3d-ticket is-expanded' : 'alley3d-ticket is-collapsed'}>
           <div className="alley3d-ticket-inner">
-            <div className="alley3d-ticket-title">
+            <div className="alley3d-ticket-title alley3d-ticket-mobile-title">
               🎟️ بلیط {room.me.playerName} — {room.me.seatLabel} {isTicketPunched && revealedDigit != null ? `— رقم: ${revealedDigit}` : ''}
             </div>
-            <HeldTicketsDrawer
-              ownerName={mainTicket?.ownerName || room.me.playerName}
-              seatLabel={mainTicket?.seatLabel || room.me.seatLabel}
-              playTitle={mainTicket?.playTitle ?? 'اجرای محرمانهٔ امشب'}
-              alleyRowHintName={mainTicket?.alleyRowHintName ?? 'ردیف طلاییِ پیشین'}
-              companionStub={{
-                targetTeammateName: companionStub?.targetTeammateName ?? 'هم‌تیمی',
-                targetEmblem: (companionStub?.targetEmblem as TheaterEmblemId) ?? 'mask',
-                targetActSceneTitle: companionStub?.targetActSceneTitle ?? 'پرده اول',
-                whisperNote: companionStub?.whisperNote ?? '',
-              }}
-              initialSelection={mainTicket?.selectedPunch ?? null}
-              isValidated={isTicketPunched}
-              revealedDigit={revealedDigit ?? null}
-              isPunching={isPunching}
-              onPunch={(sel) => {
-                void handlePunch(sel.emblem, sel.actNumber, sel.rowCode);
-              }}
-              onShareStub={() => {
-                void onSendWhisper(couponText, true);
-              }}
-            />
+            <button
+              type="button"
+              className="alley3d-ticket-toggle"
+              aria-expanded={desktopTicketOpen}
+              aria-controls={TICKET_DRAWER_BODY_ID}
+              aria-label={`بلیط ${room.me.playerName} — ${room.me.seatLabel} — ${ticketDrawerToggleLabel(desktopTicketOpen)}`}
+              title={ticketDrawerToggleHint(desktopTicketOpen)}
+              onClick={() => setDesktopTicketOpen((value) => !value)}
+            >
+              <span className="alley3d-ticket-key" aria-hidden="true">
+                <span className="alley3d-ticket-key-icon">🎟</span>
+              </span>
+              <span className="alley3d-ticket-heading">
+                <strong className="alley3d-ticket-owner-line">
+                  بلیط {room.me.playerName} — {room.me.seatLabel}
+                </strong>
+                <small className={isTicketPunched ? 'alley3d-ticket-sub is-validated' : 'alley3d-ticket-sub'}>
+                  {ticketDrawerStatusLine(isTicketPunched, revealedDigit ?? null)}
+                </small>
+              </span>
+              <span className="alley3d-ticket-pill" aria-hidden="true">
+                <span className="alley3d-ticket-pill-label">
+                  {desktopTicketOpen ? 'بستن' : 'باز کردن'}
+                </span>
+                <span className={desktopTicketOpen ? 'alley3d-ticket-chevron is-open' : 'alley3d-ticket-chevron'}>
+                  ⌃
+                </span>
+              </span>
+            </button>
+            <div
+              id={TICKET_DRAWER_BODY_ID}
+              className="alley3d-ticket-body"
+              hidden={!desktopTicketOpen}
+            >
+              <HeldTicketsDrawer
+                ownerName={mainTicket?.ownerName || room.me.playerName}
+                seatLabel={mainTicket?.seatLabel || room.me.seatLabel}
+                playTitle={mainTicket?.playTitle ?? 'اجرای محرمانهٔ امشب'}
+                alleyRowHintName={mainTicket?.alleyRowHintName ?? 'ردیف طلاییِ پیشین'}
+                companionStub={{
+                  targetTeammateName: companionStub?.targetTeammateName ?? 'هم‌تیمی',
+                  targetEmblem: (companionStub?.targetEmblem as TheaterEmblemId) ?? 'mask',
+                  targetActSceneTitle: companionStub?.targetActSceneTitle ?? 'پرده اول',
+                  whisperNote: companionStub?.whisperNote ?? '',
+                }}
+                initialSelection={mainTicket?.selectedPunch ?? null}
+                isValidated={isTicketPunched}
+                revealedDigit={revealedDigit ?? null}
+                isPunching={isPunching}
+                onPunch={(sel) => {
+                  void handlePunch(sel.emblem, sel.actNumber, sel.rowCode);
+                }}
+                onShareStub={() => {
+                  void onSendWhisper(couponText, true);
+                }}
+              />
+            </div>
           </div>
         </div>
       </div>
