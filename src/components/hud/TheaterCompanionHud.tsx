@@ -1,6 +1,8 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { announcePanelOpen, onOtherPanelOpen } from './panel-focus';
+import { useSwipeDismiss } from './use-swipe-dismiss';
 import {
   buildRoster,
   describeRosterEntry,
@@ -39,6 +41,19 @@ export default function TheaterCompanionHud({
   const [isOpen, setIsOpen] = useState(defaultOpen);
   const [dismissed, setDismissed] = useState<string[]>([]);
 
+  const togglePanel = useCallback(() => {
+    setIsOpen((value) => {
+      if (!value) announcePanelOpen('companion');
+      return !value;
+    });
+  }, []);
+
+  // باز شدن پنل دیگر (نجوا/کاوش) این پنل را جمع می‌کند.
+  useEffect(() => onOtherPanelOpen('companion', () => setIsOpen(false)), []);
+
+  /* کشیدنِ سربرگ به سمت لبهٔ راست (فلشِ تب) پنل را می‌بندد. */
+  const swipe = useSwipeDismiss(isOpen, () => setIsOpen(false), 'end');
+
   const roster = useMemo(() => buildRoster(players, meId), [players, meId]);
   const cue = useMemo(
     () => storyCueFor(phase, { punchedCount, inspectedCount, hotspotTotal }),
@@ -48,16 +63,21 @@ export default function TheaterCompanionHud({
   const cueVisible = !isCueDismissed(cue.id, dismissed);
 
   return (
-    <section
-      className={`theater-companion-hud ${isOpen ? 'is-open' : ''} ${className ?? ''}`.trim()}
-      aria-label="همراه تماشاخانه"
-    >
-      <button
+    <>
+      {/* پردهٔ پشت باید بیرون از بخش باشد: backdrop-filter پنل، آن را به دامنهٔ
+          خودش محدود می‌کند و روی محتوای خودِ پنل می‌افتد. */}
+      {isOpen && <div className="panel-scrim" aria-hidden="true" onClick={() => setIsOpen(false)} />}
+      <section
+        className={`theater-companion-hud ${isOpen ? 'is-open' : ''} ${className ?? ''}`.trim()}
+        aria-label="همراه تماشاخانه"
+      >
+        <button
         className="companion-toggle"
         type="button"
-        onClick={() => setIsOpen((value) => !value)}
+        onClick={togglePanel}
         aria-expanded={isOpen}
         aria-controls="companion-body"
+        {...swipe}
       >
         <span className="companion-crest" aria-hidden="true">❧</span>
         <span className="companion-toggle-text">
@@ -113,6 +133,7 @@ export default function TheaterCompanionHud({
           )}
         </div>
       )}
-    </section>
+      </section>
+    </>
   );
 }

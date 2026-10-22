@@ -8477,10 +8477,10 @@ table {
     right: 8px;
     bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
     flex-direction: column;
-    align-items: flex-start;
+    /* در حالت ستونی، flex-start در RTL یعنی «راست»؛ دکمهٔ بلیط باید پایین-چپ
+       بنشیند تا پد حرکت (پایین-راست) رویش نیفتد. */
+    align-items: flex-end;
     gap: 6px;
-    /* جای پد حرکت لمسی در گوشهٔ پایین-راست باز می‌ماند */
-    right: calc(env(safe-area-inset-right, 0px) + 162px);
   }
 
   /* وقتی راهنمای زمینه‌ای (در/بازخورد) نیست، نوار خالی وسط صحنه نماند */
@@ -8489,8 +8489,9 @@ table {
   }
 
   .alley3d-hint {
-    width: 100%;
-    max-width: 100%;
+    /* پد حرکت پایین-راست است؛ راهنمای در/بازخورد تا آن‌جا کشیده نشود. */
+    width: min(100%, calc(100% - 168px));
+    max-width: calc(100% - 168px);
     padding: 7px 10px;
     font-size: var(--text-xs);
   }
@@ -9726,5 +9727,706 @@ table {
   .velvet-envelope {
     top: 18px;
     height: clamp(128px, 22svh, 168px);
+  }
+}
+
+/* ==========================================================================
+   ۱۵. آستانهٔ نصب (PWA) — پیش از ورود به بلیط/صحنه
+   --------------------------------------------------------------------------
+   روی آیفون، در حالت «مرورگر» نوار آدرس ارتفاع دید را عوض می‌کند و صفحهٔ
+   بلیط ناچار به اسکرول می‌شود. این لایه پیش از بازی، نصب نسخهٔ اپ را پیشنهاد
+   می‌دهد (بدون اینکه مانع ادامه در مرورگر شود).
+   ========================================================================== */
+
+.pwa-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  padding: calc(env(safe-area-inset-top, 0px) + 16px) 14px calc(env(safe-area-inset-bottom, 0px) + 16px);
+  overflow-y: auto;
+  background:
+    radial-gradient(ellipse at 50% 0, rgba(143, 33, 50, 0.34), transparent 62%),
+    rgba(8, 5, 7, 0.96);
+  backdrop-filter: blur(6px);
+  color: #f2e6d0;
+}
+
+.pwa-gate-card {
+  width: min(520px, 100%);
+  max-height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 20px 18px 16px;
+  border: 1px solid rgba(212, 175, 99, 0.34);
+  border-radius: 14px;
+  background: linear-gradient(160deg, rgba(34, 22, 27, 0.98), rgba(15, 10, 13, 0.99));
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.62);
+  text-align: center;
+}
+
+.pwa-gate-seal {
+  display: inline-grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  margin-bottom: 8px;
+  border: 1px solid rgba(212, 175, 99, 0.55);
+  border-radius: 50%;
+  color: #f2d798;
+  font-size: 26px;
+  line-height: 1;
+}
+
+.pwa-gate-card h2 {
+  margin: 0 0 6px;
+  font-size: var(--text-lg);
+  font-weight: 500;
+  color: #f6ead4;
+}
+
+.pwa-gate-lead {
+  margin: 0 0 12px;
+  color: #cdbda9;
+  font-size: var(--text-sm);
+  line-height: 1.9;
+}
+
+.pwa-gate-steps {
+  margin: 0 0 14px;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+  text-align: right;
+}
+
+.pwa-gate-steps li {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 8px 10px;
+  border: 1px solid rgba(212, 175, 99, 0.2);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  font-size: var(--text-sm);
+  line-height: 1.8;
+  color: #e8dcc8;
+}
+
+.pwa-gate-step-text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.pwa-gate-step-icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid rgba(212, 175, 99, 0.42);
+  border-radius: 50%;
+  color: #e6c584;
+  font-size: var(--text-xs);
+}
+
+.pwa-gate-actions {
+  display: grid;
+  gap: 8px;
+}
+
+.pwa-gate-actions button {
+  min-height: 48px;
+  border-radius: 10px;
+  font: inherit;
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+
+.pwa-gate-primary {
+  border: 1px solid #d4af63;
+  background: linear-gradient(180deg, #a5324a, #7d1f33);
+  color: #fdf3e2;
+}
+
+.pwa-gate-secondary {
+  border: 1px solid rgba(212, 175, 99, 0.34);
+  background: rgba(255, 255, 255, 0.04);
+  color: #e8dcc8;
+}
+
+.pwa-gate-note {
+  margin: 10px 0 0;
+  color: #9c8e80;
+  font-size: var(--text-xs);
+  line-height: 1.8;
+}
+
+/* حالت افقی گوشی: متن و کارت جمع‌وجور می‌شوند تا در یک قاب جا شود */
+@media (max-height: 520px) {
+  .pwa-gate {
+    place-items: start center;
+  }
+
+  .pwa-gate-card {
+    padding: 12px 14px 12px;
+  }
+
+  .pwa-gate-seal {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    margin-bottom: 2px;
+  }
+
+  .pwa-gate-card h2 {
+    font-size: var(--text-base);
+  }
+
+  .pwa-gate-lead {
+    margin-bottom: 8px;
+    font-size: var(--text-xs);
+    line-height: 1.7;
+  }
+
+  .pwa-gate-steps {
+    gap: 5px;
+    margin-bottom: 8px;
+  }
+
+  .pwa-gate-steps li {
+    padding: 5px 8px;
+    font-size: var(--text-xs);
+    line-height: 1.6;
+  }
+
+  .pwa-gate-note {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   ۱۶. گوشی — برگهٔ بلیط تمام‌صفحه و تب‌های لبه
+   --------------------------------------------------------------------------
+   مشکلات گزارش‌شده روی آیفون:
+   • «صفحهٔ بلیط از ابعاد صفحه بزرگ‌تر است و باید اسکرول شود» → برگه دیگر یک
+     جعبهٔ ۵۸dvh نیست؛ کل صفحه را می‌گیرد و فقط محتوای درونش اسکرول می‌شود.
+   • «کارت‌ها روی هم می‌آیند و باید با فلش به بغل‌ها بسته شوند» → نجوای گروهی،
+     همراهِ تماشاخانه و کاوش به تب‌های ۴۴px چسبیده به لبه تبدیل می‌شوند؛ با زدن
+     تب، کشو باز می‌شود و با فلشِ سربرگ یا زدن بیرون بسته می‌شود. هر لحظه فقط
+     یک کشو باز است (`panel-focus.ts`).
+   • چیدمان پایین: ستون چپ = «بلیط من» + تب کاوش + راهنما؛ راست = پد حرکت.
+   ========================================================================== */
+
+/* پردهٔ پشتِ کشو — فقط روی گوشی/قاب کوتاه فعال می‌شود */
+.panel-scrim {
+  display: none;
+}
+
+/* سربرگ برگهٔ بلیط — پیش‌فرض پنهان (دسکتاپ برگه را کنار صحنه نشان می‌دهد) */
+.alley-sheet-head {
+  display: none;
+}
+
+.alley-sheet-title {
+  font-size: var(--text-sm);
+  color: #f0e2c9;
+}
+
+.alley-sheet-close {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(212, 175, 99, 0.4);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #f2e6d0;
+  font: inherit;
+  font-size: var(--text-base);
+  cursor: pointer;
+}
+
+@media (max-width: 720px), (max-height: 560px) {
+  /* در حالت افقیِ گوشی عرض از ۷۲۰px بیشتر است؛ پس برگه را اینجا هم جمع
+     می‌کنیم تا کارت بلیطِ رومیزی وسط صحنه نماند و فقط با دکمهٔ «بلیط من» باز شود. */
+  .alley3d-panels {
+    display: none;
+  }
+
+  .alley3d-tickets-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* --- برگهٔ بلیط: دقیقاً به اندازهٔ صفحه --- */
+  .alley3d-panels.is-open {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    display: flex;
+    flex-direction: column;
+    max-height: none;
+    height: 100svh;
+    height: 100dvh;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: rgba(9, 6, 9, 0.985);
+    overflow: hidden;
+  }
+
+  .alley3d-panels.is-open .alley-sheet-head {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: calc(env(safe-area-inset-top, 0px) + 8px) 12px 8px;
+    border-bottom: 1px solid rgba(212, 175, 99, 0.22);
+    background: rgba(14, 9, 12, 0.98);
+  }
+
+  .alley3d-panels.is-open .alley3d-ticket {
+    display: flex;
+    flex: 1 1 auto;
+    min-height: 0;
+    max-width: none;
+    padding: 0;
+  }
+
+  /* تنها ناحیهٔ اسکرول: بدنهٔ برگه */
+  .alley3d-panels.is-open .alley3d-ticket-inner {
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: 10px 12px calc(env(safe-area-inset-bottom, 0px) + 18px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .alley3d-panels.is-open .alley3d-ticket-title {
+    margin: 0 0 8px;
+    font-size: var(--text-sm);
+  }
+
+  /* اسکرول داخلیِ خودِ کارت بلیط را برمی‌داریم تا اسکرول دوتایی نشود */
+  .alley3d-panels.is-open .held-tickets-scroll,
+  .alley3d-panels.is-open .held-tickets {
+    max-height: none;
+    overflow: visible;
+    padding: 0;
+  }
+
+  /* کشو باز است: لایهٔ نیمه‌تاریک پشتش تا صحنهٔ پشت آرام شود و ضربهٔ بیرون ببندد */
+  .panel-scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 44;
+    background: rgba(6, 4, 6, 0.5);
+    backdrop-filter: blur(1.5px);
+  }
+
+  /* نگه‌دارندهٔ پنل در این چیدمان `pointer-events: none` است تا صحنه زیرش
+     قابل کشیدن بماند؛ خودِ پنل باید لمس‌پذیر بماند. */
+  .alley3d-chat > .whisper-panel,
+  .whisper-panel {
+    pointer-events: auto;
+  }
+
+  /* --- نجوای گروهی: تب لبهٔ چپ --- */
+  .whisper-panel {
+    top: calc(env(safe-area-inset-top, 0px) + 96px);
+    left: 0;
+    right: auto;
+    z-index: 18;
+  }
+
+  .whisper-panel:not(.whisper-expanded) {
+    width: 44px;
+    max-width: 44px;
+    border-radius: 0 12px 12px 0;
+    border-left: 0;
+    overflow: hidden;
+  }
+
+  .whisper-panel:not(.whisper-expanded) .whisper-toggle {
+    width: 44px;
+    min-height: 52px;
+    padding: 6px 0;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+  }
+
+  /* روی تب فقط آیکن و نشانگر پیام خوانده‌نشده می‌مانند */
+  .whisper-panel:not(.whisper-expanded) .whisper-toggle-text {
+    display: none;
+  }
+
+  /* فلشِ تب به سمت داخل صحنه اشاره می‌کند (باز شدن = حرکت به راست) */
+  .whisper-panel:not(.whisper-expanded) .whisper-chevron {
+    transform: rotate(-90deg);
+  }
+
+  /* کشوی باز: از لبهٔ چپ، تا نزدیک پایین صفحه */
+  .whisper-panel.whisper-expanded {
+    top: calc(env(safe-area-inset-top, 0px) + 60px);
+    width: min(340px, calc(100vw - 44px));
+    max-width: calc(100vw - 44px);
+    max-height: calc(100dvh - env(safe-area-inset-top, 0px) - 72px);
+    display: flex;
+    flex-direction: column;
+    border-radius: 0 12px 12px 0;
+    z-index: 46;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+  }
+
+  .whisper-panel.whisper-expanded .whisper-toggle {
+    flex: none;
+    min-height: 46px;
+  }
+
+  .whisper-panel.whisper-expanded .whisper-chevron {
+    transform: rotate(90deg);
+  }
+
+  .whisper-panel.whisper-expanded .whisper-body {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    flex: 1 1 auto;
+  }
+
+  .whisper-panel.whisper-expanded .whisper-messages {
+    flex: 1 1 auto;
+    min-height: 96px;
+    height: auto;
+    max-height: none;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  /* --- همراهِ تماشاخانه: تب لبهٔ راست --- */
+  .theater-companion-hud {
+    top: calc(env(safe-area-inset-top, 0px) + 96px);
+    right: 0;
+    left: auto;
+    width: 44px;
+    max-width: 44px;
+    z-index: 18;
+    border-radius: 12px 0 0 12px;
+    overflow: hidden;
+  }
+
+  .theater-companion-hud .companion-toggle {
+    width: 44px;
+    min-height: 52px;
+    padding: 6px 0;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+  }
+
+  .theater-companion-hud:not(.is-open) .companion-toggle-text {
+    display: none;
+  }
+
+  .theater-companion-hud:not(.is-open) .companion-crest {
+    width: 26px;
+    height: 26px;
+    font-size: var(--text-sm);
+  }
+
+  .theater-companion-hud.is-open {
+    top: calc(env(safe-area-inset-top, 0px) + 60px);
+    width: min(320px, calc(100vw - 44px));
+    max-width: calc(100vw - 44px);
+    max-height: calc(100dvh - env(safe-area-inset-top, 0px) - 112px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 46;
+    background: rgba(20, 13, 17, 0.99);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+  }
+
+  .theater-companion-hud.is-open .companion-toggle {
+    width: 100%;
+    flex: none;
+    flex-direction: row;
+    justify-content: flex-start;
+    padding: 6px 12px;
+  }
+
+  .theater-companion-hud.is-open .companion-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  /* --- ستون پایین-چپ: تب کاوش بالای دکمهٔ «بلیط من» --- */
+  .exploration-hud {
+    left: 8px;
+    right: auto;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 64px);
+    width: auto;
+    max-width: calc(100vw - 196px);
+  }
+
+  .exploration-hud.is-open {
+    left: 8px;
+    width: min(340px, calc(100vw - 24px));
+    max-width: none;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 64px);
+    z-index: 42;
+  }
+
+  .exploration-hud .exploration-toggle {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    padding: 6px 10px;
+    overflow: hidden;
+  }
+
+  /* روی گوشی زیرنویس و شمارندهٔ تب لازم نیست؛ فقط عنوان */
+  .exploration-hud:not(.is-open) .exploration-toggle-text small,
+  .exploration-hud:not(.is-open) .exploration-toggle-progress {
+    display: none;
+  }
+
+  .exploration-panel {
+    max-height: min(52dvh, 380px);
+  }
+
+  /* --- راهنمای حرکت: دکمهٔ گرد روی ستون چپ، تا وسط صحنه بسته بماند --- */
+  .controls-help-trigger {
+    left: 8px;
+    right: auto;
+    transform: none;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 116px);
+    width: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0;
+    justify-content: center;
+    border-radius: 50%;
+  }
+
+  .controls-help-trigger-label {
+    display: none;
+  }
+
+  /* پنل راهنما بالاتر از همهٔ تب‌ها باز می‌شود */
+  .controls-help {
+    z-index: 64;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
+    max-height: min(82dvh, 520px);
+  }
+}
+
+/* حالت افقی گوشی (ارتفاع کم): تب‌ها کوتاه‌تر و پنل‌ها کم‌ارتفاع‌تر */
+@media (orientation: landscape) and (max-height: 560px) {
+  .whisper-panel,
+  .theater-companion-hud {
+    top: calc(env(safe-area-inset-top, 0px) + 8px);
+  }
+
+  .whisper-panel.whisper-expanded {
+    top: calc(env(safe-area-inset-top, 0px) + 8px);
+    max-height: calc(100dvh - 16px);
+    width: min(380px, calc(100vw - 56px));
+  }
+
+  .theater-companion-hud.is-open {
+    top: calc(env(safe-area-inset-top, 0px) + 8px);
+    max-height: calc(100dvh - 16px);
+    width: min(360px, calc(100vw - 56px));
+  }
+
+  .exploration-hud {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 62px);
+    max-width: calc(100vw - 210px);
+  }
+
+  .exploration-hud.is-open {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 62px);
+    width: min(400px, calc(100vw - 24px));
+  }
+
+  .exploration-panel {
+    max-height: min(44dvh, 220px);
+  }
+
+  .controls-help-trigger {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 112px);
+  }
+
+  /* در حالت افقی، سربرگ برگه هم فشرده می‌شود */
+  .alley3d-panels.is-open .alley-sheet-head {
+    padding: calc(env(safe-area-inset-top, 0px) + 4px) 10px 4px;
+  }
+
+  .alley-sheet-close {
+    width: 40px;
+    height: 40px;
+  }
+
+  .alley3d-panels.is-open .alley3d-ticket-inner {
+    padding: 8px 10px calc(env(safe-area-inset-bottom, 0px) + 12px);
+  }
+}
+
+/* گوشی بسیار باریک: تب‌ها ۴۰px، متن‌ها کوچک‌تر نمی‌شوند (خوانایی) */
+@media (max-width: 360px) {
+  .whisper-panel:not(.whisper-expanded),
+  .theater-companion-hud {
+    width: 40px;
+    max-width: 40px;
+  }
+
+  .whisper-panel:not(.whisper-expanded) .whisper-toggle,
+  .theater-companion-hud .companion-toggle {
+    width: 40px;
+  }
+
+  .exploration-hud {
+    max-width: calc(100vw - 184px);
+  }
+}
+
+/* فلشِ تبِ بستهٔ همراهِ تماشاخانه به بیرون (راست) اشاره می‌کند: کشیدن به راست = بستن */
+@media (max-width: 720px), (max-height: 560px) {
+  .theater-companion-hud:not(.is-open) .companion-chevron {
+    transform: rotate(90deg);
+  }
+}
+
+/* ==========================================================================
+   ۱۷. دعوت‌نامه در حالت افقی گوشی (ارتفاع کم)
+   --------------------------------------------------------------------------
+   در ۸۵۲×۳۹۳ قاب، «بوم» دعوت‌نامه ۵۰۰px حداقل ارتفاع داشت و پاکت + زیرنویس +
+   فوتر به زیر صفحه می‌رفتند. اینجا بوم کشسان می‌شود، عنوان جمع‌وجور و پاکت
+   کوچک‌تر تا کل تجربه در یک قاب جا شود.
+   ========================================================================== */
+
+@media (orientation: landscape) and (max-height: 560px) {
+  .invitation-video {
+    min-height: 100svh;
+    min-height: 100dvh;
+  }
+
+  .invitation-topline {
+    height: 48px;
+    flex: 0 0 48px;
+    padding: 0 12px;
+  }
+
+  .invitation-canvas {
+    min-height: 0;
+    flex: 1 1 auto;
+    padding: 4px 12px 0;
+    justify-content: flex-start;
+    overflow: visible;
+  }
+
+  .invitation-copy {
+    position: static;
+    order: 0;
+    margin: 2px 0 0;
+    padding: 0 8px;
+    animation: none;
+  }
+
+  .invitation-copy h1 {
+    margin: 2px 0 2px;
+    font-size: var(--text-base);
+  }
+
+  .invitation-copy > p:last-child,
+  .invitation-copy .invitation-kicker {
+    display: none;
+  }
+
+  /* پاکت: کوچک، با فضای باز شدن لنگه */
+  .invitation-object {
+    order: 1;
+    height: clamp(96px, 23svh, 132px);
+    margin-top: 34px;
+  }
+
+  .velvet-envelope {
+    top: 8px;
+    height: clamp(96px, 24svh, 130px);
+  }
+
+  /* در حالت افقی، اعلان فاز و اسلایدر بلندی صدا حذف می‌شوند؛ دکمهٔ صدا می‌ماند */
+  .invitation-narration .narration-phase-notice,
+  .invitation-narration .narration-volume {
+    display: none;
+  }
+
+  /* زیرنویس دوخطی و نوار کنترل فشرده تا همه‌چیز در یک قاب جا شود */
+  .invitation-narration .narration-text {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .invitation-narration .narration-controls {
+    padding: 2px 6px;
+    gap: 6px;
+  }
+
+  .invitation-narration .narration-volume,
+  .invitation-narration .narration-button {
+    min-height: 36px;
+  }
+
+  .invitation-narration {
+    position: static;
+    inset: auto;
+    flex: 0 0 auto;
+    padding: 0 12px 2px;
+    gap: 4px;
+  }
+
+  .invitation-narration .narration-caption {
+    max-width: 100%;
+    padding: 3px 9px;
+    font-size: var(--text-xs);
+    line-height: 1.55;
+  }
+
+  .invitation-narration .narration-chapter,
+  .invitation-narration .narration-clock {
+    display: none;
+  }
+
+  .invitation-controls {
+    min-height: 0;
+    padding: 4px 12px calc(env(safe-area-inset-bottom, 0px) + 6px);
+    gap: 6px 12px;
+    grid-template-columns: minmax(0, 1fr) minmax(80px, 1fr) minmax(0, 1.1fr);
+  }
+
+  .invitation-controls .sequence-status small {
+    display: none;
+  }
+
+  .invitation-continue {
+    min-height: 40px;
+  }
+
+  .invitation-continue {
+    min-height: 44px;
   }
 }
