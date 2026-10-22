@@ -8,6 +8,8 @@ import {
   describeTeamReadiness,
   doorCodeProgress,
   keypadKeyLabel,
+  keypadToggleHint,
+  keypadToggleLabel,
   sanitizeDoorCode,
   teamTicketSummary,
   toPersianNumber,
@@ -28,6 +30,8 @@ export default function TheaterDoorLockModal({ room, open, onClose, onUnlock }: 
   const [feedbackKind, setFeedbackKind] = useState<'neutral' | 'success' | 'error'>('neutral');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [opened, setOpened] = useState(false);
+  // کیپد پیش‌فرض باز است؛ بازیکن می‌تواند جمعش کند تا صفحه شلوغ نباشد.
+  const [showKeypad, setShowKeypad] = useState(true);
   const modalRef = useRef<HTMLElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const successRef = useRef<HTMLButtonElement | null>(null);
@@ -89,6 +93,7 @@ export default function TheaterDoorLockModal({ room, open, onClose, onUnlock }: 
       setFeedbackKind('neutral');
       setOpened(false);
       setIsSubmitting(false);
+      setShowKeypad(true);
     }
   }, [open]);
 
@@ -229,7 +234,27 @@ export default function TheaterDoorLockModal({ room, open, onClose, onUnlock }: 
               {describeDigitProgress(progress)}
             </p>
 
-            <div className="brass-keypad" role="group" aria-label="صفحه‌کلید ارقام قفل">
+            <button
+              type="button"
+              className="keypad-toggle"
+              aria-expanded={showKeypad}
+              aria-controls="door-lock-keypad"
+              title={keypadToggleHint(showKeypad)}
+              onClick={() => setShowKeypad((current) => !current)}
+            >
+              <span className="keypad-toggle-chevron" aria-hidden="true">
+                {showKeypad ? '▾' : '▸'}
+              </span>
+              <span>{keypadToggleLabel(showKeypad)}</span>
+            </button>
+
+            <div
+              className="brass-keypad"
+              id="door-lock-keypad"
+              role="group"
+              aria-label="صفحه‌کلید ارقام قفل"
+              hidden={!showKeypad}
+            >
               {KEYPAD_KEYS.map((key) => {
                 if (key === 'clear') {
                   return (

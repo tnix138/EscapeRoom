@@ -11,6 +11,12 @@ export interface MovementStatus {
   mode: MovementMode;
   /** زمانی که حرکت آزاد شد (میلی‌ثانیهٔ ساعت مرورگر)؛ برای اعلان کوتاه «آزاد شد». */
   releasedAtMs?: number | null;
+  /**
+   * زمانی که ماوس قفل شد. اگر داده شود، راهنمای «ماوس قفل شده» فقط یک
+   * پنجرهٔ کوتاه نمایش داده می‌شود و بعد محو می‌شود؛ در بازی ماوس تقریباً
+   * همیشه قفل است و اعلان دائمی وسط صفحه دیده را می‌بندد.
+   */
+  pointerLockedAtMs?: number | null;
 }
 
 export type MovementNoticeTone = 'locked' | 'info' | 'ready';
@@ -25,6 +31,12 @@ export interface MovementNoticeView {
 
 /** پنجرهٔ نمایش اعلان «حرکت آزاد شد» پس از رهاسازی. */
 export const MOVEMENT_RELEASE_WINDOW_MS = 3_200;
+
+/**
+ * پنجرهٔ نمایش راهنمای «ماوس قفل شده» بعد از قفل شدن (ms).
+ * بعد از این مدت اعلان پنهان می‌شود تا HUD وسط صفحه شلوغ نماند.
+ */
+export const MOVEMENT_POINTER_HINT_MS = 4_000;
 
 export function describeMovementMode(mode: MovementMode): string {
   if (mode === 'modal') return 'حرکت قفل شده است: یک پنجره باز است.';
@@ -60,13 +72,22 @@ export function movementNotice(
         detail: 'تا پایان کات‌سین فقط می‌توانید سرتان را بچرخانید.',
         tone: 'locked',
       };
-    case 'pointer-lock':
+    case 'pointer-lock': {
+      // اگر زمان قفل شدن معلوم است، راهنما فقط یک پنجرهٔ کوتاه می‌ماند.
+      const lockedAt = status.pointerLockedAtMs ?? null;
+      if (lockedAt !== null && Number.isFinite(lockedAt)) {
+        const elapsed = nowMs - lockedAt;
+        if (!Number.isFinite(elapsed) || elapsed < 0 || elapsed >= MOVEMENT_POINTER_HINT_MS) {
+          return null;
+        }
+      }
       return {
         id: 'movement-pointer-lock',
         text: 'ماوس قفل شده',
         detail: 'برای آزادکردن ماوس و دیدن نشانگر، Esc را بزنید.',
         tone: 'info',
       };
+    }
     default: {
       const releasedAt = status.releasedAtMs ?? null;
       if (releasedAt === null) return null;

@@ -152,6 +152,22 @@ export function resolveOwnRevealedDigit(
 export const DIGIT_PENDING_MESSAGE = 'در انتظار همگام‌سازی سرور… رقم شما پس از به‌روزرسانی اتاق نمایش داده می‌شود.';
 
 /** برچسب دسترس‌پذیر برای کلیدهای صفحه‌کلید قفل. */
+/**
+ * برچسب دکمهٔ کشویی صفحه‌کلید قفل.
+ * صفحه‌کلید پیش‌فرض باز است؛ بازیکن می‌تواند جمعش کند تا مودال قفل شلوغ نباشد
+ * (فقط ورودی متنی و اسلات‌ها بمانند) و هر وقت خواست دوباره بازش کند.
+ */
+export function keypadToggleLabel(open: boolean): string {
+  return open ? 'بستن صفحه‌کلید' : 'نمایش صفحه‌کلید';
+}
+
+/** متن وضعیت صفحه‌خوان برای دکمهٔ کشویی؛ تغییر وضعیت را یک‌بار اعلام می‌کند. */
+export function keypadToggleHint(open: boolean): string {
+  return open
+    ? 'صفحه‌کلید باز است؛ با این دکمه بسته می‌شود.'
+    : 'صفحه‌کلید بسته است؛ می‌توانید مستقیم کد را تایپ کنید یا با این دکمه بازش کنید.';
+}
+
 export function keypadKeyLabel(key: string): string {
   if (key === 'clear') return 'پاک کردن همهٔ ارقام';
   if (key === 'delete') return 'حذف رقم آخر';
