@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import AlleyFirstPersonScene from '@/components/alley/AlleyFirstPersonScene';
 import { AlleyRoomView, PlayActNumber, RowRomanCode, TicketPunchSelection, TheaterEmblemId } from '@/components/alley/contracts';
 import { isCorrectTicketSelection } from '@/components/alley/puzzle';
+import { AlleyPreviewMode } from './preview-mode';
 
 const AlleyRoomThreeIntegration = dynamic(() => import('@/components/alley/AlleyRoomThreeIntegration'), { ssr: false });
 
@@ -40,7 +41,7 @@ function makeNames(name: string, selectedSeat: number) {
   return result;
 }
 
-export default function PreviewAlley({ name, seatLabel, initialSeatIndex }: { name: string; seatLabel: string; initialSeatIndex?: number }) {
+export default function PreviewAlley({ name, seatLabel, initialSeatIndex, initialMode = 'three' }: { name: string; seatLabel: string; initialSeatIndex?: number; initialMode?: AlleyPreviewMode }) {
   const westernSeat = seatLabel.replace(/[۰-۹]/g, (digit) => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit))).replace(/[٠-٩]/g, (digit) => String('٠١٢٣٤٥٦٧٨٩'.indexOf(digit)));
   const seatNumbers = westernSeat.match(/\d+/g) ?? [];
   const requestedSeat = Number(seatNumbers[seatNumbers.length - 1] ?? 1);
@@ -52,7 +53,7 @@ export default function PreviewAlley({ name, seatLabel, initialSeatIndex }: { na
   const [messages, setMessages] = useState<AlleyRoomView['messages']>([]);
   const [doorUnlocked, setDoorUnlocked] = useState(false);
 
-  const [mode, setMode] = useState<'css' | 'three'>('three');
+  const [mode, setMode] = useState<AlleyPreviewMode>(initialMode);
 
   const room: AlleyRoomView = useMemo(() => {
     const players = names.map((playerName, seatIndex) => ({
