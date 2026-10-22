@@ -124,6 +124,7 @@ describe('چیدمان فشرده — توکن‌ها و اندازه‌ها', (
     for (const name of [
       '--hud-edge',
       '--hud-top',
+      '--hud-companion-top',
       '--hud-bottom',
       '--hud-w-companion',
       '--hud-w-whisper',
@@ -208,12 +209,13 @@ describe('چیدمان فشرده — ترتیب لایه‌ها', () => {
 describe('چیدمان فشرده — هیچ دو پنلی روی هم نمی‌افتد', () => {
   const edge = () => token('--hud-edge');
   const top = () => token('--hud-top');
+  const companionTop = () => token('--hud-companion-top');
   const bottom = () => token('--hud-bottom');
 
   it.each(VIEWPORTS)('ستون بالا در $width×$height', ({ width, height }) => {
-    // نجوا (چپ) و همسفران (راست) هم‌تراز بالای صفحه‌اند.
+    // نجوا در چپ (زیر دکمهٔ تغییر نما) و همسفران در گوشهٔ بالا-راست.
     const whisper = box(edge(), top(), token('--hud-w-whisper-open'), 54);
-    const companion = box(width - edge() - token('--hud-w-companion'), top(), token('--hud-w-companion'), 44);
+    const companion = box(width - edge() - token('--hud-w-companion'), companionTop(), token('--hud-w-companion'), 44);
     expect(overlaps(whisper, companion), 'نجوا و همسفران').toBe(false);
     // حتی نسخهٔ بازِ نجوا هم نباید به ستون راست برسد.
     expect(width - edge() - token('--hud-w-companion')).toBeGreaterThan(edge() + token('--hud-w-whisper-open'));
@@ -227,7 +229,7 @@ describe('چیدمان فشرده — هیچ دو پنلی روی هم نمی‌
     );
     const notice = box((width - noticeWidth) / 2, top(), noticeWidth, 40);
     const whisper = box(edge(), top(), token('--hud-w-whisper'), 54);
-    const companion = box(width - edge() - token('--hud-w-companion'), top(), token('--hud-w-companion'), 44);
+    const companion = box(width - edge() - token('--hud-w-companion'), companionTop(), token('--hud-w-companion'), 44);
     const collides = overlaps(notice, whisper) || overlaps(notice, companion);
     if (collides) {
       // تداخل مجاز است فقط اگر اعلان زیر هر دو پنل باشد (دیده نمی‌شود).
@@ -242,7 +244,7 @@ describe('چیدمان فشرده — هیچ دو پنلی روی هم نمی‌
     const budget = columnBudget(height);
     const companionHeight = Math.min(300, budget);
     const ticketScroll = Math.min(300, budget);
-    const companion = box(0, top(), token('--hud-w-companion'), 44 + companionHeight);
+    const companion = box(0, companionTop(), token('--hud-w-companion'), 44 + companionHeight);
     const ticket = box(0, height - bottom() - (46 + ticketScroll), token('--hud-w-ticket'), 46 + ticketScroll);
     expect(overlaps(companion, ticket), `فاصلهٔ ستون راست در ارتفاع ${height}`).toBe(false);
     expect(ticket.top - companion.bottom).toBeGreaterThanOrEqual(16);

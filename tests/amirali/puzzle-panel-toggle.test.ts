@@ -211,7 +211,8 @@ describe('همسفران تماشاخانه — بالاتر و بدون تدا�
   });
 
   it('در ستون راست می‌ماند و روی پنل نجوا (چپ) نمی‌افتد', () => {
-    expect(block).toMatch(/\.alley-classic-companion\s*\{[^}]*justify-content:\s*flex-end;/s);
+    // در سند dir="rtl"، flex-start همان سمت راست است (flex-end چپ می‌افتد و روی نجوا می‌نشیند).
+    expect(block).toMatch(/\.alley-classic-companion\s*\{[^}]*justify-content:\s*flex-start;/s);
   });
 
   it('روی گوشی ردیف تازه هیچ فضای خالی نمی‌گیرد', () => {
