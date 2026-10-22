@@ -10480,3 +10480,303 @@ table {
     transition: none;
   }
 }
+
+/* ==========================================================================
+   بازبینی امیرعلی — منوی کشویی لبهٔ راست (SideDrawer)
+   قاعده‌ها:
+   ۱) کشو روی لبهٔ راست می‌نشیند و با کلیک روی زبانه باز می‌شود؛ بستن = سُر
+      خوردن پنل و زبانه به سمت راست بیرون از دید (همان انیمیشن، برعکس).
+   ۲) زبانه با پنل حرکت می‌کند تا حس «کشیدن کشو» بدهد.
+   ۳) در حالت بسته پنل visibility: hidden است تا فوکوس/کلیک نگیرد.
+   ۴) prefers-reduced-motion → همهٔ حرکت‌ها خاموش، باز/بسته شدن فوری.
+   ۵) تم: مخمل تیره، خط طلایی و فونت وزیرمتن؛ هیچ رنگ یا فونت تازه‌ای بیرون
+      از توکن‌های :root ساخته نمی‌شود.
+   ========================================================================== */
+
+.side-drawer-root {
+  --side-drawer-w: min(340px, calc(100vw - 58px));
+  --side-drawer-ms: 320ms;
+  --side-drawer-stagger: 35ms;
+  --side-drawer-ease: cubic-bezier(0.22, 0.8, 0.28, 1);
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  direction: rtl;
+  pointer-events: none;
+}
+
+.side-drawer-scrim {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 78% 50%, rgba(16, 8, 12, 0.55), rgba(6, 4, 6, 0.82));
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity calc(var(--side-drawer-ms) * 0.75) ease, visibility 0s linear var(--side-drawer-ms);
+}
+
+.side-drawer-root[data-open='true'] .side-drawer-scrim {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity calc(var(--side-drawer-ms) * 0.75) ease;
+}
+
+.side-drawer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: var(--side-drawer-w);
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  visibility: hidden;
+  pointer-events: none;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0 0 calc(env(safe-area-inset-bottom, 0px) + 18px);
+  background:
+    linear-gradient(180deg, rgba(27, 20, 23, 0.98), rgba(15, 10, 13, 0.98)),
+    repeating-linear-gradient(135deg, rgba(212, 175, 99, 0.035) 0 2px, transparent 2px 6px);
+  border-inline-start: 1px solid rgba(212, 175, 99, 0.32);
+  box-shadow: -22px 0 54px rgba(0, 0, 0, 0.58);
+  backdrop-filter: blur(10px);
+  transition: transform var(--side-drawer-ms) var(--side-drawer-ease), visibility 0s linear var(--side-drawer-ms);
+  will-change: transform;
+}
+
+.side-drawer.is-open {
+  transform: translateX(0);
+  visibility: visible;
+  pointer-events: auto;
+  transition: transform var(--side-drawer-ms) var(--side-drawer-ease);
+}
+
+.side-drawer-topline {
+  height: 3px;
+  flex: none;
+  background: linear-gradient(90deg, var(--gold), rgba(212, 175, 99, 0.15) 55%, transparent);
+}
+
+.side-drawer-head {
+  padding: 18px 20px 12px;
+}
+
+.side-drawer-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 0 6px;
+  font-size: var(--text-xs);
+  letter-spacing: 0.04em;
+  color: var(--gold);
+}
+
+.side-drawer-title {
+  margin: 0 0 6px;
+  font-size: 1.25rem;
+  line-height: var(--leading-tight);
+  color: var(--text-primary);
+}
+
+.side-drawer-lede {
+  margin: 0;
+  font-size: var(--text-sm);
+  line-height: var(--leading-relaxed);
+  color: var(--text-secondary);
+}
+
+.side-drawer-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 6px 0 0;
+  padding: 8px 14px 14px;
+  list-style: none;
+}
+
+.side-drawer-row {
+  margin: 0;
+}
+
+.side-drawer-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 56px;
+  padding: 10px 12px;
+  text-align: start;
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(212, 175, 99, 0.16);
+  border-radius: 12px;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateX(18px);
+  transition: opacity 180ms ease, transform 220ms var(--side-drawer-ease), background 160ms ease, border-color 160ms ease;
+}
+
+.side-drawer.is-open .side-drawer-item {
+  opacity: 1;
+  transform: translateX(0);
+  transition-delay: calc(var(--drawer-item-index, 0) * var(--side-drawer-stagger));
+}
+
+.side-drawer-item:hover:not(:disabled) {
+  background: rgba(212, 175, 99, 0.12);
+  border-color: rgba(212, 175, 99, 0.45);
+}
+
+.side-drawer-item:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.side-drawer-item:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.side-drawer-item-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 38px;
+  height: 38px;
+  font-size: var(--text-lg);
+  line-height: 1;
+  border-radius: 10px;
+  background: radial-gradient(circle at 35% 30%, rgba(212, 175, 99, 0.22), rgba(107, 16, 32, 0.28));
+  border: 1px solid rgba(212, 175, 99, 0.28);
+}
+
+.side-drawer-item-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.side-drawer-item-text strong {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.side-drawer-item-text small {
+  font-size: var(--text-xs);
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+.side-drawer-item-badge {
+  flex: none;
+  padding: 2px 8px;
+  font-size: var(--text-xs);
+  color: #1a1114;
+  background: var(--gold);
+  border-radius: 999px;
+}
+
+.side-drawer-item-arrow {
+  flex: none;
+  color: var(--gold);
+  font-size: var(--text-lg);
+  opacity: 0.55;
+}
+
+.side-drawer-foot {
+  margin-top: auto;
+  padding: 12px 20px 0;
+  border-top: 1px solid rgba(212, 175, 99, 0.14);
+}
+
+.side-drawer-hint {
+  margin: 0;
+  font-size: var(--text-xs);
+  line-height: 1.7;
+  color: var(--text-subtle);
+}
+
+/* زبانهٔ کشو — با پنل به چپ می‌رود و با بسته شدن به لبهٔ راست برمی‌گردد. */
+.side-drawer-tab {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 46px;
+  height: 108px;
+  padding: 0;
+  color: var(--gold-light);
+  background: linear-gradient(160deg, rgba(35, 22, 27, 0.97), rgba(14, 9, 12, 0.97));
+  border: 1px solid rgba(212, 175, 99, 0.38);
+  border-right: 0;
+  border-radius: 14px 0 0 14px;
+  box-shadow: -10px 0 26px rgba(0, 0, 0, 0.45);
+  transform: translate(0, -50%);
+  cursor: pointer;
+  pointer-events: auto;
+  transition: transform var(--side-drawer-ms) var(--side-drawer-ease), background 180ms ease, color 180ms ease;
+  will-change: transform;
+}
+
+.side-drawer-tab:hover {
+  background: linear-gradient(160deg, rgba(58, 36, 43, 0.98), rgba(24, 14, 19, 0.98));
+}
+
+.side-drawer-tab:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.side-drawer-tab.is-open {
+  transform: translate(calc(-1 * var(--side-drawer-w)), -50%);
+}
+
+.side-drawer-tab-icon {
+  font-size: var(--text-lg);
+  line-height: 1;
+}
+
+.side-drawer-tab-text {
+  font-size: var(--text-xs);
+  letter-spacing: 0.02em;
+  writing-mode: horizontal-tb;
+}
+
+@media (max-width: 520px) {
+  .side-drawer-tab {
+    width: 42px;
+    height: 96px;
+  }
+
+  .side-drawer-head {
+    padding: 16px 16px 10px;
+  }
+
+  .side-drawer-list {
+    padding: 6px 12px 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .side-drawer,
+  .side-drawer-tab,
+  .side-drawer-scrim,
+  .side-drawer-item {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .side-drawer-tab.is-open {
+    transform: translate(calc(-1 * var(--side-drawer-w)), -50%);
+  }
+}
