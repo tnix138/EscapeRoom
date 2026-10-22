@@ -38,6 +38,7 @@ import PresenceHud from '../hud/presence/PresenceHud';
 import { usePresenceFeed } from '../hud/presence/use-presence-feed';
 import HorrorSignalHud from '../hud/horror/HorrorSignalHud';
 import type { HorrorIntensity } from '../hud/horror/horror-signal';
+import SideDrawer, { type SideDrawerItem } from '../hud/SideDrawer';
 
 const AlleyThreeSceneCore = dynamic(() => Promise.resolve(ThreeCore), { ssr: false });
 
@@ -389,6 +390,58 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
           : 'میان کوچهٔ اُرفه‌ئو',
   };
 
+  // منوی کشویی لبهٔ راست — همهٔ کارهای صحنه از یک‌جا.
+  const drawerItems = useMemo<SideDrawerItem[]>(
+    () => [
+      {
+        id: 'tickets',
+        icon: '🎟️',
+        label: 'بلیط من',
+        hint: 'بلیط، کوپن هم‌تیمی و پانچ',
+        onSelect: () => setTicketsOpen(true),
+      },
+      {
+        id: 'chat',
+        icon: '💬',
+        label: 'نجوای هم‌تیمی‌ها',
+        hint: 'گفت‌وگوی گروهی و کوپن',
+        onSelect: () => setChatOpen(true),
+      },
+      {
+        id: 'playbill',
+        icon: '📜',
+        label: 'تابلوی اعلانات',
+        hint: 'سرنخ‌های دیوار چپ کوچه',
+        onSelect: () => setShowPlaybill(true),
+      },
+      {
+        id: 'rowChart',
+        icon: '🗺️',
+        label: 'جدول ردیف‌ها',
+        hint: 'سرنخ‌های گیشهٔ برنجی',
+        onSelect: () => setShowRowChart(true),
+      },
+      {
+        id: 'door',
+        icon: '🚪',
+        label: 'قفل درِ تماشاخانه',
+        hint: 'وارد کردن رمز ورود',
+        onSelect: () => setDoorModalOpen(true),
+      },
+      {
+        id: 'pointer',
+        icon: isPointerLocked ? '🔓' : '🔒',
+        label: isPointerLocked ? 'آزادکردن ماوس' : 'قفل کردن ماوس',
+        hint: 'کنترل کامل دید با ماوس',
+        onSelect: () => {
+          void startHorrorAudio();
+          requestPointerLock();
+        },
+      },
+    ],
+    [isPointerLocked, requestPointerLock, startHorrorAudio],
+  );
+
   return (
     <div className="alley3d-surface">
       <canvas
@@ -564,6 +617,9 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
         onClose={() => setDoorModalOpen(false)}
         onUnlock={handleUnlock}
       />
+
+      {/* منوی کشویی لبهٔ راست — با کلیک باز و با کلیک دوباره به راست بسته می‌شود */}
+      <SideDrawer items={drawerItems} />
 
       {/* گذار */}
       {transition && (
