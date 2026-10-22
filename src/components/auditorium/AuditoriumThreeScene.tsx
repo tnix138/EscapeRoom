@@ -14,6 +14,7 @@ import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { useThreeEngine } from '@/engine3d/useThreeEngine';
 import { createSeatedPlayerCharacter, createTheaterGeometry } from '@/engine3d/theater-geometry';
+import type { HumanAvatar } from '@/engine3d/characters/human-avatar';
 import { ThreeErrorBoundary } from '@/engine3d/ThreeErrorBoundary';
 import type { ClientRoomView } from '@/contracts/types';
 
@@ -105,28 +106,27 @@ function TheaterCore({ room, elapsedMs = 0, showAllSeats = false, onSeatClick }:
         theater.chandelier.rotation.x = Math.sin(t * 0.0004) * 0.03;
       }
 
-      // رقصنده
+      // رقصنده — اسکلت انسان با پلک و تنفس، دست‌ها روی مفصل شانه
       if (theater.dancer) {
         const danceEnergy = t < 50000 ? 1 : Math.max(0, 1 - (t - 50000) / 1500);
         theater.dancer.position.x = Math.sin(t * 0.00045) * 1.2 * danceEnergy;
         theater.dancer.rotation.y = Math.sin(t * 0.001) * 0.2 * danceEnergy;
-        // دست‌ها
-        const leftArm = theater.dancer.children.find((c) => c.position.x < -0.3) as THREE.Mesh | undefined;
+        const rig = theater.dancer.userData.humanAvatar as HumanAvatar | undefined;
+        rig?.update(delta, { speed: 0, yawRate: Math.cos(t * 0.001) * 0.2 });
+        const leftArm = theater.dancer.userData.leftArm as THREE.Group | undefined;
+        const rightArm = theater.dancer.userData.rightArm as THREE.Group | undefined;
         if (leftArm) leftArm.rotation.z = -0.2 + Math.sin(t * 0.002) * 0.5 * danceEnergy;
+        if (rightArm) rightArm.rotation.z = 0.2 - Math.sin(t * 0.002) * 0.35 * danceEnergy;
       }
 
-      // مرد سیاه‌پوش — از ثانیه ۳۱
+      // مرد سیاه‌پوش — از ثانیه ۳۱؛ محو شدن با شفافیت موادی که واقعاً روی بدن است
       if (theater.darkMan) {
         const reveal = Math.min(1, Math.max(0, (t - 31000) / 5000));
         theater.darkMan.visible = reveal > 0.01;
         if (theater.darkMan.visible) {
-          (theater.darkMan.children[0] as THREE.Mesh).material = new THREE.MeshStandardMaterial({
-            color: 0x111111,
-            roughness: 0.8,
-            transparent: true,
-            opacity: reveal,
-          });
-          // نفس کشیدن
+          const rig = theater.darkMan.userData.humanAvatar as HumanAvatar | undefined;
+          rig?.update(delta, { speed: 0, pitchDeg: -6 });
+          // نفس کشیدن آرام و بیرون‌زدگیِ هراس‌انگیزِ قامت
           const breath = 0.5 + 0.5 * Math.sin(t * 0.0009);
           theater.darkMan.scale.y = 1 + breath * 0.02;
         }
@@ -140,18 +140,10 @@ function TheaterCore({ room, elapsedMs = 0, showAllSeats = false, onSeatClick }:
         centerCurtain.scale.y = 1 - openProgress * 0.9;
       }
 
-      // تنفس طبیعی و چرخش نرم سر کاراکترهای پلیر نشسته
-      seatedAvatars.forEach((avatar, idx) => {
-        const phase = t * 0.0022 + idx * 1.1;
-        const body = avatar.getObjectByName('avatar-body');
-        const head = avatar.getObjectByName('avatar-head');
-        if (body) {
-          body.position.y = 0.78 + Math.sin(phase) * 0.008;
-        }
-        if (head) {
-          head.position.y = 1.2 + Math.sin(phase) * 0.009;
-          head.rotation.y = Math.sin(phase * 0.45) * 0.08;
-        }
+      // تنفس طبیعی، پلک‌زدن و نگاهِ آرام کاراکترهای پلیر نشسته
+      seatedAvatars.forEach((avatar) => {
+        const rig = avatar.userData.humanAvatar as HumanAvatar | undefined;
+        rig?.update(delta, { speed: 0, pitchDeg: Math.sin(t * 0.0004) * 4 });
       });
     });
 

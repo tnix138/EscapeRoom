@@ -7,6 +7,7 @@ import { RemotePlayer } from '@/engine3d/presence/RemotePlayer';
 import {
   createSeatedPlayerCharacter,
   createTheaterGeometry,
+  updateSeatedPlayerCharacter,
 } from '@/engine3d/theater-geometry';
 import {
   HUMAN_ANATOMY_PARTS,
@@ -402,16 +403,8 @@ export default function CharactersShowcase({ players }: CharactersShowcaseProps)
         }
       });
 
-      seatedActors.forEach((seated, idx) => {
-        const phase = clockTime * 2.2 + idx;
-        const body = seated.getObjectByName('avatar-body');
-        const head = seated.getObjectByName('avatar-head');
-        if (body) body.position.y = 0.78 + Math.sin(phase) * 0.009;
-        if (head) {
-          head.position.y = 1.2 + Math.sin(phase) * 0.01;
-          head.rotation.y = Math.sin(phase * 0.5) * 0.1;
-          head.rotation.x = THREE.MathUtils.degToRad(current.headPitchDeg * 0.6);
-        }
+      seatedActors.forEach((seated) => {
+        updateSeatedPlayerCharacter(seated, dt, { pitchDeg: current.headPitchDeg });
       });
 
       renderer.render(scene, camera);
