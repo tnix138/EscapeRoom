@@ -10821,8 +10821,17 @@ table {
   position: relative;
   z-index: 6;
   display: flex;
-  justify-content: flex-start;
-  padding: 10px clamp(14px, 3vw, 38px) 0;
+  /* سمت راست می‌ماند — جای قبلی‌اش — ولی حالا داخل جریان صفحه است. */
+  justify-content: flex-end;
+  padding: 8px clamp(14px, 3vw, 38px) 0;
+}
+
+/* روی گوشی پنل همان تبِ ثابت است؛ ردیف تازه نباید حتی یک نوار خالی هم بگیرد. */
+@media (max-width: 720px) {
+  .alley-classic-companion {
+    padding: 0;
+    height: 0;
+  }
 }
 
 @media (min-width: 721px) {

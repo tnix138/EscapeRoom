@@ -210,6 +210,14 @@ describe('همسفران تماشاخانه — بالاتر و بدون تدا�
     );
   });
 
+  it('در ستون راست می‌ماند و روی پنل نجوا (چپ) نمی‌افتد', () => {
+    expect(block).toMatch(/\.alley-classic-companion\s*\{[^}]*justify-content:\s*flex-end;/s);
+  });
+
+  it('روی گوشی ردیف تازه هیچ فضای خالی نمی‌گیرد', () => {
+    expect(css).toMatch(/@media \(max-width: 720px\)\s*\{\s*\.alley-classic-companion\s*\{[^}]*height:\s*0;/s);
+  });
+
   it('چیدمان تبِ گوشی دست‌نخورده می‌ماند', () => {
     // overrideها فقط از ۷۲۱px به بالا اعمال می‌شوند.
     const mobileOverride = block.match(/@media \(min-width: 721px\)\s*\{[\s\S]*?\n\}/)?.[0] ?? '';
