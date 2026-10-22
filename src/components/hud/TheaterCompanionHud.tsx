@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { announcePanelOpen, onOtherPanelOpen } from './panel-focus';
 import { useSwipeDismiss } from './use-swipe-dismiss';
 import {
@@ -25,7 +25,7 @@ export interface TheaterCompanionHudProps extends StoryCueStats {
 /**
  * همراهِ تماشاخانه — فهرست هم‌تیمی‌ها، برچسب صندلی و نشانهٔ داستان.
  *
- * کم‌مزاحمت: به‌صورت پیش‌فرض بسته است، گوشهٔ بالا-چپ می‌نشیند و هرگز وسط صحنه
+ * کم‌مزاحمت: به‌صورت پیش‌فرض بسته است، گوشهٔ بالا-راست می‌نشیند و هرگز وسط صحنه
  * را نمی‌پوشاند. هیچ داده‌ای واکشی نمی‌کند و فقط از view سرور تغذیه می‌شود.
  */
 export default function TheaterCompanionHud({
@@ -40,6 +40,7 @@ export default function TheaterCompanionHud({
 }: TheaterCompanionHudProps) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
   const [dismissed, setDismissed] = useState<string[]>([]);
+  const toggleRef = useRef<HTMLButtonElement>(null);
 
   const togglePanel = useCallback(() => {
     setIsOpen((value) => {
@@ -50,6 +51,18 @@ export default function TheaterCompanionHud({
 
   // باز شدن پنل دیگر (نجوا/کاوش) این پنل را جمع می‌کند.
   useEffect(() => onOtherPanelOpen('companion', () => setIsOpen(false)), []);
+
+  // Esc پنل را می‌بندد و فوکوس را به دکمهٔ سربرگ برمی‌گرداند.
+  useEffect(() => {
+    if (!isOpen) return undefined;
+    function onKeyDown(event: globalThis.KeyboardEvent) {
+      if (event.key !== 'Escape') return;
+      setIsOpen(false);
+      window.setTimeout(() => toggleRef.current?.focus({ preventScroll: true }), 0);
+    }
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [isOpen]);
 
   /* کشیدنِ سربرگ به سمت لبهٔ راست (فلشِ تب) پنل را می‌بندد. */
   const swipe = useSwipeDismiss(isOpen, () => setIsOpen(false), 'end');
@@ -72,6 +85,7 @@ export default function TheaterCompanionHud({
         aria-label="همراه تماشاخانه"
       >
         <button
+        ref={toggleRef}
         className="companion-toggle"
         type="button"
         onClick={togglePanel}

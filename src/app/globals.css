@@ -10026,7 +10026,7 @@ table {
     display: block;
     position: fixed;
     inset: 0;
-    z-index: 44;
+    z-index: 52;
     background: rgba(6, 4, 6, 0.5);
     backdrop-filter: blur(1.5px);
   }
@@ -10082,7 +10082,7 @@ table {
     display: flex;
     flex-direction: column;
     border-radius: 0 12px 12px 0;
-    z-index: 46;
+    z-index: 54;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
   }
 
@@ -10111,9 +10111,9 @@ table {
     overscroll-behavior: contain;
   }
 
-  /* --- همراهِ تماشاخانه: تب لبهٔ راست --- */
+  /* --- همراهِ تماشاخانه: گوشهٔ بالا-راست گوشی --- */
   .theater-companion-hud {
-    top: calc(env(safe-area-inset-top, 0px) + 96px);
+    top: calc(env(safe-area-inset-top, 0px) + 8px);
     right: 0;
     left: auto;
     width: 44px;
@@ -10143,14 +10143,14 @@ table {
   }
 
   .theater-companion-hud.is-open {
-    top: calc(env(safe-area-inset-top, 0px) + 60px);
+    top: calc(env(safe-area-inset-top, 0px) + 8px);
     width: min(320px, calc(100vw - 44px));
     max-width: calc(100vw - 44px);
-    max-height: calc(100dvh - env(safe-area-inset-top, 0px) - 112px);
+    max-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 24px);
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    z-index: 46;
+    z-index: 54;
     background: rgba(20, 13, 17, 0.99);
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
   }
@@ -10234,7 +10234,10 @@ table {
 
 /* حالت افقی گوشی (ارتفاع کم): تب‌ها کوتاه‌تر و پنل‌ها کم‌ارتفاع‌تر */
 @media (orientation: landscape) and (max-height: 560px) {
-  .whisper-panel,
+  .whisper-panel {
+    top: calc(env(safe-area-inset-top, 0px) + 58px);
+  }
+
   .theater-companion-hud {
     top: calc(env(safe-area-inset-top, 0px) + 8px);
   }
@@ -10537,6 +10540,7 @@ table {
 :root {
   --hud-edge: 14px;
   --hud-top: 76px;
+  --hud-companion-top: 10px;
   --hud-bottom: 92px;
   --hud-w-companion: 272px;
   --hud-w-whisper: 276px;
@@ -10557,7 +10561,7 @@ table {
 }
 
 @media (min-width: 721px) and (min-height: 560px) {
-  /* ۲) ستون بالا: هم‌تراز، باریک‌تر و جمع‌تر. */
+  /* ۲) ستون بالا: نجوا در چپ زیر دکمهٔ تغییر نما، و همسفران در گوشهٔ بالا-راست. */
   .whisper-panel {
     top: var(--hud-top);
     left: var(--hud-edge);
@@ -10570,7 +10574,7 @@ table {
     overflow-y: auto;
   }
 
-  /* سربرگ نجوا هم‌قدِ سربرگ همسفران می‌شود تا خط بالای دو پنل یکی باشد. */
+  /* سربرگ نجوا هم‌قدِ سربرگ همسفران است. */
   .whisper-panel .whisper-toggle {
     height: auto;
     min-height: 44px;
@@ -10582,9 +10586,14 @@ table {
   }
 
   .theater-companion-hud {
-    top: var(--hud-top);
-    right: var(--hud-edge);
+    top: calc(env(safe-area-inset-top, 0px) + var(--hud-companion-top));
+    right: calc(env(safe-area-inset-right, 0px) + var(--hud-edge));
     width: var(--hud-w-companion);
+  }
+
+  /* در صفحهٔ پیش‌نمایش، بوم سه‌بعدی زیر نوار راهنما قرار می‌گیرد؛ پنل داخل خودِ قاب بوم می‌نشیند. */
+  .alley-preview-wrap .alley3d-surface > .theater-companion-hud {
+    position: absolute;
   }
 
   .companion-toggle {
@@ -10660,8 +10669,11 @@ table {
 
   .alley3d-ticket .held-tickets-scroll {
     max-height: min(300px, var(--hud-column-budget));
+    overflow-x: hidden;
     overflow-y: auto;
     overscroll-behavior: contain;
+    scrollbar-color: #6a4c34 transparent;
+    scrollbar-width: thin;
   }
 
   .alley3d-controls {
@@ -10819,18 +10831,25 @@ table {
 /* ۱) نمای کلاسیک — همسفران در خط سربرگ، نه شناور روی بلیط. */
 .alley-classic-companion {
   position: relative;
-  z-index: 6;
+  z-index: 11;
   display: flex;
-  /* سمت راست می‌ماند — جای قبلی‌اش — ولی حالا داخل جریان صفحه است. */
-  justify-content: flex-end;
+  /* در سند راست‌به‌چپ (dir="rtl")، flex-start همان سمت راستِ صفحه است. */
+  justify-content: flex-start;
   padding: 8px clamp(14px, 3vw, 38px) 0;
 }
 
-/* روی گوشی پنل همان تبِ ثابت است؛ ردیف تازه نباید حتی یک نوار خالی هم بگیرد. */
+/* روی گوشی پنل همان تبِ ثابت است؛ ردیف تازه نباید حتی یک نوار خالی هم بگیرد،
+   z-index: auto می‌ماند تا کشوی باز و پردهٔ پشت در کانتکست ریشه بالاتر از همه بنشینند،
+   و در نمای کلاسیک زیر سربرگِ «پردهٔ سرخ» قرار می‌گیرد تا لوگو را نپوشاند. */
 @media (max-width: 720px) {
   .alley-classic-companion {
     padding: 0;
     height: 0;
+    z-index: auto;
+  }
+
+  .alley-classic-companion .theater-companion-hud:not(.is-open) {
+    top: calc(env(safe-area-inset-top, 0px) + 96px);
   }
 }
 
@@ -10856,6 +10875,38 @@ table {
     border: 1px solid rgba(212, 175, 99, 0.32);
     border-top: 0;
     box-shadow: 0 20px 44px rgba(0, 0, 0, 0.58);
+  }
+}
+
+@media (min-width: 721px) and (max-height: 560px) {
+  .alley-classic-companion {
+    padding: 0;
+    height: 0;
+    z-index: auto;
+  }
+
+  .alley-classic-companion .theater-companion-hud {
+    position: fixed;
+    top: calc(env(safe-area-inset-top, 0px) + 8px);
+    right: 0;
+    left: auto;
+    width: 44px;
+    max-width: 44px;
+    z-index: 18;
+  }
+
+  .alley-classic-companion .theater-companion-hud.is-open {
+    width: min(360px, calc(100vw - 56px));
+    max-width: calc(100vw - 56px);
+    z-index: 54;
+  }
+
+  .alley-classic-companion .theater-companion-hud.is-open .companion-body {
+    position: static;
+    max-height: none;
+    border: 0;
+    border-top: 1px solid rgba(212, 175, 99, 0.14);
+    box-shadow: none;
   }
 }
 
