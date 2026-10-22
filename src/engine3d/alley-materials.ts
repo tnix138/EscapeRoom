@@ -4,11 +4,11 @@
  * alley-materials.ts — بافت‌های رویه‌ای PBR اختصاصی کوچهٔ قدیمی (علیرضا)
  * همهٔ بافت‌ها کاملاً قطعی (deterministic) و مستقل از DOM هستند تا هم در مرورگر
  * با کیفیت بالا رندر شوند و هم در تست‌های Node/Vitest بدون وابستگی اجرا شوند:
- * - سنگ‌فرش خیس کج‌رج کوچه (colorMap + normalMap + roughnessMap + aoMap)
- * - سنگ‌تراش پیاده‌رو و جدول کناری
- * - دیوار آجری کهنه و اندود گچ/سنگ نماهای چندطبقه
+ * - سنگ‌فرش خشک و مات کج‌رج کوچه (colorMap + normalMap + roughnessMap + aoMap)
+ * - سنگ‌تراش خشک پیاده‌رو و جدول کناری
+ * - دیوار آجری کهنه و مات با نمِ ملایم (بدون براقیت)، اندود گچ/سنگ نماهای چندطبقه
  * - الوار چوبی میخ‌کوب جعبه‌ها و پالت‌ها
- * - ماسک نرم آلفای چاله‌های آب باران
+ * - ماسک نرم آلفای چاله‌های آب باران و هالهٔ نمناک باریک پیرامونشان
  */
 
 import * as THREE from 'three';
@@ -134,8 +134,8 @@ function buildMapsFromHeightAndColor(
 }
 
 /**
- * بافت سنگ‌فرش خیس باران‌خورده با رج‌های نیم‌خشت، بندکشی تیرهٔ خیس،
- * تنوع رنگ هر قلوه‌سنگ (بازالت، خاکی، سربی، خزه‌دار) و زبری متغیر رطوبت.
+ * بافت سنگ‌فرش خشک کوچه با رج‌های نیم‌خشت، بندکشی تیره، تنوع رنگ هر
+ * قلوه‌سنگ (بازالت، خاکی، سربی، خزه‌دار) و زبری بالای مات (۰٫۸۲–۰٫۹۸).
  */
 export function createCobblestoneMaps(repeatX = 5, repeatY = 12, size = 256): ProceduralSurfaceMaps {
   const count = size * size;
@@ -179,7 +179,7 @@ export function createCobblestoneMaps(repeatX = 5, repeatY = 12, size = 256): Pr
       const h = clamp(0.14 + pillow * 0.78 + stoneTilt + microGrain, 0, 1);
       heights[idx] = h;
 
-      // درز ملات خیس و تیره در مقابل تاج سنگ‌های صیقلی
+      // درز ملات تیره و زبر در مقابل تاج سنگ‌های روشن‌تر
       const isMortar = bevel < 0.22;
       const baseLum = 44 + stoneTone * 34 + pillow * 22 + microGrain * 34;
       let r = baseLum * (0.94 + stoneWarm * 0.18);
@@ -192,18 +192,19 @@ export function createCobblestoneMaps(repeatX = 5, repeatY = 12, size = 256): Pr
         b *= 0.46;
       }
 
-      // خیس‌شدگی باران سنگ را کمی تیره‌تر و براق‌تر می‌کند
-      const dampness = clamp(wetPatch * 1.15 - pillow * 0.22, 0, 1);
-      const wetDarken = 1 - dampness * 0.28;
+      // سنگ‌فرش کوچه خشک است: رطوبت فقط کمی تیرگی می‌گذارد و هیچ براقیتی نمی‌سازد
+      const dampness = clamp(wetPatch * 0.5 - pillow * 0.12, 0, 1);
+      const wetDarken = 1 - dampness * 0.1;
       const off = idx * 4;
       colorData[off] = byte(r * wetDarken);
       colorData[off + 1] = byte(g * wetDarken);
       colorData[off + 2] = byte(b * wetDarken);
       colorData[off + 3] = 255;
 
+      // زبری بالا (۰٫۸–۰٫۹۸) یعنی سطح مات؛ درز ملات هم مثل خود سنگ خشک است
       roughness[idx] = isMortar
-        ? 0.24
-        : clamp(0.62 - dampness * 0.44 + microGrain * 0.25, 0.12, 0.82);
+        ? 0.92
+        : clamp(0.9 - dampness * 0.06 + microGrain * 0.12, 0.82, 0.98);
       ao[idx] = clamp(0.32 + bevel * 0.68, 0.22, 1.0);
     }
   }
@@ -241,14 +242,15 @@ export function createFlagstoneMaps(repeatX = 2, repeatY = 14, size = 128): Proc
       const damp = valueNoise(u * 5, v * 5, 83);
 
       heights[idx] = clamp(0.25 + edge * 0.65 + grain, 0, 1);
-      const lum = (68 + slabSeed * 24 + edge * 14 + grain * 30) * (1 - damp * 0.22);
+      // پیاده‌روی خشک: فقط تیرگی ملایم رطوبت، بدون بازتاب
+      const lum = (68 + slabSeed * 24 + edge * 14 + grain * 30) * (1 - damp * 0.09);
       const off = idx * 4;
       colorData[off] = byte(lum * 1.02);
       colorData[off + 1] = byte(lum * 0.99);
       colorData[off + 2] = byte(lum * 0.96);
       colorData[off + 3] = 255;
 
-      roughness[idx] = clamp(0.68 - damp * 0.34, 0.22, 0.85);
+      roughness[idx] = clamp(0.92 - damp * 0.05, 0.84, 0.98);
       ao[idx] = clamp(0.4 + edge * 0.6, 0.3, 1);
     }
   }
@@ -301,7 +303,8 @@ export function createBrickWallMaps(
       heights[idx] = clamp(0.18 + mortar * 0.72 + (spall - 0.5) * 0.18, 0, 1);
 
       const shade = 0.76 + brickVar * 0.44 + (spall - 0.5) * 0.22;
-      const soot = 1 - rainStreak * 0.26;
+      // دیوار مات است؛ نمِ ملایم فقط ردّ شرّهٔ باران را کمی تیره‌تر می‌کند، نه براق‌تر
+      const soot = 1 - rainStreak * 0.3;
       const isMortar = mortar < 0.3;
 
       const r = isMortar ? 62 * soot : baseR * shade * soot;
@@ -314,7 +317,8 @@ export function createBrickWallMaps(
       colorData[off + 2] = byte(b);
       colorData[off + 3] = 255;
 
-      roughness[idx] = isMortar ? 0.94 : clamp(0.86 - rainStreak * 0.18 + (spall - 0.5) * 0.12, 0.52, 0.96);
+      // کف زبری هرگز پایین نمی‌آید؛ آجر خشک و مات است و فقط نمِ ملایم دارد
+      roughness[idx] = isMortar ? 0.98 : clamp(0.95 - rainStreak * 0.08 + (spall - 0.5) * 0.04, 0.86, 0.99);
       ao[idx] = clamp(0.38 + mortar * 0.62, 0.28, 1.0);
     }
   }
@@ -390,5 +394,48 @@ export function createPuddleAlphaMap(seed = 307, size = 128): THREE.DataTexture 
   tex.generateMipmaps = true;
   tex.needsUpdate = true;
   tex.name = 'AlleyPuddleAlphaMask';
+  return tex;
+}
+
+/**
+ * ماسک آلفای «هالهٔ نمناک» باریکی که دقیقاً پیرامون هر چالهٔ آب می‌نشیند.
+ * داخل چاله و بیرون از نوار، آلفا صفر است؛ فقط یک حلقهٔ نازک دورادور لبهٔ
+ * چاله مقدار می‌گیرد تا سنگ‌فرش فقط کمی اطراف آب، نمناک دیده شود — نه کل کف.
+ *
+ * @param innerRadius شروع نوار در مختصات ماسک (۰ = مرکز، ۱ = لبهٔ صفحه)
+ * @param outerRadius پایان نوار؛ بعد از آن کاملاً خشک است
+ */
+export function createPuddleDampRingAlphaMap(
+  seed = 307,
+  size = 128,
+  innerRadius = 0.56,
+  outerRadius = 0.88,
+): THREE.DataTexture {
+  const data = new Uint8Array(size * size * 4);
+  const span = Math.max(1e-4, outerRadius - innerRadius);
+  for (let py = 0; py < size; py++) {
+    const ny = (py / (size - 1)) * 2 - 1;
+    for (let px = 0; px < size; px++) {
+      const nx = (px / (size - 1)) * 2 - 1;
+      const dist = Math.hypot(nx, ny * 0.86);
+      // همان اغتشاش ماسک چاله تا لبهٔ هاله با لبهٔ آب هم‌شکل بماند
+      const warp = (valueNoise(nx * 3.2 + 8, ny * 3.2 + 4, seed) - 0.5) * 0.3;
+      const t = (dist + warp - innerRadius) / span;
+      const band = clamp(Math.min(t / 0.45, (1 - t) / 0.55), 0, 1);
+      const smooth = band * band * (3 - 2 * band);
+      const b = byte(smooth * 255);
+      const off = (py * size + px) * 4;
+      data[off] = b;
+      data[off + 1] = b;
+      data[off + 2] = b;
+      data[off + 3] = 255;
+    }
+  }
+  const tex = new THREE.DataTexture(data, size, size, THREE.RGBAFormat, THREE.UnsignedByteType);
+  tex.magFilter = THREE.LinearFilter;
+  tex.minFilter = THREE.LinearMipmapLinearFilter;
+  tex.generateMipmaps = true;
+  tex.needsUpdate = true;
+  tex.name = 'AlleyPuddleDampRingMask';
   return tex;
 }

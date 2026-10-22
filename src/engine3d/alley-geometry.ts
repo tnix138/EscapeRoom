@@ -4,10 +4,12 @@
  * alley-geometry.ts — معماری و اتمسفر کامل کوچهٔ قدیمی تماشاخانهٔ اُرفه‌ئو (علیرضا)
  * بازطراحی کامل سه‌بعدی شامل:
  * ۱) گنبد آسمان شبانه با ماه، هالهٔ مه‌آلود، ستاره‌های چشمک‌زن و ابرهای متحرک (fog: false)
- * ۲) کف‌سازی واقع‌گرایانه: سنگ‌فرش خیس PBR (color/normal/roughness/AO)، پیاده‌روهای سنگ‌تراش،
- *    جدول گرانیتی، جوی آب باران، چاله‌های آب بازتابنده (WetSurfaceMaterial) و دریچه‌های چدنی
+ * ۲) کف‌سازی واقع‌گرایانه: سنگ‌فرش خشک و مات PBR (color/normal/roughness/AO)، پیاده‌روهای
+ *    سنگ‌تراش، جدول گرانیتی، جوی بارانِ تیره و مات، چاله‌های آب بازتابنده (WetSurfaceMaterial)
+ *    با هالهٔ نمناک باریک پیرامونشان و دریچه‌های چدنی — بقیهٔ کف کاملاً خشک است
  * ۳) ساختمان‌های چندطبقهٔ آجری و سنگی دههٔ ۱۹۲۰ در دو سوی کوچه (با قرنیز، دودکش، پنجره‌های
  *    فرورفته و کرکره‌دار، پنجره‌های نیمه‌روشن مرموز، بالکن فرفورژه، ناودان و پلاک کوچه)
+ *    — دیوارها مات و بدون برق‌زدگی‌اند و فقط نمِ ملایم آجر دیده می‌شود
  *    + نمای باشکوه تماشاخانهٔ اُرفه‌ئو با سردر نورانی و چراغ‌های وضعیت بازیکنان
  *    + دروازهٔ آهنی قفل‌شده در انتهای پشت سر بازیکن (حذف کامل فضای خالی اطراف)
  * ۴) ۳ تیر چراغ برق قدیمی با بازوی عایق چینی، کابل‌های هوایی شکم‌داده، پرتو حجمی مه،
@@ -41,6 +43,7 @@ import {
   createCobblestoneMaps,
   createFlagstoneMaps,
   createPuddleAlphaMap,
+  createPuddleDampRingAlphaMap,
   createWoodPlankMaps,
   withUv2,
 } from './alley-materials';
@@ -135,6 +138,9 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
   const beamTexture = createLightConeAlphaTexture(64);
   const puddleMaskA = createPuddleAlphaMap(307, 128);
   const puddleMaskB = createPuddleAlphaMap(613, 128);
+  // هالهٔ نمناک باریک پیرامون چاله‌ها (کف جز این نواحی خشک است)
+  const dampRingMaskA = createPuddleDampRingAlphaMap(307, 128);
+  const dampRingMaskB = createPuddleDampRingAlphaMap(613, 128);
 
   const playbillSign = createPlaybillSignTexture(initialClues);
   const rowChartSign = createRowChartSignTexture(initialClues);
@@ -159,12 +165,14 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
   });
 
   const stoneTrimMat = new THREE.MeshStandardMaterial({
-    color: 0x5c5752,
+    color: 0x67625c,
     map: flagstoneMaps.colorMap,
     normalMap: flagstoneMaps.normalMap,
     roughnessMap: flagstoneMaps.roughnessMap,
-    roughness: 0.84,
-    metalness: 0.05,
+    roughness: 0.94,
+    metalness: 0.02,
+    envMap: environmentMap,
+    envMapIntensity: 0.12,
   });
 
   const darkWoodMat = new THREE.MeshStandardMaterial({
@@ -201,18 +209,21 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
   const floorGroup = new THREE.Group();
   floorGroup.name = 'AlleyFloorGroup';
 
+  // سنگ‌فرش خشک: زبری بسیار بالا، فلزیگی تقریباً صفر و بازتاب محیطی کم تا
+  // کف هیچ برق و آینه‌ای نداشته باشد (پیش‌تر roughness ۰٫۶۲ + env ۰٫۹۵ کف را
+  // مثل سطح خیس براق می‌کرد)
   const groundMat = new THREE.MeshStandardMaterial({
-    color: 0x8f8d88,
+    color: 0xa09e97,
     map: cobbleMaps.colorMap,
     normalMap: cobbleMaps.normalMap,
     normalScale: new THREE.Vector2(1.45, 1.45),
     roughnessMap: cobbleMaps.roughnessMap,
     aoMap: cobbleMaps.aoMap,
     aoMapIntensity: 0.9,
-    roughness: 0.62,
-    metalness: 0.08,
+    roughness: 0.96,
+    metalness: 0.015,
     envMap: environmentMap,
-    envMapIntensity: 0.95,
+    envMapIntensity: 0.16,
   });
 
   const groundGeo = withUv2(new THREE.PlaneGeometry(13.2, 42, 24, 48));
@@ -233,18 +244,19 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
   floorGroup.add(ground);
 
   // پیاده‌روهای سنگ‌فرش برجسته و جدول گرانیتی چپ و راست
+  // پیاده‌روی سنگی هم کاملاً خشک است و مثل زمین اصلی براق نمی‌شود
   const sidewalkMat = new THREE.MeshStandardMaterial({
-    color: 0x8a8680,
+    color: 0x9a968f,
     map: flagstoneMaps.colorMap,
     normalMap: flagstoneMaps.normalMap,
     normalScale: new THREE.Vector2(1.1, 1.1),
     roughnessMap: flagstoneMaps.roughnessMap,
     aoMap: flagstoneMaps.aoMap,
     aoMapIntensity: 0.85,
-    roughness: 0.68,
-    metalness: 0.06,
+    roughness: 0.95,
+    metalness: 0.02,
     envMap: environmentMap,
-    envMapIntensity: 0.6,
+    envMapIntensity: 0.12,
   });
 
   for (const side of [-1, 1] as const) {
@@ -268,13 +280,17 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
     curb.name = side < 0 ? 'CurbLeft' : 'CurbRight';
     floorGroup.add(curb);
 
-    // نوار خیس جوی کنار جدول
-    const gutter = new WetSurfaceMaterial({
-      color: 0x15181f,
-      environmentMap,
-      environmentIntensity: 1.5,
-      roughness: 0.08,
-      metalness: 0.14,
+    // جوی کنار جدول: دیگر یک آینهٔ ۳۸ متری نیست؛ فقط یک شیار تیرهٔ مات که
+    // خشکی کف را می‌شکند (پیش‌تر با roughness ۰٫۰۸ تمام طول کوچه برق می‌زد)
+    const gutter = new THREE.MeshStandardMaterial({
+      color: 0x1a1c21,
+      roughness: 0.62,
+      metalness: 0.03,
+      envMap: environmentMap,
+      envMapIntensity: 0.22,
+      transparent: true,
+      opacity: 0.4,
+      depthWrite: false,
       polygonOffset: true,
       polygonOffsetFactor: -2,
       polygonOffsetUnits: -2,
@@ -285,16 +301,54 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
     floorGroup.add(gutterMesh);
   }
 
-  // چاله‌های آب باران با بازتاب آینه‌ای چراغ‌های برق و آسمان شب
+  // چاله‌های آب باران — تنها نقاط براق کف؛ بقیهٔ سنگ‌فرش خشک است
   const puddleSpecs: Array<{ x: number; z: number; rx: number; rz: number; rot: number; mask: THREE.DataTexture }> = [
-    { x: -2.2, z: -4.2, rx: 3.3, rz: 4.4, rot: 0.25, mask: puddleMaskA },
-    { x: 2.35, z: 2.1, rx: 2.9, rz: 3.8, rot: -0.4, mask: puddleMaskB },
-    { x: -0.6, z: -9.6, rx: 3.6, rz: 3.1, rot: 0.62, mask: puddleMaskA },
-    { x: 1.5, z: -2.1, rx: 2.2, rz: 2.8, rot: 1.05, mask: puddleMaskB },
-    { x: -2.4, z: 4.9, rx: 2.5, rz: 3.0, rot: -0.75, mask: puddleMaskA },
+    { x: -2.2, z: -4.2, rx: 2.7, rz: 3.6, rot: 0.25, mask: puddleMaskA },
+    { x: 2.35, z: 2.1, rx: 2.5, rz: 3.3, rot: -0.4, mask: puddleMaskB },
+    { x: -0.6, z: -9.6, rx: 2.9, rz: 2.6, rot: 0.62, mask: puddleMaskA },
+    { x: 1.5, z: -2.1, rx: 2.0, rz: 2.5, rot: 1.05, mask: puddleMaskB },
+    { x: -2.4, z: 4.9, rx: 2.2, rz: 2.7, rot: -0.75, mask: puddleMaskA },
   ];
 
+  // هالهٔ نمناک: یک حلقهٔ نازک مات دور هر چاله، تا فقط «کمی اطراف آب» خیس
+  // دیده شود و باقی کف کاملاً خشک بماند.
+  const dampRingMats = new Map<THREE.DataTexture, THREE.MeshStandardMaterial>();
+  const dampRingMaskOf = (mask: THREE.DataTexture): THREE.DataTexture =>
+    mask === puddleMaskA ? dampRingMaskA : dampRingMaskB;
+  const dampRingMatFor = (mask: THREE.DataTexture): THREE.MeshStandardMaterial => {
+    const existing = dampRingMats.get(mask);
+    if (existing) return existing;
+    const created = new THREE.MeshStandardMaterial({
+      color: 0x191b20,
+      roughness: 0.42,
+      metalness: 0.04,
+      envMap: environmentMap,
+      envMapIntensity: 0.55,
+      alphaMap: dampRingMaskOf(mask),
+      transparent: true,
+      opacity: 0.72,
+      depthWrite: false,
+      polygonOffset: true,
+      polygonOffsetFactor: -2,
+      polygonOffsetUnits: -2,
+    });
+    created.name = 'PuddleDampFringeMaterial';
+    dampRingMats.set(mask, created);
+    return created;
+  };
+
   puddleSpecs.forEach((p, idx) => {
+    // هالهٔ نمناک پیرامون آب (کمی بزرگ‌تر از خود چاله، کمی پایین‌تر)
+    const fringe = new THREE.Mesh(
+      new THREE.PlaneGeometry(p.rx * 1.45, p.rz * 1.45),
+      dampRingMatFor(p.mask),
+    );
+    fringe.rotation.x = -Math.PI / 2;
+    fringe.rotation.z = p.rot;
+    fringe.position.set(p.x, 0.0465, p.z);
+    fringe.name = `RainPuddleDampRing_${idx}`;
+    floorGroup.add(fringe);
+
     const puddleMat = new WetSurfaceMaterial({
       color: 0x111620,
       environmentMap,
@@ -376,28 +430,34 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
   const buildingsGroup = new THREE.Group();
   buildingsGroup.name = 'AlleyBuildings';
 
+  // دیوارها مات‌اند: زبری نزدیک به ۱، فلزیگی صفر و بازتاب محیطی ناچیز تا فقط
+  // حس «نمِ ملایم» آجر بماند و هیچ سطحی مثل شیشه برق نزند
   const brickMatWarm = new THREE.MeshStandardMaterial({
-    color: 0x8f6b58,
+    color: 0x9d7763,
     map: brickWarmMaps.colorMap,
     normalMap: brickWarmMaps.normalMap,
     normalScale: new THREE.Vector2(1.25, 1.25),
     roughnessMap: brickWarmMaps.roughnessMap,
     aoMap: brickWarmMaps.aoMap,
     aoMapIntensity: 0.85,
-    roughness: 0.88,
-    metalness: 0.03,
+    roughness: 0.97,
+    metalness: 0.01,
+    envMap: environmentMap,
+    envMapIntensity: 0.1,
   });
 
   const brickMatSlate = new THREE.MeshStandardMaterial({
-    color: 0x76727c,
+    color: 0x837e8a,
     map: brickSlateMaps.colorMap,
     normalMap: brickSlateMaps.normalMap,
     normalScale: new THREE.Vector2(1.2, 1.2),
     roughnessMap: brickSlateMaps.roughnessMap,
     aoMap: brickSlateMaps.aoMap,
     aoMapIntensity: 0.85,
-    roughness: 0.86,
-    metalness: 0.04,
+    roughness: 0.96,
+    metalness: 0.01,
+    envMap: environmentMap,
+    envMapIntensity: 0.1,
   });
 
   const darkWindowGlassMat = new THREE.MeshStandardMaterial({
@@ -580,15 +640,17 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
   theaterGroup.name = 'TheaterFacadeGroup';
 
   const theaterStoneMat = new THREE.MeshStandardMaterial({
-    color: 0x7c726b,
+    color: 0x877c74,
     map: theaterStoneMaps.colorMap,
     normalMap: theaterStoneMaps.normalMap,
     normalScale: new THREE.Vector2(1.3, 1.3),
     roughnessMap: theaterStoneMaps.roughnessMap,
     aoMap: theaterStoneMaps.aoMap,
     aoMapIntensity: 0.9,
-    roughness: 0.82,
-    metalness: 0.05,
+    roughness: 0.95,
+    metalness: 0.02,
+    envMap: environmentMap,
+    envMapIntensity: 0.12,
   });
 
   // بدنهٔ عریض عمارت تماشاخانه که کل انتهای کوچه را می‌بندد (جلو روی z = -14.10)
@@ -1250,6 +1312,10 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
     beamTexture.dispose();
     puddleMaskA.dispose();
     puddleMaskB.dispose();
+    dampRingMaskA.dispose();
+    dampRingMaskB.dispose();
+    dampRingMats.forEach((material) => material.dispose());
+    dampRingMats.clear();
     playbillSign.dispose();
     rowChartSign.dispose();
     marqueeSign.dispose();
