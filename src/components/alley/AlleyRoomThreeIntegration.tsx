@@ -14,6 +14,7 @@ import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import { useThreeEngine } from '@/engine3d/useThreeEngine';
 import { usePlayerControls } from '@/engine3d/usePlayerControls';
+import { isTextEntryElement } from '@/engine3d/player-controller';
 import { createAlleyGeometry } from '@/engine3d/alley-geometry';
 import { resolveInitialTransform, saveTransform } from '@/engine3d/spawn';
 import { type TransitionPhase } from '@/engine3d/transition';
@@ -73,7 +74,10 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
   const [ticketsOpen, setTicketsOpen] = useState(false);
   const [desktopTicketOpen, setDesktopTicketOpen] = useState(true);
 
-  const initialTransform = resolveInitialTransform(room.roomCode, room.me.playerId, room.me.seatIndex);
+  const initialTransform = useMemo(
+    () => resolveInitialTransform(room.roomCode, room.me.playerId, room.me.seatIndex),
+    [room.roomCode, room.me.playerId, room.me.seatIndex],
+  );
 
   const { transform, isPointerLocked, requestPointerLock } = usePlayerControls({
     engine,
@@ -289,7 +293,7 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
   // کلید E فقط برای باز کردن قفل درِ تماشاخانه (تابلوها متن واقعی سه‌بعدی دارند)
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.target instanceof HTMLElement && ['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON'].includes(e.target.tagName)) {
+      if (isTextEntryElement(e.target)) {
         return;
       }
       if (e.code === 'KeyE' && focusedAnchor === 'theaterDoor') {
