@@ -51,6 +51,7 @@ import {
   withUv2,
 } from './alley-materials';
 import { createEntranceTorch, type EntranceTorchInstance } from './alley-entrance-torch';
+import { createLobbyDoor, type LobbyDoorInstance } from './alley-lobby-door';
 import {
   DEFAULT_ALLEY_SIGN_CLUES,
   createPlaybillSignTexture,
@@ -769,41 +770,17 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
     theaterGroup.add(rod);
   }
 
-  // قاب برنجی و درِ دولنگهٔ کنده‌کاری‌شدهٔ تماشاخانه
-  const portalArch = new THREE.Mesh(new THREE.BoxGeometry(3.15, 3.85, 0.34), antiqueBrassMat);
-  portalArch.position.set(anchors.theaterDoor.x, 1.92, anchors.theaterDoor.z - 0.08);
-  theaterGroup.add(portalArch);
-
-  const door = new THREE.Mesh(
-    withUv2(new THREE.BoxGeometry(2.55, 3.45, 0.22)),
-    darkWoodMat,
-  );
-  door.position.set(anchors.theaterDoor.x, 1.72, anchors.theaterDoor.z);
-  door.name = 'TheaterDoor';
-  door.userData.anchorId = 'theaterDoor';
-  door.castShadow = true;
-  door.receiveShadow = true;
-  theaterGroup.add(door);
-
-  const centerSeam = new THREE.Mesh(new THREE.BoxGeometry(0.05, 3.42, 0.28), darkIronMat);
-  centerSeam.position.set(0, 1.72, anchors.theaterDoor.z + 0.02);
-  theaterGroup.add(centerSeam);
-
-  for (const side of [-1, 1] as const) {
-    for (const py of [0.95, 2.45]) {
-      const panel = new THREE.Mesh(new THREE.BoxGeometry(0.88, 1.05, 0.06), antiqueBrassMat);
-      panel.position.set(side * 0.62, py, anchors.theaterDoor.z + 0.13);
-      theaterGroup.add(panel);
-
-      const inset = new THREE.Mesh(new THREE.BoxGeometry(0.74, 0.90, 0.06), darkWoodMat);
-      inset.position.set(side * 0.62, py, anchors.theaterDoor.z + 0.16);
-      theaterGroup.add(inset);
-    }
-
-    const handleRing = new THREE.Mesh(new THREE.TorusGeometry(0.11, 0.022, 8, 18), antiqueBrassMat);
-    handleRing.position.set(side * 0.22, 1.56, anchors.theaterDoor.z + 0.19);
-    theaterGroup.add(handleRing);
-  }
+  // درِ اصلی لابی: نوار نیم‌دایره‌ای شیشه‌ای با نقش‌نگاری آهنی بالای دو لنگهٔ
+  // چوبیِ قهوه‌ای تیره، هر لنگه با مستطیل عمودی شیشه و نیمهٔ پایین چوبی، و دو
+  // دستگیرهٔ استوانه‌ای برنجی کنار هم در وسط (ماژول alley-lobby-door).
+  const lobbyDoor = createLobbyDoor({
+    woodMaps: crateDarkWoodMaps,
+    stoneMaps: theaterStoneMaps,
+    environmentMap,
+  });
+  lobbyDoor.group.position.set(anchors.theaterDoor.x, 0, anchors.theaterDoor.z);
+  theaterGroup.add(lobbyDoor.group);
+  const door = lobbyDoor.group;
 
   // دو چراغ کنار در ورودی به شکل مشعل: پیالهٔ برنزی-آهنی، بازوی هشت‌ضلعی
   // بیرون‌آمده از نما و فانوس چراغِ هشت‌ضلعی روی آن (به‌جای فانوس‌های لوزی قبلی).
@@ -826,7 +803,8 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
   // ردیف چراغ‌های وضعیت پانچ بلیط بازیکنان بالای چهارچوب در
   const playerStatusLampsGroup = new THREE.Group();
   playerStatusLampsGroup.name = 'DoorPlayerStatusLamps';
-  playerStatusLampsGroup.position.set(0, 3.55, anchors.theaterDoor.z + 0.18);
+  // ردیف چراغ‌های وضعیت، بالای قوس نیم‌دایرهٔ در و روی قاب سنگی می‌نشیند
+  playerStatusLampsGroup.position.set(0, 3.56, anchors.theaterDoor.z + 0.12);
   theaterGroup.add(playerStatusLampsGroup);
 
   const rebuildPlayerStatusLamps = (players?: readonly AlleyPlayerLampStatus[], requiredCount = 3, punchedCount = 0) => {
@@ -1291,6 +1269,7 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
     for (const torch of entranceTorches) {
       torch.update(elapsedSeconds);
     }
+    lobbyDoor.update(elapsedSeconds);
 
     if (Number.isFinite(elapsedSeconds)) {
       const marqueePulse = 0.94 + 0.06 * Math.sin(elapsedSeconds * 5.3) * Math.cos(elapsedSeconds * 11.7);
