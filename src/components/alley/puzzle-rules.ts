@@ -188,6 +188,35 @@ export function puzzleToggleIcon(open: boolean): string {
   return open ? '✕' : '✦';
 }
 
+/** شناسهٔ بدنهٔ کشویی پنل بلیط سه‌بعدی برای aria-controls. */
+export const TICKET_DRAWER_BODY_ID = 'alley3d-ticket-body';
+
+/** برچسب دسترس‌پذیر دکمهٔ باز و بستن پنل بلیط در ستون راست. */
+export function ticketDrawerToggleLabel(open: boolean): string {
+  return open ? 'بستن پنل بلیط' : 'باز کردن پنل بلیط';
+}
+
+/** راهنمای وضعیت دکمهٔ باز و بستن پنل بلیط برای ابزارک و صفحه‌خوان. */
+export function ticketDrawerToggleHint(open: boolean): string {
+  return open
+    ? 'پنل بلیط باز است؛ با زدن این کلید به سمت راست جمع می‌شود.'
+    : 'پنل بلیط بسته است؛ با زدن این کلید بلیط و پاسخ معما باز می‌شود.';
+}
+
+/** زیرعنوان خلاصهٔ وضعیت بلیط در نوار سربرگ شیشه‌ای. */
+export function ticketDrawerStatusLine(
+  isValidated: boolean,
+  revealedDigit: number | null,
+): string {
+  if (isValidated && isDigit(revealedDigit)) {
+    return `بلیط پانچ شد · رقم طلایی: ${toPersianNumber(revealedDigit)}`;
+  }
+  if (isValidated) {
+    return 'بلیط پانچ شد · در انتظار همگام‌سازی رقم';
+  }
+  return 'مدارک ورود و پاسخ معما';
+}
+
 export function keypadKeyLabel(key: string): string {
   if (key === 'clear') return 'پاک کردن همهٔ ارقام';
   if (key === 'delete') return 'حذف رقم آخر';
