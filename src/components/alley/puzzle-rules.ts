@@ -168,6 +168,26 @@ export function keypadToggleHint(open: boolean): string {
     : 'صفحه‌کلید بسته است؛ می‌توانید مستقیم کد را تایپ کنید یا با این دکمه بازش کنید.';
 }
 
+/** شناسهٔ بدنهٔ پاسخ معما برای aria-controls. */
+export const PUZZLE_PANEL_ID = 'ticket-puzzle-body';
+
+/** متن دکمهٔ کشوییِ «پاسخ معما» در بلیط. */
+export function puzzleToggleLabel(open: boolean): string {
+  return open ? 'بستن پاسخ معما' : 'باز کردن پاسخ معما';
+}
+
+/** راهنمای صفحه‌خوان/ابزارِ همان دکمه. */
+export function puzzleToggleHint(open: boolean): string {
+  return open
+    ? 'پاسخ معما باز است؛ با این دکمه جمع می‌شود و بلیط جمع‌وجور می‌ماند.'
+    : 'پاسخ معما بسته است؛ با این دکمه انتخاب نماد، پرده و ردیف باز می‌شود.';
+}
+
+/** نشانهٔ تصویری دکمه: باز = بستن، بسته = باز کردن. */
+export function puzzleToggleIcon(open: boolean): string {
+  return open ? '✕' : '✦';
+}
+
 export function keypadKeyLabel(key: string): string {
   if (key === 'clear') return 'پاک کردن همهٔ ارقام';
   if (key === 'delete') return 'حذف رقم آخر';
