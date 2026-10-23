@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { createAlleyGeometry } from '@/engine3d/alley-geometry';
 import {
   ALLEY_BRANCH,
+  ALLEY_EAST,
   ALLEY_ENTRANCE_STREET,
   ALLEY_MAIN,
   ALLEY_THEATER,
@@ -75,11 +76,18 @@ describe('خیابانِ جلوی درِ ورودی و حذفِ تیرِ برق�
     alley.group.updateMatrixWorld(true);
     const box = new THREE.Box3().setFromObject(walk!);
     expect(box.max.z).toBeLessThanOrEqual(ALLEY_ENTRANCE_STREET.mainSidewalkEndZ + 1e-6);
-    // سمتِ راست دست‌نخورده تا انتهای کوچه می‌رود
+    // سمتِ راست هم در دهانهٔ خیابانِ شرقی قطع می‌شود و از آن‌جا پیاده‌رویِ خودِ
+    // خیابان است (پیش‌تر یک‌سره تا انتهای جنوبی می‌رفت و دهانه را می‌بست)
     const right = meshByName(alley, 'SidewalkRight');
     expect(right).toBeDefined();
     const rightBox = new THREE.Box3().setFromObject(right!);
-    expect(rightBox.max.z).toBeGreaterThanOrEqual(ALLEY_MAIN.southZ - 0.01);
+    expect(rightBox.max.z).toBeCloseTo(ALLEY_EAST.northZ, 6);
+    const eastWalk = meshByName(alley, 'EastSidewalkNorth');
+    expect(eastWalk).toBeDefined();
+    const eastBox = new THREE.Box3().setFromObject(eastWalk!);
+    // مختصاتِ هندسه float32 ذخیره می‌شوند، پس دقتِ میلی‌متری کافی است
+    expect(eastBox.min.x).toBeCloseTo(ALLEY_EAST.walkWestX, 4);
+    expect(eastBox.min.z).toBeCloseTo(ALLEY_EAST.northZ, 4);
 
     alley.dispose();
   });
