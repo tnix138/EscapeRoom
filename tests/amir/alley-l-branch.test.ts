@@ -84,7 +84,7 @@ describe('کوچهٔ L‌شکل: حذف نرده، دوبرابر شدن طول 
     expect(alley.group.getObjectByName('BranchGround')).toBeDefined();
     expect(alley.group.getObjectByName('BranchBuildingsNorth')).toBeDefined();
     expect(alley.group.getObjectByName('BranchBuildingsSouth')).toBeDefined();
-    expect(alley.group.getObjectByName('BranchSidewalkNorth')).toBeDefined();
+    expect(alley.group.getObjectByName('BranchSidewalkNorthWest')).toBeDefined();
     expect(alley.group.getObjectByName('BranchSidewalkSouth')).toBeDefined();
 
     // داخلِ فرعی آزاد است و انتهایش بسته
@@ -141,8 +141,8 @@ describe('کوچهٔ L‌شکل: حذف نرده، دوبرابر شدن طول 
   it('ارتفاع گام‌برداری در فرعی از zp عرضِ فرعی حساب می‌شود، نه از x', () => {
     // سنگ‌فرشِ میانیِ فرعی، همسطحِ کف
     expect(alleyWalkableGroundAt(-15, ALLEY_BRANCH.centerZ)).toBeCloseTo(0, 6);
-    // پیاده‌روی شمالی و جنوبیِ فرعی ۱۳ سانتی‌متر بالاتر
-    expect(alleyWalkableGroundAt(-15, ALLEY_BRANCH.northSidewalkCenterZ)).toBeCloseTo(0.13, 6);
+    // پیاده‌روی شمالیِ فرعی فقط غربِ خیابانِ جلوی در می‌ماند؛ جنوبی در تمامِ طول
+    expect(alleyWalkableGroundAt(-30, ALLEY_BRANCH.northSidewalkCenterZ)).toBeCloseTo(0.13, 6);
     expect(alleyWalkableGroundAt(-15, ALLEY_BRANCH.southSidewalkCenterZ)).toBeCloseTo(0.13, 6);
     // همان x در شاخهٔ اصلی (جایی که |x| بزرگ است و z در باند فرعی نیست) باید صفر باشد
     expect(alleyWalkableGroundAt(-4, 10)).toBeCloseTo(0, 6);
