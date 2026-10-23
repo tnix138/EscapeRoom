@@ -16,7 +16,12 @@ import { useThreeEngine } from '@/engine3d/useThreeEngine';
 import { usePlayerControls } from '@/engine3d/usePlayerControls';
 import { isTextEntryElement } from '@/engine3d/player-controller';
 import { createAlleyGeometry } from '@/engine3d/alley-geometry';
-import { resolveInitialTransform, saveTransform } from '@/engine3d/spawn';
+import { alleyWalkableGroundAt } from '@/engine3d/alley-ground-profile';
+import {
+  resolveInitialTransform,
+  resolvePlayerEyeHeight,
+  saveTransform,
+} from '@/engine3d/spawn';
 import { type TransitionPhase } from '@/engine3d/transition';
 import { RemotePlayerManager } from '@/engine3d/presence/RemotePlayerManager';
 import { FearResponsiveFog } from '@/engine3d/horror/fear-fog';
@@ -80,15 +85,33 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
   const [ticketsOpen, setTicketsOpen] = useState(false);
   const [desktopTicketOpen, setDesktopTicketOpen] = useState(true);
 
+  const localEyeHeight = useMemo(
+    () => resolvePlayerEyeHeight(room.me.playerId, room.me.seatIndex, room.me.playerName),
+    [room.me.playerId, room.me.seatIndex, room.me.playerName],
+  );
+
   const initialTransform = useMemo(
-    () => resolveInitialTransform(room.roomCode, room.me.playerId, room.me.seatIndex),
-    [room.roomCode, room.me.playerId, room.me.seatIndex],
+    () =>
+      resolveInitialTransform(room.roomCode, room.me.playerId, room.me.seatIndex, {
+        playerName: room.me.playerName,
+        groundHeightAt: alleyWalkableGroundAt,
+      }),
+    [room.roomCode, room.me.playerId, room.me.seatIndex, room.me.playerName],
+  );
+
+  const movementConfig = useMemo(
+    () => ({
+      eyeHeight: localEyeHeight,
+      groundHeightAt: alleyWalkableGroundAt,
+    }),
+    [localEyeHeight],
   );
 
   const { transform, isPointerLocked, requestPointerLock } = usePlayerControls({
     engine,
     enabled: !doorModalOpen && !showPlaybill && !showRowChart,
     initialTransform,
+    config: movementConfig,
   });
 
   // داده‌های سرنخ اتاق از سرور برای رندر واقعی روی تابلوهای سه‌بعدی کوچه

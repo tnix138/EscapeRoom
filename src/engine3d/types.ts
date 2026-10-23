@@ -49,6 +49,10 @@ export interface MovementConfig {
   mouseSensitivity: number;
   minPitchDeg: number;
   maxPitchDeg: number;
+  /** ارتفاع مردمک چشم کاراکتر از کف پا (متر)؛ پیش‌فرض ۱٫۶۵ */
+  eyeHeight?: number;
+  /** تابع اختیاری ارتفاع سطح زیر پا در مختصات (x, z)؛ اگر نباشد y ثابت می‌ماند */
+  groundHeightAt?: (x: number, z: number) => number;
 }
 
 export const DEFAULT_MOVEMENT_CONFIG: MovementConfig = {

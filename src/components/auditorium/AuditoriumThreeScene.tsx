@@ -47,9 +47,11 @@ function TheaterCore({ room, elapsedMs = 0, showAllSeats = false, onSeatClick }:
 
     // قرار دادن بازیکنان روی صندلی‌ها با کاراکتر سه‌بعدی کامل انسان
     const seatedAvatars: THREE.Group[] = [];
+    let localSeatedAvatar: THREE.Group | null = null;
     seatAssignments.forEach(({ player, row, col }) => {
       const seat = theater.seats.find((s) => s.userData.row === row && s.userData.col === col);
       if (seat) {
+        const isLocalPlayer = player.playerId === room.me.playerId;
         seat.userData.occupied = true;
         seat.userData.playerName = player.playerName;
 
@@ -57,42 +59,56 @@ function TheaterCore({ room, elapsedMs = 0, showAllSeats = false, onSeatClick }:
           playerId: player.playerId,
           playerName: player.playerName,
           seatIndex: player.seatIndex,
-          isLocalPlayer: player.playerId === room.me.playerId,
+          isLocalPlayer,
         });
         seat.add(avatar);
         seatedAvatars.push(avatar);
 
-        // برچسب نام
-        const canvas = document.createElement('canvas');
-        canvas.width = 256;
-        canvas.height = 64;
-        const ctx = canvas.getContext('2d')!;
-        ctx.fillStyle = 'rgba(0,0,0,0.7)';
-        ctx.fillRect(0, 0, 256, 64);
-        ctx.fillStyle = '#e8dcc8';
-        ctx.font = 'bold 20px Vazirmatn';
-        ctx.textAlign = 'center';
-        ctx.fillText(player.playerName, 128, 38);
-        const tex = new THREE.CanvasTexture(canvas);
-        const labelMat = new THREE.MeshBasicMaterial({ map: tex, transparent: true });
-        const labelGeo = new THREE.PlaneGeometry(1.2, 0.3);
-        const label = new THREE.Mesh(labelGeo, labelMat);
-        label.position.set(0, 1.6, 0);
-        label.name = 'NameLabel';
-        seat.add(label);
+        if (isLocalPlayer) {
+          localSeatedAvatar = avatar;
+        } else {
+          // برچسب نام فقط برای هم‌تیمی‌های دیگر
+          const canvas = document.createElement('canvas');
+          canvas.width = 256;
+          canvas.height = 64;
+          const ctx = canvas.getContext('2d')!;
+          ctx.fillStyle = 'rgba(0,0,0,0.7)';
+          ctx.fillRect(0, 0, 256, 64);
+          ctx.fillStyle = '#e8dcc8';
+          ctx.font = 'bold 20px Vazirmatn';
+          ctx.textAlign = 'center';
+          ctx.fillText(player.playerName, 128, 38);
+          const tex = new THREE.CanvasTexture(canvas);
+          const labelMat = new THREE.MeshBasicMaterial({ map: tex, transparent: true });
+          const labelGeo = new THREE.PlaneGeometry(1.2, 0.3);
+          const label = new THREE.Mesh(labelGeo, labelMat);
+          label.position.set(0, 1.6, 0);
+          label.name = 'NameLabel';
+          seat.add(label);
+        }
       }
     });
 
-    // دوربین — روی صندلی بازیکن خودی
+    // دوربین اول‌شخص — دقیقاً از محل مردمک چشم کاراکتر نشستهٔ خودِ بازیکن
     const mySeat = theater.seats.find(
       (s) => s.userData.row === Math.floor(room.me.seatIndex / 5) + 1 && s.userData.col === (room.me.seatIndex % 5) + 1,
     );
-    if (mySeat) {
+    if (mySeat && localSeatedAvatar) {
+      theater.group.updateMatrixWorld(true);
+      const localRig = (localSeatedAvatar as THREE.Group).userData.humanAvatar as HumanAvatar | undefined;
+      const eyeWorld = localRig
+        ? localRig.getEyeWorldPosition(new THREE.Vector3())
+        : mySeat.position.clone().add(new THREE.Vector3(0, 1.28, 0));
+      // مخفی کردن مش خودِ بازیکن تا دوربین اول‌شخص با سر خودش تداخل نداشته باشد
+      (localSeatedAvatar as THREE.Group).visible = false;
+      engine.camera.position.copy(eyeWorld);
+      engine.camera.lookAt(0, eyeWorld.y, -6);
+    } else if (mySeat) {
       const pos = mySeat.position.clone();
-      engine.camera.position.set(pos.x, pos.y + 1.2, pos.z + 0.8);
-      engine.camera.lookAt(0, 1.2, -6);
+      engine.camera.position.set(pos.x, pos.y + 1.28, pos.z);
+      engine.camera.lookAt(0, pos.y + 1.28, -6);
     } else {
-      engine.camera.position.set(0, 2, 6);
+      engine.camera.position.set(0, 1.65, 6);
       engine.camera.lookAt(0, 1.5, -6);
     }
 
