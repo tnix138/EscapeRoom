@@ -129,8 +129,8 @@ describe('کف خشک و دیوارهای ماتِ کوچه (بازبینی طب
       );
     }) as THREE.Mesh<THREE.BufferGeometry, THREE.MeshStandardMaterial>[];
 
-    // دو جویِ کوچهٔ اصلی + دو جویِ فرعیِ غربی
-    expect(gutters).toHaveLength(4);
+    // دو جویِ کوچهٔ اصلی + جویِ فرعی + دو جویِ خیابانِ غربی
+    expect(gutters).toHaveLength(5);
     for (const gutter of gutters) {
       expect(gutter.material.roughness).toBeGreaterThanOrEqual(0.5);
       expect(gutter.material.metalness).toBeLessThanOrEqual(0.05);
@@ -158,9 +158,9 @@ describe('کف خشک و دیوارهای ماتِ کوچه (بازبینی طب
       }
     });
 
-    // پنج چالهٔ کوچهٔ اصلی + سه چالهٔ امتدادِ جنوبی و فرعی
-    expect(puddles).toHaveLength(8);
-    expect(rings).toHaveLength(8);
+    // پنج چالهٔ کوچهٔ اصلی + سه چالهٔ امتدادِ جنوبی و فرعی + دو چالهٔ خیابانِ غربی
+    expect(puddles).toHaveLength(10);
+    expect(rings).toHaveLength(10);
     expect(alley.group.getObjectByName('RainPuddle_0')).toBeDefined();
 
     for (const puddle of puddles) {

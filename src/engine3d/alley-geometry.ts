@@ -33,6 +33,8 @@ import {
   ALLEY_LENGTHS,
   ALLEY_MAIN,
   ALLEY_THEATER,
+  ALLEY_WEST_STREET,
+  ALLEY_WEST_STREET_ROWS,
 } from './alley-layout';
 import { alleyGroundCrownAt } from './alley-ground-profile';
 import {
@@ -161,10 +163,31 @@ const RIGHT_BUILDINGS: readonly BuildingSpec[] = [
  * `zCenter` اینجا در واقع فاصله در راستای x است و منفی‌ها به سمت غرب می‌روند.
  * گوشهٔ شمال‌شرقی از ساختمانِ گوشهٔ کوچهٔ اصلی پوشیده می‌شود (تا x = −۱۱٫۹۲).
  */
-// دیوارِ شمالیِ فرعی حالا تقریباً تمامش نمای تماشاخانه است؛ فقط نواری در غربِ
-// نما (بین لبهٔ غربیِ تئاتر و دیوارِ بن‌بست) ساختمانِ آجری می‌گیرد
-const BRANCH_NORTH_BUILDINGS: readonly BuildingSpec[] = [
-  { zCenter: -30.2, length: 4.6, height: 10.6, xInset: 0.04, variant: 1, floors: 3, litWindowFloor: 1 },
+// دیوارِ شمالیِ فرعی حالا تمامش نمای تماشاخانه است (از −۲۷٫۹۲ تا −۸٫۷۲) و غربِ
+// آن دهانهٔ خیابانِ غربی است؛ پس ردیفِ شمالیِ فرعی دیگر ساختمانی ندارد.
+const BRANCH_NORTH_BUILDINGS: readonly BuildingSpec[] = [];
+
+/**
+ * ردیف‌های ساختمانیِ خیابانِ غربی (شاخهٔ شمالیِ U). ردیف‌های غربی و شرقی همان
+ * ردیف‌های شاخهٔ اصلی‌اند (بدون چرخش) و فقط ردیفِ انتهای شمالی ۹۰ درجه چرخیده
+ * است تا دیوارِ `z = ۰` را ببندد.
+ */
+const WEST_STREET_WEST_BUILDINGS: readonly BuildingSpec[] = [
+  { zCenter: 4.0, length: 7.6, height: 10.4, xInset: 0.02, variant: 1, floors: 3, hasBalcony: true, litWindowFloor: 1 },
+  { zCenter: 11.8, length: 7.6, height: 12.2, xInset: -0.05, variant: 0, floors: 4, litWindowFloor: 2 },
+  { zCenter: 19.6, length: 7.6, height: 9.6, xInset: 0.07, variant: 1, floors: 3 },
+  { zCenter: 27.4, length: 7.6, height: 11.0, xInset: 0.0, variant: 0, floors: 3, hasBalcony: true, litWindowFloor: 1 },
+];
+
+const WEST_STREET_EAST_BUILDINGS: readonly BuildingSpec[] = [
+  { zCenter: 3.6, length: 6.6, height: 11.6, xInset: 0.04, variant: 0, floors: 4, litWindowFloor: 2 },
+  { zCenter: 11.1, length: 8.0, height: 9.8, xInset: -0.03, variant: 1, floors: 3, hasBalcony: true },
+  { zCenter: 17.4, length: 4.4, height: 10.8, xInset: 0.05, variant: 0, floors: 3, litWindowFloor: 1 },
+];
+
+/** ردیفِ انتهای شمالیِ خیابان (دیوارِ z = ۰) — یک بلوکِ آجریِ کامل */
+const WEST_STREET_END_BUILDINGS: readonly BuildingSpec[] = [
+  { zCenter: -33, length: 9.8, height: 11.4, xInset: 0.0, variant: 1, floors: 3, litWindowFloor: 1 },
 ];
 
 /**
@@ -184,6 +207,8 @@ const BRANCH_SOUTH_BUILDINGS: readonly BuildingSpec[] = [
   { zCenter: -15.7, length: 7.8, height: 10.1, xInset: 0.05, variant: 0, floors: 3, hasBalcony: true },
   { zCenter: -23.7, length: 8.2, height: 12.4, xInset: 0.0, variant: 1, floors: 4, litWindowFloor: 2 },
   { zCenter: -30.2, length: 5.2, height: 11.2, xInset: 0.03, variant: 0, floors: 3 },
+  // گوشهٔ جنوب‌غربیِ U: ادامهٔ ردیف تا دیوارِ غربیِ خیابان
+  { zCenter: -35.6, length: 4.6, height: 10.2, xInset: 0.0, variant: 1, floors: 3, litWindowFloor: 2 },
 ];
 
 export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeometryResult {
@@ -419,6 +444,53 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
   branchGround.name = 'BranchGround';
   floorGroup.add(branchGround);
 
+  // --------------------------------------------------- کفِ خیابانِ غربی (شاخهٔ U)
+  // بازبینیِ امیر: «از موقعیتِ ۲۶-۲۶ به سمتِ ۲۶-۰ هم ادامه داشته باشد.» این شاخه
+  // شمالی–جنوبی است و مثل شاخهٔ اصلی سنگ‌فرشِ تاج‌دار دارد (تاج در محور x)؛ در
+  // x ≈ −۳۳ تاج صفر است، پس عملاً هم‌سطح می‌ماند و هالهٔ چراغ‌ها دقیق می‌نشیند.
+  const westStreetWidth = ALLEY_WEST_STREET.eastX - ALLEY_WEST_STREET.groundWestX;
+  const westStreetLength =
+    ALLEY_WEST_STREET.southZ - ALLEY_WEST_STREET.groundNorthZ;
+  const westStreetGeo = withUv2(
+    new THREE.PlaneGeometry(
+      westStreetWidth,
+      westStreetLength,
+      Math.round((COBBLE_GROUND_SEGMENTS.x * westStreetWidth) / 13.2),
+      Math.round((COBBLE_GROUND_SEGMENTS.y * westStreetLength) / 42),
+    ),
+  );
+  {
+    const uv = westStreetGeo.attributes.uv;
+    for (let i = 0; i < uv.count; i++) {
+      uv.setX(i, uv.getX(i) * (westStreetWidth / 13.2));
+      uv.setY(i, uv.getY(i) * (westStreetLength / 42));
+    }
+    uv.needsUpdate = true;
+  }
+  {
+    const pos = westStreetGeo.attributes.position;
+    const uv = westStreetGeo.attributes.uv;
+    for (let i = 0; i < pos.count; i++) {
+      const level = cobbleField.sampleLevel(
+        uv.getX(i) * COBBLE.repeatX,
+        uv.getY(i) * COBBLE.repeatY,
+      );
+      pos.setZ(i, alleyGroundCrownAt(pos.getX(i)) + COBBLE.relief * (level - 1));
+    }
+    pos.needsUpdate = true;
+    westStreetGeo.computeVertexNormals();
+  }
+  const westStreetGround = new THREE.Mesh(westStreetGeo, groundMat);
+  westStreetGround.rotation.x = -Math.PI / 2;
+  westStreetGround.position.set(
+    (ALLEY_WEST_STREET.eastX + ALLEY_WEST_STREET.groundWestX) / 2,
+    0,
+    (ALLEY_WEST_STREET.southZ + ALLEY_WEST_STREET.groundNorthZ) / 2,
+  );
+  westStreetGround.receiveShadow = true;
+  westStreetGround.name = 'WestStreetGround';
+  floorGroup.add(westStreetGround);
+
   // پیاده‌روهای سنگ‌فرش برجسته و جدول گرانیتی چپ و راست
   // پیاده‌روی سنگی هم کاملاً خشک است و مثل زمین اصلی براق نمی‌شود
   const sidewalkMat = new THREE.MeshStandardMaterial({
@@ -500,20 +572,14 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
   const branchWalkWestX = ALLEY_BRANCH.groundWestX;
   const branchSouthWalkEastX = 6.25;
 
+  // پیاده‌روی شمالیِ فرعی دیگر وجود ندارد: تمامِ طولش یا خیابانِ جلوی در است یا
+  // دهانهٔ خیابانِ غربی. فقط پیاده‌روی جنوبی می‌ماند.
   const branchWalks: Array<{
     id: string;
     centerZ: number;
     startX: number;
     endX: number;
   }> = [
-    {
-      // پیاده‌روی شمالی فقط غربِ خیابانِ جلوی در می‌ماند؛ از لبهٔ چپِ در تا گوشهٔ
-      // L همان خیابان است، نه پیاده‌رو
-      id: 'BranchSidewalkNorthWest',
-      centerZ: ALLEY_BRANCH.northSidewalkCenterZ,
-      startX: branchWalkWestX,
-      endX: ALLEY_ENTRANCE_STREET.westEdgeX,
-    },
     {
       id: 'BranchSidewalkSouth',
       centerZ: ALLEY_BRANCH.southSidewalkCenterZ,
@@ -575,6 +641,68 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
     floorGroup.add(gutter);
   }
 
+  // ------------------------------------- پیاده‌رو، جدول و جوی خیابانِ غربی
+  // این شاخه شمالی–جنوبی است، پس هندسه‌اش در راستای z کشیده می‌شود (برخلاف فرعی).
+  const westStreetWalks: Array<{ id: string; centerX: number; curbX: number }> = [
+    {
+      id: 'WestStreetSidewalkWest',
+      centerX: ALLEY_WEST_STREET.westSidewalkCenterX,
+      curbX: ALLEY_WEST_STREET.westX + ALLEY_WEST_STREET.sidewalkWidth,
+    },
+    {
+      id: 'WestStreetSidewalkEast',
+      centerX: ALLEY_WEST_STREET.eastSidewalkCenterX,
+      curbX: ALLEY_WEST_STREET.eastX - ALLEY_WEST_STREET.sidewalkWidth,
+    },
+  ];
+
+  for (const walkSpec of westStreetWalks) {
+    const walk = new THREE.Mesh(
+      withUv2(new THREE.BoxGeometry(ALLEY_WEST_STREET.sidewalkWidth, 0.13, ALLEY_LENGTHS.westStreetLength)),
+      sidewalkMat,
+    );
+    walk.position.set(walkSpec.centerX, 0.065, ALLEY_WEST_STREET.southZ / 2);
+    walk.receiveShadow = true;
+    walk.castShadow = true;
+    walk.name = walkSpec.id;
+    floorGroup.add(walk);
+
+    const curb = new THREE.Mesh(
+      withUv2(new THREE.BoxGeometry(ALLEY_WEST_STREET.curbWidth, 0.155, ALLEY_LENGTHS.westStreetLength)),
+      stoneTrimMat,
+    );
+    curb.position.set(walkSpec.curbX, 0.077, ALLEY_WEST_STREET.southZ / 2);
+    curb.receiveShadow = true;
+    curb.castShadow = true;
+    curb.name = `${walkSpec.id.replace('Sidewalk', 'Curb')}Curb`;
+    floorGroup.add(curb);
+
+    const gutterMat = new THREE.MeshStandardMaterial({
+      color: 0x1a1c21,
+      roughness: 0.62,
+      metalness: 0.03,
+      envMap: environmentMap,
+      envMapIntensity: 0.22,
+      transparent: true,
+      opacity: 0.4,
+      depthWrite: false,
+      polygonOffset: true,
+      polygonOffsetFactor: -2,
+      polygonOffsetUnits: -2,
+    });
+    const gutter = new THREE.Mesh(
+      new THREE.PlaneGeometry(ALLEY_WEST_STREET.gutterWidth, ALLEY_LENGTHS.westStreetLength - 3),
+      gutterMat,
+    );
+    gutter.rotation.x = -Math.PI / 2;
+    gutter.position.set(
+      walkSpec.curbX + (walkSpec.centerX < ALLEY_WEST_STREET.centerX ? 0.34 : -0.34),
+      0.018,
+      ALLEY_WEST_STREET.southZ / 2,
+    );
+    floorGroup.add(gutter);
+  }
+
   // چاله‌های آب باران — تنها نقاط براق کف؛ بقیهٔ سنگ‌فرش خشک است
   const puddleSpecs: Array<{ x: number; z: number; rx: number; rz: number; rot: number; mask: THREE.DataTexture }> = [
     { x: -2.2, z: -4.2, rx: 2.7, rz: 3.6, rot: 0.25, mask: puddleMaskA },
@@ -586,6 +714,9 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
     { x: -1.9, z: 12.8, rx: 2.6, rz: 3.2, rot: 0.42, mask: puddleMaskB },
     { x: 2.6, z: 23.4, rx: 2.4, rz: 3.0, rot: -0.28, mask: puddleMaskA },
     { x: -14.2, z: 26.4, rx: 3.0, rz: 2.5, rot: 0.9, mask: puddleMaskB },
+    // چاله‌های خیابانِ غربی (شاخهٔ شمالیِ U)
+    { x: -32.4, z: 13.2, rx: 2.6, rz: 3.4, rot: 0.35, mask: puddleMaskA },
+    { x: -34.0, z: 4.4, rx: 2.2, rz: 2.8, rot: -0.6, mask: puddleMaskB },
   ];
 
   // هالهٔ نمناک: یک حلقهٔ نازک مات دور هر چاله، تا فقط «کمی اطراف آب» خیس
@@ -921,6 +1052,42 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
   buildingsGroup.add(branchNorthRow);
   buildSideRow(BRANCH_NORTH_BUILDINGS, ALLEY_BRANCH_ROWS.north.side, branchNorthRow, 'BranchBuildingNorth');
 
+  // ---------------------------------------- ساختمان‌های خیابانِ غربی
+  const westStreetRowWest = new THREE.Group();
+  westStreetRowWest.name = 'WestStreetBuildingsWest';
+  westStreetRowWest.position.set(ALLEY_WEST_STREET_ROWS.west.groupX, 0, 0);
+  buildingsGroup.add(westStreetRowWest);
+  buildSideRow(
+    WEST_STREET_WEST_BUILDINGS,
+    ALLEY_WEST_STREET_ROWS.west.side,
+    westStreetRowWest,
+    'WestStreetBuildingWest',
+  );
+
+  const westStreetRowEast = new THREE.Group();
+  westStreetRowEast.name = 'WestStreetBuildingsEast';
+  westStreetRowEast.position.set(ALLEY_WEST_STREET_ROWS.east.groupX, 0, 0);
+  buildingsGroup.add(westStreetRowEast);
+  buildSideRow(
+    WEST_STREET_EAST_BUILDINGS,
+    ALLEY_WEST_STREET_ROWS.east.side,
+    westStreetRowEast,
+    'WestStreetBuildingEast',
+  );
+
+  // دیوارِ انتهای شمالی (رو به +Z) همان ردیفِ چرخیدهٔ فرعی است
+  const westStreetEndRow = new THREE.Group();
+  westStreetEndRow.name = 'WestStreetEndBuildings';
+  westStreetEndRow.rotation.y = ALLEY_BRANCH_ROWS.rotationY;
+  westStreetEndRow.position.set(0, 0, ALLEY_WEST_STREET_ROWS.north.groupZ);
+  buildingsGroup.add(westStreetEndRow);
+  buildSideRow(
+    WEST_STREET_END_BUILDINGS,
+    ALLEY_WEST_STREET_ROWS.north.side,
+    westStreetEndRow,
+    'WestStreetEndBuilding',
+  );
+
   const branchSouthRow = new THREE.Group();
   branchSouthRow.name = 'BranchBuildingsSouth';
   branchSouthRow.rotation.y = ALLEY_BRANCH_ROWS.rotationY;
@@ -1209,60 +1376,60 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
   group.add(theaterGroup);
 
   // =========================================================================
-  // ۴. بن‌بستِ فرعیِ غربی (جای دروازهٔ آهنیِ حذف‌شده)
+  // ۴. بن‌بستِ شمالیِ خیابانِ غربی (جای دروازهٔ آهنیِ حذف‌شده)
   // =========================================================================
   // خواستهٔ بازبینی: «نردهٔ پشت سر رو بردار». دروازهٔ آهنی و پایه‌هایش کامل حذف
-  // شدند و انتهای کوچه دیگر یک سدِ فلزی نیست؛ به‌جایش کوچه ادامه پیدا می‌کند،
-  // به سمت چپ می‌پیچد و در انتهای فرعی به یک درِ چوبیِ بستهٔ کارگاه می‌رسد.
+  // شدند و انتهای کوچه دیگر یک سدِ فلزی نیست؛ کوچه ادامه پیدا می‌کند، به سمتِ چپ
+  // می‌پیچد و در گوشهٔ غربی به سمتِ شمال بالا می‌رود (خیابانِ غربی). بن‌بست حالا
+  // انتهای شمالیِ همان خیابان (`z = ۰`) است و با درِ چوبیِ بستهٔ کارگاه بسته می‌شود.
+  //
+  // اجزا در مختصاتِ محلیِ گروه ساخته می‌شوند (رو به +X) و خودِ گروه ۹۰ درجه
+  // می‌چرخد تا رو به +Z بایستد؛ همان الگویی که برای نمای تماشاخانه هم استفاده شد.
   const deadEndGroup = new THREE.Group();
   deadEndGroup.name = 'BranchDeadEnd';
+  deadEndGroup.position.set(ALLEY_WEST_STREET.centerX, 0, ALLEY_WEST_STREET.northZ + 0.02);
+  deadEndGroup.rotation.y = -Math.PI / 2;
 
+  // دیوارِ بن‌بست یک «سر درِ آجری» است که جلوی ساختمانِ انتهای خیابان می‌نشیند؛
+  // عمقش کم است تا داخلِ بدنهٔ ساختمان فرو نرود و هیچ صفحهٔ هم‌سطحی نسازد
   const deadEndWall = new THREE.Mesh(
-    withUv2(new THREE.BoxGeometry(3.2, 11.4, ALLEY_BRANCH.southZ - ALLEY_BRANCH.northZ + 6.4)),
+    withUv2(new THREE.BoxGeometry(0.8, 5.4, ALLEY_WEST_STREET.width + 1.8)),
     brickMatSlate,
   );
-  deadEndWall.position.set(ALLEY_BRANCH.westX - 1.6, 5.7, ALLEY_BRANCH.centerZ);
+  deadEndWall.position.set(0.4, 2.7, 0);
   deadEndWall.castShadow = true;
   deadEndWall.receiveShadow = true;
   deadEndWall.name = 'BranchDeadEndWall';
   deadEndGroup.add(deadEndWall);
 
-  // درِ چوبیِ دوقلوی بسته — نشانهٔ اینکه فرعی به پشتِ صحنهٔ یک کارگاه می‌رسد
   const deadEndDoor = new THREE.Group();
   deadEndDoor.name = 'BranchDeadEndDoor';
-  deadEndDoor.position.set(ALLEY_BRANCH.westX + 0.02, 0, ALLEY_BRANCH.centerZ);
 
   for (const side of [-1, 1] as const) {
-    const leaf = new THREE.Mesh(
-      withUv2(new THREE.BoxGeometry(0.1, 3.15, 1.72)),
-      darkWoodMat,
-    );
-    leaf.position.set(0, 1.575, side * 0.88);
+    const leaf = new THREE.Mesh(withUv2(new THREE.BoxGeometry(0.1, 3.15, 1.72)), darkWoodMat);
+    leaf.position.set(0.82, 1.575, side * 0.88);
     leaf.castShadow = true;
     deadEndDoor.add(leaf);
 
     // قاب و لنگه‌های آهنی هر لنگه
     for (const bandY of [0.55, 2.55]) {
       const band = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.09, 1.66), darkIronMat);
-      band.position.set(-0.03, bandY, side * 0.88);
+      band.position.set(0.79, bandY, side * 0.88);
       deadEndDoor.add(band);
     }
   }
 
-  const doorLintel = new THREE.Mesh(
-    new THREE.BoxGeometry(0.34, 0.36, 3.9),
-    stoneTrimMat,
-  );
-  doorLintel.position.set(0.02, 3.39, 0);
+  const doorLintel = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.36, 3.9), stoneTrimMat);
+  doorLintel.position.set(0.84, 3.39, 0);
   doorLintel.castShadow = true;
   deadEndDoor.add(doorLintel);
   deadEndGroup.add(deadEndDoor);
 
-  // فانوسِ آهنیِ دیواری بالای درِ بن‌بست — تنها منبعِ گرمِ انتهای فرعی، تا
+  // فانوسِ آهنیِ دیواری بالای درِ بن‌بست — تنها منبعِ گرمِ انتهای خیابان، تا
   // انتهای کوچه «چاهِ سیاه» نشود
   const lanternArm = new THREE.Mesh(new THREE.CylinderGeometry(0.026, 0.026, 0.56, 10), darkIronMat);
   lanternArm.rotation.z = Math.PI / 2;
-  lanternArm.position.set(ALLEY_BRANCH.westX + 0.3, 4.5, ALLEY_BRANCH.centerZ);
+  lanternArm.position.set(1.08, 4.5, 0);
   deadEndGroup.add(lanternArm);
 
   const lanternBody = new THREE.Mesh(
@@ -1277,18 +1444,18 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
       opacity: 0.82,
     }),
   );
-  lanternBody.position.set(ALLEY_BRANCH.westX + 0.56, 4.28, ALLEY_BRANCH.centerZ);
+  lanternBody.position.set(1.34, 4.28, 0);
   lanternBody.name = 'BranchDeadEndLanternGlass';
   deadEndGroup.add(lanternBody);
 
   const lanternCap = new THREE.Mesh(new THREE.ConeGeometry(0.22, 0.18, 8), darkIronMat);
-  lanternCap.position.set(ALLEY_BRANCH.westX + 0.56, 4.58, ALLEY_BRANCH.centerZ);
+  lanternCap.position.set(1.34, 4.58, 0);
   lanternCap.name = 'BranchDeadEndLanternCap';
   deadEndGroup.add(lanternCap);
 
   const deadEndLanternLight = new THREE.PointLight(0xffc98a, 3.4, 15, 2);
   deadEndLanternLight.name = 'BranchDeadEndLanternLight';
-  deadEndLanternLight.position.set(ALLEY_BRANCH.westX + 0.56, 4.2, ALLEY_BRANCH.centerZ);
+  deadEndLanternLight.position.set(1.34, 4.2, 0);
   deadEndGroup.add(deadEndLanternLight);
 
   group.add(deadEndGroup);
@@ -1452,6 +1619,9 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
       seed: 29.4,
       rotationY: -Math.PI / 2,
     },
+    // خیابانِ غربی (شاخهٔ شمالیِ U): دو تیر روی پیاده‌روی غربی، بازو رو به داخل
+    { id: 'WestStreetSouth', x: ALLEY_WEST_STREET.westSidewalkCenterX, z: 6.0, armSide: 1 as const, seed: 33.1, rotationY: 0 },
+    { id: 'WestStreetNorth', x: ALLEY_WEST_STREET.westSidewalkCenterX, z: 16.0, armSide: 1 as const, seed: 36.7, rotationY: 0 },
   ] as const;
 
   const utilityPoles: UtilityPoleInstance[] = utilityPoleSpecs.map((spec) => {
@@ -1487,6 +1657,8 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
     [-4.73, 2.6, 19.5],
     [4.73, 2.6, 19.5],
     [-19.5, 2.6, 28.93],
+    [-35.83, 2.6, 6.0],
+    [-35.83, 2.6, 16.0],
   ];
   for (let i = 0; i < moteCount; i++) {
     const [cx, cy, cz] = lampCenters[i % lampCenters.length];
@@ -1553,9 +1725,14 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
     [utilityPoles[4].insulatorWorldPositions[2], utilityPoles[5].insulatorWorldPositions[2], 0.74],
     [utilityPoles[4].insulatorWorldPositions[0], new THREE.Vector3(-7.9, 6.05, 30.4), 0.42],
     [utilityPoles[5].insulatorWorldPositions[0], new THREE.Vector3(7.9, 6.05, 30.4), 0.42],
-    // ---- فرعی: تیرِ جنوبی به دیوارِ بن‌بست (تیرِ شمالیِ جلوی در حذف شده است)
-    [utilityPoles[6].insulatorWorldPositions[0], new THREE.Vector3(-31.6, 6.1, 29.7), 0.5],
-    [utilityPoles[6].insulatorWorldPositions[2], new THREE.Vector3(-31.6, 6.1, 22.4), 0.85],
+    // ---- فرعی: تیرِ جنوبی به دیوارِ غربیِ خیابان (تیرِ شمالیِ جلوی در حذف شده است)
+    [utilityPoles[6].insulatorWorldPositions[0], new THREE.Vector3(-37.6, 6.1, 30.4), 0.5],
+    [utilityPoles[6].insulatorWorldPositions[2], new THREE.Vector3(-37.6, 6.1, 22.4), 0.85],
+    // ---- خیابانِ غربی: کابلِ طولی بین دو تیر و اتصال به دیوارِ شمالی/ساختمان‌ها
+    [utilityPoles[7].insulatorWorldPositions[0], utilityPoles[8].insulatorWorldPositions[0], 0.6],
+    [utilityPoles[7].insulatorWorldPositions[2], utilityPoles[8].insulatorWorldPositions[2], 0.55],
+    [utilityPoles[8].insulatorWorldPositions[0], new THREE.Vector3(-37.6, 6.2, 0.6), 0.35],
+    [utilityPoles[7].insulatorWorldPositions[1], new THREE.Vector3(-28.6, 6.05, 2.0), 0.4],
   ];
 
   for (const [from, to, sag] of cableSpans) {
@@ -1665,6 +1842,21 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
   clusterF.add(cF1, cF2, palletF);
   cratesGroup.add(clusterF);
 
+  // دسته G: خیابانِ غربی، پیاده‌روی غربی (x ≈ -37.0, z ≈ 11.0)
+  const clusterG = new THREE.Group();
+  clusterG.name = 'CrateCluster_WestStreet';
+  clusterG.position.set(-37.0, 0.13, 11.0);
+  const cG1 = createWoodenCrateMesh(1.04, 0.94, 0.98, cratePlankMat, crateTrimMat, darkIronMat);
+  cG1.position.set(0.12, 0.47, 0.28);
+  cG1.rotation.y = -0.24;
+  const cG2 = createWoodenCrateMesh(0.78, 0.7, 0.76, cratePlankMat, crateTrimMat, darkIronMat);
+  cG2.position.set(-0.2, 0.35, -0.52);
+  cG2.rotation.y = 0.3;
+  const barrelG = createRustyBarrel(darkIronMat, 0x35302a);
+  barrelG.position.set(0.24, 0, 1.0);
+  clusterG.add(cG1, cG2, barrelG);
+  cratesGroup.add(clusterG);
+
   group.add(cratesGroup);
 
   // =========================================================================
@@ -1686,10 +1878,11 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
   moon.shadow.camera.far = 72;
   // کوچه L‌شکلِ دوبرابر‌شده دیگر در قاب ±۱۴/±۱۸ جا نمی‌شد و سایه‌ها نیمه‌کاره
   // قطع می‌شدند؛ قاب به اندازهٔ کلِ L باز شد.
-  moon.shadow.camera.left = -24;
-  moon.shadow.camera.right = 24;
-  moon.shadow.camera.top = 32;
-  moon.shadow.camera.bottom = -30;
+  // قابِ سایه حالا کلِ نقشهٔ U (تا x = −۳۸ و z = +۳۱) را می‌پوشاند
+  moon.shadow.camera.left = -34;
+  moon.shadow.camera.right = 34;
+  moon.shadow.camera.top = 40;
+  moon.shadow.camera.bottom = -40;
   moon.shadow.bias = -0.0004;
   moon.shadow.normalBias = 0.02;
   group.add(moon);

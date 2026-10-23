@@ -6,6 +6,7 @@ import {
   ALLEY_LENGTHS,
   ALLEY_MAIN,
   ALLEY_THEATER,
+  ALLEY_WEST_STREET,
   isInBranch,
 } from '@/engine3d/alley-layout';
 import {
@@ -84,11 +85,12 @@ describe('کوچهٔ L‌شکل: حذف نرده، دوبرابر شدن طول 
     expect(alley.group.getObjectByName('BranchGround')).toBeDefined();
     expect(alley.group.getObjectByName('BranchBuildingsNorth')).toBeDefined();
     expect(alley.group.getObjectByName('BranchBuildingsSouth')).toBeDefined();
-    expect(alley.group.getObjectByName('BranchSidewalkNorthWest')).toBeDefined();
+    // پیاده‌روی شمالیِ فرعی دیگر وجود ندارد (تمامش خیابان است)؛ فقط جنوبی می‌ماند
+    expect(alley.group.getObjectByName('BranchSidewalkNorthWest')).toBeUndefined();
     expect(alley.group.getObjectByName('BranchSidewalkSouth')).toBeDefined();
 
     // داخلِ فرعی آزاد است و انتهایش بسته
-    for (const x of [-9.2, -14, -22, -30.5]) {
+    for (const x of [-9.2, -14, -22, -30.5, -36.5]) {
       expect(checkAABBCollision(x, ALLEY_BRANCH.centerZ, RADIUS, ALLEY_STATIC_OBSTACLES), `x=${x}`).toBe(
         false,
       );
@@ -99,13 +101,14 @@ describe('کوچهٔ L‌شکل: حذف نرده، دوبرابر شدن طول 
     alley.dispose();
   });
 
-  it('شکلِ L واقعاً حفظ می‌شود: گوشهٔ بیرونِ L بسته است، هر دو بازو باز', () => {
-    // گوشهٔ شمال‌غربی (بیرونِ L، پشتِ دیوارِ چپ) نباید قابل عبور باشد
+  it('نقشه U می‌شود: بلوکِ میانی بسته است و هر سه بازو باز', () => {
+    // بلوکِ میانیِ شهر (بینِ شاخهٔ اصلی و خیابانِ غربی، شمالِ فرعی) و پشتِ دیوارها
     for (const [x, z] of [
       [-12, 0],
       [-20, 10],
       [-10, 20.8],
-      [-33, 26],
+      [-38.5, 26],
+      [-33, -2],
     ] as const) {
       expect(checkAABBCollision(x, z, RADIUS, ALLEY_STATIC_OBSTACLES), `${x},${z}`).toBe(true);
     }
@@ -118,6 +121,8 @@ describe('کوچهٔ L‌شکل: حذف نرده، دوبرابر شدن طول 
       [4.6, 26],
       [-12, 24],
       [-26, 29],
+      [-33, 12],
+      [-33, 2],
     ] as const) {
       expect(checkAABBCollision(x, z, RADIUS, ALLEY_STATIC_OBSTACLES), `${x},${z}`).toBe(false);
     }
@@ -167,7 +172,8 @@ describe('کوچهٔ L‌شکل: حذف نرده، دوبرابر شدن طول 
 
     // «اولِ ال» = درست بعد از گوشه: لبهٔ شرقیِ نما روی دیوارِ چپِ شاخهٔ اصلی
     expect(ALLEY_THEATER.eastEdgeX).toBeCloseTo(-ALLEY_MAIN.facadeX, 6);
-    expect(ALLEY_THEATER.westEdgeX).toBeLessThan(ALLEY_BRANCH.westX + 6);
+    // و لبهٔ غربی‌اش دقیقاً شرقِ دهانهٔ خیابانِ غربیِ تازه است (بدونِ تداخل)
+    expect(ALLEY_THEATER.westEdgeX).toBeGreaterThan(ALLEY_WEST_STREET.eastX);
 
     // هر سه جزءِ خواسته‌شده با هم منتقل شده‌اند: در، سه پنجره و تابلو
     const door = alley.group.getObjectByName('TheaterDoor') as THREE.Group;
