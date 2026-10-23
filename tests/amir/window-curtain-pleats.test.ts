@@ -98,7 +98,7 @@ describe('پردۀ پنجره‌ها — چین‌چینِ عمودی', () => {
     expect(max).toBeGreaterThan(0.95);
   });
 
-  it('چین‌ها ریز و زیادند: هر پنجره پر از چین است، نه چند نوارِ درشت', () => {
+  it('چین‌ها پُر و خوانا هستند: هر پنجره نه یک پارچهٔ صاف و نه چند نوارِ درشت', () => {
     const n = 4096;
     const pleat = new Float64Array(n);
     const facing = new Float64Array(n);
@@ -109,8 +109,10 @@ describe('پردۀ پنجره‌ها — چین‌چینِ عمودی', () => {
     const peaks = countCycles(pleat, 0.6);
     expect(peaks).toBe(CURTAIN.pleats);
     const pitch = CURTAIN.curtainWidth / CURTAIN.pleats;
-    // «پر از چین‌چینِ ریز»: هر چین حداکثر ~۱۲ سانتی‌متر
-    expect(pitch).toBeLessThan(0.12);
+    // بازبینیِ امیر: شمارِ چین‌ها از ۱۳ به ۹ رسید ⇒ هر چین ~۱۵ سانتی‌متر
+    expect(CURTAIN.pleats).toBe(9);
+    expect(pitch).toBeGreaterThan(0.1);
+    expect(pitch).toBeLessThan(0.16);
     // ریزچین‌ها فقط در نقشه‌اند و در چینِ مشی نیستند ⇒ بافتِ پُرتر از سیلوئ
     let diff = 0;
     for (let i = 0; i < n; i++) diff = Math.max(diff, Math.abs(facing[i] - pleat[i]));
@@ -198,32 +200,24 @@ describe('پردۀ پنجره‌ها — چین‌چینِ عمودی', () => {
   });
 });
 
-describe('پردۀ پنجره‌ها — نوارِ سیاهِ باریک در دو سر و بدنۀ قرمز', () => {
-  it('سیاهی فقط یک نوارِ ~۶ سانتی‌متری است و بقیۀ پرده قرمزِ سیراب', () => {
-    // خواستۀ امیر: «یه نوار خیلی ریز بالا و پایین مشکی باشه بقیش قرمز باشه»
-    const N = 1024;
-    let dark = 0;
-    let black = 0;
-    for (let i = 0; i < N; i++) {
-      const sh = curtainShade(i / (N - 1));
-      if (sh < 0.5) dark++;
-      if (sh < 0.02) black++;
-    }
-    // «نوار» بودن: کمتر از ۱۰٪ قدِ پرده در حالِ گذار است و کمتر از ۶٪ سیاهِ مطلق
-    expect(dark / N).toBeLessThan(0.1);
-    expect(black / N).toBeLessThan(0.06);
-    // لبه‌ها واقعاً خاموش‌اند (نه «کم‌نور»؛ درسِ دورِ دوم: آن‌جا سیاه می‌خواهیم)
+describe('پردۀ پنجره‌ها — سیاهِ محو در دو سر و بدنۀ قرمز', () => {
+  it('هیچ نوارِ سیاهِ ضخیمی نمانده: فقط لبۀ خاموش و محوشدگیِ بلند تا قرمز', () => {
+    // خواستۀ دورِ چهارمِ امیر: «اون خطِ مشکی‌ها محو بشه و اتصالِ قرمز و مشکی
+    // نرم و بدون خط باشه» ⇒ هستۀ سیاه تقریباً صفر و گذار حداکثر ۱۶٪ قدِ پرده
+    expect(CURTAIN.blackBand).toBeLessThan(0.01);
+    expect(CURTAIN.blackFade).toBeGreaterThanOrEqual(0.12);
+    // لبه‌ها واقعاً خاموش‌اند (وگرنه «مشکی» به خاکستری تبدیل می‌شود)
     expect(curtainShade(0)).toBeLessThan(0.002);
     expect(curtainShade(1)).toBeLessThan(0.02);
-    // و ۸۵٪ قدِ پرده هیچ تاریکیِ جهانی ندارد: هیچ حالۀ پهن روی بدنۀ قرمز نیفتد
+    // بدنۀ پرده هیچ تاریکیِ جهانی ندارد: از ۲۰٪ تا ۸۰٪ قد، نور کامل است
     expect(curtainShade(0.5)).toBeGreaterThan(0.995);
-    expect(curtainShade(0.15)).toBeGreaterThan(0.995);
-    expect(curtainShade(0.85)).toBeGreaterThan(0.95);
-    // نوارِ سرِ پرده کمی بلندتر است (سایۀ جعبۀ نورِ بالای سردر)
+    expect(curtainShade(0.2)).toBeGreaterThan(0.99);
+    expect(curtainShade(0.8)).toBeGreaterThan(0.98);
+    // لبهٔ سرِ پرده کمی بلندتر از پایینی است (سایۀ جعبۀ نورِ بالای سردر)
     expect(curtainShade(0.95)).toBeLessThan(curtainShade(0.05));
   });
 
-  it('گذارِ نوار کوتاه است ولی پیوسته: لبۀ بریده و پلکانی نمی‌سازد', () => {
+  it('گذار بی‌خط و بی‌گره است: نه پله می‌سازد و نه «زانو»ی محسوس', () => {
     const N = 512;
     const half = Math.floor(N * 0.2);
     let maxStep = 0;
@@ -236,12 +230,23 @@ describe('پردۀ پنجره‌ها — نوارِ سیاهِ باریک در �
       prev = cur;
     }
     expect(monotone).toBe(true);
-    // گذار باید روی دستِ‌کم ۸ ردیف پهن شود، وگرنه یک خطِ یک‌پیکسلی است
-    expect(CURTAIN.blackFade - CURTAIN.blackBand).toBeGreaterThan(8 / N);
-    expect(maxStep).toBeLessThan(0.25);
+    // گذار باید روی ده‌ها ردیف پهن شود، وگرنه یک خطِ یک‌پیکسلی است
+    expect(CURTAIN.blackFade - CURTAIN.blackBand).toBeGreaterThan(0.1);
+    // هیچ گامِ محسوسی نیست: بزرگ‌ترین گامِ مجاور زیر ۳٪ روشنایی است
+    expect(maxStep).toBeLessThan(0.03);
+
+    // smootherstep ⇒ مشتقِ دوم (انحنای پروفیل) هم کراندار و بی‌جهش است؛
+    // یک smoothstepِ کوتاه اینجا «زانو»یی می‌ساخت که چشم آن را خط می‌بیند
+    const vals: number[] = [];
+    for (let i = 0; i <= N; i++) vals.push(curtainShade(i / N));
+    let maxCurve = 0;
+    for (let i = 1; i < N; i++) {
+      maxCurve = Math.max(maxCurve, Math.abs(vals[i + 1] - 2 * vals[i] + vals[i - 1]));
+    }
+    expect(maxCurve).toBeLessThan(0.0025);
   });
 
-  it('پروفیلِ ارتفاعیِ نقشه: بدنه یکدست، دو سر خاموش، بدون لبۀ بریده', () => {
+  it('پروفیلِ ارتفاعیِ نقشه: بدنه یکدست، دو سر خاموش، محوشدگیِ بلند و بی‌لبه', () => {
     const maps = createCurtainFabricMaps();
     const { values: raw } = rowLuma(maps.colorMap);
     maps.dispose();
@@ -251,27 +256,26 @@ describe('پردۀ پنجره‌ها — نوارِ سیاهِ باریک در �
     const luma = smooth(raw, 33);
     let bMin = 1;
     let bMax = 0;
-    for (let i = Math.floor(n * 0.15); i < Math.floor(n * 0.85); i++) {
+    for (let i = Math.floor(n * 0.2); i < Math.floor(n * 0.8); i++) {
       bMin = Math.min(bMin, luma[i]);
       bMax = Math.max(bMax, luma[i]);
     }
     // بدنۀ پرده یکدست قرمز است: هیچ حالۀ پهنی روشنی را از میانه کم نکند
-    // (۵٪ به‌جای صفر، چون بافتِ مخمل خودِ‌اش ردیف‌به‌ردیف کمی فرق می‌کند —
-    // قراردادِ «نبودِ حالۀ پهن» روی خودِ curtainShade هم قفل شده است)
     expect((bMax - bMin) / bMin).toBeLessThan(0.05);
     expect(bMin).toBeGreaterThan(0.1);
     // دو سر خاموش‌اند (روی پروفیلِ خام می‌سنجیم؛ پنجرۀ نرم‌کردن تا داخلِ
     // گذار کشیده می‌شود وگرنه لبه را «روشن‌تر از واقع» نشان می‌دهد)
     expect(raw[0]).toBeLessThan(0.06 * bMin);
     expect(raw[n - 1]).toBeLessThan(0.06 * bMin);
-    // و افت روی چند ردیف پهن می‌شود، نه یک خطِ یک‌پیکسلی
+    // محوشدگی بلند است (خواستۀ «حالتِ محو مانند») ولی کلِ پرده را نمی‌خورد:
+    // بین ۱۰٪ و ۹۰٪ روشناییِ بدنه، دستِ‌کم ۱۵٪ و حداکثر ۴۵٪ قد در گذار است
     const body = (bMin + bMax) / 2;
     let transition = 0;
     for (let i = 0; i < n; i++) {
       if (luma[i] > 0.1 * body && luma[i] < 0.9 * body) transition++;
     }
-    expect(transition).toBeGreaterThan(6);
-    expect(transition).toBeLessThan(n * 0.2);
+    expect(transition).toBeGreaterThan(n * 0.15);
+    expect(transition).toBeLessThan(n * 0.45);
   });
 });
 
