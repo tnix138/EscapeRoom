@@ -76,6 +76,31 @@ export function updateSeatedPlayerCharacter(
   avatar?.update(deltaSeconds, { speed: 0, pitchDeg: options.pitchDeg ?? 0 });
 }
 
+/**
+ * ارتفاع سطح قابل راه رفتن در سالن تئاتر (متر):
+ * شامل سه سن نمایش (y = 0.60) و سکوهای پلکانی ردیف‌های ۲ تا ۴ (y = 0.32 / 0.64 / 0.96)
+ * تا دوربین اول‌شخص و کفش هم‌تیمی‌ها همیشه دقیقاً روی سطح واقعی کف قرار بگیرند.
+ */
+export function auditoriumWalkableGroundAt(x: number, z: number): number {
+  if (!Number.isFinite(x) || !Number.isFinite(z)) return 0;
+
+  // سه سن نمایش در انتهای شمالی سالن (z ∈ [-7.25, -4.75])
+  if (z >= -7.25 && z <= -4.75) {
+    const onCenterStage = Math.abs(x) <= 2.925;
+    const onSideStage = Math.abs(x) >= 3.25 && Math.abs(x) <= 7.75;
+    if (onCenterStage || onSideStage) return 0.6;
+  }
+
+  // سکوهای پلکانی صندلی‌های ردیف ۲ تا ۴ (عرض ۵٫۶ متر در مرکز سالن)
+  if (Math.abs(x) <= 2.8) {
+    if (z >= 6.58 && z <= 7.9) return 0.96;
+    if (z >= 5.5 && z <= 6.82) return 0.64;
+    if (z >= 4.42 && z <= 5.74) return 0.32;
+  }
+
+  return 0;
+}
+
 export interface TheaterGeometryResult {
   group: THREE.Group;
   seats: THREE.Group[]; // 20 صندلی

@@ -17,7 +17,11 @@ import { usePlayerControls } from '@/engine3d/usePlayerControls';
 import { isTextEntryElement } from '@/engine3d/player-controller';
 import type { AABB } from '@/engine3d/collision';
 import type { PlayerTransform, WorldBounds } from '@/engine3d/types';
-import { createTheaterGeometry } from '@/engine3d/theater-geometry';
+import {
+  auditoriumWalkableGroundAt,
+  createTheaterGeometry,
+} from '@/engine3d/theater-geometry';
+import { resolvePlayerEyeHeight } from '@/engine3d/spawn';
 import { RemotePlayerManager } from '@/engine3d/presence/RemotePlayerManager';
 import { toPresenceSnapshots } from '@/client-sdk/presence-avatars';
 import { ThreeErrorBoundary } from '@/engine3d/ThreeErrorBoundary';
@@ -42,13 +46,23 @@ const AUDITORIUM_BOUNDS: WorldBounds = {
 // در سالن تاریک تئاتر فقط دیوارهای پیرامونی سالن مرز حرکت هستند تا بازیکن در تاریکی به موانع نامرئی کوچه گیر نکند
 const AUDITORIUM_OBSTACLES: readonly AABB[] = [];
 
-const AUDITORIUM_INITIAL_TRANSFORM: PlayerTransform = {
-  x: 0,
-  y: 1.65,
-  z: 4,
-  yawDeg: 0,
-  pitchDeg: 0,
-};
+function resolveAuditoriumInitialTransform(
+  playerId: string,
+  seatIndex: number,
+  playerName?: string,
+): PlayerTransform {
+  const safeSeat = Number.isInteger(seatIndex) && seatIndex >= 0 ? seatIndex : 0;
+  const x = ((safeSeat % 4) - 1.5) * 0.85;
+  const z = 2.8 + Math.floor((safeSeat % 8) / 4) * 0.45;
+  const eyeHeight = resolvePlayerEyeHeight(playerId, safeSeat, playerName);
+  return {
+    x,
+    y: auditoriumWalkableGroundAt(x, z) + eyeHeight,
+    z,
+    yawDeg: 0,
+    pitchDeg: 0,
+  };
+}
 
 function DarkCore({ room, onInspectHotspot, onSendWhisper }: DarkAuditoriumThreeSceneProps) {
   const { canvasRef, engine, isWebGLAvailable, error } = useThreeEngine();
@@ -57,11 +71,35 @@ function DarkCore({ room, onInspectHotspot, onSendWhisper }: DarkAuditoriumThree
   const [whisper, setWhisper] = useState('');
   const [inspecting, setInspecting] = useState(false);
 
+  const localEyeHeight = useMemo(
+    () => resolvePlayerEyeHeight(room.me.playerId, room.me.seatIndex, room.me.playerName),
+    [room.me.playerId, room.me.seatIndex, room.me.playerName],
+  );
+
+  const initialTransform = useMemo(
+    () =>
+      resolveAuditoriumInitialTransform(
+        room.me.playerId,
+        room.me.seatIndex,
+        room.me.playerName,
+      ),
+    [room.me.playerId, room.me.seatIndex, room.me.playerName],
+  );
+
+  const movementConfig = useMemo(
+    () => ({
+      eyeHeight: localEyeHeight,
+      groundHeightAt: auditoriumWalkableGroundAt,
+    }),
+    [localEyeHeight],
+  );
+
   const { transform, requestPointerLock, isPointerLocked } = usePlayerControls({
     engine,
-    initialTransform: AUDITORIUM_INITIAL_TRANSFORM,
+    initialTransform,
     bounds: AUDITORIUM_BOUNDS,
     obstacles: AUDITORIUM_OBSTACLES,
+    config: movementConfig,
     enabled: !selectedHotspot,
   });
 
@@ -160,7 +198,11 @@ function DarkCore({ room, onInspectHotspot, onSendWhisper }: DarkAuditoriumThree
     theater.group.add(flicker);
 
     engine.scene.add(theater.group);
-    engine.camera.position.set(0, 1.65, 4);
+    engine.camera.position.set(
+      initialTransform.x,
+      initialTransform.y,
+      initialTransform.z,
+    );
 
     let flickerTime = 0;
     engine.setTick((delta) => {

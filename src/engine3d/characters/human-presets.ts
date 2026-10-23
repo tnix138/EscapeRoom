@@ -5,6 +5,11 @@
 // همهٔ مقادیر قطعی (deterministic) هستند: هر playerId همیشه همان چهره را می‌گیرد،
 // پس دو فریم از یک بازیکن هرگز دو چهرهٔ متفاوت نشان نمی‌دهد.
 
+import {
+  DEFAULT_PLAYER_EYE_HEIGHT,
+  calibrateHumanHeightForEyeLevel,
+} from './human-head-shape';
+
 export type HairStyle = 'slick' | 'wavy' | 'bun' | 'short' | 'curly' | 'long';
 export type FacialHair = 'none' | 'stubble' | 'moustache' | 'beard';
 export type FaceAccessory = 'none' | 'glasses' | 'earring' | 'pocket-watch';
@@ -153,12 +158,18 @@ export function resolveHumanLook(
       ? FACIAL_HAIR[seat % FACIAL_HAIR.length]!
       : pick(random, FACIAL_HAIR);
 
+  // یک گام PRNG مصرف می‌شود تا ترتیب دترمنیستیکِ سایر ویژگی‌های چهره دست‌نخورده بماند؛
+  // قد ایستادهٔ همهٔ کاراکترهای پلیر هم‌سطح (~۱٫۷۸ متر) کالیبره می‌شود تا وقتی دو بازیکن کنار هم
+  // می‌ایستند هم‌قد باشند و دوربین اول‌شخص دقیقاً از تراز مردمک چشم کاراکتر (۱٫۶۵ متر) ببیند.
+  random();
+  const calibratedHeightMeters = calibrateHumanHeightForEyeLevel(head, DEFAULT_PLAYER_EYE_HEIGHT);
+
   const look: HumanLook = {
     id: seat >= 0 ? `seat-${seat + 1}` : playerId || 'guest',
     displayName: options.name ?? (seat >= 0 ? (NAMES[seat] ?? `هم‌تیمی ${seat + 1}`) : 'هم‌تیمی'),
     feminine,
     age,
-    heightMeters: feminine ? between(random, 1.58, 1.71) : between(random, 1.7, 1.86),
+    heightMeters: calibratedHeightMeters,
     build: between(random, 0.92, 1.08),
     skinHex: SKIN_TONES[(seat >= 0 ? seat : Math.floor(random() * SKIN_TONES.length)) % SKIN_TONES.length]!,
     hairHex: HAIR_TONES[(seat >= 0 ? seat + 1 : Math.floor(random() * HAIR_TONES.length)) % HAIR_TONES.length]!,

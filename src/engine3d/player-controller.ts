@@ -114,10 +114,21 @@ export class PlayerController {
       DEFAULT_PLAYER_RADIUS,
       this.obstacles,
     );
+    const configuredEyeHeight =
+      typeof this.config.eyeHeight === 'number' && Number.isFinite(this.config.eyeHeight)
+        ? this.config.eyeHeight
+        : Number.isFinite(initial.y)
+          ? initial.y
+          : 1.65;
+    const initialY = this.config.groundHeightAt
+      ? this.config.groundHeightAt(safe.x, safe.z) + configuredEyeHeight
+      : Number.isFinite(initial.y)
+        ? initial.y
+        : configuredEyeHeight;
     this.transform = {
       ...initial,
       x: safe.x,
-      y: Number.isFinite(initial.y) ? initial.y : 1.65,
+      y: initialY,
       z: safe.z,
       yawDeg: Number.isFinite(initial.yawDeg) ? initial.yawDeg : 0,
       pitchDeg: Number.isFinite(initial.pitchDeg)
@@ -203,6 +214,20 @@ export class PlayerController {
       );
       this.transform.x = resolved.clampedX;
       this.transform.z = resolved.clampedZ;
+    }
+
+    if (this.config.groundHeightAt) {
+      const eyeHeight =
+        typeof this.config.eyeHeight === 'number' && Number.isFinite(this.config.eyeHeight)
+          ? this.config.eyeHeight
+          : 1.65;
+      const targetY =
+        this.config.groundHeightAt(this.transform.x, this.transform.z) + eyeHeight;
+      const yAlpha = 1 - Math.exp(-16 * dt);
+      this.transform.y += (targetY - this.transform.y) * yAlpha;
+      if (Math.abs(targetY - this.transform.y) < 1e-4) {
+        this.transform.y = targetY;
+      }
     }
 
     return this.getTransform();

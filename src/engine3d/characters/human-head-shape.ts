@@ -311,3 +311,42 @@ export function sculptHead(
 export function ageWrinkleStrength(look: HumanLook): number {
   return THREE.MathUtils.clamp(0.15 + look.age * 0.9, 0, 1);
 }
+
+/** ارتفاع استاندارد چشم کاراکتر ایستادهٔ پلیر از کف پا (متر) — هماهنگ با دوربین اول‌شخص و شبکهٔ حضور */
+export const DEFAULT_PLAYER_EYE_HEIGHT = 1.65;
+
+/** مرکز مفصل جمجمه در فضای پایهٔ بدون مقیاس HumanAvatar */
+export const HUMAN_HEAD_CENTER_Y = 1.592;
+
+/** جابه‌جایی عمودی مرکز مردمک نسبت به نقطهٔ سطح کاسهٔ چشم در HumanAvatar */
+export const HUMAN_EYE_VERTICAL_OFFSET = -0.0005;
+
+/** ارتفاع تاج سر بدون مقیاس در HumanAvatar (مرجع محاسبهٔ ضریب مقیاس قد) */
+export function getHumanStandingTop(head: HeadMorphology): number {
+  return HUMAN_HEAD_CENTER_Y + head.height * 1.06 + 0.012;
+}
+
+/** ارتفاع مرکز مردمک چشم‌ها بدون مقیاس از کف پا در HumanAvatar */
+export function getHumanUnscaledEyeY(head: HeadMorphology): number {
+  const anchors = resolveHeadAnchors(head);
+  const eyeSurface = sculptHead(anchors.eyeL.clone().normalize(), head);
+  return HUMAN_HEAD_CENTER_Y + eyeSurface.y + HUMAN_EYE_VERTICAL_OFFSET;
+}
+
+/** ارتفاع دقیق جهان‌فضای مردمک چشم کاراکتر ایستاده از کف پا (y = 0) برای هر HumanLook */
+export function getHumanEyeHeight(look: Pick<HumanLook, 'heightMeters' | 'head'>): number {
+  const standingTop = getHumanStandingTop(look.head);
+  const scale = look.heightMeters / standingTop;
+  return getHumanUnscaledEyeY(look.head) * scale;
+}
+
+/** محاسبهٔ قد ایستاده (متر) به‌گونه‌ای که مردمک چشم دقیقاً روی targetEyeHeight بنشیند */
+export function calibrateHumanHeightForEyeLevel(
+  head: HeadMorphology,
+  targetEyeHeight = DEFAULT_PLAYER_EYE_HEIGHT,
+): number {
+  const standingTop = getHumanStandingTop(head);
+  const unscaledEyeY = getHumanUnscaledEyeY(head);
+  return targetEyeHeight * (standingTop / unscaledEyeY);
+}
+

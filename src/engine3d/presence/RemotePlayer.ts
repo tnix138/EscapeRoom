@@ -151,7 +151,6 @@ export class RemotePlayer extends THREE.Group {
   constructor(snapshot: PresenceSnapshot, options: RemotePlayerOptions = {}) {
     super();
     this.playerId = snapshot.playerId;
-    this.eyeHeight = options.eyeHeight ?? 1.65;
     this.target = { ...snapshot.transform };
     this.targetTimestamp = snapshot.updatedAt;
     this.name = `RemotePlayer:${snapshot.playerId}`;
@@ -163,15 +162,29 @@ export class RemotePlayer extends THREE.Group {
     }
 
     this.avatar = new HumanAvatar({ look, displayName });
+    this.eyeHeight = options.eyeHeight ?? this.avatar.eyeHeight;
     this.userData.displayName = displayName;
     this.userData.seatIndex = snapshot.seatIndex;
     this.add(this.avatar);
 
     this.nameTag = createNameTag(displayName);
-    if (this.nameTag) this.add(this.nameTag.sprite);
+    if (this.nameTag) {
+      this.nameTag.sprite.position.y = Math.max(1.86, this.avatar.standingHeight + 0.08);
+      this.add(this.nameTag.sprite);
+    }
 
     this.applyTransform(this.target);
     this.lastYaw = this.rotation.y;
+  }
+
+  /** ارتفاع چشم این آواتار از کف پا (متر) */
+  getEyeHeight(): number {
+    return this.eyeHeight;
+  }
+
+  /** مختصات دقیق نقطهٔ میانی دو چشم این بازیکن در فضای جهان */
+  getEyeWorldPosition(target = new THREE.Vector3()): THREE.Vector3 {
+    return this.avatar.getEyeWorldPosition(target);
   }
 
   setSnapshot(snapshot: PresenceSnapshot): void {
