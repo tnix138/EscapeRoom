@@ -57,6 +57,10 @@ import {
   cobblestoneSurfaceMaps,
 } from './alley-cobblestone';
 import { CURTAIN, buildCurtainGeometry, createCurtainFabricMaps } from './alley-window-curtain';
+import {
+  WINDOW_ARCHITECTURE,
+  buildTheaterWindowArchitecture,
+} from './theater-window-architecture';
 import { createEntranceTorch, type EntranceTorchInstance } from './alley-entrance-torch';
 import {
   LOBBY_DOOR,
@@ -791,13 +795,22 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
     envMapIntensity: 0.06,
   });
   curtainVelvetMat.name = 'TheaterCurtainVelvet';
+  // قابِ برنجیِ پنجره‌ها ۰٫۰۲ متر پس از لنگرِ در است؛ نیم‌ستون‌ها و سایبان‌ها
+  // روی صفحۀ جلوی همین قاب نصب می‌شوند (پنلِ سرخِ پنجره از دیوار جلوتر است و
+  // نیم‌ستونی که روی خودِ دیوار بنشیند پشتِ آن گم می‌شود)
+  const windowMountZ = anchors.theaterDoor.z - 0.02 + WINDOW_ARCHITECTURE.frameDepth / 2;
+
   CURTAIN.windowXs.forEach((wx: number, index: number) => {
-    const archFrame = new THREE.Mesh(new THREE.BoxGeometry(1.76, 3.14, 0.12), antiqueBrassMat);
-    archFrame.position.set(wx, 7.25, anchors.theaterDoor.z - 0.02);
+    const archFrame = new THREE.Mesh(
+      new THREE.BoxGeometry(WINDOW_ARCHITECTURE.frameWidth, WINDOW_ARCHITECTURE.frameHeight, 0.12),
+      antiqueBrassMat,
+    );
+    archFrame.position.set(wx, WINDOW_ARCHITECTURE.centerY, windowMountZ - WINDOW_ARCHITECTURE.frameDepth / 2);
+    archFrame.name = `TheaterWindowBrassFrame_${index}`;
     theaterGroup.add(archFrame);
 
     const archWin = new THREE.Mesh(new THREE.BoxGeometry(1.48, 2.86, 0.12), crimsonStainedMat);
-    archWin.position.set(wx, 7.25, anchors.theaterDoor.z + 0.03);
+    archWin.position.set(wx, WINDOW_ARCHITECTURE.centerY, anchors.theaterDoor.z + 0.03);
     theaterGroup.add(archWin);
 
     // پرده کمی کوچک‌تر از دهانۀ پنجره است تا لبۀ سرخِ شیشه دورش دیده شود
@@ -810,8 +823,21 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
       curtainVelvetMat,
     );
     curtain.name = `TheaterCurtain_${index}`;
-    curtain.position.set(wx, 7.25, anchors.theaterDoor.z + 0.12 + CURTAIN.hangOffset);
+    curtain.position.set(wx, WINDOW_ARCHITECTURE.centerY, anchors.theaterDoor.z + 0.12 + CURTAIN.hangOffset);
     theaterGroup.add(curtain);
+
+    // معماریِ دورِ پنجره: دو نیم‌ستونِ سنگیِ بیرون‌آمده از دیوار (از کفِ پنجره تا
+    // سرِ آن) و یک سایبانِ سنگیِ افقی که روی همان دو ستون می‌نشیند و برای پنجره
+    // سایه می‌اندازد (بازبینیِ امیر)
+    theaterGroup.add(
+      buildTheaterWindowArchitecture({
+        index,
+        x: wx,
+        mountZ: windowMountZ,
+        shaftMaterial: theaterStoneMat,
+        trimMaterial: stoneTrimMat,
+      }),
+    );
   });
 
   // سایبان نورانی سردر تماشاخانه (Marquee Canopy) با متن واقعی
