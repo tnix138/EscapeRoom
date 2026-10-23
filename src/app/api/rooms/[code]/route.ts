@@ -1,5 +1,6 @@
 // GET /api/rooms/[code]?sinceVersion=0 — دریافت وضعیت فعلی با توکن صندلی (هدر X-Seat-Token)
 import { NextResponse } from 'next/server';
+import { normalizeSeatToken } from '../../../../contracts/seat-token-format';
 import {
   GameServiceError,
   getRoomViewConditional,
@@ -29,7 +30,7 @@ export async function GET(
 ) {
   try {
     const { code } = await params;
-    const seatToken = req.headers.get('x-seat-token') ?? '';
+    const seatToken = normalizeSeatToken(req.headers.get('x-seat-token'));
     if (!seatToken) {
       return NextResponse.json(
         { ok: false, error: { code: 'INVALID_SEAT_TOKEN', message: 'توکن صندلی ارسال نشده است.' } },

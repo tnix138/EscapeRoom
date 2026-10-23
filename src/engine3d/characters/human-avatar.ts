@@ -16,7 +16,13 @@ import * as THREE from 'three';
 import type { HumanLook } from './human-presets';
 import { createHumanTextures, type HumanTextureSet } from './human-textures';
 import {
+  DEFAULT_PLAYER_EYE_HEIGHT,
   HEAD_FACE_SEGMENTS,
+  HUMAN_EYE_VERTICAL_OFFSET,
+  HUMAN_HEAD_CENTER_Y,
+  calibrateHumanHeightForEyeLevel,
+  getHumanEyeHeight,
+  getHumanStandingTop,
   resolveBrowArc,
   resolveHeadAnchors,
   sculptHead,
@@ -51,7 +57,7 @@ interface LoftRing {
 const BASE_HEIGHT_METERS = 1.78;
 const HIP_Y = 0.94;
 const SHOULDER_Y = 1.44;
-const HEAD_Y = 1.592;
+const HEAD_Y = HUMAN_HEAD_CENTER_Y;
 
 function makeRandom(seed: number): () => number {
   let state = (seed || 0x9e3779b9) >>> 0;
@@ -265,6 +271,8 @@ function limbRings(
 export class HumanAvatar extends THREE.Group {
   readonly look: HumanLook;
   readonly pose: HumanPose;
+  readonly standingHeight: number;
+  readonly eyeHeight: number;
   readonly textures: HumanTextureSet;
   readonly materials: THREE.Material[] = [];
   readonly anchors: HeadAnchors;
@@ -305,6 +313,8 @@ export class HumanAvatar extends THREE.Group {
     super();
     this.look = options.look;
     this.pose = options.pose ?? 'standing';
+    this.standingHeight = options.look.heightMeters;
+    this.eyeHeight = getHumanEyeHeight(options.look);
     this.name = `HumanAvatar:${options.displayName ?? options.look.displayName}`;
     this.userData.lookId = options.look.id;
     this.userData.faceTextureSize = 0;
@@ -363,7 +373,7 @@ export class HumanAvatar extends THREE.Group {
     );
 
     // قد: مدل با تاجِ سر (نه مرکز سر) تا قدِ واقعی مطابق look.heightMeters باشد
-    const standingTop = HEAD_Y + options.look.head.height * 1.06 + 0.012;
+    const standingTop = getHumanStandingTop(options.look.head);
     this.scale.setScalar(options.look.heightMeters / standingTop);
 
     // ─── تنه و کت ───
@@ -639,7 +649,7 @@ export class HumanAvatar extends THREE.Group {
       const eye = new THREE.Group();
       eye.name = side < 0 ? 'avatar-eye-left' : 'avatar-eye-right';
       // مرکز کره کمی داخل کاسه، تا فقط قطبِ جلویی از پوست بیرون بزند
-      eye.position.set(point.x * 0.99, point.y - 0.0005, point.z + eyeRadius * 0.42);
+      eye.position.set(point.x * 0.99, point.y + HUMAN_EYE_VERTICAL_OFFSET, point.z + eyeRadius * 0.42);
 
       const eyeball = new THREE.Mesh(new THREE.SphereGeometry(eyeRadius, 24, 18), sclera);
       eyeball.name = 'avatar-eyeball';
@@ -1595,6 +1605,14 @@ export class HumanAvatar extends THREE.Group {
     this.position.y = Math.sin(this.elapsed * 0.9) * 0.0015 * (1 - this.strideBlend);
   }
 
+  /** مختصات دقیق نقطهٔ میانی دو چشم در فضای جهان (هم در حالت ایستاده و هم نشسته) */
+  getEyeWorldPosition(target = new THREE.Vector3()): THREE.Vector3 {
+    this.updateWorldMatrix(true, true);
+    const left = this.leftEye.getWorldPosition(new THREE.Vector3());
+    const right = this.rightEye.getWorldPosition(new THREE.Vector3());
+    return target.copy(left).add(right).multiplyScalar(0.5);
+  }
+
   /** پلک‌زدن دستی (برای برش‌ها/جامپ‌اسکر) */
   blink(): void {
     this.blinkTimer = 0;
@@ -1623,4 +1641,12 @@ export function createHumanAvatar(
   return new HumanAvatar({ look, pose: options.pose, displayName: options.displayName ?? look.displayName });
 }
 
-export { BASE_HEIGHT_METERS, HIP_Y, SHOULDER_Y, HEAD_Y };
+export {
+  BASE_HEIGHT_METERS,
+  HIP_Y,
+  SHOULDER_Y,
+  HEAD_Y,
+  DEFAULT_PLAYER_EYE_HEIGHT,
+  getHumanEyeHeight,
+  calibrateHumanHeightForEyeLevel,
+};

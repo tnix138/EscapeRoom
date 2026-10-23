@@ -1,6 +1,7 @@
 // GET /api/rooms/[code]/stream?token=<seatToken>&sinceVersion=0 — استریم بلادرنگ SSE
 // event: room_update به محض تغییر نسخه اتاق + event: heartbeat حاوی serverNow برای همگام‌سازی کات‌سین
 // event: presence_update = { presences, serverNow } — حضور حرکتی هم‌تیمی‌ها (قرارداد #104)
+import { normalizeSeatToken } from '../../../../../contracts/seat-token-format';
 import type { ClientRoomView } from '../../../../../contracts/types';
 import { projectRoomView } from '../../../../../engine/view-projector';
 import { subscribeRoom } from '../../../../../server/realtime/room-hub';
@@ -31,7 +32,7 @@ export async function GET(
 ) {
   const { code } = await params;
   const url = new URL(req.url);
-  const seatToken = url.searchParams.get('token') ?? '';
+  const seatToken = normalizeSeatToken(url.searchParams.get('token'));
   if (!seatToken) {
     return Response.json(
       { ok: false, error: { code: 'INVALID_SEAT_TOKEN', message: 'توکن صندلی ارسال نشده است.' } },

@@ -1,5 +1,6 @@
 // POST /api/rooms/[code]/chat — نجوای تیمی و اشتراک مشخصات بلیط (shareStub)
 import { NextResponse } from 'next/server';
+import { normalizeSeatToken } from '../../../../../contracts/seat-token-format';
 import { ZodError } from 'zod';
 import {
   GameServiceError,
@@ -15,7 +16,7 @@ export async function POST(
 ) {
   try {
     const { code } = await params;
-    const seatToken = req.headers.get('x-seat-token') ?? '';
+    const seatToken = normalizeSeatToken(req.headers.get('x-seat-token'));
     if (!seatToken) {
       return NextResponse.json(
         { ok: false, error: { code: 'INVALID_SEAT_TOKEN', message: 'توکن صندلی ارسال نشده است.' } },

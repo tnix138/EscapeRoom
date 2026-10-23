@@ -2,8 +2,9 @@
 // src/client-sdk/index.ts — اکسپورت‌های توحید طبق API-CONTRACT.md بخش ۴.۱
 // موج ۱: reserveRoomApi + createPreviewRoomState
 // موج ۳: هوک کامل useTheaterSession با SSE اشتراکی، همگام‌سازی ۶۰ فریم ساعت سرور و ارسال ضدگیر نجوا.
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { GameActionPayload } from '../contracts/actions';
+import { normalizeSeatToken } from '../contracts/seat-token-format';
 import type { ClientRoomView, HostReservationResult } from '../contracts/types';
 import { computeClockOffset, computeCutsceneElapsedMs } from './cutscene-clock';
 import { openSharedRoomStream } from './shared-room-stream';
@@ -61,7 +62,8 @@ export async function postRoomWhisper(
     timeoutMs?: number;
   },
 ): Promise<ClientRoomView> {
-  if (!roomCode || !seatToken) {
+  const token = normalizeSeatToken(seatToken);
+  if (!roomCode || !token) {
     throw new Error('نشست صندلی آماده نیست؛ صفحه را تازه کنید.');
   }
   const fetchImpl = options?.fetchImpl ?? fetch;
@@ -76,7 +78,7 @@ export async function postRoomWhisper(
         url,
         {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'X-Seat-Token': seatToken },
+          headers: { 'Content-Type': 'application/json', 'X-Seat-Token': token },
           body: payload,
           cache: 'no-store',
         },
@@ -140,9 +142,13 @@ export async function reserveRoomApi(input: {
   return body.data;
 }
 
+/**
+ * نشست اتاق. توکن ورودی ممکن است از آدرس لینک دعوت، storage یا `?token=` آمده باشد و
+ * نویسهٔ پنهان/encode‌شده داشته باشد؛ همان‌جا نرمال می‌شود تا هدر ارسالی همیشه سالم باشد.
+ */
 export function useTheaterSession(
   roomCode: string,
-  seatToken: string,
+  rawSeatToken: string,
 ): {
   loading: boolean;
   room: ClientRoomView | null;
@@ -151,6 +157,7 @@ export function useTheaterSession(
   performAction: (action: GameActionPayload) => Promise<{ accepted: boolean; message: string }>;
   sendWhisper: (text: string, shareStub?: boolean) => Promise<void>;
 } {
+  const seatToken = useMemo(() => normalizeSeatToken(rawSeatToken), [rawSeatToken]);
   const [loading, setLoading] = useState(true);
   const [room, setRoom] = useState<ClientRoomView | null>(null);
   const [error, setError] = useState<string | null>(null);
