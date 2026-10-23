@@ -19,6 +19,7 @@ import {
   isCorrectPunch,
   normalizeDoorCode,
 } from '../../engine/ticket-puzzle';
+import { isWellFormedSeatToken, normalizeSeatToken } from '../../contracts/seat-token-format';
 import { checkAndRecord } from '../auth/rate-limit';
 import { generateSeatToken, hashSeatToken, seatTokenMatches } from '../auth/seat-token';
 import { getRoomRepository, type RoomRepository } from '../db/repository';
@@ -107,9 +108,14 @@ export async function reserveRoom(
   throw new Error('ROOM_CODE_GENERATION_FAILED');
 }
 
-/** پیدا کردن شماره صندلی از روی توکن خام؛ در صورت نامعتبر بودن null */
+/**
+ * پیدا کردن شماره صندلی از روی توکن خام؛ در صورت نامعتبر بودن null.
+ * توکن پیش از مقایسه نرمال می‌شود تا لینک دعوتی که در چت فارسی کپی شده
+ * (نویسهٔ پنهان RLO/LRM/نیم‌فاصله یا percent-encoded) هم صندلی خودش را پیدا کند.
+ */
 export function findSeatIndexByToken(state: InternalRoomState, seatToken: string): number | null {
-  if (!seatToken || seatToken.length < 16) return null;
+  const token = normalizeSeatToken(seatToken);
+  if (token.length < 16) return null;
   for (const seat of state.seats) {
     if (seatTokenMatches(seatToken, seat.seatTokenHash)) return seat.seatIndex;
   }
@@ -198,10 +204,44 @@ export class GameServiceError extends Error {
   }
 }
 
+/** پیام‌های ۴۰۱ توکن صندلی: دقیق و قابل‌اقدام برای بازیکن، به‌جای «توکن معتبر نیست» مبهم. */
+export const SEAT_TOKEN_MISSING_MESSAGE = 'توکن صندلی ارسال نشده است.';
+export const SEAT_TOKEN_MALFORMED_MESSAGE =
+  'لینک دعوت کامل به دست ما نرسیده است؛ احتمالاً هنگام کپی بخشی از آن بریده شده یا نویسهٔ پنهان چسبانده است. لینک را از همان پیام اصلی دوباره باز کنید یا از میزبان لینک تازه بخواهید.';
+export const SEAT_TOKEN_UNKNOWN_MESSAGE =
+  'این لینک دعوت به هیچ صندلی در این اتاق نمی‌خورد؛ از میزبان بخواهید لینک صندلی شما را دوباره بفرستد.';
+export const SEAT_TOKEN_REVOKED_MESSAGE =
+  'صندلی این لینک باطل شده است و با آن نمی‌توان وارد شد؛ از میزبان لینک تازه بخواهید یا اتاق تازه رزرو کنید.';
+
+/** آیا صندلی‌ای در این اتاق با اخراج از پنل ادمین باطل (هش خالی) شده است؟ */
+export function hasRevokedSeat(state: InternalRoomState | null | undefined): boolean {
+  return Boolean(state?.seats.some((seat) => seat.seatTokenHash === ''));
+}
+
+/**
+ * خطای ۴۰۱ با پیام دقیق. سه حالت برای بازیکن قابل تفکیک است:
+ * توکن نرسیده · لینک ناقص/آلوده · لینک بیگانه با اتاق یا صندلی باطل‌شده.
+ */
+export function invalidSeatTokenError(
+  seatToken: string,
+  state?: InternalRoomState | null,
+): GameServiceError {
+  const token = normalizeSeatToken(seatToken);
+  if (!token) return new GameServiceError('INVALID_SEAT_TOKEN', SEAT_TOKEN_MISSING_MESSAGE, 401);
+  if (!isWellFormedSeatToken(token)) {
+    return new GameServiceError('INVALID_SEAT_TOKEN', SEAT_TOKEN_MALFORMED_MESSAGE, 401);
+  }
+  return new GameServiceError(
+    'INVALID_SEAT_TOKEN',
+    hasRevokedSeat(state) ? SEAT_TOKEN_REVOKED_MESSAGE : SEAT_TOKEN_UNKNOWN_MESSAGE,
+    401,
+  );
+}
+
 function requireSeat(state: InternalRoomState, seatToken: string): number {
   const seatIndex = findSeatIndexByToken(state, seatToken);
   if (seatIndex === null) {
-    throw new GameServiceError('INVALID_SEAT_TOKEN', 'توکن صندلی معتبر نیست.', 401);
+    throw invalidSeatTokenError(seatToken, state);
   }
   return seatIndex;
 }

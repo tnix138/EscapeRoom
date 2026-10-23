@@ -4,6 +4,7 @@
 // هویت از هدر `x-seat-token` خوانده می‌شود؛ `playerId` و `seatIndex` در بدنه
 // پذیرفته نمی‌شوند. `yaw` رادیان است. پاسخ‌ها از قرارداد ۴ پیروی می‌کنند.
 import { NextResponse } from 'next/server';
+import { normalizeSeatToken } from '../../../../../contracts/seat-token-format';
 import {
   GameServiceError,
 } from '../../../../../server/services/room-service';
@@ -35,8 +36,9 @@ function errorResponse(err: unknown): NextResponse {
   );
 }
 
+/** توکن را نرمال برمی‌گرداند تا لینک کپی‌شده با نویسهٔ پنهان هم صندلی خودش را پیدا کند. */
 function readToken(req: Request): string {
-  return req.headers.get('x-seat-token') ?? '';
+  return normalizeSeatToken(req.headers.get('x-seat-token'));
 }
 
 export async function GET(req: Request, { params }: { params: Promise<{ code: string }> }) {
