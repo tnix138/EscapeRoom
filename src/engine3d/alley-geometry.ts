@@ -56,6 +56,7 @@ import {
   buildCobbleField,
   cobblestoneSurfaceMaps,
 } from './alley-cobblestone';
+import { CURTAIN, buildCurtainGeometry, createCurtainFabricMaps } from './alley-window-curtain';
 import { createEntranceTorch, type EntranceTorchInstance } from './alley-entrance-torch';
 import {
   LOBBY_DOOR,
@@ -762,14 +763,34 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
     theaterGroup.add(capital);
   }
 
-  // پنجره‌های بلند قوسی با شیشهٔ سرخ مخملی در طبقهٔ دوم تماشاخانه (فاصلهٔ پاک از نما بدون Z-fighting)
+  // پنجره‌های بلند قوسی در طبقهٔ دوم تماشاخانه (فاصلهٔ پاک از نما بدون Z-fighting):
+  // پشتِ شیشهٔ سرخ، پردهٔ مخملِ چین‌دار آویزان است (امیر: پرده باید چین‌چینِ
+  // عمودیِ ریز داشته باشد و بالا و پایینش حاله‌ای به سیاهی برود، نه قرمزِ صاف)
   const crimsonStainedMat = new THREE.MeshStandardMaterial({
     color: 0x5c111c,
     emissive: new THREE.Color(0x6e101c),
     emissiveIntensity: 0.55,
     roughness: 0.25,
   });
-  for (const wx of [-3.9, 0, 3.9]) {
+  crimsonStainedMat.name = 'TheaterCrimsonRecess';
+  const curtainMaps = createCurtainFabricMaps();
+  const curtainVelvetMat = new THREE.MeshStandardMaterial({
+    color: 0xffffff,
+    map: curtainMaps.colorMap,
+    normalMap: curtainMaps.normalMap,
+    normalScale: new THREE.Vector2(1.2, 1.2),
+    roughnessMap: curtainMaps.roughnessMap,
+    roughness: 1,
+    metalness: 0,
+    emissive: new THREE.Color(0x8a1b24),
+    emissiveMap: curtainMaps.glowMap,
+    // نورِ پشتِ پرده: کم تا مخمل «نئون» نشود و دو سرِ تیره واقعاً تاریک بمانند
+    emissiveIntensity: 0.55,
+    envMap: environmentMap,
+    envMapIntensity: 0.06,
+  });
+  curtainVelvetMat.name = 'TheaterCurtainVelvet';
+  CURTAIN.windowXs.forEach((wx: number, index: number) => {
     const archFrame = new THREE.Mesh(new THREE.BoxGeometry(1.76, 3.14, 0.12), antiqueBrassMat);
     archFrame.position.set(wx, 7.25, anchors.theaterDoor.z - 0.02);
     theaterGroup.add(archFrame);
@@ -777,7 +798,20 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
     const archWin = new THREE.Mesh(new THREE.BoxGeometry(1.48, 2.86, 0.12), crimsonStainedMat);
     archWin.position.set(wx, 7.25, anchors.theaterDoor.z + 0.03);
     theaterGroup.add(archWin);
-  }
+
+    // پرده کمی کوچک‌تر از دهانۀ پنجره است تا لبۀ سرخِ شیشه دورش دیده شود
+    const curtain = new THREE.Mesh(
+      buildCurtainGeometry(
+        CURTAIN.curtainWidth,
+        CURTAIN.curtainHeight,
+        CURTAIN.variants[index % CURTAIN.variants.length],
+      ),
+      curtainVelvetMat,
+    );
+    curtain.name = `TheaterCurtain_${index}`;
+    curtain.position.set(wx, 7.25, anchors.theaterDoor.z + 0.12 + CURTAIN.hangOffset);
+    theaterGroup.add(curtain);
+  });
 
   // سایبان نورانی سردر تماشاخانه (Marquee Canopy) با متن واقعی
   const marqueeBox = new THREE.Mesh(new THREE.BoxGeometry(6.8, 1.48, 1.55), darkIronMat);
@@ -1385,6 +1419,7 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
     brickWarmMaps.dispose();
     brickSlateMaps.dispose();
     theaterStoneMaps.dispose();
+    curtainMaps.dispose();
     crateLightWoodMaps.dispose();
     crateDarkWoodMaps.dispose();
     lobbyDoorWoodMaps.dispose();
