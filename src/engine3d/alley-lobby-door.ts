@@ -14,6 +14,15 @@
  *   - `LobbyDoorArcTracery` — ۷ بازوی شعاعی آهنی + یک قوس هم‌مرکز + ۵ گل‌سر
  *   - `LobbyDoorLeafLeft/Right` — دو لنگهٔ چوبی با شیشهٔ مستطیلی و نقش‌نگاری آهنی
  *   - `LobbyDoorHandleLeft/Right` — دو استوانهٔ برنجی کنار هم در وسط در
+ *
+ * بازبینی (امیر):
+ *   - **گلِ قرینه، نه کپی:** نقش‌نگاری گل روی شیشهٔ دو لنگه یکی نیست؛ لنگهٔ
+ *     راست **آینهٔ** لنگهٔ چپ است (`windowFlowerPlan(mirror)`). چون گل هشت‌گلبرگِ
+ *     دایره‌ای است، قرینه‌بودن در پیچک‌های S شکل، برگ‌های یک‌درمیان و جوانه‌ها
+ *     خوانده می‌شود — دو لنگه مثل دو دستِ چپ و راست به‌سمت هم (و به بیرون) خم
+ *     می‌شوند، نه دو برچسب یکسان کنار هم.
+ *   - **در بلندتر:** ارتفاع لنگه ۲٫۵ → ۲٫۶۴ متر (ارتفاع کل با نیم‌دایره ۳٫۵۱ →
+ *     ۳٫۶۵ متر)؛ همهٔ اجزا (شیشه، پنل پایین، دستگیره) متناسب جابه‌جا شدند.
  */
 
 import * as THREE from 'three';
@@ -26,10 +35,12 @@ export const LOBBY_DOOR = {
    */
   leafWidth: 1.0,
   /**
-   * ارتفاع لنگه‌ها — بازبینی: در بلندتر شد (۲٫۲۰ → ۲٫۵۰).
-   * نیم‌دایره دقیقاً روی همین ارتفاع می‌نشیند.
+   * ارتفاع لنگه‌ها — بازبینی (امیر): در بلندتر شد (۲٫۵۰ → ۲٫۶۴).
+   * نیم‌دایره دقیقاً روی همین ارتفاع می‌نشیند، پس ارتفاع کل در =
+   * leafHeight + arcOuterRadius ≈ ۳٫۶۵ متر — همچنان زیر سایبان سردر (کف
+   * جعبهٔ سایبان روی y = ۳٫۶۸ و صفحهٔ تابلو روی y = ۳٫۷۵ است).
    */
-  leafHeight: 2.5,
+  leafHeight: 2.64,
   leafThickness: 0.14,
   /** شکاف باریک بین دو لنگه در وسط */
   leafGap: 0.012,
@@ -40,13 +51,16 @@ export const LOBBY_DOOR = {
    */
   arcInnerRadius: 0.79,
   arcOuterRadius: 1.006,
-  /** مستطیل عمودی شیشه در میانهٔ هر لنگه */
+  /**
+   * مستطیل عمودی شیشه در میانهٔ هر لنگه — با درِ بلندتر، شیشه هم قد کشید
+   * (۱٫۰۸ → ۱٫۱۶) و کمی بالاتر رفت تا تقسیم نیمهٔ بالایی/پایینی حفظ شود.
+   */
   windowWidth: 0.42,
-  windowHeight: 1.08,
-  windowCenterY: 1.72,
+  windowHeight: 1.16,
+  windowCenterY: 1.82,
   /** نیمهٔ پایین چوبی: پنل برجستهٔ پایین لنگه */
-  lowerPanelHeight: 1.0,
-  lowerPanelCenterY: 0.56,
+  lowerPanelHeight: 1.06,
+  lowerPanelCenterY: 0.58,
   /** دستگیرهٔ میله‌ای برنجی — بدنهٔ استوانه‌ای، دو نوک مخروطی و حلقه‌های برجسته */
   handleRadius: 0.032,
   /** شعاع حلقه‌های برجستهٔ روی میله */
@@ -60,7 +74,8 @@ export const LOBBY_DOOR = {
   /** شعاع نوک: صفر مطلق نوک را سوزنی می‌کند؛ این مقدار «کمی تیز» می‌دهد */
   handleTipRadius: 0.006,
   handleLength: 0.62,
-  handleCenterY: 1.26,
+  /** ارتفاع دستگیره — با درِ بلندتر از ۱٫۲۶ به ۱٫۳۳ رفت (همان ~۵۰٪ ارتفاع لنگه) */
+  handleCenterY: 1.33,
   /** فاصلهٔ محور دستگیره از لبهٔ داخلی لنگه (کنار شکاف وسط در) */
   handleGapFromSeam: 0.083,
   /** ضخامت میله‌های نقش‌نگاری آهنی */
@@ -94,6 +109,11 @@ export const ARC_TRACERY_SPOKES = 7;
  * نقش‌نگاری آهنی **گل** روی شیشهٔ مستطیلی هر لنگه.
  * به‌جای میله‌های راستِ افقی/عمودی، یک گل آهنی چکش‌کاری‌شده می‌نشیند:
  * حلقهٔ گل، هشت گلبرگ، مرکز گل، دو پیچک گلدار بالا و پایین با برگ و جوانه.
+ *
+ * بازبینی (امیر): طرح یک‌بار در حالت **پایه** (لنگهٔ چپ) تعریف می‌شود و لنگهٔ
+ * راست **آینهٔ** آن حول محور عمودی است — پس دو لنگه دو کپی یکسان نیستند.
+ * قرینه بودن در پیچک‌های S شکل، برگ‌های یک‌درمیان و جوانه‌ها خوانده می‌شود.
+ * تنها ورودیِ این قرینه‌سازی `windowFlowerPlan(mirror)` است.
  */
 export const WINDOW_FLOWER = {
   /** شعاع حلقهٔ گل وسط */
@@ -122,11 +142,23 @@ export const WINDOW_FLOWER = {
 } as const;
 
 /**
- * مسیر دو پیچک گل (بالا و پایین گل وسط) در مختصات **محلی شیشه**
- * (مرکز شیشه = مبدأ، y مثبت به بالا). نقطه‌ها با یک منحنیCatmull-Rom نرم
- * می‌شوند تا پیچک S شکل طبیعی داشته باشد، نه میلهٔ راست.
+ * آینهٔ گل: `1` = طرح پایه (لنگهٔ چپ)، `-1` = قرینهٔ چپ‌به‌راست (لنگهٔ راست).
+ * قرینه‌سازی حول محور **عمودی** شیشه انجام می‌شود، همان‌طور که دو لنگهٔ در
+ * حول شیار وسط در آینهٔ هم‌اند.
  */
-export function windowFlowerVines(): { top: THREE.Vector3[]; bottom: THREE.Vector3[] } {
+export type WindowFlowerMirror = 1 | -1;
+
+/**
+ * مسیر پیچک گل (بالا و پایین گل وسط) در مختصات **محلی شیشه**
+ * (مرکز شیشه = مبدأ، y مثبت به بالا). نقطه‌ها با یک منحنی Catmull-Rom نرم
+ * می‌شوند تا پیچک S شکل طبیعی داشته باشد، نه میلهٔ راست.
+ *
+ * `mirror = -1` همان مسیر را آینه می‌کند (x قرینه) تا پیچکِ لنگهٔ راست به‌جای
+ * کپی‌شدن، **قرینهٔ** لنگهٔ چپ باشد.
+ */
+export function windowFlowerVines(
+  mirror: WindowFlowerMirror = 1,
+): { top: THREE.Vector3[]; bottom: THREE.Vector3[] } {
   const top: THREE.Vector3[] = [
     new THREE.Vector3(0, 0.07, 0),
     new THREE.Vector3(0.082, 0.176, 0),
@@ -134,12 +166,99 @@ export function windowFlowerVines(): { top: THREE.Vector3[]; bottom: THREE.Vecto
     new THREE.Vector3(0.016, 0.404, 0),
   ];
   const bottom = top.map((point) => new THREE.Vector3(point.x, -point.y, point.z));
-  return { top, bottom };
+  if (mirror === 1) return { top, bottom };
+  const flip = (point: THREE.Vector3) => new THREE.Vector3(-point.x, point.y, point.z);
+  return { top: top.map(flip), bottom: bottom.map(flip) };
 }
 
 /** زاویهٔ هر گلبرگ روی حلقهٔ گل — پخش یکنواخت دور دایره */
 export function windowFlowerPetalAngles(count: number = WINDOW_FLOWER.petalCount): number[] {
   return Array.from({ length: count }, (_, index) => (index / count) * Math.PI * 2);
+}
+
+/** یک قطعهٔ نقش‌نگاری گل، در مختصات محلی شیشه (مرکز شیشه = مبدأ) */
+export interface WindowFlowerPiece {
+  /** نام بخش، بدون پیشوند لنگه — مثل `FlowerPetal_3` یا `VineTop` */
+  name: string;
+  part: 'ring' | 'petal' | 'boss' | 'vine' | 'leaf' | 'bud';
+  x: number;
+  y: number;
+  /** چرخش حول محور z (رادیان) */
+  rotation: number;
+  /** نقاط منحنی پیچک — فقط برای `part === 'vine'` */
+  points?: THREE.Vector3[];
+}
+
+/**
+ * طرح کامل نقش‌نگاری گل روی یک شیشه. `mirror = -1` کل طرح را حول محور عمودی
+ * آینه می‌کند: هر x قرینه و هر چرخش φ به π − φ تبدیل می‌شود. چون همهٔ قطعه‌ها
+ * بیضی، حلقه یا مفتولِ دایره‌ای‌اند، این تبدیل دقیقاً قرینهٔ هندسیِ همان قطعه
+ * است — و برخلاف `scale.x = -1`، پیچش سطوح (winding) را وارونه نمی‌کند.
+ */
+export function windowFlowerPlan(mirror: WindowFlowerMirror = 1): WindowFlowerPiece[] {
+  const plan: WindowFlowerPiece[] = [];
+
+  // حلقهٔ گل وسط
+  plan.push({ name: 'FlowerRing', part: 'ring', x: 0, y: 0, rotation: 0 });
+
+  // گلبرگ‌ها — یکنواخت دور حلقه، محور درازشان به سمت بیرون
+  windowFlowerPetalAngles().forEach((angle, index) => {
+    plan.push({
+      name: `FlowerPetal_${index}`,
+      part: 'petal',
+      x: Math.cos(angle) * WINDOW_FLOWER.petalRadius,
+      y: Math.sin(angle) * WINDOW_FLOWER.petalRadius,
+      rotation: angle - Math.PI / 2,
+    });
+  });
+
+  // مرکز برجستهٔ گل
+  plan.push({ name: 'FlowerBoss', part: 'boss', x: 0, y: 0, rotation: 0 });
+
+  // دو پیچک S شکل، با برگ‌های یک‌درمیان و جوانهٔ نوک — همگی در حالت پایه
+  const vines = windowFlowerVines(1);
+  for (const run of [
+    { name: 'VineTop', points: vines.top },
+    { name: 'VineBottom', points: vines.bottom },
+  ]) {
+    plan.push({ name: run.name, part: 'vine', x: 0, y: 0, rotation: 0, points: run.points });
+
+    const curve = new THREE.CatmullRomCurve3(run.points);
+    for (let index = 0; index < WINDOW_FLOWER.leafCount / 2; index++) {
+      const t = 0.3 + index * 0.36;
+      const point = curve.getPointAt(t);
+      const tangent = curve.getTangentAt(t);
+      const sideSign = index % 2 === 0 ? 1 : -1;
+      const leafAngle = Math.atan2(tangent.y, tangent.x) + sideSign * 1.05;
+      plan.push({
+        name: `FlowerLeaf_${run.name}_${index}`,
+        part: 'leaf',
+        x: point.x + Math.cos(leafAngle) * (WINDOW_FLOWER.leafLength * 0.85),
+        y: point.y + Math.sin(leafAngle) * (WINDOW_FLOWER.leafLength * 0.85),
+        rotation: leafAngle - Math.PI / 2,
+      });
+    }
+
+    const tip = curve.getPointAt(1);
+    plan.push({
+      name: `FlowerBud_${run.name}`,
+      part: 'bud',
+      x: tip.x,
+      y: tip.y + 0.012,
+      rotation: 0,
+    });
+  }
+
+  if (mirror === 1) return plan;
+  return plan.map((piece) => ({
+    ...piece,
+    x: -piece.x,
+    // پیچک هندسه‌اش از نقاط ساخته می‌شود، پس چرخشش را دست نمی‌زنیم؛
+    // وگرنه یک π اضافه، پیچک بالا و پایین را جابه‌جا می‌کند و قرینه‌سازی
+    // بی‌اثر می‌شود. بقیهٔ قطعه‌ها (بیضی‌ها) با φ ← π − φ قرینه می‌شوند.
+    rotation: piece.part === 'vine' ? piece.rotation : Math.PI - piece.rotation,
+    points: piece.points?.map((point) => new THREE.Vector3(-point.x, point.y, point.z)),
+  }));
 }
 
 export interface LobbyDoorMaps {
@@ -169,10 +288,11 @@ export interface LobbyDoorInstance {
 }
 
 /**
- * مقیاس UV متری چوب: یک کاشی بافت روی ۲٫۵ متر.
- * کل لنگه (۲٫۵ متر) دقیقاً در یک کاشی جا می‌شود، پس هیچ درز تکرار روی در نمی‌افتد.
+ * مقیاس UV متری چوب: یک کاشی بافت روی کل ارتفاع لنگه.
+ * از `leafHeight` مشتق می‌شود، پس هر بار که در بلندتر/کوتاه‌تر شود همان یک
+ * کاشی روی لنگه می‌نشیند و هیچ درز تکرار روی در نمی‌افتد.
  */
-export const WOOD_UV_SCALE = 0.4;
+export const WOOD_UV_SCALE = 1 / LOBBY_DOOR.leafHeight;
 
 /**
  * UV متریک برای چوب در: به‌جای UV پیش‌فرض جعبه (۰..۱ روی هر رخ، که بافت را
@@ -551,6 +671,8 @@ export function createLobbyDoor(options: LobbyDoorOptions = {}): LobbyDoorInstan
     // هر لنگه از نواری از بافت نمونه می‌گیرد که کامل داخل [۰،۱] بیفتد؛
     // وگرنه لبهٔ تکرار بافت (u = ۰) به‌صورت یک خط درز روی چوب دیده می‌شود.
     const grainUOffset = side < 0 ? 0.12 : 0.55;
+    // بازبینی (امیر): گلِ روی شیشهٔ لنگهٔ راست **آینهٔ** لنگهٔ چپ است، نه کپی آن
+    const mirror: WindowFlowerMirror = side < 0 ? 1 : -1;
     const leaf = new THREE.Group();
     leaf.name = side < 0 ? 'LobbyDoorLeafLeft' : 'LobbyDoorLeafRight';
     leaf.position.set(side * leafCenterX, 0, 0);
@@ -623,96 +745,62 @@ export function createLobbyDoor(options: LobbyDoorOptions = {}): LobbyDoorInstan
       leaf.add(stile);
     }
 
-    // نقش‌نگاری آهنی **گل** روی شیشهٔ مستطیلی (بازبینی: جای میله‌های راست را
-    // یک گل آهنی چکش‌کاری‌شده گرفت — حلقه، هشت گلبرگ، مرکز گل و دو پیچک
-    // S شکل با برگ و جوانه). هیچ میلهٔ مستقیمی روی شیشه نمانده است.
+    // نقش‌نگاری آهنی **گل** روی شیشهٔ مستطیلی — حلقه، هشت گلبرگ، مرکز گل و دو
+    // پیچک S شکل با برگ و جوانه. هیچ میلهٔ مستقیمی روی شیشه نیست.
+    // بازبینی (امیر): قطعه‌ها از `windowFlowerPlan(mirror)` خوانده می‌شوند و
+    // لنگهٔ راست آینهٔ لنگهٔ چپ است، پس گلِ دو لنگه یکی نیست بلکه قرینه است.
     const tracery = new THREE.Group();
     tracery.name = `${leaf.name}_WindowTracery`;
     const flowerY = LOBBY_DOOR.windowCenterY;
     const flowerZ = frontZ + 0.05;
     // کرهٔ واحد که برای گلبرگ و برگ با مقیاس کشیده می‌شود (هندسهٔ مشترک)
     const petalGeometry = new THREE.SphereGeometry(1, 12, 8);
+    const bossGeometry = new THREE.SphereGeometry(WINDOW_FLOWER.bossRadius, 12, 10);
+    const budGeometry = new THREE.SphereGeometry(WINDOW_FLOWER.budRadius, 12, 10);
 
-    // حلقهٔ گل وسط
-    const flowerRing = new THREE.Mesh(
-      new THREE.TorusGeometry(WINDOW_FLOWER.ringRadius, WINDOW_FLOWER.ringTube, 8, 32),
-      ironTraceryMat,
-    );
-    flowerRing.name = `${leaf.name}_FlowerRing`;
-    flowerRing.position.set(0, flowerY, flowerZ);
-    tracery.add(flowerRing);
-
-    // گلبرگ‌های گل وسط — یکنواخت دور حلقه
-    for (const angle of windowFlowerPetalAngles()) {
-      const petal = new THREE.Mesh(petalGeometry, ironTraceryMat);
-      petal.name = `${leaf.name}_FlowerPetal_${Math.round((angle / (Math.PI * 2)) * WINDOW_FLOWER.petalCount)}`;
-      petal.scale.set(WINDOW_FLOWER.petalWidth, WINDOW_FLOWER.petalLength, 0.006);
-      petal.position.set(
-        Math.cos(angle) * WINDOW_FLOWER.petalRadius,
-        flowerY + Math.sin(angle) * WINDOW_FLOWER.petalRadius,
-        flowerZ,
-      );
-      // محور دراز برگ/گلبرگ در مختصات محلی y است؛ بچرخان تا به سمت بیرون بنشیند
-      petal.rotation.z = angle - Math.PI / 2;
-      tracery.add(petal);
-    }
-
-    // مرکز برجستهٔ گل
-    const flowerBoss = new THREE.Mesh(
-      new THREE.SphereGeometry(WINDOW_FLOWER.bossRadius, 12, 10),
-      ironTraceryMat,
-    );
-    flowerBoss.name = `${leaf.name}_FlowerBoss`;
-    flowerBoss.scale.z = 0.5;
-    flowerBoss.position.set(0, flowerY, flowerZ + 0.004);
-    tracery.add(flowerBoss);
-
-    // دو پیچک گلدار بالا و پایین: منحنی نرم + برگ + جوانهٔ نوک
-    const vines = windowFlowerVines();
-    for (const run of [
-      { name: 'VineTop', points: vines.top },
-      { name: 'VineBottom', points: vines.bottom },
-    ]) {
-      const curve = new THREE.CatmullRomCurve3(
-        run.points.map((point) => new THREE.Vector3(point.x, flowerY + point.y, flowerZ)),
-      );
-      const vine = new THREE.Mesh(
-        new THREE.TubeGeometry(curve, 24, WINDOW_FLOWER.vineRadius, 6, false),
-        ironTraceryMat,
-      );
-      vine.name = `${leaf.name}_${run.name}`;
-      tracery.add(vine);
-
-      // دو برگ روی هر پیچک، یک‌درمیان چپ و راست
-      for (let index = 0; index < WINDOW_FLOWER.leafCount / 2; index++) {
-        const t = 0.3 + index * 0.36;
-        const point = curve.getPointAt(t);
-        const tangent = curve.getTangentAt(t);
-        const sideSign = index % 2 === 0 ? 1 : -1;
-        const leafAngle = Math.atan2(tangent.y, tangent.x) + sideSign * 1.05;
-        const leafMesh = new THREE.Mesh(petalGeometry, ironTraceryMat);
-        leafMesh.name = `${leaf.name}_FlowerLeaf_${run.name}_${index}`;
-        leafMesh.scale.set(WINDOW_FLOWER.leafWidth, WINDOW_FLOWER.leafLength, 0.006);
-        // برگ با پایه‌اش به پیچک می‌چسبد، نه شناور دور از آن
-        leafMesh.position.set(
-          point.x + Math.cos(leafAngle) * (WINDOW_FLOWER.leafLength * 0.85),
-          point.y + Math.sin(leafAngle) * (WINDOW_FLOWER.leafLength * 0.85),
-          flowerZ,
+    for (const piece of windowFlowerPlan(mirror)) {
+      let mesh: THREE.Mesh;
+      if (piece.part === 'ring') {
+        mesh = new THREE.Mesh(
+          new THREE.TorusGeometry(WINDOW_FLOWER.ringRadius, WINDOW_FLOWER.ringTube, 8, 32),
+          ironTraceryMat,
         );
-        leafMesh.rotation.z = leafAngle - Math.PI / 2;
-        tracery.add(leafMesh);
+      } else if (piece.part === 'vine') {
+        // مفتول خمیده: منحنی Catmull-Rom روی همان نقاطِ (لازمه) قرینه‌شده.
+        // نقاط در مختصات محلی شیشه‌اند و جابه‌جایی گل (flowerY/flowerZ)
+        // مثل بقیهٔ قطعه‌ها روی خودِ مش اعمال می‌شود، نه داخل هندسه.
+        const curve = new THREE.CatmullRomCurve3(
+          (piece.points ?? []).map((point) => new THREE.Vector3(point.x, point.y, 0)),
+        );
+        mesh = new THREE.Mesh(
+          new THREE.TubeGeometry(curve, 24, WINDOW_FLOWER.vineRadius, 6, false),
+          ironTraceryMat,
+        );
+      } else if (piece.part === 'boss') {
+        mesh = new THREE.Mesh(bossGeometry, ironTraceryMat);
+        mesh.scale.z = 0.5;
+      } else if (piece.part === 'bud') {
+        mesh = new THREE.Mesh(budGeometry, ironTraceryMat);
+        mesh.scale.set(1, 1.25, 0.5);
+      } else {
+        // گلبرگ و برگ: همان کرهٔ کشیده (بیضی) با محور دراز رو به بیرون
+        mesh = new THREE.Mesh(petalGeometry, ironTraceryMat);
+        const isPetal = piece.part === 'petal';
+        mesh.scale.set(
+          isPetal ? WINDOW_FLOWER.petalWidth : WINDOW_FLOWER.leafWidth,
+          isPetal ? WINDOW_FLOWER.petalLength : WINDOW_FLOWER.leafLength,
+          0.006,
+        );
       }
-
-      // جوانهٔ نوک پیچک
-      const tip = curve.getPointAt(1);
-      const bud = new THREE.Mesh(
-        new THREE.SphereGeometry(WINDOW_FLOWER.budRadius, 12, 10),
-        ironTraceryMat,
+      mesh.name = `${leaf.name}_${piece.name}`;
+      // گلبرگ‌ها، مرکز و حلقه روی سطح گل؛ برگ و جوانه از پیش جابه‌جا شده‌اند
+      mesh.position.set(
+        piece.x,
+        flowerY + piece.y,
+        flowerZ + (piece.part === 'boss' ? 0.004 : 0),
       );
-      bud.name = `${leaf.name}_FlowerBud_${run.name}`;
-      bud.scale.set(1, 1.25, 0.5);
-      bud.position.set(tip.x, tip.y + 0.012, flowerZ);
-      tracery.add(bud);
+      mesh.rotation.z = piece.rotation;
+      tracery.add(mesh);
     }
     leaf.add(tracery);
 
