@@ -198,57 +198,80 @@ describe('پردۀ پنجره‌ها — چین‌چینِ عمودی', () => {
   });
 });
 
-describe('پردۀ پنجره‌ها — تیرگیِ حاله‌ایِ بالا و پایین', () => {
-  it('وسط قرمزِ معمولی و دو سر قرمزِ تیره است — نه سیاه', () => {
-    expect(curtainShade(0.5)).toBeGreaterThan(0.9);
-    const edge = 1 - CURTAIN.endDarken;
-    expect(Math.abs(curtainShade(0) - edge)).toBeLessThan(0.02);
-    expect(Math.abs(curtainShade(1) - edge)).toBeLessThan(0.02);
-    // بازبینی دومِ امیر: «مشکی‌ها کمتر بشه» ⇒ لبه هرگز زیرِ ۰٫۴۵ نمی‌رود
-    expect(curtainShade(0)).toBeGreaterThan(0.45);
-    expect(curtainShade(1)).toBeGreaterThan(0.45);
-    // و حاله پهن است: تا ۳۰٪ ارتفاع هنوز نزدیکِ نورِ کامل است
-    const peak = Math.max(...Array.from({ length: 41 }, (_, i) => curtainShade(0.2 + i * 0.015)));
-    expect(curtainShade(0.3)).toBeGreaterThan(0.7 * peak);
-    expect(curtainShade(0.7)).toBeGreaterThan(0.6 * peak);
-    // ولی دو سر محسوس تیره‌ترند (وگرنه پرده یکدست می‌شود)
-    expect(curtainShade(0.06)).toBeLessThan(0.72);
-    expect(curtainShade(0.94)).toBeLessThan(0.72);
-    // لبۀ بالا کمی تیره‌تر از لبۀ پایین است (سایۀ سرِ پرده)
-    expect(curtainShade(0.98)).toBeLessThan(curtainShade(0.02));
+describe('پردۀ پنجره‌ها — نوارِ سیاهِ باریک در دو سر و بدنۀ قرمز', () => {
+  it('سیاهی فقط یک نوارِ ~۶ سانتی‌متری است و بقیۀ پرده قرمزِ سیراب', () => {
+    // خواستۀ امیر: «یه نوار خیلی ریز بالا و پایین مشکی باشه بقیش قرمز باشه»
+    const N = 1024;
+    let dark = 0;
+    let black = 0;
+    for (let i = 0; i < N; i++) {
+      const sh = curtainShade(i / (N - 1));
+      if (sh < 0.5) dark++;
+      if (sh < 0.02) black++;
+    }
+    // «نوار» بودن: کمتر از ۱۰٪ قدِ پرده در حالِ گذار است و کمتر از ۶٪ سیاهِ مطلق
+    expect(dark / N).toBeLessThan(0.1);
+    expect(black / N).toBeLessThan(0.06);
+    // لبه‌ها واقعاً خاموش‌اند (نه «کم‌نور»؛ درسِ دورِ دوم: آن‌جا سیاه می‌خواهیم)
+    expect(curtainShade(0)).toBeLessThan(0.002);
+    expect(curtainShade(1)).toBeLessThan(0.02);
+    // و ۸۵٪ قدِ پرده هیچ تاریکیِ جهانی ندارد: هیچ حالۀ پهن روی بدنۀ قرمز نیفتد
+    expect(curtainShade(0.5)).toBeGreaterThan(0.995);
+    expect(curtainShade(0.15)).toBeGreaterThan(0.995);
+    expect(curtainShade(0.85)).toBeGreaterThan(0.95);
+    // نوارِ سرِ پرده کمی بلندتر است (سایۀ جعبۀ نورِ بالای سردر)
+    expect(curtainShade(0.95)).toBeLessThan(curtainShade(0.05));
   });
 
-  it('گذار محو و پیوسته است: هیچ پرشِ تندی در پروفیل نیست', () => {
-    const n = 512;
+  it('گذارِ نوار کوتاه است ولی پیوسته: لبۀ بریده و پلکانی نمی‌سازد', () => {
+    const N = 512;
+    const half = Math.floor(N * 0.2);
     let maxStep = 0;
+    let monotone = true;
     let prev = curtainShade(0);
-    for (let i = 1; i < n; i++) {
-      const cur = curtainShade(i / (n - 1));
-      maxStep = Math.max(maxStep, Math.abs(cur - prev));
+    for (let i = 1; i <= half; i++) {
+      const cur = curtainShade(i / (N - 1));
+      maxStep = Math.max(maxStep, cur - prev);
+      if (cur < prev - 1e-9) monotone = false;
       prev = cur;
     }
-    // گذار حالا هم پهن‌تر است هم نرم‌تر ⇒ گامِ مجاور باید خیلی ریز باشد
-    expect(maxStep).toBeLessThan(0.008);
-    // و پروفیل تک‌موج است: یک بار تاریک→روشن و یک بار روشن→تاریک
-    const { values: luma } = rowLuma(createCurtainFabricMaps().colorMap);
-    const values = smooth(luma, 25);
-    // تک‌موجِ حاله‌ای: اوج در میانه و از دو طرف یکنواخت کم می‌شود
-    let peak = 0;
-    for (let i = 1; i < values.length; i++) if (values[i] > values[peak]) peak = i;
-    expect(peak).toBeGreaterThan(values.length * 0.35);
-    expect(peak).toBeLessThan(values.length * 0.65);
-    let dip = 0;
-    for (let i = 1; i < peak; i++) dip = Math.max(dip, values[i - 1] - values[i]);
-    expect(dip).toBeLessThan(0.004);
-    let rise = 0;
-    for (let i = peak + 1; i < values.length; i++) rise = Math.max(rise, values[i] - values[i - 1]);
-    expect(rise).toBeLessThan(0.004);
-    const mid = values[Math.floor(values.length / 2)];
-    // دو سر «تیرۀ سرخ»‌اند، نه سیاهیِ مطلق: بین ۰٫۳ تا ۰٫۷۵ِ نورِ میانه
-    expect(values[0]).toBeLessThan(0.75 * mid);
-    expect(values[0]).toBeGreaterThan(0.3 * mid);
-    expect(values[values.length - 1]).toBeLessThan(0.75 * mid);
-    expect(values[values.length - 1]).toBeGreaterThan(0.3 * mid);
+    expect(monotone).toBe(true);
+    // گذار باید روی دستِ‌کم ۸ ردیف پهن شود، وگرنه یک خطِ یک‌پیکسلی است
+    expect(CURTAIN.blackFade - CURTAIN.blackBand).toBeGreaterThan(8 / N);
+    expect(maxStep).toBeLessThan(0.25);
+  });
+
+  it('پروفیلِ ارتفاعیِ نقشه: بدنه یکدست، دو سر خاموش، بدون لبۀ بریده', () => {
+    const maps = createCurtainFabricMaps();
+    const { values: raw } = rowLuma(maps.colorMap);
+    maps.dispose();
+    const n = raw.length;
+    // نویزِ بافتِ مخمل ردیف‌به‌ردیف فرق می‌کند (این خوب است) ⇒ برای سنجشِ
+    // «یکدستیِ بدنۀ پرده» پروفیل را نرم می‌کنیم
+    const luma = smooth(raw, 33);
+    let bMin = 1;
+    let bMax = 0;
+    for (let i = Math.floor(n * 0.15); i < Math.floor(n * 0.85); i++) {
+      bMin = Math.min(bMin, luma[i]);
+      bMax = Math.max(bMax, luma[i]);
+    }
+    // بدنۀ پرده یکدست قرمز است: هیچ حالۀ پهنی روشنی را از میانه کم نکند
+    // (۵٪ به‌جای صفر، چون بافتِ مخمل خودِ‌اش ردیف‌به‌ردیف کمی فرق می‌کند —
+    // قراردادِ «نبودِ حالۀ پهن» روی خودِ curtainShade هم قفل شده است)
+    expect((bMax - bMin) / bMin).toBeLessThan(0.05);
+    expect(bMin).toBeGreaterThan(0.1);
+    // دو سر خاموش‌اند (روی پروفیلِ خام می‌سنجیم؛ پنجرۀ نرم‌کردن تا داخلِ
+    // گذار کشیده می‌شود وگرنه لبه را «روشن‌تر از واقع» نشان می‌دهد)
+    expect(raw[0]).toBeLessThan(0.06 * bMin);
+    expect(raw[n - 1]).toBeLessThan(0.06 * bMin);
+    // و افت روی چند ردیف پهن می‌شود، نه یک خطِ یک‌پیکسلی
+    const body = (bMin + bMax) / 2;
+    let transition = 0;
+    for (let i = 0; i < n; i++) {
+      if (luma[i] > 0.1 * body && luma[i] < 0.9 * body) transition++;
+    }
+    expect(transition).toBeGreaterThan(6);
+    expect(transition).toBeLessThan(n * 0.2);
   });
 });
 
@@ -271,7 +294,7 @@ describe('پردۀ پنجره‌ها — نقشه‌ها', () => {
       expect(colorMap.colorSpace).toBe(THREE.SRGBColorSpace);
     });
 
-    it('رنگ: دو سر تیرۀ سرخ، وسط قرمزِ معمولی و چین‌ها در بافت خوانا هستند', () => {
+    it('رنگ: بدنۀ قرمزِ سیراب، نوارِ خاموشِ دو سر و چین‌های خوانا', () => {
       const data = colorMap.image.data as Uint8Array;
       const n = CURTAIN.textureSize;
       const mid = Math.floor(n / 2);
@@ -290,12 +313,31 @@ describe('پردۀ پنجره‌ها — نقشه‌ها', () => {
       }
       topRed /= n;
       botRed /= n;
-      expect(midRed).toBeGreaterThan(80);
-      expect(midRed).toBeLessThan(215);
-      expect(topRed).toBeLessThan(0.75 * midRed);
-      expect(topRed).toBeGreaterThan(0.3 * midRed);
-      expect(botRed).toBeLessThan(0.75 * midRed);
-      expect(botRed).toBeGreaterThan(0.3 * midRed);
+      expect(midRed).toBeGreaterThan(110);
+      expect(midRed).toBeLessThan(235);
+      // نوارِ بالا/پایین خاموش است (پرسشِ امیر فقط همین دو نوار بود)
+      expect(topRed).toBeLessThan(0.15 * midRed);
+      expect(botRed).toBeLessThan(0.15 * midRed);
+      // ته‌رنگ در ناحیۀ گذار هم باید قرمز باشد (درسِ دورِ دوم: فقط نور را کم
+      // کردیم و رنگ مُرد ⇒ اینجا R/G و R/B را روی ردیف‌های نوار هم می‌سنجیم)
+      const hueRatio = (py: number) => {
+        let rg = 0;
+        let rb = 0;
+        for (let px = 0; px < n; px += 2) {
+          const o = (py * n + px) * 4;
+          const rr = data[o];
+          rg += rr / Math.max(1, data[o + 1]);
+          rb += rr / Math.max(1, data[o + 2]);
+        }
+        const m = Math.ceil(n / 2);
+        return { rg: rg / m, rb: rb / m };
+      };
+      const midHue = hueRatio(mid);
+      const fadeHue = hueRatio(Math.round(n * (CURTAIN.blackBand + CURTAIN.blackFade) * 0.5));
+      expect(midHue.rg).toBeGreaterThan(4);
+      expect(midHue.rb).toBeGreaterThan(2.5);
+      expect(fadeHue.rg).toBeGreaterThan(4);
+      expect(fadeHue.rb).toBeGreaterThan(2.5);
       // سرخ غالب است (مخمل، نه بنفش/قهوه‌ای) و سبزِ کم
       const c = at(Math.round(n * 0.31), mid);
       expect(c.r).toBeGreaterThan(c.g * 2.2);
@@ -340,19 +382,20 @@ describe('پردۀ پنجره‌ها — نقشه‌ها', () => {
       expect(rSum / (rd.length / 4)).toBeGreaterThan(0.8);
     });
 
-    it('نورِ پشتِ پرده در دو سر خاموش می‌شود (وگرنه سیاهیِ لبه‌ها می‌سوزد)', () => {
+    it('نورِ پشتِ پرده: بدنۀ پرده می‌درخشد و نوارِ دو سر کاملاً خاموش است', () => {
       const { values } = rowLuma(glowMap);
       const n = values.length;
       const mid = values[Math.floor(n / 2)];
       expect(mid).toBeGreaterThan(0.3);
-
-      // pedestalِ کوچک: نورِ پشتِ پرده در دو سر خاموش می‌شود ولی سیاهیِ مطلق نمی‌شود
-      expect(values[0]).toBeLessThan(0.2 * mid);
-      expect(values[0]).toBeGreaterThan(0.005 * mid);
-      expect(values[n - 1]).toBeLessThan(0.22 * mid);
+      // نوارِ دو سر هیچ نوری از پشت ندارد (برخلاف دورِ دوم؛ امیر آن‌جا سیاه می‌خواهد)
+      expect(values[0]).toBeLessThan(0.03 * mid);
+      expect(values[n - 1]).toBeLessThan(0.04 * mid);
+      // و بدنۀ پرده از درون می‌درخشد: تا ۸۰٪ قدِ پرده نورِ پشت نزدیکِ بیشینه است
+      expect(values[Math.floor(n * 0.14)]).toBeGreaterThan(0.9 * mid);
+      expect(values[Math.floor(n * 0.86)]).toBeGreaterThan(0.85 * mid);
       let maxStep = 0;
       for (let i = 1; i < n; i++) maxStep = Math.max(maxStep, Math.abs(values[i] - values[i - 1]));
-      expect(maxStep).toBeLessThan(0.03);
+      expect(maxStep).toBeLessThan(0.06);
     });
     it('نقشه‌ها قابلِ آزادکردن‌اند و در حلقۀ geometry هم دفع می‌شوند', () => {
       expect(typeof maps.dispose).toBe('function');
