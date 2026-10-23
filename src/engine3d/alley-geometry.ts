@@ -782,10 +782,11 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
     roughnessMap: curtainMaps.roughnessMap,
     roughness: 1,
     metalness: 0,
-    emissive: new THREE.Color(0x8a1b24),
+    emissive: new THREE.Color(0x9c2130),
     emissiveMap: curtainMaps.glowMap,
-    // نورِ پشتِ پرده: کم تا مخمل «نئون» نشود و دو سرِ تیره واقعاً تاریک بمانند
-    emissiveIntensity: 0.55,
+    // نورِ پشتِ پرده: پرده از درون می‌درخشد (قرمزِ سیراب) و نوارِ دو سر چون
+    // glowMap آنجا صفر است، بی‌نور و سیاه می‌ماند
+    emissiveIntensity: 0.52,
     envMap: environmentMap,
     envMapIntensity: 0.06,
   });
