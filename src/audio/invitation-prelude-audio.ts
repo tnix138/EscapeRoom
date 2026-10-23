@@ -4,11 +4,13 @@
  * جایگزین نوسان‌سازهای ثابت قبلی (۱۱۰/۱۶۴/۲۲۰ هرتز که صدای وزوز/نویز یکنواخت می‌دادند).
  *
  * معماری صوتی (۱۰۰٪ Web Audio API، بدون فایل خارجی و بدون هیچ مولد نویز سفید/صورتی):
- *  ۱. پیانوی نمدی تاریک (Felt Piano Arpeggio) در گام ر مینور هارمونیک — حس رازآلود Escape Room
- *  ۲. ملودی ظریف سلستا / جعبهٔ موسیقی عتیقه (Antique Celesta Counter-Melody) در اکتاو بالا
- *  ۳. باس گرم و نرم ویولنسل (Warm Bowed Cello) در ابتدای هر میزان با فیلتر پایین‌گذر عمیق
- *  ۴. پژواک استریوی تالار اپرا (Warm Stereo Hall Echo) با میرایی فرکانس‌های تیز
- *  ۵. زنگ ظریف هماهنگ با باز شدن پاکت (`card`) و نمایان شدن بلیط‌ها (`tickets`)
+ *  ۱. پخش خودکار و نرم از لحظهٔ ورود به صفحه با Fade-In مخملی ۱٫۴ ثانیه‌ای + بازگشایی خودکار
+ *     AudioContext با اولین تعامل کاربر در مرورگرهایی که Autoplay سرد را معلق نگه می‌دارند
+ *  ۲. تراز صدای نرمال و ملایم (پیش‌فرض ۴۵٪ با سقف بهرهٔ کنترل‌شده) تا گوش را خسته یا اذیت نکند
+ *  ۳. پیانوی نمدی تاریک (Felt Piano Arpeggio) در گام ر مینور هارمونیک — حس رازآلود Escape Room
+ *  ۴. ملودی ظریف سلستا / جعبهٔ موسیقی عتیقه (Antique Celesta Counter-Melody) در اکتاو بالا
+ *  ۵. باس گرم و نرم ویولنسل (Warm Bowed Cello) در ابتدای هر میزان با فیلتر پایین‌گذر عمیق
+ *  ۶. پژواک استریوی تالار اپرا (Warm Stereo Hall Echo) + زنگ لطیف باز شدن پاکت و بلیط‌ها
  */
 
 export type InvitationAudioScene = 'envelope' | 'card' | 'tickets';
@@ -34,6 +36,24 @@ export interface InvitationBarSpec {
 /** طول هر نت چنگ (ثانیه) — حدود ۷۹ ضرب در دقیقه، سنگین و معمایی */
 export const INVITATION_EIGHTH_SEC = 0.38;
 export const INVITATION_STEPS_PER_BAR = 8;
+
+/** بلندی پیش‌فرض نرمال و ملایم در بدو ورود خودکار به صفحهٔ دعوت‌نامه */
+export const INVITATION_DEFAULT_VOLUME = 0.45;
+
+/** زمان ورود تدریجی صدا (ثانیه) تا شروع خودکار کاملاً نرم و بدون شوک صوتی باشد */
+export const INVITATION_FADE_IN_SEC = 1.4;
+
+/** ضریب سقف خروجی مستر برای حفظ صدای پس‌زمینه در محدودهٔ آرام و غیرخسته‌کننده */
+export const INVITATION_MAX_MASTER_GAIN = 0.34;
+
+const AUTOPLAY_UNLOCK_EVENTS = [
+  'pointerdown',
+  'touchstart',
+  'touchend',
+  'mousedown',
+  'keydown',
+  'click',
+] as const;
 
 /**
  * پارتیتور ۸ میزانی در ر مینور هارمونیک (Dmadd9 → BbMaj7#11 → Gm6 → A7b9 → Dm9 → Fmaj7/C → Edim7/Bb → A7sus4→A7)
@@ -126,13 +146,25 @@ export function midiToHz(midi: number): number {
 }
 
 export function clampUnitVolume(volume: number): number {
-  if (!Number.isFinite(volume)) return 0.7;
+  if (!Number.isFinite(volume)) return INVITATION_DEFAULT_VOLUME;
   return Math.min(1, Math.max(0, volume));
 }
 
-/** تراز خروجی نرمال‌شده بر حسب ولوم کاربر (بدون کلیپ یا اعوجاج) */
+/**
+ * بلندی صدای اولیهٔ دعوت‌نامه با سقف ملایم برای پخش خودکار:
+ * اگر کاربر قبلاً صدا را کمتر از حد نرمال تنظیم کرده باشد همان حفظ می‌شود،
+ * اما مقادیر بلندِ ذخیره‌شدهٔ قبلی در شروع خودکار به حد نرمال محدود می‌شوند.
+ */
+export function resolveInitialInvitationVolume(savedVolume?: number | null): number {
+  if (typeof savedVolume !== 'number' || !Number.isFinite(savedVolume) || savedVolume <= 0) {
+    return INVITATION_DEFAULT_VOLUME;
+  }
+  return Math.min(clampUnitVolume(savedVolume), INVITATION_DEFAULT_VOLUME);
+}
+
+/** تراز خروجی ملایم و نرمال‌شده بر حسب ولوم کاربر (بدون بلندی آزاردهنده یا اعوجاج) */
 export function computeInvitationMasterGain(volume: number): number {
-  return clampUnitVolume(volume) * 0.58;
+  return clampUnitVolume(volume) * INVITATION_MAX_MASTER_GAIN;
 }
 
 export class InvitationPreludeAudio {
@@ -140,12 +172,14 @@ export class InvitationPreludeAudio {
   private masterGain: GainNode | null = null;
   private mixBus: GainNode | null = null;
   private timer: ReturnType<typeof setInterval> | null = null;
+  private detachUnlockListeners: (() => void) | null = null;
   private nextNoteTime = 0;
+  private fadeInEndTime = 0;
   private currentStep = 0;
   private volume: number;
   private disposed = false;
 
-  constructor(initialVolume = 0.7) {
+  constructor(initialVolume = INVITATION_DEFAULT_VOLUME) {
     this.volume = clampUnitVolume(initialVolume);
   }
 
@@ -162,32 +196,31 @@ export class InvitationPreludeAudio {
 
     const ctx = new Ctor();
     this.ctx = ctx;
-    if (ctx.state === 'suspended') {
-      ctx.resume().catch(() => undefined);
-    }
 
     const now = ctx.currentTime;
+    this.fadeInEndTime = now + INVITATION_FADE_IN_SEC;
+
     const master = ctx.createGain();
     const targetGain = computeInvitationMasterGain(this.volume);
     master.gain.setValueAtTime(0.0001, now);
-    master.gain.linearRampToValueAtTime(Math.max(0.0001, targetGain), now + 0.45);
+    master.gain.linearRampToValueAtTime(Math.max(0.0001, targetGain), this.fadeInEndTime);
     master.connect(ctx.destination);
     this.masterGain = master;
 
-    // فیلتر نهایی گرم‌کنندهٔ رنگ صدا تا هیچ تیزی دیجیتالی شنیده نشود
+    // فیلتر پایین‌گذر گرم روی ۲۵۰۰ هرتز برای نرمی کامل صدا و جلوگیری از هرگونه تیزی گوش‌خراش
     const warmMasterFilter = ctx.createBiquadFilter();
     warmMasterFilter.type = 'lowpass';
-    warmMasterFilter.frequency.value = 3400;
-    warmMasterFilter.Q.value = 0.55;
+    warmMasterFilter.frequency.value = 2500;
+    warmMasterFilter.Q.value = 0.5;
     warmMasterFilter.connect(master);
 
     const mixBus = ctx.createGain();
-    mixBus.gain.value = 0.88;
+    mixBus.gain.value = 0.85;
     this.mixBus = mixBus;
 
     // مسیر مستقیم (Dry)
     const dryGain = ctx.createGain();
-    dryGain.gain.value = 0.76;
+    dryGain.gain.value = 0.74;
     mixBus.connect(dryGain);
     dryGain.connect(warmMasterFilter);
 
@@ -198,7 +231,48 @@ export class InvitationPreludeAudio {
     this.nextNoteTime = now + 0.08;
     this.scheduleAhead();
     this.timer = setInterval(() => this.scheduleAhead(), 140);
+
+    this.ensureResumed(ctx);
     return true;
+  }
+
+  private ensureResumed(ctx: AudioContext): void {
+    if (ctx.state === 'suspended') {
+      ctx.resume().catch(() => undefined);
+    }
+    if (ctx.state === 'running' || typeof window === 'undefined' || !window.addEventListener) {
+      return;
+    }
+
+    const cleanup = () => {
+      if (!this.detachUnlockListeners) return;
+      this.detachUnlockListeners = null;
+      for (const evt of AUTOPLAY_UNLOCK_EVENTS) {
+        window.removeEventListener(evt, tryUnlock);
+      }
+    };
+
+    const tryUnlock = () => {
+      if (this.disposed || !this.ctx || this.ctx !== ctx) {
+        cleanup();
+        return;
+      }
+      if (ctx.state === 'running') {
+        cleanup();
+        return;
+      }
+      ctx
+        .resume()
+        .then(() => {
+          if (ctx.state === 'running') cleanup();
+        })
+        .catch(() => undefined);
+    };
+
+    this.detachUnlockListeners = cleanup;
+    for (const evt of AUTOPLAY_UNLOCK_EVENTS) {
+      window.addEventListener(evt, tryUnlock, { passive: true });
+    }
   }
 
   private buildWarmHallEcho(
@@ -207,11 +281,11 @@ export class InvitationPreludeAudio {
     destination: AudioNode,
   ): void {
     const wetGain = ctx.createGain();
-    wetGain.gain.value = 0.3;
+    wetGain.gain.value = 0.26;
 
     const echoFilter = ctx.createBiquadFilter();
     echoFilter.type = 'lowpass';
-    echoFilter.frequency.value = 1450;
+    echoFilter.frequency.value = 1350;
 
     const delayL = ctx.createDelay(1.0);
     delayL.delayTime.value = 0.24;
@@ -219,9 +293,9 @@ export class InvitationPreludeAudio {
     delayR.delayTime.value = 0.36;
 
     const fbL = ctx.createGain();
-    fbL.gain.value = 0.26;
+    fbL.gain.value = 0.24;
     const fbR = ctx.createGain();
-    fbR.gain.value = 0.24;
+    fbR.gain.value = 0.22;
 
     source.connect(echoFilter);
     echoFilter.connect(delayL);
@@ -234,9 +308,9 @@ export class InvitationPreludeAudio {
 
     if (typeof ctx.createStereoPanner === 'function') {
       const panL = ctx.createStereoPanner();
-      panL.pan.value = -0.45;
+      panL.pan.value = -0.42;
       const panR = ctx.createStereoPanner();
-      panR.pan.value = 0.45;
+      panR.pan.value = 0.42;
       delayL.connect(panL);
       delayR.connect(panR);
       panL.connect(wetGain);
@@ -250,10 +324,26 @@ export class InvitationPreludeAudio {
   }
 
   setVolume(nextVolume: number): void {
-    this.volume = clampUnitVolume(nextVolume);
+    const clamped = clampUnitVolume(nextVolume);
+    const unchanged = Math.abs(clamped - this.volume) < 1e-4;
+    this.volume = clamped;
     if (!this.ctx || !this.masterGain) return;
+
+    const now = this.ctx.currentTime;
+    // اگر هنوز در پنجرهٔ ورود نرم اولیه هستیم و مقدار تغییر نکرده، شیب ملایم Fade-In را نشکن
+    if (unchanged && now < this.fadeInEndTime) return;
+
     const target = computeInvitationMasterGain(this.volume);
-    this.masterGain.gain.setTargetAtTime(target, this.ctx.currentTime, 0.06);
+    this.masterGain.gain.cancelScheduledValues(now);
+    if (now < this.fadeInEndTime) {
+      this.masterGain.gain.setValueAtTime(Math.max(0.0001, this.masterGain.gain.value), now);
+      this.masterGain.gain.linearRampToValueAtTime(
+        Math.max(0.0001, target),
+        this.fadeInEndTime,
+      );
+    } else {
+      this.masterGain.gain.setTargetAtTime(target, now, 0.08);
+    }
   }
 
   /**
@@ -268,13 +358,13 @@ export class InvitationPreludeAudio {
       // گلیساندوی ظریف سلستا هنگام شکستن مُهر و بیرون آمدن دعوت‌نامه
       const notes = [74, 77, 81, 88];
       notes.forEach((midi, idx) => {
-        this.playCelestaNote(midiToHz(midi), base + idx * 0.095, 0.06, (idx - 1.5) * 0.16);
+        this.playCelestaNote(midiToHz(midi), base + idx * 0.095, 0.042, (idx - 1.5) * 0.15);
       });
     } else if (scene === 'tickets') {
       // آکورد زنگ‌دار نرم هنگام باز شدن دو بلیط تئاتر
       const notes = [69, 74, 77, 81];
       notes.forEach((midi, idx) => {
-        this.playCelestaNote(midiToHz(midi), base + idx * 0.11, 0.055, (idx - 1.5) * 0.14);
+        this.playCelestaNote(midiToHz(midi), base + idx * 0.11, 0.04, (idx - 1.5) * 0.13);
       });
     }
   }
@@ -302,17 +392,17 @@ export class InvitationPreludeAudio {
       this.playWarmCello(midiToHz(bar.bassMidi), time, barDuration * 0.94);
     }
 
-    // ۲) آرپژ پیانوی نمدی با تاکید طبیعی روی ضرب‌های ۱ و ۵
+    // ۲) آرپژ پیانوی نمدی با تاکید طبیعی و ملایم روی ضرب‌های ۱ و ۵
     const arpMidi = bar.arpeggioMidi[stepInBar];
     const isStrongBeat = stepInBar === 0 || stepInBar === 4;
-    const peakGain = isStrongBeat ? 0.145 : 0.105;
+    const peakGain = isStrongBeat ? 0.125 : 0.092;
     const stereoPan = ((stepInBar % 4) - 1.5) * 0.14;
     this.playFeltPianoNote(midiToHz(arpMidi), time, peakGain, stereoPan);
 
-    // ۳) ملودی سلستا / جعبهٔ موسیقی روی ضرب‌های تعیین‌شده
+    // ۳) ملودی سلستا / جعبهٔ موسیقی روی ضرب‌های تعیین‌شده (ملایم‌شده در اکتاو بالا)
     for (const [beat, celestaMidi] of bar.celestaHits) {
       if (beat === stepInBar) {
-        this.playCelestaNote(midiToHz(celestaMidi), time, 0.082, 0.18);
+        this.playCelestaNote(midiToHz(celestaMidi), time, 0.056, 0.16);
       }
     }
   }
@@ -341,15 +431,15 @@ export class InvitationPreludeAudio {
 
     const env = ctx.createGain();
     env.gain.setValueAtTime(0.0001, time);
-    env.gain.linearRampToValueAtTime(peakGain, time + 0.015);
+    env.gain.linearRampToValueAtTime(peakGain, time + 0.018);
     env.gain.exponentialRampToValueAtTime(peakGain * 0.34, time + 0.28);
     env.gain.exponentialRampToValueAtTime(0.0001, time + 1.65);
 
     const feltFilter = ctx.createBiquadFilter();
     feltFilter.type = 'lowpass';
-    feltFilter.frequency.setValueAtTime(Math.min(2100, freq * 4.4), time);
-    feltFilter.frequency.exponentialRampToValueAtTime(Math.max(260, freq * 1.8), time + 1.4);
-    feltFilter.Q.value = 0.6;
+    feltFilter.frequency.setValueAtTime(Math.min(1850, freq * 4.0), time);
+    feltFilter.frequency.exponentialRampToValueAtTime(Math.max(240, freq * 1.7), time + 1.4);
+    feltFilter.Q.value = 0.55;
 
     env.connect(feltFilter);
     this.connectWithPan(feltFilter, pan);
@@ -363,8 +453,8 @@ export class InvitationPreludeAudio {
     overtoneOsc.type = 'sine';
     overtoneOsc.frequency.value = freq * 2;
     const overtoneGain = ctx.createGain();
-    overtoneGain.gain.setValueAtTime(0.22, time);
-    overtoneGain.gain.exponentialRampToValueAtTime(0.01, time + 0.35);
+    overtoneGain.gain.setValueAtTime(0.18, time);
+    overtoneGain.gain.exponentialRampToValueAtTime(0.01, time + 0.32);
     overtoneOsc.connect(overtoneGain);
     overtoneGain.connect(env);
 
@@ -385,8 +475,8 @@ export class InvitationPreludeAudio {
 
     const env = ctx.createGain();
     env.gain.setValueAtTime(0.0001, time);
-    env.gain.linearRampToValueAtTime(peakGain, time + 0.009);
-    env.gain.exponentialRampToValueAtTime(0.0001, time + 1.35);
+    env.gain.linearRampToValueAtTime(peakGain, time + 0.012);
+    env.gain.exponentialRampToValueAtTime(0.0001, time + 1.3);
     this.connectWithPan(env, pan);
 
     const pureOsc = ctx.createOscillator();
@@ -394,40 +484,40 @@ export class InvitationPreludeAudio {
     pureOsc.frequency.value = freq;
     pureOsc.connect(env);
 
-    // هارمونیک زنگ نقره‌ای جعبهٔ موسیقی با میرایی بسیار سریع
+    // هارمونیک زنگ نقره‌ای بسیار ظریف با میرایی سریع
     const chimeOsc = ctx.createOscillator();
     chimeOsc.type = 'sine';
     chimeOsc.frequency.value = freq * 3;
     const chimeGain = ctx.createGain();
-    chimeGain.gain.setValueAtTime(0.09, time);
-    chimeGain.gain.exponentialRampToValueAtTime(0.0001, time + 0.14);
+    chimeGain.gain.setValueAtTime(0.05, time);
+    chimeGain.gain.exponentialRampToValueAtTime(0.0001, time + 0.12);
     chimeOsc.connect(chimeGain);
     chimeGain.connect(env);
 
     pureOsc.start(time);
     chimeOsc.start(time);
-    pureOsc.stop(time + 1.4);
-    chimeOsc.stop(time + 1.4);
+    pureOsc.stop(time + 1.36);
+    chimeOsc.stop(time + 1.36);
   }
 
   private playWarmCello(freq: number, time: number, durationSec: number): void {
     const ctx = this.ctx;
     if (!ctx || !this.mixBus) return;
 
-    const attack = Math.min(0.7, durationSec * 0.28);
+    const attack = Math.min(0.75, durationSec * 0.3);
     const releaseStart = Math.max(attack + 0.05, durationSec - 0.65);
 
     const env = ctx.createGain();
     env.gain.setValueAtTime(0.0001, time);
-    env.gain.linearRampToValueAtTime(0.115, time + attack);
-    env.gain.setValueAtTime(0.105, time + releaseStart);
+    env.gain.linearRampToValueAtTime(0.095, time + attack);
+    env.gain.setValueAtTime(0.088, time + releaseStart);
     env.gain.exponentialRampToValueAtTime(0.0001, time + durationSec);
 
     // فیلتر پایین‌گذر گرم برای حذف کامل هرگونه صدای وزوز/هارمونیک تیز در رژیستر بم
     const celloFilter = ctx.createBiquadFilter();
     celloFilter.type = 'lowpass';
-    celloFilter.frequency.value = 310;
-    celloFilter.Q.value = 0.75;
+    celloFilter.frequency.value = 290;
+    celloFilter.Q.value = 0.7;
 
     env.connect(celloFilter);
     this.connectWithPan(celloFilter, -0.1);
@@ -440,15 +530,15 @@ export class InvitationPreludeAudio {
     subOsc.type = 'sine';
     subOsc.frequency.value = freq;
     const subGain = ctx.createGain();
-    subGain.gain.value = 0.65;
+    subGain.gain.value = 0.55;
 
     // ویبراتوی ملایم آرشهٔ ویولنسل
     const vibrato = ctx.createOscillator();
     vibrato.type = 'sine';
-    vibrato.frequency.value = 4.6;
+    vibrato.frequency.value = 4.5;
     const vibratoDepth = ctx.createGain();
     vibratoDepth.gain.setValueAtTime(0, time);
-    vibratoDepth.gain.linearRampToValueAtTime(4.5, time + Math.min(0.9, durationSec * 0.5));
+    vibratoDepth.gain.linearRampToValueAtTime(4.0, time + Math.min(0.9, durationSec * 0.5));
     vibrato.connect(vibratoDepth);
     vibratoDepth.connect(warmOsc.detune);
 
@@ -468,6 +558,10 @@ export class InvitationPreludeAudio {
   dispose(): void {
     if (this.disposed) return;
     this.disposed = true;
+    if (this.detachUnlockListeners) {
+      this.detachUnlockListeners();
+      this.detachUnlockListeners = null;
+    }
     if (this.timer) {
       clearInterval(this.timer);
       this.timer = null;

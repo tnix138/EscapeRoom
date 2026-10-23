@@ -4,7 +4,11 @@ import { useEffect, useRef, useState } from 'react';
 import NarrationLayer from '../hud/NarrationLayer';
 import { INVITATION_CUES, INVITATION_DURATION_MS } from '../hud/narration/narration-track';
 import { readPreferences, writePreferences } from '../hud/narration/audio-preferences';
-import { InvitationPreludeAudio } from '../../audio/invitation-prelude-audio';
+import {
+  INVITATION_DEFAULT_VOLUME,
+  InvitationPreludeAudio,
+  resolveInitialInvitationVolume,
+} from '../../audio/invitation-prelude-audio';
 
 export interface InvitationCardVideoProps {
   playerName: string;
@@ -16,10 +20,12 @@ const DURATION_MS = INVITATION_DURATION_MS;
 
 export default function InvitationCardVideo({ playerName, seatLabel, onComplete }: InvitationCardVideoProps) {
   const [elapsed, setElapsed] = useState(0);
-  const [musicOn, setMusicOn] = useState(false);
-  const [volume, setVolume] = useState(0.7);
+  const [musicOn, setMusicOn] = useState(true);
+  const [volume, setVolume] = useState(INVITATION_DEFAULT_VOLUME);
   const engineRef = useRef<InvitationPreludeAudio | null>(null);
   const prevSceneRef = useRef<'envelope' | 'card' | 'tickets'>('envelope');
+  const didSyncPrefsRef = useRef(false);
+  const hasStartedOnceRef = useRef(false);
   const progress = Math.min(elapsed / DURATION_MS, 1);
   const scene = elapsed < 4_000 ? 'envelope' : elapsed < 11_000 ? 'card' : 'tickets';
 
@@ -29,12 +35,17 @@ export default function InvitationCardVideo({ playerName, seatLabel, onComplete 
     return () => window.clearInterval(timer);
   }, []);
 
-  // بلندی صدای انتخاب‌شده بعد از mount از مرورگر خوانده می‌شود (بدون اختلاف hydration).
+  // بلندی صدای اولیه در بازهٔ نرمال و ملایم بعد از mount از مرورگر خوانده می‌شود (بدون اختلاف hydration).
   useEffect(() => {
-    setVolume(readPreferences(window.localStorage).volume);
+    const initialVol = resolveInitialInvitationVolume(readPreferences(window.localStorage).volume);
+    setVolume(initialVol);
   }, []);
 
   useEffect(() => {
+    if (!didSyncPrefsRef.current) {
+      didSyncPrefsRef.current = true;
+      return;
+    }
     if (!musicOn) return;
     writePreferences(window.localStorage, { ...readPreferences(window.localStorage), muted: false, volume });
   }, [musicOn, volume]);
@@ -45,7 +56,11 @@ export default function InvitationCardVideo({ playerName, seatLabel, onComplete 
       engineRef.current = null;
       return;
     }
-    const engine = new InvitationPreludeAudio(volume);
+    const startVolume = hasStartedOnceRef.current
+      ? volume
+      : resolveInitialInvitationVolume(readPreferences(window.localStorage).volume);
+    hasStartedOnceRef.current = true;
+    const engine = new InvitationPreludeAudio(startVolume);
     engine.start();
     engineRef.current = engine;
     return () => {
