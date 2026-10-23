@@ -539,32 +539,8 @@ export function createLobbyDoor(options: LobbyDoorOptions = {}): LobbyDoorInstan
     lowerPanel.castShadow = true;
     leaf.add(lowerPanel);
 
-    // نوار برنجی نازک دقیقاً روی لبهٔ پنل (قلاب‌بندی)، نه شناور روی سطح در
-    const panelWidth = LOBBY_DOOR.leafWidth - 0.26;
-    const panelHeight = LOBBY_DOOR.lowerPanelHeight;
-    const bead = 0.022;
-    const beadZ = frontZ + 0.03;
-    for (const py of [-1, 1] as const) {
-      const rail = new THREE.Mesh(
-        new THREE.BoxGeometry(panelWidth, bead, 0.022),
-        brassMat,
-      );
-      rail.position.set(
-        0,
-        LOBBY_DOOR.lowerPanelCenterY + py * (panelHeight / 2 - bead / 2),
-        beadZ,
-      );
-      leaf.add(rail);
-    }
-    for (const px of [-1, 1] as const) {
-      const stile = new THREE.Mesh(new THREE.BoxGeometry(bead, panelHeight, 0.022), brassMat);
-      stile.position.set(
-        px * (panelWidth / 2 - bead / 2),
-        LOBBY_DOOR.lowerPanelCenterY,
-        beadZ,
-      );
-      leaf.add(stile);
-    }
+    // بازبینی: نوار برنجی دور پنل پایین حذف شد — پنل حالا فقط یک مستطیل
+    // چوبی برجستهٔ خالص است و قاب طلایی ندارد.
 
     // مستطیل عمودی شیشه در میانهٔ لنگه
     const glass = new THREE.Mesh(

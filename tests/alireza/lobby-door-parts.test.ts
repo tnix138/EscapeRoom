@@ -252,7 +252,7 @@ describe('درِ اصلی لابی: نیم‌دایرهٔ شیشه‌ای، دو
     alley.dispose();
   });
 
-  it('در: کیفیت بالا و طرح‌دار — بافت ۵۱۲ پیکسلی بلوط با رگه، پرتو مغزی، قوس و زبری', () => {
+  it('چوب در قهوه‌ایِ صاف است: بافت ۵۱۲ پیکسلی طرح‌دار، بدون هیچ سوراخ یا منفذ تیره', () => {
     const alley = buildAlley();
     const slab = alley.group.getObjectByName('LobbyDoorLeafLeft_Slab') as THREE.Mesh<
       THREE.BoxGeometry,
@@ -266,44 +266,49 @@ describe('درِ اصلی لابی: نیم‌دایرهٔ شیشه‌ای، دو
     expect(wood.normalMap).toBeInstanceOf(THREE.DataTexture);
     expect((wood.normalMap as THREE.DataTexture).image.width).toBe(512);
     expect(wood.roughnessMap).toBeInstanceOf(THREE.DataTexture);
-    // برجستگی رگه واضح است
+    // برجستگی رگه ملایم است، نه برجستگی حفره‌ای
     expect(wood.normalScale.x).toBeGreaterThan(1);
 
-    // رنگ بلوط: گرم و عسلی (کانال قرمز مسلط، روشنایی متوسط)
     const px = (wood.map as THREE.DataTexture).image.data as Uint8Array;
     let sumR = 0;
     let sumG = 0;
     let sumB = 0;
-    let dark = 0;
-    const columns: number[] = new Array(64).fill(0);
-    const columnCounts: number[] = new Array(64).fill(0);
-    for (let i = 0, p = 0; i < px.length; i += 4, p++) {
+    const lum: number[] = [];
+    for (let i = 0; i < px.length; i += 4) {
       sumR += px[i];
       sumG += px[i + 1];
       sumB += px[i + 2];
-      dark += px[i] < 40 ? 1 : 0;
-      const col = Math.floor(((p % 512) / 512) * 64);
-      columns[col] += 0.2126 * px[i] + 0.7152 * px[i + 1] + 0.0722 * px[i + 2];
-      columnCounts[col] += 1;
+      lum.push(0.2126 * px[i] + 0.7152 * px[i + 1] + 0.0722 * px[i + 2]);
     }
     const n = px.length / 4;
     const meanR = sumR / n;
     const meanG = sumG / n;
     const meanB = sumB / n;
+    // قهوه‌ای گرم: کانال قرمز مسلط، روشنایی متوسط رو به تاریک
     expect(meanR).toBeGreaterThan(meanG);
     expect(meanG).toBeGreaterThan(meanB);
-    expect(meanR).toBeGreaterThan(95); // بلوط روشن‌تر از قهوه‌ای تیرهٔ قبلی
-    expect(meanR).toBeLessThan(190);
+    expect(meanR).toBeGreaterThan(70);
+    expect(meanR).toBeLessThan(150);
 
-    // طرح‌دار است: روشنایی در عرض بافت نوسان محسوس دارد (نوارهای رگه)
-    const columnMeans = columns.map((sum, i) => sum / Math.max(1, columnCounts[i]));
+    const meanLum = lum.reduce((a, l) => a + l, 0) / n;
+    // هیچ «سوراخ‌سوراخی»: تقریباً هیچ پیکسل بسیار تیره‌ای روی چوب نیست
+    const veryDark = lum.filter((l) => l < meanLum * 0.55).length / n;
+    expect(veryDark).toBeLessThan(0.005);
+
+    // ولی طرح‌دار است: روشنایی در عرض بافت نوسان محسوس دارد (نوارهای رگه)
+    const columns: number[] = new Array(64).fill(0);
+    const columnCounts: number[] = new Array(64).fill(0);
+    for (let i = 0, p = 0; i < px.length; i += 4, p++) {
+      const col = Math.floor(((p % 512) / 512) * 64);
+      columns[col] += lum[p];
+      columnCounts[col] += 1;
+    }
+    const columnMeans = columns.map((sum, idx) => sum / Math.max(1, columnCounts[idx]));
     const colMean = columnMeans.reduce((a, b) => a + b, 0) / columnMeans.length;
     const colSd = Math.sqrt(
       columnMeans.reduce((a, b) => a + (b - colMean) ** 2, 0) / columnMeans.length,
     );
-    expect(colSd / colMean).toBeGreaterThan(0.03);
-    // منافذ و رگه‌های تیره وجود دارند ولی بافت را سیاه نمی‌کنند
-    expect(dark / n).toBeLessThan(0.08);
+    expect(colSd / colMean).toBeGreaterThan(0.02);
 
     // زبری هم نقاشی دارد، نه عدد ثابت
     const rp = (wood.roughnessMap as THREE.DataTexture).image.data as Uint8Array;
@@ -313,7 +318,53 @@ describe('درِ اصلی لابی: نیم‌دایرهٔ شیشه‌ای، دو
       rmin = Math.min(rmin, rp[i]);
       rmax = Math.max(rmax, rp[i]);
     }
-    expect(rmax - rmin).toBeGreaterThan(30);
+    expect(rmax - rmin).toBeGreaterThan(25);
+
+    alley.dispose();
+  });
+
+  it('مستطیل پایین در هیچ نوار طلایی/برنجی ندارد', () => {
+    const alley = buildAlley();
+    for (const id of ['Left', 'Right']) {
+      const leaf = alley.group.getObjectByName(`LobbyDoorLeaf${id}`) as THREE.Group;
+      expect(leaf, id).toBeDefined();
+      // هیچ جعبهٔ برنجی روی لنگه نیست؛ قاب دور پنل پایین کاملاً حذف شده است
+      const brassBoxes: string[] = [];
+      leaf.traverse((object) => {
+        const mesh = object as THREE.Mesh;
+        if (!mesh.isMesh) return;
+        const raw = mesh.material as THREE.Material | THREE.Material[];
+        const material = (Array.isArray(raw) ? raw[0] : raw) as THREE.MeshStandardMaterial | undefined;
+        const isBrass = material?.name === 'LobbyDoorBrass';
+        if (isBrass && mesh.geometry.type === 'BoxGeometry') {
+          brassBoxes.push(mesh.name || '(بی‌نام)');
+        }
+      });
+      expect(brassBoxes, id).toEqual([]);
+
+      // پنل پایین هم‌چنان هست و همان چوب لنگه را دارد
+      const panel = leaf.getObjectByName(`LobbyDoorLeaf${id}_LowerPanel`) as THREE.Mesh<
+        THREE.BufferGeometry,
+        THREE.MeshStandardMaterial
+      >;
+      expect(panel).toBeInstanceOf(THREE.Mesh);
+      expect(panel.material.name).toBe('LobbyDoorWood');
+      // هیچ قطعهٔ دیگری هم دقیقاً هم‌اندازهٔ لبهٔ پنل در ارتفاع پنل نشسته است
+      const panelBox = worldBox(panel);
+      const extraAtPanelEdge: string[] = [];
+      leaf.traverse((object) => {
+        const mesh = object as THREE.Mesh;
+        if (!mesh.isMesh || mesh === panel) return;
+        if (mesh.name.endsWith('_Slab') || mesh.name.endsWith('_WindowGlass')) return;
+        const box = worldBox(mesh);
+        const coversPanelTop =
+          Math.abs(box.max.y - panelBox.max.y) < 0.03 && box.max.x - box.min.x > 0.4;
+        const coversPanelBottom =
+          Math.abs(box.min.y - panelBox.min.y) < 0.03 && box.max.x - box.min.x > 0.4;
+        if (coversPanelTop || coversPanelBottom) extraAtPanelEdge.push(mesh.name || '(بی‌نام)');
+      });
+      expect(extraAtPanelEdge, id).toEqual([]);
+    }
 
     alley.dispose();
   });
