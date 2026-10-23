@@ -1230,22 +1230,21 @@ h1 em {
 }
 .invitation-canvas {
   position: relative;
-  flex: 1;
-  min-height: 500px;
+  flex: 1 1 auto;
+  min-height: 0;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 25px 20px 0;
+  justify-content: space-between;
+  padding: 14px 20px 6px;
 }
 .invitation-copy {
+  position: relative;
   z-index: 3;
   text-align: center;
-  position: absolute;
-  top: 6.5%;
-  left: 12px;
-  right: 12px;
+  flex: 0 0 auto;
+  margin: 0 auto 6px;
   animation: copy-arrive 0.8s ease-out both;
 }
 .invitation-kicker {
@@ -1278,54 +1277,65 @@ h1 em {
   margin: 6px 0 0;
 }
 .invitation-object {
-  width: min(82vw, 470px);
-  height: 370px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -38%);
+  width: min(86vw, 470px);
+  height: 358px;
+  position: relative;
+  flex: 0 0 auto;
+  margin: auto;
   perspective: 1100px;
   z-index: 2;
 }
 .envelope-shadow {
   position: absolute;
   left: 50%;
-  bottom: 13px;
+  bottom: 8px;
   transform: translateX(-50%);
   width: 76%;
-  height: 46px;
+  height: 42px;
   background: rgba(0, 0, 0, 0.56);
   border-radius: 50%;
   filter: blur(17px);
+  transition: transform 1.1s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 .velvet-envelope {
   position: absolute;
+  isolation: isolate;
   left: 50%;
-  top: 44px;
-  transform: translateX(-50%) rotateX(8deg);
-  width: min(73%, 340px);
-  height: 222px;
-  filter: drop-shadow(0 19px 23px rgba(0, 0, 0, 0.42));
-  transition: transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  top: 80px;
+  transform: translateX(-50%) rotateX(6deg);
+  width: min(80%, 344px);
+  height: 196px;
+  filter: drop-shadow(0 19px 23px rgba(0, 0, 0, 0.44));
+  transition:
+    transform 1.1s cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 0.6s ease;
 }
 .envelope-back {
   position: absolute;
+  z-index: 1;
   inset: 0;
-  background: linear-gradient(138deg, #762033, #3c101d 83%);
+  background: linear-gradient(180deg, #320b16 0%, #581526 52%, #350d18 100%);
   border: 1px solid #a17745;
-  box-shadow: inset 0 0 26px rgba(0, 0, 0, 0.38);
+  box-shadow: inset 0 10px 26px rgba(0, 0, 0, 0.52);
 }
 .envelope-letter {
   position: absolute;
-  left: 7%;
-  right: 7%;
-  top: 8%;
-  height: 112%;
-  background: #e6d6b8;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
-  transform: translateY(11%);
-  transition: transform 1.2s 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
-  padding: 9px;
+  z-index: 3;
+  left: 6%;
+  right: 6%;
+  top: 6px;
+  height: 184px;
+  background: linear-gradient(180deg, #efe1c6 0%, #e4d2b0 100%);
+  box-shadow:
+    0 10px 26px rgba(0, 0, 0, 0.42),
+    0 0 0 1px rgba(168, 138, 87, 0.35);
+  opacity: 0;
+  transform: translateY(10px) scale(0.97);
+  transition:
+    transform 1.05s 0.24s cubic-bezier(0.2, 0.82, 0.2, 1),
+    opacity 0.32s 0.18s ease;
+  padding: 7px;
+  pointer-events: none;
 }
 .letter-border {
   position: relative;
@@ -1333,8 +1343,11 @@ h1 em {
   border: 1px solid #a88a57;
   text-align: center;
   color: #43332a;
-  padding: 11px 10px 6px;
+  padding: 7px 10px 6px;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 }
 .letter-corner {
   position: absolute;
@@ -1364,26 +1377,30 @@ h1 em {
   font-size: var(--text-xs);
   font-family: Georgia, serif;
   letter-spacing: 0.2em;
+  line-height: 1.2;
   margin: 0;
   color: var(--paper-muted);
 }
 .letter-border h2 {
   font-family: "Vazirmatn Variable", serif;
-  font-size: 20px;
-  font-weight: 400;
-  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.25;
+  margin: 1px 0 0;
   color: #4d1a24;
 }
 .letter-divider {
   color: #98794a;
   font-size: var(--text-xs);
+  line-height: 1;
   display: block;
-  margin-top: -3px;
+  margin: 0 0 2px;
 }
 .mini-stage {
-  height: 52px;
+  height: 42px;
   width: 80%;
   margin: 1px auto 3px;
+  flex: 0 0 auto;
   position: relative;
   overflow: hidden;
   background:
@@ -1401,7 +1418,7 @@ h1 em {
   bottom: 0;
   left: 0;
   right: 0;
-  height: 13px;
+  height: 11px;
   background: linear-gradient(170deg, transparent 25%, #392028 26%);
 }
 .mini-curtain {
@@ -1430,7 +1447,7 @@ h1 em {
   top: 0;
   left: 42%;
   width: 60px;
-  height: 52px;
+  height: 44px;
   background: rgba(234, 196, 113, 0.22);
   clip-path: polygon(42% 0, 58% 0, 100% 100%, 0 100%);
 }
@@ -1443,24 +1460,25 @@ h1 em {
   text-shadow: 0 0 9px #d89f51;
 }
 .mini-singer {
-  top: 7px;
+  top: 5px;
   left: 49%;
-  font-size: 20px;
+  font-size: 18px;
 }
 .mini-dancer {
-  top: 16px;
+  top: 12px;
   left: 62%;
-  font-size: 20px;
+  font-size: 18px;
   transform: rotate(8deg);
 }
 .mini-violin {
-  top: 7px;
+  top: 5px;
   left: 35%;
-  font-size: var(--text-base);
+  font-size: var(--text-sm);
 }
 .letter-guest {
   font-size: var(--text-xs);
-  margin: 2px 0 0;
+  line-height: 1.3;
+  margin: 1px 0 0;
   color: #67523c;
 }
 .letter-guest strong {
@@ -1469,59 +1487,66 @@ h1 em {
 }
 .letter-seat {
   font-size: var(--text-xs);
+  line-height: 1.28;
   margin: 0;
   color: var(--paper-muted);
 }
 .letter-footer {
   font-size: var(--text-xs);
-  margin: 3px 0 0;
+  line-height: 1.25;
+  margin: 1px 0 0;
   color: var(--paper-muted);
 }
 .envelope-flap {
   position: absolute;
-  z-index: 3;
+  z-index: 5;
   top: 0;
   left: 0;
   right: 0;
-  height: 57%;
+  height: 52%;
   background: linear-gradient(145deg, #8b2935, #4d101d);
   clip-path: polygon(0 0, 100% 0, 50% 100%);
-  transform-origin: top;
+  transform-origin: top center;
   transition:
-    transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1),
-    z-index 0.1s 0.45s;
-  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.2));
+    transform 0.85s cubic-bezier(0.22, 0.8, 0.2, 1),
+    z-index 0s 0.26s,
+    background 0.4s 0.22s ease;
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.28));
 }
 .envelope-front {
   position: absolute;
   z-index: 4;
   inset: 0;
-  background: linear-gradient(35deg, #50101e 0%, #781b2b 49%, #5b1221 100%);
-  clip-path: polygon(0 0, 50% 51%, 100% 0, 100% 100%, 0 100%);
+  opacity: 1;
+  background: linear-gradient(35deg, #4b0e1b 0%, #781b2b 50%, #571120 100%);
+  clip-path: polygon(0 4%, 50% 44%, 100% 4%, 100% 100%, 0 100%);
+  border-left: 1px solid rgba(161, 119, 69, 0.55);
+  border-right: 1px solid rgba(161, 119, 69, 0.55);
   border-bottom: 1px solid #a17745;
+  filter: drop-shadow(0 -4px 7px rgba(10, 3, 6, 0.46));
 }
 .envelope-fold {
   position: absolute;
   inset: 0;
   background:
     linear-gradient(
-      145deg,
-      transparent 49.5%,
-      rgba(16, 7, 11, 0.22) 50%,
-      transparent 50.5%
+      148deg,
+      transparent 49.4%,
+      rgba(16, 7, 11, 0.26) 50%,
+      transparent 50.6%
     ),
     linear-gradient(
-      35deg,
-      transparent 49.5%,
-      rgba(255, 218, 155, 0.12) 50%,
-      transparent 50.5%
+      32deg,
+      transparent 49.4%,
+      rgba(255, 218, 155, 0.14) 50%,
+      transparent 50.6%
     );
 }
 .wax-seal {
   position: absolute;
-  z-index: 5;
+  z-index: 6;
   left: 50%;
-  top: 47%;
+  top: 48%;
   transform: translate(-50%, -50%);
   width: 45px;
   height: 45px;
@@ -1536,6 +1561,9 @@ h1 em {
   color: #51202a;
   font-size: var(--text-base);
   font-family: Georgia, serif;
+  transition:
+    opacity 0.28s ease,
+    transform 0.28s ease;
 }
 .wax-seal i {
   position: absolute;
@@ -1546,9 +1574,9 @@ h1 em {
 .envelope-name {
   position: absolute;
   z-index: 5;
-  bottom: 19px;
-  left: 0;
-  right: 0;
+  bottom: 16px;
+  left: 8px;
+  right: 8px;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -1575,7 +1603,7 @@ h1 em {
     inset -8px 0 10px rgba(52, 22, 24, 0.3),
     0 5px 13px rgba(0, 0, 0, 0.25);
   transition:
-    transform 1s,
+    transform 1s cubic-bezier(0.2, 0.8, 0.2, 1),
     opacity 0.5s;
 }
 .hand-left {
@@ -1586,34 +1614,46 @@ h1 em {
   right: -22px;
   transform: rotate(-28deg);
 }
+.scene-card .velvet-envelope {
+  transform: translate(-50%, 82px) rotateX(3deg);
+}
+.scene-card .envelope-shadow,
+.scene-tickets .envelope-shadow {
+  transform: translate(-50%, 8px);
+}
 .scene-card .envelope-flap,
 .scene-tickets .envelope-flap {
   transform: rotateX(180deg);
-  z-index: 1;
+  z-index: 2;
+  background: linear-gradient(180deg, #4b1220, #6d1c2e);
 }
-.scene-card .envelope-letter,
+.scene-card .envelope-letter {
+  opacity: 1;
+  transform: translateY(-164px) scale(1);
+}
 .scene-tickets .envelope-letter {
-  transform: translateY(-36%);
+  opacity: 0.9;
+  transform: translateY(-150px) scale(0.98);
 }
 .scene-card .envelope-front,
 .scene-tickets .envelope-front {
-  opacity: 0.12;
-  transition: opacity 0.6s 0.4s;
+  opacity: 1;
 }
 .scene-card .wax-seal,
 .scene-tickets .wax-seal {
   opacity: 0;
-  transition: opacity 0.3s;
+  transform: translate(-50%, -50%) scale(0.72);
+  pointer-events: none;
 }
 .scene-card .hand-left,
 .scene-tickets .hand-left {
-  transform: translate(-75px, 25px) rotate(48deg);
-  opacity: 0.55;
+  transform: translate(-64px, 14px) rotate(44deg);
+  opacity: 0.48;
 }
 .scene-card .hand-right,
 .scene-tickets .hand-right {
-  transform: translate(75px, 25px) rotate(-48deg);
-  opacity: 0.55;
+  transform: translate(64px, 14px) rotate(-44deg);
+  opacity: 0.48;
 }
 .paper-ticket {
   position: absolute;
@@ -1695,8 +1735,8 @@ h1 em {
   transform: translate(35px, -8px) rotate(11deg);
 }
 .scene-tickets .velvet-envelope {
-  transform: translate(-50%, 19px) scale(0.87) rotateX(8deg);
-  opacity: 0.78;
+  transform: translate(-50%, 86px) scale(0.85) rotateX(3deg);
+  opacity: 0.56;
 }
 .envelope-hand {
   pointer-events: none;
@@ -2040,10 +2080,7 @@ h1 em {
     padding: 0 8px;
   }
   .invitation-canvas {
-    min-height: 490px;
-  }
-  .invitation-copy {
-    top: 7%;
+    min-height: 0;
   }
   .invitation-copy h1 {
     font-size: 29px;
@@ -2052,9 +2089,8 @@ h1 em {
     font-size: var(--text-sm);
   }
 
-  /* لایهٔ زیرنویس روی فوتر کنترل‌ها می‌افتاد؛ بالاتر از آن می‌نشیند. */
   .invitation-narration {
-    padding-bottom: 172px;
+    padding: 4px 14px 10px;
   }
 
   .invitation-narration .narration-caption {
@@ -2063,14 +2099,27 @@ h1 em {
   }
   .invitation-object {
     width: min(95vw, 410px);
-    height: 345px;
-    top: 51%;
-    transform: translate(-50%, -34%);
+    height: 336px;
   }
   .velvet-envelope {
-    width: 76%;
-    height: 204px;
-    top: 38px;
+    width: min(82%, 326px);
+    height: 184px;
+    top: 74px;
+  }
+  .envelope-letter {
+    height: 174px;
+  }
+  .scene-card .velvet-envelope {
+    transform: translate(-50%, 76px) rotateX(3deg);
+  }
+  .scene-card .envelope-letter {
+    transform: translateY(-151px) scale(1);
+  }
+  .scene-tickets .velvet-envelope {
+    transform: translate(-50%, 80px) scale(0.85) rotateX(3deg);
+  }
+  .scene-tickets .envelope-letter {
+    transform: translateY(-138px) scale(0.98);
   }
   .invitation-controls {
     min-height: 115px;
@@ -2117,8 +2166,9 @@ h1 em {
     font-size: var(--text-xs);
   }
   .invitation-object {
-    width: 100vw;
-    transform: translate(-50%, -31%) scale(0.94);
+    width: 100%;
+    transform: scale(0.94);
+    transform-origin: center;
   }
   .invitation-controls {
     grid-template-columns: 0.8fr 1.2fr;
@@ -4620,25 +4670,25 @@ button:disabled {
   width: min(92%, 720px);
 }
 .invitation-copy > p:last-child {
-  line-height: 1.9;
+  line-height: 1.75;
 }
 .velvet-envelope {
-  height: 248px;
+  height: 196px;
 }
 .invitation-object {
-  height: 410px;
+  height: 358px;
 }
 .envelope-letter {
-  padding: 11px;
+  padding: 7px;
 }
 .letter-border {
-  line-height: 1.4;
-  padding: 12px 11px 7px;
+  line-height: 1.3;
+  padding: 7px 10px 6px;
 }
 .letter-guest,
 .letter-seat,
 .letter-footer {
-  line-height: 1.35;
+  line-height: 1.28;
 }
 .paper-ticket {
   width: 116px;
@@ -4981,19 +5031,23 @@ button:disabled {
 }
 @media (max-width: 700px) {
   .invitation-topline {
-    min-height: 68px;
+    min-height: 62px;
   }
 
   .invitation-canvas {
-    min-height: 520px;
+    min-height: 0;
   }
 
   .invitation-object {
-    height: 380px;
+    height: 332px;
   }
 
   .velvet-envelope {
-    height: 226px;
+    height: 180px;
+  }
+
+  .envelope-letter {
+    height: 170px;
   }
 
   .invitation-controls {
@@ -6894,10 +6948,14 @@ button:disabled {
   color: #b3a291;
 }
 
-/* لایهٔ دعوت‌نامه داخل صحنهٔ ویدیویی می‌نشیند، بالای نوار پایین. */
+/* لایهٔ دعوت‌نامه در جریان عمودی بین بوم پاکت و نوار کنترل پایین می‌نشیند تا هرگز روی پاکت یا برگه نیفتد. */
 .invitation-narration {
-  position: absolute;
+  position: relative;
+  inset: auto;
   z-index: 9;
+  flex: 0 0 auto;
+  padding: 4px 16px 10px;
+  gap: 8px;
 }
 
 /* در صحنه‌های سه‌بعدی، نوار کنترل‌ها به بالای صفحه می‌رود تا صحنه پوشیده نشود. */
@@ -9000,19 +9058,106 @@ table {
 }
 
 .invitation-canvas {
-  min-height: min(500px, calc(100svh - 220px));
+  min-height: 0;
+}
+
+/* لپ‌تاپ‌ها و نمایشگرهای ۱۰۸۰p با بزرگ‌نمایی ۱۲۵٪ ویندوز (ارتفاع دید ۷۰۱ تا ۸۴۰px) */
+@media (min-width: 621px) and (max-height: 840px) {
+  .invitation-topline {
+    height: 54px;
+    flex: 0 0 54px;
+  }
+
+  .invitation-canvas {
+    padding: 8px 20px 4px;
+  }
+
+  .invitation-kicker {
+    margin-bottom: 4px;
+  }
+
+  .invitation-copy h1,
+  .invitation-finish h1 {
+    font-size: clamp(22px, 3vw, 30px);
+    line-height: 1.35;
+  }
+
+  .invitation-copy > p:last-child {
+    font-size: var(--text-sm);
+    margin-top: 3px;
+    line-height: 1.55;
+  }
+
+  .invitation-object {
+    height: 316px;
+  }
+
+  .velvet-envelope {
+    top: 68px;
+    width: min(78%, 326px);
+    height: 174px;
+  }
+
+  .envelope-letter {
+    top: 5px;
+    height: 164px;
+    padding: 6px;
+  }
+
+  .letter-border {
+    padding: 6px 9px 5px;
+  }
+
+  .letter-border h2 {
+    font-size: 17px;
+  }
+
+  .mini-stage {
+    height: 32px;
+  }
+
+  .scene-card .velvet-envelope {
+    transform: translate(-50%, 72px) rotateX(3deg);
+  }
+
+  .scene-card .envelope-letter {
+    transform: translateY(-141px) scale(1);
+  }
+
+  .scene-tickets .velvet-envelope {
+    transform: translate(-50%, 76px) scale(0.85) rotateX(3deg);
+  }
+
+  .scene-tickets .envelope-letter {
+    transform: translateY(-130px) scale(0.98);
+  }
+
+  .invitation-narration {
+    padding: 2px 16px 6px;
+    gap: 6px;
+  }
+
+  .invitation-narration .narration-caption {
+    padding: 6px 14px 7px;
+    font-size: var(--text-base);
+    line-height: 1.55;
+  }
+
+  .invitation-controls {
+    min-height: 68px;
+    padding-block: 8px;
+  }
 }
 
 @media (max-width: 620px), (max-height: 700px) {
   .invitation-canvas {
     min-height: 0;
-    padding: 78px 14px 8px;
+    padding: 10px 14px 6px;
     overflow-y: auto;
     justify-content: flex-start;
   }
 
-  /* عنوان در جریان عادی می‌آید تا روی پاکت نیفتد (قبلاً absolute بود و
-     روی صفحهٔ کوتاه متن روی تصویر پاکت می‌نشست). */
+  /* عنوان در جریان عادی می‌آید تا روی پاکت نیفتد */
   .invitation-copy {
     position: static;
     order: 0;
@@ -9038,28 +9183,52 @@ table {
     transform: none;
     width: min(94vw, 420px);
     height: clamp(270px, 52svh, 380px);
-    margin: 12px auto 0;
+    margin: 6px auto 0;
   }
 
   .velvet-envelope {
-    top: 26px;
-    width: min(78%, 300px);
-    height: clamp(150px, 30svh, 210px);
+    top: 62px;
+    width: min(84%, 304px);
+    height: 154px;
   }
 
   .envelope-letter {
-    top: 4%;
-    height: 108%;
-    padding: 7px;
+    top: 5px;
+    height: 146px;
+    padding: 5px;
+  }
+
+  .letter-border {
+    padding: 5px 8px 4px;
+  }
+
+  .letter-border h2 {
+    font-size: 16px;
   }
 
   .mini-stage {
-    height: 38px;
+    height: 25px;
   }
 
   .mini-singer,
   .mini-dancer {
     font-size: 15px;
+  }
+
+  .scene-card .velvet-envelope {
+    transform: translate(-50%, 54px) rotateX(3deg);
+  }
+
+  .scene-card .envelope-letter {
+    transform: translateY(-120px) scale(1);
+  }
+
+  .scene-tickets .velvet-envelope {
+    transform: translate(-50%, 58px) scale(0.85) rotateX(3deg);
+  }
+
+  .scene-tickets .envelope-letter {
+    transform: translateY(-112px) scale(0.98);
   }
 
   .invitation-controls {
@@ -9108,7 +9277,7 @@ table {
 /* صفحه‌های کوتاه‌تر از ۵۰۰px (افقی): متن بالای پاکت جمع می‌شود */
 @media (max-height: 500px) {
   .invitation-canvas {
-    padding-top: 58px;
+    padding-top: 6px;
   }
 
   .invitation-kicker {
@@ -9118,15 +9287,6 @@ table {
   .invitation-copy h1,
   .invitation-finish h1 {
     font-size: clamp(18px, 4vw, 24px);
-  }
-
-  .invitation-object {
-    height: 230px;
-    margin-top: 4px;
-  }
-
-  .velvet-envelope {
-    height: 150px;
   }
 }
 
@@ -9666,45 +9826,25 @@ table {
    ========================================================================== */
 
 @media (max-width: 620px), (max-height: 700px) {
-  .invitation-object {
-    height: clamp(230px, 42svh, 330px);
-    margin-top: 8px;
-  }
-
-  .velvet-envelope {
-    height: clamp(140px, 26svh, 195px);
+  .invitation-narration {
+    position: static;
+    inset: auto;
+    padding: 6px 12px 4px;
+    gap: 6px;
   }
 
   .invitation-narration .narration-caption {
     background: rgba(10, 7, 9, 0.92);
     border-color: rgba(212, 175, 99, 0.35);
     max-width: 100%;
+    padding: 7px 10px 8px;
+    font-size: var(--text-sm);
+    line-height: 1.75;
   }
 
   /* برچسب فاز در فوتر پایین صفحه هست؛ تکرارش روی اسلایدر صدا می‌افتاد. */
   .invitation-narration .narration-phase-notice {
     display: none;
-  }
-}
-
-/* دعوت‌نامه: پایین‌ترین لایهٔ روایت روی کاغذ روشن نامه می‌افتاد. در صفحهٔ
-   باریک/کوتاه، کپشن به بالای قاب (زیر عنوان) می‌رود تا همیشه روی پس‌زمینهٔ تیره
-   و مستقل از ارتفاع قاب دیده شود. */
-@media (max-width: 620px), (max-height: 700px) {
-  /* لایهٔ روایت از حالت شناور خارج و در جریان عادی بین بوم و فوتر می‌نشیند؛
-     این‌طور زیرنویس و کنترل صدا هیچ‌وقت روی پاکت/کاغذ نامه نمی‌افتند. */
-  .invitation-narration {
-    position: static;
-    inset: auto;
-    padding: 6px 12px 2px;
-    gap: 6px;
-  }
-
-  .invitation-narration .narration-caption {
-    max-width: 100%;
-    padding: 7px 10px 8px;
-    font-size: var(--text-sm);
-    line-height: 1.75;
   }
 
   .invitation-narration .narration-controls {
@@ -9714,19 +9854,6 @@ table {
 
   .invitation-canvas {
     padding-top: 8px;
-  }
-
-  /* در باز شدن، لنگهٔ بالایی پاکت (flap) دور محور بالا می‌چرخد و حدود
-     ۵۵٪ ارتفاع پاکت بالاتر از آن می‌ایستد؛ پس همان‌قدر جای خالی رزرو می‌شود
-     تا روی عنوان و زیرنویس نیفتد. */
-  .invitation-object {
-    height: clamp(180px, 30svh, 230px);
-    margin-top: 74px;
-  }
-
-  .velvet-envelope {
-    top: 18px;
-    height: clamp(128px, 22svh, 168px);
   }
 }
 
@@ -10358,16 +10485,63 @@ table {
     display: none;
   }
 
-  /* پاکت: کوچک، با فضای باز شدن لنگه */
+  /* پاکت فشرده در حالت افقی گوشی بدون تداخل برگه و پاکت */
   .invitation-object {
     order: 1;
-    height: clamp(96px, 23svh, 132px);
-    margin-top: 34px;
+    height: clamp(148px, 34svh, 178px);
+    margin-top: 2px;
   }
 
   .velvet-envelope {
-    top: 8px;
-    height: clamp(96px, 24svh, 130px);
+    top: 34px;
+    width: min(72%, 250px);
+    height: 92px;
+  }
+
+  .envelope-letter {
+    top: 4px;
+    height: 84px;
+    padding: 4px;
+  }
+
+  .envelope-letter .mini-stage,
+  .envelope-letter .letter-divider,
+  .envelope-letter .letter-footer {
+    display: none;
+  }
+
+  .envelope-letter .letter-border {
+    padding: 3px 6px 2px;
+    justify-content: center;
+  }
+
+  .envelope-letter .letter-border h2 {
+    font-size: 14px;
+  }
+
+  .envelope-name {
+    bottom: 8px;
+  }
+
+  .wax-seal {
+    width: 32px;
+    height: 32px;
+  }
+
+  .scene-card .velvet-envelope {
+    transform: translate(-50%, 22px) rotateX(2deg);
+  }
+
+  .scene-card .envelope-letter {
+    transform: translateY(-58px) scale(1);
+  }
+
+  .scene-tickets .velvet-envelope {
+    transform: translate(-50%, 24px) scale(0.84) rotateX(2deg);
+  }
+
+  .scene-tickets .envelope-letter {
+    transform: translateY(-52px) scale(0.98);
   }
 
   /* در حالت افقی، اعلان فاز و اسلایدر بلندی صدا حذف می‌شوند؛ دکمهٔ صدا می‌ماند */

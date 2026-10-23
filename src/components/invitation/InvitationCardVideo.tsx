@@ -100,7 +100,9 @@ export default function InvitationCardVideo({ playerName, seatLabel, onComplete 
         <div className="invitation-object" aria-hidden="true">
           <div className="envelope-shadow" />
           <div className={`velvet-envelope ${scene !== 'envelope' ? 'envelope-open' : ''}`}>
-            <div className="envelope-back"><div className="envelope-letter">
+            <div className="envelope-back" />
+            <div className="envelope-flap" />
+            <div className="envelope-letter">
               <div className="letter-border"><span className="letter-corner top-left">❧</span><span className="letter-corner top-right">❧</span><span className="letter-corner bottom-left">❧</span><span className="letter-corner bottom-right">❧</span>
                 <p className="letter-overline">TEATRO ORFEO · 1924</p>
                 <h2>دعوت‌نامه</h2>
@@ -110,8 +112,7 @@ export default function InvitationCardVideo({ playerName, seatLabel, onComplete 
                 <p className="letter-seat">{seatLabel || 'مهمان ویژه'} · امشب، ساعت ۹</p>
                 <p className="letter-footer">نمایش امشب؛ تنها یک‌بار اجرا می‌شود.</p>
               </div>
-            </div></div>
-            <div className="envelope-flap" />
+            </div>
             <div className="envelope-front"><div className="envelope-fold" /><div className="wax-seal"><span>O</span><i>✳</i></div><div className="envelope-name"><small>دعوت‌نامهٔ اختصاصی برای</small><strong>{playerName || 'مهمان تماشاخانه'}</strong></div></div>
             <span className="envelope-hand hand-left" /><span className="envelope-hand hand-right" />
           </div>
