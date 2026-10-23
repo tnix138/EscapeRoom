@@ -15,6 +15,9 @@ import { alleyGroundCrownAt } from '@/engine3d/alley-ground-profile';
 /**
  * خواستهٔ بازبینی امیر — سنگ‌فرش کف:
  *   ۱. کیفیت: بافتِ بزرگ‌تر، رنگ و تراشِ متفاوتِ هر سنگ، بندِ خاکی و باریک‌تر
+ *   ۲. چینی باید **قرینه** باشد: چیدمانِ بی‌قوارهٔ دورِ محورِ کوچه خطای اصلی
+ *      بود ⇒ تایل حولِ u=۰ آینه می‌شود و خطِّ تقارن دقیقاً روی x=۰ می‌افتد
+ *   ۳. سنگ‌ها باید از هم **متفاوت** باشند: اندازه، رنگ، تراز و تراشِ هر سنگ
  *   ۲. سطحِ سنگ‌ها و فاصلهٔ چینششان باید **تفاوت ارتفاعیِ مشخص** داشته باشد و
  *      سنگ‌فرش کمی برجسته باشد ⇒ ترازِ هر سنگ هم در بافت و هم روی **رأس‌های
  *      واقعیِ کف** می‌نشیند، پس سنگ‌ها در نورِ مایل سایه و پله دارند.
@@ -72,10 +75,14 @@ describe('سنگ‌فرش کف: چیدمانِ نامنظم و اختلاف ار
     const table = cobbleTable();
     const jx = table.cells.map((cell) => cell.jx);
     const jy = table.cells.map((cell) => cell.jy);
-    expect(Math.max(...jx) - Math.min(...jx)).toBeGreaterThan(0.04);
-    expect(Math.max(...jy) - Math.min(...jy)).toBeGreaterThan(0.04);
+    // بند از سنگی به سنگ دیگر فرق می‌کند، ولی در بازهٔ واقع‌گرایانۀ ۱ تا ۳ سانت
+    expect(Math.max(...jx) - Math.min(...jx)).toBeGreaterThan(0.018);
+    expect(Math.max(...jy) - Math.min(...jy)).toBeGreaterThan(0.018);
+    const meterPerCell = 13.2 / (COBBLE.repeatX * COBBLE.cols);
+    const widestJoint = 2 * Math.max(...jx) * meterPerCell;
+    expect(widestJoint).toBeLessThan(0.035);
     // و هیچ‌کدام یا خیلی باریکِ غیرواقعی نیست یا به‌اندازهٔ خودِ سنگ
-    expect(Math.min(...jx)).toBeGreaterThan(0.02);
+    expect(Math.min(...jx)).toBeGreaterThan(0.014);
     expect(Math.max(...jx)).toBeLessThan(0.2);
     // خانه‌هایی که به دو نیم‌سنگ تقسیم شده‌اند هم باید باشند (سنگِ پرکننده)
     expect(table.cells.filter((cell) => cell.subX === 2).length).toBeGreaterThan(4);
@@ -170,15 +177,131 @@ describe('سنگ‌فرش کف: چیدمانِ نامنظم و اختلاف ار
     maps.dispose();
   });
 
-  it('کیفیتِ اندازه: هر سنگ ~۴۶ پیکسل جا دارد و ~۳۰ سانتی‌مترِ واقعی', () => {
+  it('کیفیتِ اندازه: تکسچر ۱۰۲ است و هر سنگ ~۹۳ پیکسل و ~۳۰ سانتی‌مترِ واقعی', () => {
+    expect(COBBLE.textureSize).toBeGreaterThanOrEqual(1024);
     const pxPerStone = COBBLE.textureSize / COBBLE.cols;
-    expect(pxPerStone).toBeGreaterThanOrEqual(32);
+    expect(pxPerStone).toBeGreaterThanOrEqual(64);
     const worldWide = 13.2 / (COBBLE.repeatX * COBBLE.cols);
     const worldLong = 42 / (COBBLE.repeatY * COBBLE.rows);
     expect(worldWide).toBeGreaterThan(0.18);
     expect(worldWide).toBeLessThan(0.42);
     expect(worldLong).toBeGreaterThan(0.18);
     expect(worldLong).toBeLessThan(0.42);
+  });
+
+  it('بافت نوارِ عمودی (کُردُرو) ندارد و کنتراستش از قبل بیشتر است', () => {
+    // خطِّ تراش باید داخلِ هر سنگ تمام شود؛ اگر نویزِ تراش سراسری باشد، ستون‌های
+    // روشن/تاریکِ دوره‌ای کل کف را مثل پارچه می‌کنند. معیار: انحرافِ معیارِ
+    // میانگینِ *ستون‌ها* باید نسبت به انحرافِ خودِ پیکسل‌ها کوچک بماند.
+    const field = buildCobbleField(COBBLE.textureSize);
+    const maps = cobblestoneSurfaceMaps(field, COBBLE.repeatX, COBBLE.repeatY);
+    const data = maps.colorMap.image.data as Uint8Array;
+    const n = field.size;
+    const lum = (i: number) => 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+    const colMean = new Float64Array(n);
+    const samples = new Float64Array(n * (n / 4));
+    let sum = 0;
+    let k = 0;
+    for (let px = 0; px < n; px++) {
+      let c = 0;
+      for (let py = 0; py < n; py += 4) {
+        const l = lum((py * n + px) * 4);
+        c += l;
+        samples[k++] = l;
+      }
+      colMean[px] = c / (n / 4);
+      sum += c;
+    }
+    const mean = sum / samples.length;
+    let colSq = 0;
+    for (let px = 0; px < n; px++) colSq += (colMean[px] - mean) ** 2;
+    let pxSq = 0;
+    let min = 255;
+    let max = 0;
+    for (let i = 0; i < samples.length; i++) {
+      pxSq += (samples[i] - mean) ** 2;
+      if (samples[i] < min) min = samples[i];
+      if (samples[i] > max) max = samples[i];
+    }
+    const colStd = Math.sqrt(colSq / n);
+    const pxStd = Math.sqrt(pxSq / samples.length);
+    expect(pxStd).toBeGreaterThan(24); // کنتراستِ رنگ (نسخۀ ۵۱۲: ~۲۱)
+    expect(mean).toBeGreaterThan(70); // کفِ خاکستریِ تار نیست؛ از دور هم روشنایی دارد
+    expect(colStd / pxStd).toBeLessThan(0.36);
+    expect(max - min).toBeGreaterThan(96);
+    maps.dispose();
+  });
+
+  it('چینی حولِ محورِ کوچه قرینه است: نیمهٔ راستِ تایل آینهٔ نیمهٔ چپ', () => {
+    const field = buildCobbleField(COBBLE.textureSize);
+    const maps = cobblestoneSurfaceMaps(field, COBBLE.repeatX, COBBLE.repeatY);
+    const n = field.size;
+
+    // ۱) میدانِ ارتفاع: خودِ پیکسل‌ها آینه‌اند (خطای صفر، نه تقریبی)
+    let heightDiff = 0;
+    for (let py = 0; py < n; py += 3) {
+      for (let px = 0; px < n; px += 7) {
+        const mirror = (n - px) % n;
+        heightDiff = Math.max(
+          heightDiff,
+          Math.abs(field.heights[py * n + px] - field.heights[py * n + mirror]),
+        );
+      }
+    }
+    expect(heightDiff).toBe(0);
+
+    // ۲) چهار نقشه: رنگ/زبری/AO قرینه و نورمل در x پَرشکسته (قرینۀ نرمال)
+    const flat = (tex: THREE.DataTexture) => tex.image.data as Uint8Array;
+    const color = flat(maps.colorMap);
+    const normal = flat(maps.normalMap);
+    const rough = flat(maps.roughnessMap);
+    const ao = flat(maps.aoMap);
+    let colorDiff = 0;
+    let roughDiff = 0;
+    let aoDiff = 0;
+    let normalDiff = 0;
+    for (let py = 0; py < n; py += 5) {
+      for (let px = 1; px < n / 2; px += 3) {
+        const a = (py * n + px) * 4;
+        const b = (py * n + (n - px)) * 4;
+        colorDiff = Math.max(
+          colorDiff,
+          Math.abs(color[a] - color[b]),
+          Math.abs(color[a + 1] - color[b + 1]),
+          Math.abs(color[a + 2] - color[b + 2]),
+        );
+        roughDiff = Math.max(roughDiff, Math.abs(rough[a] - rough[b]));
+        aoDiff = Math.max(aoDiff, Math.abs(ao[a] - ao[b]));
+        // برای نورمل قرینگی یعنی nx ← -nx ⇒ بایتِ x باید ۲۵۵ منهای طرفِ دیگر باشد
+        normalDiff = Math.max(
+          normalDiff,
+          Math.abs(255 - normal[a] - normal[b]),
+          Math.abs(normal[a + 1] - normal[b + 1]),
+        );
+      }
+    }
+    expect(colorDiff).toBe(0);
+    expect(roughDiff).toBe(0);
+    expect(aoDiff).toBe(0);
+    expect(normalDiff).toBeLessThanOrEqual(1);
+
+    // ۳) ترازِ هندسه هم قرینه است (نمونه‌گیرِ رأس‌ها همان آینه را می‌خواند)
+    let levelDiff = 0;
+    for (let k = 0; k < 300; k++) {
+      const u = k / 300;
+      const v = (k * 0.371) % 1;
+      levelDiff = Math.max(
+        levelDiff,
+        Math.abs(field.sampleLevel(u * COBBLE.repeatX, v * COBBLE.repeatY) -
+          field.sampleLevel((1 - u) * COBBLE.repeatX, v * COBBLE.repeatY)),
+      );
+    }
+    expect(levelDiff).toBeLessThan(1e-9);
+
+    // ۴) خطِّ تقارن باید روی محورِ کوچه بیفتد: تکرارِ افقیِ تایل زوج باشد
+    expect(COBBLE.repeatX % 2).toBe(0);
+
+    maps.dispose();
   });
 
   it('ترازِ سنگ‌ها روی خودِ هندسهٔ کف می‌نشیند: کف دیگر تخت نیست', () => {
@@ -215,6 +338,28 @@ describe('سنگ‌فرش کف: چیدمانِ نامنظم و اختلاف ار
     expect(max).toBeLessThanOrEqual(1e-6);
     // نیمی از رأس‌ها شیبِ محسوس دارند ⇒ نورِ مایل روی کف موج می‌اندازد
     expect(sloped / position.count).toBeGreaterThan(0.25);
+
+    // و قرینگیِ چینی روی *هندسهٔ واقعی* هم می‌نشیند: هر رأسِ x با رأسِ -x
+    // هم‌ارتفاع است، پس دو طرفِ کوچه آینه‌اند (نه دو چینیِ بی‌ربط)
+    const byColumn = new Map<number, Map<number, number>>();
+    for (let i = 0; i < position.count; i++) {
+      world.fromBufferAttribute(position, i).applyMatrix4(ground.matrixWorld);
+      const col = Math.round(world.x * 10_000);
+      const row = Math.round(world.z * 10_000);
+      const bucket = byColumn.get(col) ?? new Map<number, number>();
+      bucket.set(row, world.y - alleyGroundCrownAt(world.x));
+      byColumn.set(col, bucket);
+    }
+    let mirrorWorst = 0;
+    for (const [col, bucket] of byColumn) {
+      const other = byColumn.get(-col);
+      if (!other) continue;
+      for (const [row, y] of bucket) {
+        const y2 = other.get(row);
+        if (y2 !== undefined) mirrorWorst = Math.max(mirrorWorst, Math.abs(y - y2));
+      }
+    }
+    expect(mirrorWorst).toBeLessThan(1e-5);
 
     alley.dispose();
   });

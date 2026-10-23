@@ -16,17 +16,19 @@
  *      فقط توهمِ نورپردازی نیست.
  *
  * چهار چیزی که چینیِ واقعی را از الگوی کامپیوتری جدا می‌کند:
- *   - **شبکهٔ کج:** مختصات هر سلول با نویزِ دوره‌ای warp می‌شود ⇒ بندها
- *     خط‌کش‌کشیده و بی‌نقص نیستند و سنگ‌ها کمی کج‌وشکلند.
- *   - **هر سنگ اندازه و بندِ خودش را دارد:** نیم‌عرض بندِ هر سنگ فرق می‌کند
- *     (فاصلهٔ چینش نامنظم) و ~هر ششمِ خانه‌ها به دو نیم‌سنگ تقسیم می‌شود، مثل
- *     سنگ‌های پرکنندهٔ بین سنگ‌های بزرگ.
+ *   - **قرینگیِ چینی:** تایل بافت حولِ خطِ مرکزی کوچه **آینه** است (نیمهٔ راستِ
+ *     تایل قرینهٔ نیمهٔ چپ). رج‌های سنگ‌فرش در کوچهٔ واقعی دورِ ناودانیِ وسط
+ *     چیده می‌شوند، پس چینیِ بی‌قوارّه که از دو طرفِ کوچه دیده می‌شد خطای
+ *     اصلی بود. `COBBLE.mirrorX` همین کار را می‌کند: چیدمان و رنگ و ارتفاع
+ *     همه حولِ u=0 (یعنی x=0، چون تایل روی لبه در محور می‌افتد) قرینه‌اند.
+ *   - **هر سنگ خودش است:** رج‌ها صاف و موازی‌اند (warp کم)، ولی اندازه، رنگ،
+ *     قُدم‌ونوی و پهنای بندِ هر سنگ فرق می‌کند؛ بعضی خانه‌ها دو نیم‌سنگ‌اند و
+ *     بعضی سه‌تا، مثل سنگ‌های پرکنندهٔ بین سنگ‌های بزرگ.
  *   - **تفاوت ارتفاعی مشخص:** هر سنگ یک `level` دارد (سنگِ بلند و سنگِ نشسته) و
- *     صفحهٔ بالایش کمی **شیب** دارد — سنگ کهنه تراز نیست. ترازِ بلندترین و
- *     پایین‌ترین سنگ تا ۴٫۵ سانتی‌متر فرق می‌کند و همین روی رأس‌های کف هم اعمال
- *     می‌شود.
- *   - **بندِ فرورفته و پُر از خاک:** کفِ بند ۰٫۶۲ واحد پایین‌تر از تاجِ سنگ است،
- *     رنگش قهوه‌ای خاکی است نه سیاهِ تخت، و زبری‌اش بیشتر.
+ *     صفحهٔ بالایش کمی **شیب** دارد. `COBBLE.relief` دامنهٔ جابه‌جاییِ هندسه است
+ *     و همان عدد روی رأس‌های مشِ کف می‌نشیند.
+ *   - **بندِ فرورفته و پُر از خاک:** کفِ بند ~۰٫۶۵ واحد پایین‌تر از تاجِ سنگ
+ *     است، رنگش قهوه‌ای خاکی است نه سیاهِ تخت، و زبری‌اش بیشتر.
  *
  * همه‌چیز قطعی (deterministic) و بدون DOM است تا در تستِ Node دقیقاً همان خروجی
  * مرورگر را بدهد، و همهٔ نویزها **دوره‌ای‌اند** ⇒ تایل‌شدنِ بافت هیچ درزی نمی‌اندازد.
@@ -42,57 +44,77 @@ export const COBBLE = {
   rows: 14,
   /**
    * دامنهٔ جابه‌جایی هندسه (متر). ترازِ بلندترین سنگ روی صفرِ کف می‌نشیند و
-   * پایین‌ترین سنگ ۵ سانتی‌متر فرو می‌رود — پس هیچ سنگی بالاتر از سطحِ نامیِ
-   * بیشتر از این کف را پله‌پله می‌کند: شبکهٔ رأس‌ها ~۲۲ سانتی‌متر است و
-   * سنگِ چینی‌شده لبهٔ تیزِ این‌قدر بلندقامت ندارد.
-   * کف (و چاله‌های آب و هالهٔ نورِ چراغ‌ها که روی همین سطح‌اند) نمی‌زند.
+   * پایین‌ترین سنگ ۵ سانتی‌متر فرو می‌رود. جهتِ جابه‌جایی عمداً فقط روپایین است
+   * تا چاله‌های آب و هالهٔ نورِ چراغ‌ها که روی همین سطح‌اند زیرِ سنگ نروند.
    */
   relief: 0.05,
   /** تاجِ سنگ بر حسبِ ترازِ خودش؛ سنگِ نشسته کوتاه‌تر تراشیده می‌شود */
-  topForLevel: (level: number): number => 0.6 + 0.3 * level,
+  topForLevel: (level: number): number => 0.58 + 0.34 * level,
   /** ارتفاع نرمالیزهٔ کفِ بند */
-  jointLevel: 0.18,
+  jointLevel: 0.16,
   /** پهنای regionِ انتقالِ تراز بین دو سنگ (کسرِ خانه) — بقیهٔ سنگ تخت است */
-  levelEdge: 0.26,
+  levelEdge: 0.24,
   /** پهنای پیچِ لبهٔ سنگ؛ لبهٔ تیزِ ماشین‌کاری‌شده نیست */
-  bevelDrop: 0.075,
+  bevelDrop: 0.062,
   /** کمینه و بیشینهٔ نیم‌عرض بند ⇒ فاصلهٔ چینش از سنگی به سنگ دیگر عوض می‌شود */
-  jointMin: 0.035,
-  jointMax: 0.095,
+  jointMin: 0.024,
+  jointMax: 0.055,
   /** چقدر طول می‌کشد تا از لبهٔ سنگ به کفِ بند برسیم (واحدِ سلول) */
   jointFeather: 0.03,
   /** دامنهٔ نویز ریزِ تراش روی صفحهٔ سنگ */
-  grain: 0.026,
+  grain: 0.042,
+  /** دامنهٔ خط‌های تراشِ موازی (چکش‌کاریِ روی سنگ) */
+  chisel: 0.011,
   /** شیبِ مجازِ صفحهٔ بالای هر سنگ */
-  tiltRange: 0.03,
-  /** نسبتِ خانه‌هایی که به دو نیم‌سنگ تقسیم می‌شوند */
-  splitRatio: 0.2,
+  tiltRange: 0.028,
+  /** دامنهٔ کجیِ رج‌ها — کم است تا چینی «قوارّه» بماند، نه آشفته */
+  warpX: 0.22,
+  warpY: 0.13,
+  /** لغزشِ هر رج تا رج‌ها خطِ راستِ بی‌نقص نمانند (نیم‌خشت + کمی خطا) */
+  rowJitter: 0.16,
+  /** نسبتِ خانه‌هایی که دو نیم‌سنگ می‌شوند و نسبتِ آن‌هایی که سه‌تا */
+  splitTwoRatio: 0.24,
+  splitThreeRatio: 0.1,
+  /** نسبتِ سنگ‌های بلندِ برجسته به سنگ‌های نشسته (توانِ توزیعِ تراز) */
+  levelExponent: 0.62,
+  levelFloor: 0.16,
+  /** آینه‌کردنِ چیدمان حولِ مرکزِ تایل (خطِ مرکزیِ کوچه) */
+  mirrorX: true,
   /** تکرار بافت روی کف کوچه (۱۳٫۲ × ۴۲ متر) — با جابه‌جاییِ هندسه یکی باید بماند */
   repeatX: 4,
   repeatY: 10,
   /** اندازهٔ تکسچر؛ توانِ دو باشد تا mipmaps و RepeatWrapping سالم بمانند */
-  textureSize: 512,
+  textureSize: 1024,
 } as const;
 
 /**
- * چگالیِ شبکهٔ کف. سنگ‌ها ~۳۰ سانتی‌مترند و ترازِ هر سنگ روی چهار رأس میانگین
- * می‌شود، پس رأس‌ها باید از خودِ سنگ ریزتر باشند — وگرنه موجِ کف گم می‌شود.
+ * چگالیِ شبکهٔ کف. سنگ‌ها ~۳۰ سانتی‌مترند و ترازِ هر سنگ روی رأس‌های اطرافش
+ * پخش می‌شود، پس رأس‌ها باید از خودِ سنگ ریزتر باشند — وگرنه موجِ کف گم می‌شود.
  */
 export const COBBLE_GROUND_SEGMENTS = { x: 72, y: 228 } as const;
 
-/** پالت رنگِ سنگ‌های کوچه: بازالتِ خاکستری تا ماسه‌ایِ روشن، سرد تا گرم */
+/**
+ * پالت رنگِ سنگ‌های کوچه: بازالتِ تیره تا ماسه‌ایِ روشن، سرد تا گرم.
+ * دوازده رنگ است تا هیچ دو سنگِ همسایه‌ای همرنگ نیفتند (سنگِ کوچه از چند
+ * معدنِ مختلف می‌آمد؛ تک‌رنگ بودنِ کف بزرگ‌ترین نشانهٔ «بافتِ ارزان» است).
+ */
 const STONE_PALETTE: ReadonlyArray<readonly [number, number, number]> = [
-  [76, 74, 70],
-  [98, 92, 82],
-  [68, 72, 77],
-  [88, 84, 76],
-  [108, 100, 86],
-  [62, 63, 60],
-  [92, 82, 68],
+  [58, 58, 60],
+  [72, 70, 66],
+  [84, 80, 74],
+  [96, 92, 84],
+  [108, 101, 89],
+  [120, 112, 97],
+  [68, 72, 79],
+  [80, 86, 92],
+  [92, 84, 72],
+  [104, 92, 76],
+  [112, 104, 92],
+  [126, 118, 104],
 ];
 
 /** رنگِ ملات و خاکِ داخل بند — قهوه‌ایِ خاکی، نه سیاهِ تخت */
-const MORTAR_COLOR: readonly [number, number, number] = [52, 44, 35];
+const MORTAR_COLOR: readonly [number, number, number] = [47, 40, 32];
 /** رنگِ خزه و گچ روی لبهٔ سایه‌دارِ سنگ */
 const MOSS_COLOR: readonly [number, number, number] = [74, 90, 58];
 
@@ -104,6 +126,8 @@ function byte(value: number): number {
   return Math.round(clamp(value, 0, 255));
 }
 
+const mod = (n: number, m: number) => ((n % m) + m) % m;
+
 /** هش صحیحِ قطعی — همان خانوادهٔ هشِ بقیهٔ بافت‌های کوچه */
 function hash2D(ix: number, iy: number, seed: number): number {
   let h = (ix * 374761393 + iy * 668265263 + seed * 2147483647) | 0;
@@ -111,26 +135,61 @@ function hash2D(ix: number, iy: number, seed: number): number {
   return ((h ^ (h >>> 16)) >>> 0) / 4294967296;
 }
 
-/** نویز مقداری با lattice دوره‌ای: روی u و v در [۰،۱) بدون درز تایل می‌شود */
-function periodicNoise(u: number, v: number, period: number, seed: number): number {
-  const p = Math.max(1, Math.round(period));
-  const x = u * p;
-  const y = v * p;
-  const ix = Math.floor(x);
-  const iy = Math.floor(y);
-  const fx = x - ix;
-  const fy = y - iy;
-  const ux = fx * fx * (3 - 2 * fx);
-  const uy = fy * fy * (3 - 2 * fy);
-  const wrap = (n: number) => ((n % p) + p) % p;
-  const a = hash2D(wrap(ix), wrap(iy), seed);
-  const b = hash2D(wrap(ix + 1), wrap(iy), seed);
-  const c = hash2D(wrap(ix), wrap(iy + 1), seed);
-  const d = hash2D(wrap(ix + 1), wrap(iy + 1), seed);
-  return a + (b - a) * ux + (c - a) * uy + (a - b - c + d) * ux * uy;
+/**
+ * نویز مقداری روی یک lattice دوره‌ای: روی u و v در [۰،۱) بدون درز تایل می‌شود
+ * و جدولِ lattice یک‌بار ساخته و کش می‌شود، پس ساختِ میدانِ ۱۰۲۴ پیکسلی فقط
+ * چند خواندنِ آرایه است و نه میلیون‌ها بار هشِ دوبعدی (هزینۀ بارگذاریِ صحنه).
+ * دو دورۀ مستقل می‌گیرد تا بشود نویزِ «دراز‌کشیده» ساخت — خطِّ تراش روی سنگ در
+ * یک راستا کشیده است و نه نقطه‌ای.
+ */
+class LatticeNoise {
+  private readonly values: Float32Array;
+
+  constructor(readonly periodX: number, readonly periodY: number, seed: number) {
+    const values = new Float32Array(this.periodX * this.periodY);
+    for (let y = 0; y < this.periodY; y++) {
+      for (let x = 0; x < this.periodX; x++) values[y * this.periodX + x] = hash2D(x, y, seed);
+    }
+    this.values = values;
+  }
+
+  at(u: number, v: number): number {
+    const px = this.periodX;
+    const x = u * px;
+    const y = v * this.periodY;
+    const ix = Math.floor(x);
+    const iy = Math.floor(y);
+    const fx = x - ix;
+    const fy = y - iy;
+    const ux = fx * fx * (3 - 2 * fx);
+    const uy = fy * fy * (3 - 2 * fy);
+    const x0 = ((ix % px) + px) % px;
+    const x1 = (x0 + 1) % px;
+    const y0 = ((iy % this.periodY) + this.periodY) % this.periodY;
+    const y1 = (y0 + 1) % this.periodY;
+    const values = this.values;
+    const a = values[y0 * px + x0];
+    const b = values[y0 * px + x1];
+    const c = values[y1 * px + x0];
+    const d = values[y1 * px + x1];
+    return a + (b - a) * ux + (c - a) * uy + (a - b - c + d) * ux * uy;
+  }
 }
 
-const mod = (n: number, m: number) => ((n % m) + m) % m;
+// جدول‌ها ثابتِ ماژول‌اند: یک بار ساخته می‌شوند و در حلقۀ پیکسل فقط خوانده
+// می‌شوند (ساختنِ کلید یا هشِ دوبعدی در ۱٬۰۴۸٬۵۷۶ پیکسل گران تمام می‌شود)
+const N_WARP_U = new LatticeNoise(7, 7, 5);
+const N_WARP_V = new LatticeNoise(6, 6, 9);
+const N_GRAIN = new LatticeNoise(54, 42, 23);
+const N_GRAIN_FINE = new LatticeNoise(140, 110, 733);
+// خطِّ تراشِ سنگ. نویز روی مختصاتِ *داخلِ خودِ سنگ* نمونه می‌شود، پس خط‌های
+// هر سنگ در لبه‌اش تمام می‌شوند و با سنگِ کناری هم‌فاصله نمی‌افتند — وگرنه
+// کل کف نوارِ عمودیِ سراسری (کُردُرو) می‌شود
+const N_CHISEL = new LatticeNoise(6, 6, 419);
+const N_PIT = new LatticeNoise(33, 26, 127);
+const N_BLOTCH = new LatticeNoise(15, 12, 311);
+const N_GRIME = new LatticeNoise(9, 5, 373);
+const N_MOSS = new LatticeNoise(17, 17, 61);
 
 /**
  * وزنِ «صفحهٔ تخت»: تا فاصلهٔ `f` از مرزِ خانه بیشتر از `edge` باشد وزن ۱ است
@@ -142,35 +201,57 @@ function plateauWeight(f: number, edge: number): number {
   return t * t * (3 - 2 * t);
 }
 
-/** ویژگی‌های یک خانهٔ چینی‌شده (خانه ممکن است دو نیم‌سنگ داشته باشد) */
+/**
+ * آینهٔ عمودیِ تایل: u را روی [۰،۰٫۵] تا می‌کند ⇒ هرچه در نیمهٔ راست بافت
+ * می‌بینیم قرینهٔ نیمهٔ چپ است. چون `repeatX` زوج است، خطِ تاشدگی u=0 دقیقاً
+ * روی محورِ کوچه (x=0) می‌افتد و چینی دورِ ناودانیِ وسط قرینه می‌شود.
+ */
+function mirrorU(u: number): number {
+  const t = mod(u, 1);
+  return t > 0.5 ? 1 - t : t;
+}
+
+/** ویژگی‌های یک خانهٔ چینی‌شده (خانه ممکن است دو یا سه نیم‌سنگ داشته باشد) */
 export interface CobbleCell {
   /** ترازِ صفحهٔ بالای سنگ: ۰ = نشسته، ۱ = بلند — همان چیزی که هندسه جابه‌جا می‌کند */
   level: number;
   /** کمینه و بیشینهٔ نیم‌عرضِ بند در دو راستا */
   jx: number;
   jy: number;
-  /** ۱ یا ۲: بعضی خانه‌ها دو نیم‌سنگِ کنارِ همند */
+  /** ۱ تا ۳: بعضی خانه‌ها دو یا سه نیم‌سنگِ کنارِ همند */
   subX: number;
+  /** جایِ شکستِ خانه وقتی دو نیم‌سنگ است (۰٫۳۴..۰٫۶۶ ⇒ نیم‌سنگ‌ها هم‌عرض نیستند) */
+  splitA: number;
   /** نمایهٔ اولین سنگِ این خانه در جدولِ سنگ‌ها */
   firstVariant: number;
-  /** لغزشِ جزئیِ خانه تا رج‌ها خطِ راستِ بی‌نقص نمانند */
+  /** لغزشِ جزئیِ خانه تا سنگ‌ها ذره‌ای از خطِ رج بیرون بزنند */
   jitterX: number;
   jitterY: number;
 }
 
-/** ویژگی‌های رنگ و تراشِ یک **سنگِ واقعی** (خانهٔ تقسیم‌شده دو سنگ دارد) */
+/** ویژگی‌های رنگ و تراشِ یک **سنگِ واقعی** (خانهٔ تقسیم‌شده دو یا سه سنگ دارد) */
 export interface CobbleStone {
   level: number;
   tiltX: number;
   tiltY: number;
   jx: number;
   jy: number;
+  /** جایِ سنگ در پالت (۰..۱ ⇒ روی اندیسِ پالت نگاشت می‌شود) */
   tone: number;
+  /** گرم/سرد بودنِ سنگ — سنگِ ماسه‌ای گرم‌تر و سنگِ بازالت سردتر */
   warm: number;
+  /** روشناییِ مستقلِ هر سنگ تا همسایه‌ها از هم جدا دیده شوند */
+  light: number;
   /** سنگ‌های زیرِ مسیرِ رفت‌وآمد ساییده‌تر و صاف‌ترند */
   wear: number;
   /** احتمالِ خزه‌گرفتنِ لبهٔ سایه‌دار */
   moss: number;
+  /** گردیِ سنگ: ۰ = تراشِ تیزِ مربعی، ۱ = سنگِ رودخانه‌ایِ گِرد */
+  round: number;
+  /** چکش‌کاری: چند خطِّ موازی روی صفحهٔ سنگ (۰ = صافِ سنباده‌خورده) */
+  chiselBias: number;
+  /** راستای خطِّ تراش: ۰ = موازیِ محورِ کوچه، ۱ = عمود بر آن */
+  chiselDir: number;
   /** آفستِ نویزِ لکه‌ها: هر سنگ کهنگیِ خودش را دارد، نه یک الگوی روی کل کف */
   jit: number;
 }
@@ -191,34 +272,53 @@ export function cobbleTable(): CobbleTable {
   for (let row = 0; row < COBBLE.rows; row++) {
     for (let col = 0; col < COBBLE.cols; col++) {
       const levelRoll = hash2D(col, row, 7);
-      const level = clamp(0.3 + Math.pow(levelRoll, 0.72) * 0.7, 0, 1);
-      const subX = hash2D(col + 91, row + 13, 23) < COBBLE.splitRatio ? 2 : 1;
+      const level = clamp(
+        COBBLE.levelFloor + Math.pow(levelRoll, COBBLE.levelExponent) * (1 - COBBLE.levelFloor),
+        0,
+        1,
+      );
+      // بعضی خانه‌ها دو نیم‌سنگ می‌شوند و بعضی سه‌تا — مثل سنگ‌های پرکنندهٔ
+      // باریک بین سنگ‌های بزرگِ کوچه، که مهم‌ترین نشانهٔ «چینیِ دستی» است
+      const splitRoll = hash2D(col + 91, row + 13, 23);
+      const subX =
+        splitRoll < COBBLE.splitThreeRatio ? 3 : splitRoll < COBBLE.splitTwoRatio + COBBLE.splitThreeRatio ? 2 : 1;
+      const jx = COBBLE.jointMin + hash2D(col + 17, row + 3, 41) * (COBBLE.jointMax - COBBLE.jointMin);
+      const jy = COBBLE.jointMin + hash2D(col + 61, row + 29, 47) * (COBBLE.jointMax - COBBLE.jointMin);
       cells.push({
         level,
-        jx: COBBLE.jointMin + hash2D(col + 17, row + 3, 41) * (COBBLE.jointMax - COBBLE.jointMin),
-        jy: COBBLE.jointMin + hash2D(col + 61, row + 29, 47) * (COBBLE.jointMax - COBBLE.jointMin),
+        jx,
+        jy,
         subX,
+        splitA: 0.34 + hash2D(col + 5, row + 41, 59) * 0.32,
         firstVariant: stones.length,
-        jitterX: (hash2D(col + 101, row + 61, 83) - 0.5) * 0.12,
-        jitterY: (hash2D(col + 29, row + 103, 89) - 0.5) * 0.1,
+        jitterX: (hash2D(col + 101, row + 61, 83) - 0.5) * COBBLE.rowJitter,
+        jitterY: (hash2D(col + 29, row + 103, 89) - 0.5) * COBBLE.rowJitter * 0.8,
       });
 
       for (let sub = 0; sub < subX; sub++) {
-        const roll = hash2D(col * 2 + sub, row + 7, 109);
+        const roll = hash2D(col * 3 + sub, row + 7, 109);
         // نیم‌سنگ‌ها از همسایه‌هایشان کوتاه‌تر و باریک‌ترند (سنگِ پرکننده)
-        const filler = subX === 2;
+        const filler = subX > 1;
         stones.push({
-          level: clamp(level * (filler ? 0.72 + roll * 0.42 : 1) - (filler ? 0.06 : 0), 0, 1),
+          level: clamp(
+            level * (filler ? 0.82 + roll * 0.34 : 1) - (filler ? 0.03 : 0),
+            0,
+            1,
+          ),
           tiltX: (hash2D(col + 5 + sub * 17, row + 53, 29) - 0.5) * 2 * COBBLE.tiltRange,
           tiltY: (hash2D(col + 71, row + 11 + sub * 7, 37) - 0.5) * 2 * COBBLE.tiltRange,
           jx: filler
-            ? COBBLE.jointMin + (COBBLE.jointMax - COBBLE.jointMin) * (0.45 + roll * 0.5)
-            : cells[row * COBBLE.cols + col].jx,
-          jy: cells[row * COBBLE.cols + col].jy,
+            ? COBBLE.jointMin + (COBBLE.jointMax - COBBLE.jointMin) * (0.5 + roll * 0.5)
+            : jx,
+          jy: jy,
           tone: hash2D(col + 13 + sub * 3, row + 7, 53),
           warm: hash2D(col + 31, row + 19 + sub * 5, 67),
+          light: 0.72 + hash2D(col + 23 + sub * 11, row + 71, 97) * 0.56,
           wear: Math.pow(hash2D(col + 83, row + 43 + sub * 11, 71), 1.6),
           moss: hash2D(col + 7 + sub * 13, row + 97, 79),
+          round: hash2D(col + 37 + sub * 5, row + 83, 113),
+          chiselBias: Math.pow(hash2D(col + 53 + sub * 19, row + 29, 127), 1.35),
+          chiselDir: hash2D(col + 67 + sub * 23, row + 37, 131),
           jit: hash2D(col + 149, row + 151 + sub * 3, 157),
         });
       }
@@ -238,24 +338,33 @@ export interface CobbleSample {
   dome: number;
   /** نمایهٔ سنگِ این نقطه در `table.stones` */
   stone: number;
+  /** روشن/تاریکِ خطِّ تراش (−۱..۱) — نورمل و رنگِ سنگ هر دو از همین عدد می‌آیند */
+  chisel: number;
 }
 
 /**
- * ارتفاعِ سنگ‌فرش در مختصاتِ بافت. خانه‌ها از یک شبکهٔ warp‌شده می‌آیند ⇒ بندها
- * موج‌دارند، ولی شبکه روی لبهٔ تایل دقیقاً به خودش می‌رسد.
+ * ارتفاعِ سنگ‌فرش در مختصاتِ بافت (نیمهٔ چپِ تایل؛ `buildCobbleField` همان را
+ * آینه می‌کند). خانه‌ها از یک شبکهٔ کمی warp‌شده می‌آیند ⇒ بندها بی‌نقصِ
+ * خط‌کش‌کشیده نیستند، ولی رج‌ها همچنان قوارّه می‌مانند.
  */
 export function sampleCobbleHeight(u: number, v: number, table: CobbleTable): CobbleSample {
   const { cells, stones } = table;
 
-  const warpU = (periodicNoise(u, v, 7, 5) - 0.5) * 0.36;
-  const warpV = (periodicNoise(u, v, 6, 9) - 0.5) * 0.22;
+  // فاصله تا خطِ تاشدگیِ تایل (u=0 و u=۰٫۵): هرچه نزدیک‌تر، کجیِ شبکه کمتر،
+  // تا بندِ روی محورِ قرینگی شکسته و V‌شکل نشود
+  const crease = clamp(Math.min(mod(u, 0.5), 0.5 - mod(u, 0.5)) / 0.055, 0, 1);
+  const creaseFade = crease * crease * (3 - 2 * crease);
+  const warpU = (N_WARP_U.at(u, v) - 0.5) * COBBLE.warpX * creaseFade;
+  const warpV = (N_WARP_V.at(u, v) - 0.5) * COBBLE.warpY * creaseFade;
 
   const rf = v * COBBLE.rows + warpV;
   const rowFloor = Math.floor(rf);
   const row = mod(rowFloor, COBBLE.rows);
   const fyRaw = rf - rowFloor;
   // نیم‌خشت + لغزشِ ملایمِ هر رج
-  const rowShift = (row % 2) * 0.5 + (hash2D(mod(rowFloor, COBBLE.rows), 3, 71) - 0.5) * 0.26;
+  const rowShift =
+    (row % 2) * 0.5 +
+    (hash2D(mod(rowFloor, COBBLE.rows), 3, 71) - 0.5) * COBBLE.rowJitter * creaseFade;
 
   const cf = u * COBBLE.cols + rowShift + warpU;
   const colFloor = Math.floor(cf);
@@ -265,15 +374,29 @@ export function sampleCobbleHeight(u: number, v: number, table: CobbleTable): Co
 
   const cell = cells[row * COBBLE.cols + col];
   let stoneIdx = cell.firstVariant;
-  if (cell.subX === 2) {
-    const sub = Math.floor(mod(fx * 2, 2));
-    fx = mod(fx * 2, 1);
-    stoneIdx = cell.firstVariant + sub;
+  if (cell.subX > 1) {
+    // مرزهای شکستِ خانه (بستری که `subBounds` می‌سازد داخل حلقۀ پیکسل گران است،
+    // پس همین‌جا بازنویسی می‌شود)
+    const a = cell.subX === 2 ? cell.splitA : cell.splitA * 0.62;
+    const b = cell.subX === 3 ? 0.5 + cell.splitA * 0.25 : 1;
+    let lo = 0;
+    let hi = a;
+    if (fx >= hi) {
+      stoneIdx++;
+      lo = hi;
+      hi = cell.subX === 2 ? 1 : b;
+      if (fx >= hi) {
+        stoneIdx++;
+        lo = hi;
+        hi = 1;
+      }
+    }
+    fx = (fx - lo) / (hi - lo);
   }
 
   const stone = stones[stoneIdx];
-  fx = clamp(fx + cell.jitterX * 0.3, 0, 1);
-  fy = clamp(fy + cell.jitterY * 0.3, 0, 1);
+  fx = clamp(fx + cell.jitterX * 0.3 * creaseFade, 0, 1);
+  fy = clamp(fy + cell.jitterY * 0.3 * creaseFade, 0, 1);
 
   // فاصله تا نزدیک‌ترین مرزِ خانه، منهای بندِ خودِ سنگ
   const inX = Math.min(fx, 1 - fx) - stone.jx;
@@ -281,23 +404,40 @@ export function sampleCobbleHeight(u: number, v: number, table: CobbleTable): Co
   const inStone = Math.min(inX, inY);
   const mortar = clamp(1 - inStone / COBBLE.jointFeather, 0, 1);
 
-  // بالشتکِ صفحهٔ بالا: وسطِ سنگ تخت است و نزدیک لبه پیچ می‌خورد
+  // بالشتکِ صفحهٔ بالا: وسطِ سنگ تخت است و نزدیک لبه پیچ می‌خورد. سنگِ گِرد
+  // پیچِ نرم‌تری دارد و سنگِ تراش‌خورده صفحهٔ پهن‌ترِ تخت‌تر
   const px = clamp(inX / Math.max(0.05, 0.5 - stone.jx), 0, 1);
   const py = clamp(inY / Math.max(0.05, 0.5 - stone.jy), 0, 1);
-  const dome = Math.sin(clamp(Math.min(px, py), 0, 1) * Math.PI * 0.5) ** 0.6;
+  const domeExp = 0.45 + stone.round * 0.4;
+  const dome = Math.sin(clamp(Math.min(px, py), 0, 1) * Math.PI * 0.5) ** domeExp;
 
   const top = COBBLE.topForLevel(stone.level);
   const tilt = (stone.tiltX * (fx - 0.5) + stone.tiltY * (fy - 0.5)) * 2 * (1 - mortar);
   const grain =
-    (periodicNoise(u, v, 96, 23) - 0.5) * 2 * COBBLE.grain * (1 - mortar * 0.55);
+    (N_GRAIN.at(u, v) - 0.5) * 2 * COBBLE.grain * (1 - mortar * 0.55) +
+    (N_GRAIN_FINE.at(u, v) - 0.5) * 2 * COBBLE.grain * 0.28 * (1 - mortar * 0.5);
+  // چکش‌کاری: خط‌های موازیِ ریزِ تراش روی صفحهٔ سنگ. راستا و فازِ خط‌ها به خودِ
+  // سنگ ربط دارد (نه به کل کف) و سنگِ صیقلی/ساییده هیچ خطی ندارد
+  const chiselGate = stone.chiselBias > 0.34 ? (stone.chiselBias - 0.34) / 0.66 : 0;
+  const chiselFreq = 2.2 + stone.chiselBias * 2.6;
+  const chiselPhase = stone.jit * 3.7;
+  const chiselMix =
+    (N_CHISEL.at(fx * 0.5 + chiselPhase, fy * chiselFreq) * (1 - stone.chiselDir) +
+      N_CHISEL.at(fx * chiselFreq, fy * 0.5 + chiselPhase) * stone.chiselDir) *
+    chiselGate *
+    (1 - stone.wear) +
+    0.5 * (1 - chiselGate * (1 - stone.wear));
+  const chiselShade = (chiselMix - 0.5) * 2 * (1 - mortar);
+  const chisel = chiselShade * COBBLE.chisel;
   // کنده‌خوردگی: نوار باریک روی پیچِ لبه + چند گودالِ ریز
   const chipBand = 1 - clamp(Math.abs(dome - 0.62) / 0.34, 0, 1);
-  const pit = periodicNoise(u, v, 41, 127) > 0.9 ? 0.03 : 0;
+  const pit = N_PIT.at(u, v) > 0.9 ? 0.03 : 0;
 
   const h = clamp(
     top +
-      tilt -
-      (1 - dome) * COBBLE.bevelDrop -
+      tilt +
+      chisel -
+      (1 - dome) * COBBLE.bevelDrop * (0.75 + stone.round * 0.5) -
       mortar * (top - COBBLE.jointLevel) +
       grain * (0.6 + dome * 0.4) -
       chipBand * 0.02 -
@@ -306,7 +446,7 @@ export function sampleCobbleHeight(u: number, v: number, table: CobbleTable): Co
     1,
   );
 
-  return { h, mortar, dome, stone: stoneIdx };
+  return { h, mortar, dome, stone: stoneIdx, chisel: clamp(chiselShade, -1, 1) };
 }
 
 /**
@@ -319,12 +459,14 @@ export interface CobbleField {
   readonly mortar: Float32Array;
   readonly dome: Float32Array;
   readonly stoneIndex: Uint16Array;
+  /** خطِّ تراشِ هر پیکسل (۱۲۷ = بدون خط)؛ همان عدد در نقشۀ نور و رنگ می‌نشیند */
+  readonly chisel: Uint8Array;
   readonly table: CobbleTable;
   /** ارتفاعِ پیکسل‌ها با درون‌یابی دوخطی و wrap دوره‌ای */
   sampleHeight(u: number, v: number): number;
   /**
-   * ترازِ سنگِ آن نقطه، نرم‌شده با چهار همسایه — برای جابه‌جاییِ رأس‌های کف.
-   * چون روی خودِ شبکهٔ سنگ تعریف می‌شود، با رأسِ تنبل هم کج‌ونابرابر نمی‌شود.
+   * ترازِ سنگِ آن نقطه — برای جابه‌جاییِ رأس‌های کف. چون روی خودِ شبکهٔ سنگ
+   * تعریف می‌شود، با رأسِ تنبل هم کج‌ونابرابر نمی‌شود.
    */
   sampleLevel(u: number, v: number): number;
 }
@@ -335,17 +477,31 @@ export function buildCobbleField(size: number = COBBLE.textureSize): CobbleField
   const mortarField = new Float32Array(n * n);
   const domeField = new Float32Array(n * n);
   const stoneIndex = new Uint16Array(n * n);
+  const chiselField = new Uint8Array(n * n);
   const table = cobbleTable();
+  const half = COBBLE.mirrorX ? Math.floor(n / 2) : n - 1;
 
   for (let py = 0; py < n; py++) {
     const v = py / n;
-    for (let px = 0; px < n; px++) {
+    // نیمهٔ چپ محاسبه و در نیمهٔ راست **آینه** می‌شود: هم هزینهٔ ساخت نصف
+    // می‌شود و هم قرینگی دقیقاً برقرار است (نه تقریبی)
+    for (let px = 0; px <= half; px++) {
       const sample = sampleCobbleHeight(px / n, v, table);
-      const idx = py * n + px;
-      heights[idx] = sample.h;
-      mortarField[idx] = sample.mortar;
-      domeField[idx] = sample.dome;
-      stoneIndex[idx] = sample.stone;
+      const src = py * n + px;
+      const dst = py * n + mod(n - px, n);
+      const chiselByte = byte((sample.chisel + 1) * 127.5);
+      heights[src] = sample.h;
+      mortarField[src] = sample.mortar;
+      domeField[src] = sample.dome;
+      stoneIndex[src] = sample.stone;
+      chiselField[src] = chiselByte;
+      if (dst !== src) {
+        heights[dst] = sample.h;
+        mortarField[dst] = sample.mortar;
+        domeField[dst] = sample.dome;
+        stoneIndex[dst] = sample.stone;
+        chiselField[dst] = chiselByte;
+      }
     }
   }
 
@@ -378,6 +534,7 @@ export function buildCobbleField(size: number = COBBLE.textureSize): CobbleField
     mortar: mortarField,
     dome: domeField,
     stoneIndex,
+    chisel: chiselField,
     table,
     sampleHeight: (u, v) => {
       if (!Number.isFinite(u) || !Number.isFinite(v)) return 1;
@@ -388,20 +545,24 @@ export function buildCobbleField(size: number = COBBLE.textureSize): CobbleField
       // صفحهٔ هر سنگ روی ترازِ *خودش* تخت است و فقط نزدیک بند به ترازِ همسایه
       // می‌رسد (وزنِ پله‌ای، نه میانگینِ ساده) — وگرنه اختلافِ ارتفاعِ سنگ‌ها در
       // میانگینِ چهار همسایه گم می‌شود و کف دوباره صافِ نقاشی‌شده به‌نظر می‌رسد.
+      const uu = COBBLE.mirrorX ? mirrorU(u) : u;
       const cu = 1 / COBBLE.cols;
       const cv = 1 / COBBLE.rows;
-      const fu = mod(u * COBBLE.cols, 1);
+      const fu = mod(uu * COBBLE.cols, 1);
       const fv = mod(v * COBBLE.rows, 1);
       const wu = plateauWeight(fu, COBBLE.levelEdge);
       const wv = plateauWeight(fv, COBBLE.levelEdge);
-      const uNeigh = fu < 0.5 ? u - cu : u + cu;
+      const uNeigh = fu < 0.5 ? uu - cu : uu + cu;
       const vNeigh = fv < 0.5 ? v - cv : v + cv;
-      const self = cellLevel(u, v);
+      const self = cellLevel(uu, v);
       const sideU = cellLevel(uNeigh, v);
-      const sideV = cellLevel(u, vNeigh);
+      const sideV = cellLevel(uu, vNeigh);
       const corner = cellLevel(uNeigh, vNeigh);
       return clamp(
-        self * wu * wv + sideU * (1 - wu) * wv + sideV * wu * (1 - wv) + corner * (1 - wu) * (1 - wv),
+        self * wu * wv +
+          sideU * (1 - wu) * wv +
+          sideV * wu * (1 - wv) +
+          corner * (1 - wu) * (1 - wv),
         0,
         1,
       );
@@ -411,8 +572,8 @@ export function buildCobbleField(size: number = COBBLE.textureSize): CobbleField
 
 /**
  * چهار نقشهٔ PBR از روی میدانِ ارتفاع. نورمل از گرادیانِ ۳×۳ (سابل) ساخته می‌شود
- * تا لبهٔ سنگ‌ها تیز بماند، و یک لایهٔ ریزِ تراش روی آن می‌نشیند که صفحهٔ سنگ
- * پلاستیک‌وار صاف نباشد.
+ * تا لبهٔ سنگ‌ها تیز بماند، و دو لایهٔ ریزِ تراش (دانه + خطِّ چکش) روی آن
+ * می‌نشیند که صفحهٔ سنگ پلاستیک‌وار صاف نباشد.
  */
 export function cobblestoneSurfaceMaps(
   field: CobbleField,
@@ -425,45 +586,62 @@ export function cobblestoneSurfaceMaps(
   const normalData = new Uint8Array(pixels * 4);
   const roughnessData = new Uint8Array(pixels * 4);
   const aoData = new Uint8Array(pixels * 4);
-  const { heights, mortar: mortarField, dome: domeField, stoneIndex, table } = field;
+  const {
+    heights,
+    mortar: mortarField,
+    dome: domeField,
+    stoneIndex,
+    chisel: chiselField,
+    table,
+  } = field;
   const stones = table.stones;
   // توانِ نورمل با رزولوشن مقیاس می‌شود تا در هر اندازه شیبِ یکسانی بدهد
   const strength = 2.9 * (n / 256);
+  const half = COBBLE.mirrorX ? Math.floor(n / 2) : n - 1;
 
-  const at = (x: number, y: number) => heights[mod(y, n) * n + mod(x, n)];
+  // نمایهٔ سابل بدون `at` و `mod` در هر همسایه (۹ × ۵۱۲٬۴۱۶ بار در هر ساخت)
+  const xm = new Int32Array(n + 2);
+  for (let x = -1; x <= n; x++) xm[x + 1] = mod(x, n);
+  const ym = new Int32Array(n + 2);
+  for (let y = -1; y <= n; y++) ym[y + 1] = mod(y, n);
 
   for (let py = 0; py < n; py++) {
     const v = py / n;
-    for (let px = 0; px < n; px++) {
+    for (let px = 0; px <= half; px++) {
       const u = px / n;
       const idx = py * n + px;
-      const off = idx * 4;
       const mortar = mortarField[idx];
       const dome = domeField[idx];
       const onStone = 1 - mortar;
       const stone = stones[stoneIndex[idx]];
 
       // ------------------------------------------------ نورمل (سابل ۳×۳ + تراش ریز)
-      let gx = 0;
-      let gy = 0;
-      for (let dy = -1; dy <= 1; dy++) {
-        const rowWeight = dy === 0 ? 2 : 1;
-        for (let dx = -1; dx <= 1; dx++) {
-          if (dx === 0 && dy === 0) continue;
-          const h = at(px + dx, py + dy);
-          gx += dx * rowWeight * h;
-          gy += dy * rowWeight * h;
-        }
-      }
+      const c0 = ym[py] * n;
+      const c1 = ym[py + 1] * n;
+      const c2 = ym[py + 2] * n;
+      const l = xm[px];
+      const m = xm[px + 1];
+      const r2 = xm[px + 2];
+      const h00 = heights[c0 + l];
+      const m0 = heights[c0 + m];
+      const h02 = heights[c0 + r2];
+      const h10 = heights[c1 + l];
+      const m1 = heights[c1 + m];
+      const h12 = heights[c1 + r2];
+      const h20 = heights[c2 + l];
+      const m2 = heights[c2 + m];
+      const h22 = heights[c2 + r2];
+      const gx = h02 - h00 + (h12 - h10) * 2 + h22 - h20;
+      const gy = m2 - m0 + (h20 + h22 - h00 - h02);
+      // دانهٔ ریزِ سنگ — از نویزِ پیکسلی می‌آید و روی نیمهٔ آینه کپی می‌شود
       const gritX = hash2D(mod(px + 1, n), py, 991) - hash2D(mod(px - 1, n), py, 991);
       const gritY = hash2D(px, mod(py + 1, n), 997) - hash2D(px, mod(py - 1, n), 997);
-      const nx = -gx * 0.25 * strength + gritX * 0.05 * onStone;
-      const ny = gy * 0.25 * strength + gritY * 0.05 * onStone;
-      const invLen = 1 / Math.hypot(nx, ny, 1);
-      normalData[off] = byte((nx * invLen * 0.5 + 0.5) * 255);
-      normalData[off + 1] = byte((ny * invLen * 0.5 + 0.5) * 255);
-      normalData[off + 2] = byte((invLen * 0.5 + 0.5) * 255);
-      normalData[off + 3] = 255;
+      const nxRaw = -gx * 0.25 * strength + gritX * 0.055 * onStone;
+      const nyRaw = gy * 0.25 * strength + gritY * 0.055 * onStone;
+      const invLen = 1 / Math.hypot(nxRaw, nyRaw, 1);
+      const nx = nxRaw * invLen;
+      const ny = nyRaw * invLen;
+      const nz = invLen;
 
       // ------------------------------------------------ رنگ سنگ
       const tonePos = stone.tone * (STONE_PALETTE.length - 1);
@@ -475,19 +653,31 @@ export function cobblestoneSurfaceMaps(
       let b = p0[2] + (p1[2] - p0[2]) * mixT;
 
       // سنگِ بلندتر روشن‌تر و سنگِ ساییده کمی خنثی‌تر؛ لکه‌های کهنگی روی هر سنگ
-      const blotch = periodicNoise(u + stone.jit, v + stone.jit * 0.5, 21, 311) - 0.5;
+      const blotch = N_BLOTCH.at(u + stone.jit, v + stone.jit * 0.5) - 0.5;
+      const grime = N_GRIME.at(u + stone.jit * 0.7, v - stone.jit) - 0.5;
+      // گودالچه‌ها فقط روی صفحهٔ سنگ (تاریکیِ کم‌عمق، نه سیاهی)
+      const pitDark = N_PIT.at(u, v) > 0.88 ? (1 - mortar) * 0.1 : 0;
       const scale =
-        (0.8 + stone.level * 0.26) *
-        (0.86 + dome * 0.24) *
-        (1 + blotch * 0.16) *
-        (1 - stone.wear * 0.06);
-      r *= (0.94 + stone.warm * 0.16) * scale;
-      g *= (0.96 + stone.warm * 0.08) * scale;
-      b *= (1.06 - stone.warm * 0.1) * scale;
+        stone.light *
+        (0.88 + dome * 0.2) *
+        (1 + blotch * 0.34) * (1 - pitDark * 0.55) *
+        (1 - grime * 0.16) *
+        (1 - stone.wear * 0.05);
+      r *= (0.92 + stone.warm * 0.2) * scale;
+      g *= (0.955 + stone.warm * 0.1) * scale;
+      b *= (1.08 - stone.warm * 0.13) * scale;
+
+      // خطِّ تراشِ روشن و سایه‌اش: سنگِ چکش‌خورده در نورِ مایل نوارنوار می‌شود
+      // خطِّ تراش از همان کانالی می‌آید که نورمل را می‌سازد ⇒ نور و رنگِ سنگ
+      // روی یک رگه نمی‌جنگند
+      const chiselLight = (chiselField[idx] - 127.5) * (8 / 127.5);
+      r += chiselLight;
+      g += chiselLight * 0.97;
+      b += chiselLight * 0.92;
 
       // نوارِ روشنِ لبه: جایی که تراش خورده و سنگِ تازه پیدا است
-      const chip = 1 - clamp(Math.abs(dome - 0.5) / 0.3, 0, 1);
-      const chipLight = chip * 16 * onStone;
+      const chip = 1 - clamp(Math.abs(dome - 0.42) / 0.17, 0, 1);
+      const chipLight = chip * 9 * onStone * (0.45 + stone.round * 0.55);
       r += chipLight;
       g += chipLight * 0.96;
       b += chipLight * 0.9;
@@ -495,50 +685,89 @@ export function cobblestoneSurfaceMaps(
       // خزه و گچ: فقط روی لبهٔ سایه‌دارِ سنگ‌هایی که زمینِ مرطوب‌تری دارند
       const mossMask =
         stone.moss > 0.58
-          ? clamp((periodicNoise(u, v, 17, 61) - 0.62) * 4, 0, 1) * clamp(0.65 - dome, 0, 1)
+          ? clamp((N_MOSS.at(u, v) - 0.62) * 4, 0, 1) * clamp(0.65 - dome, 0, 1)
           : 0;
       r += (MOSS_COLOR[0] - r) * mossMask * 0.55;
       g += (MOSS_COLOR[1] - g) * mossMask * 0.55;
       b += (MOSS_COLOR[2] - b) * mossMask * 0.55;
 
       // بند: ملاتِ خاکیِ پر از دانه‌ریزه — نه خطِ سیاهِ تخت
-      const mortarTint = 0.7 + hash2D(px * 3 + 7, py * 3 + 11, 1451) * 0.55;
+      const mortarTint = 0.62 + hash2D(px * 3 + 7, py * 3 + 11, 1451) * 0.66;
       const mortarMix = mortar * mortar * (3 - 2 * mortar);
       r = r * (1 - mortarMix) + MORTAR_COLOR[0] * mortarTint * mortarMix;
       g = g * (1 - mortarMix) + MORTAR_COLOR[1] * mortarTint * mortarMix;
       b = b * (1 - mortarMix) + MORTAR_COLOR[2] * mortarTint * mortarMix;
 
-      const speckle = (hash2D(px, py, 1301) - 0.5) * 11;
-      colorData[off] = byte(r + speckle);
-      colorData[off + 1] = byte(g + speckle);
-      colorData[off + 2] = byte(b + speckle);
-      colorData[off + 3] = 255;
+      const speckle = (hash2D(px, py, 1301) - 0.5) * 7;
+      const cr = byte(r + speckle);
+      const cg = byte(g + speckle);
+      const cb = byte(b + speckle);
 
       // ------------------------------------------------ زبری (همیشه خشک و مات)
       const rough = clamp(
         0.93 -
-          dome * 0.05 -
+          dome * 0.055 -
           stone.wear * 0.05 +
           mortar * 0.05 +
           mossMask * 0.03 +
           blotch * 0.03 +
+          stone.chiselBias * 0.012 +
           (stone.level - 0.7) * 0.02,
         0.82,
         0.985,
       );
       const roughByte = byte(rough * 255);
+
+      // ------------------------------------------------ AO: بند و پشتِ لبه سایه می‌گیرند
+      // «حفره» = فرقِ ارتفاعِ این پیکسل با چهار همسایه ⇒ لبهٔ پایینِ سنگِ بلند
+      // سایهٔ تماسی می‌گیرد و افتادگیِ کف فقط تغییرِ رنگ نمی‌ماند
+      const cavity = clamp((h10 + h12 + m0 + m2) * 0.25 - m1, 0, 0.5);
+      const ao = clamp(
+        0.17 + onStone * (0.47 + dome * 0.3) + onStone * 0.06 + cavity * 0.42,
+        0,
+        1,
+      );
+      const aoByte = byte(ao * 255);
+
+            // ---- نوشتنِ پیکسل؛ نیمهٔ راست همان است، فقط شیبِ x قرینه می‌شود
+      const off = idx * 4;
+      colorData[off] = cr;
+      colorData[off + 1] = cg;
+      colorData[off + 2] = cb;
+      colorData[off + 3] = 255;
+      normalData[off] = byte((nx * 0.5 + 0.5) * 255);
+      normalData[off + 1] = byte((ny * 0.5 + 0.5) * 255);
+      normalData[off + 2] = byte((nz * 0.5 + 0.5) * 255);
+      normalData[off + 3] = 255;
       roughnessData[off] = roughByte;
       roughnessData[off + 1] = roughByte;
       roughnessData[off + 2] = roughByte;
       roughnessData[off + 3] = 255;
-
-      // ------------------------------------------------ AO: بند و پشتِ لبه سایه می‌گیرند
-      const ao = clamp(0.18 + onStone * (0.5 + dome * 0.32) + onStone * 0.06, 0, 1);
-      const aoByte = byte(ao * 255);
       aoData[off] = aoByte;
       aoData[off + 1] = aoByte;
       aoData[off + 2] = aoByte;
       aoData[off + 3] = 255;
+
+      const mx = mod(n - px, n);
+      if (mx !== px) {
+        const moff = (py * n + mx) * 4;
+        colorData[moff] = cr;
+        colorData[moff + 1] = cg;
+        colorData[moff + 2] = cb;
+        colorData[moff + 3] = 255;
+        normalData[moff] = byte((-nx * 0.5 + 0.5) * 255);
+        normalData[moff + 1] = byte((ny * 0.5 + 0.5) * 255);
+        normalData[moff + 2] = byte((nz * 0.5 + 0.5) * 255);
+        normalData[moff + 3] = 255;
+        roughnessData[moff] = roughByte;
+        roughnessData[moff + 1] = roughByte;
+        roughnessData[moff + 2] = roughByte;
+        roughnessData[moff + 3] = 255;
+        aoData[moff] = aoByte;
+        aoData[moff + 1] = aoByte;
+        aoData[moff + 2] = aoByte;
+        aoData[moff + 3] = 255;
+      }
     }
   }
 
