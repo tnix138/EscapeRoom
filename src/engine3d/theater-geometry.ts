@@ -4,7 +4,7 @@
  * theater-geometry.ts — هندسه سالن تئاتر ۲۰ نفره و شخصیت‌های بزرگسال باورپذیر (علیرضا — موج ۷)
  * - سالن ۴ ردیف × ۵ صندلی پلکانی
  * - سه سن (چپ/مرکز/راست) با پرده قرمز
- * - لوستر کریستالی
+ * - لوستر کریستالیِ هشت‌شاخه (هر شاخه دو چراغ + آویزِ کریستالِ عمودی)
  * - تابلوهای دیواری
  * - شخصیت‌های بزرگسال: رقصنده ایتالیایی و مرد سیاه‌پوش با تناسبات واقعی (قد ۱.۷۵ و ۱.۹۵ متر)
  * - بدون مدل خارجی — همه رویه‌ای با Capsule/Box — لایسنس MIT (Three.js)
@@ -16,6 +16,7 @@ import { resolvePlayerHumanPalette } from './presence/RemotePlayer';
 import { HumanAvatar } from './characters/human-avatar';
 import { resolveHumanLook } from './characters/human-presets';
 import { createTheaterSeat, createTheaterSeatKit } from './theater-seat';
+import { buildTheaterChandelier } from './theater-chandelier';
 
 export {
   THEATER_SEAT_DIMENSIONS,
@@ -274,26 +275,11 @@ export function createTheaterGeometry(): TheaterGeometryResult {
   stageGroup.add(rightStage);
   group.add(stageGroup);
 
-  // لوستر
-  const chandelier = new THREE.Group();
-  chandelier.name = 'Chandelier';
-  const chainGeo = new THREE.CylinderGeometry(0.02, 0.02, 2.5, 6);
-  const chainMat = new THREE.MeshStandardMaterial({ color: 0xc9a86a, metalness: 0.8, roughness: 0.2 });
-  const chain = new THREE.Mesh(chainGeo, chainMat);
-  chain.position.y = 4.75;
-  chandelier.add(chain);
-
-  const crystalGeo = new THREE.OctahedronGeometry(0.6, 0);
-  const crystalMat = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0x444466, emissiveIntensity: 0.3, roughness: 0.1, metalness: 0.1, transparent: true, opacity: 0.85 });
-  const crystal = new THREE.Mesh(crystalGeo, crystalMat);
-  crystal.position.y = 3.2;
-  chandelier.add(crystal);
-
-  // نور لوستر
-  const chandelierLight = new THREE.PointLight(0xffe8c0, 1.2, 12);
-  chandelierLight.position.set(0, 3.2, 0);
-  chandelier.add(chandelierLight);
-
+  // لوستر: هشت شاخهٔ برنجی؛ روی هر شاخه دو چراغِ شمعی (وسط و نوک) و زیرِ هر
+  // شاخه یک آویزِ کریستالِ عمودی. جزئیاتش در `theater-chandelier.ts` است و
+  // نورهای واقعی‌اش هم از همان‌جا می‌آید (دو PointLight، نه شانزده تا).
+  const chandelierKit = buildTheaterChandelier();
+  const chandelier = chandelierKit.group;
   chandelier.position.set(0, 0, 1);
   group.add(chandelier);
 
@@ -322,6 +308,8 @@ export function createTheaterGeometry(): TheaterGeometryResult {
 
   // نورهای کلی
   const lights: THREE.Light[] = [];
+  // دو نورِ گرمِ لوستر از سازندهٔ خودش می‌آیند (گوی‌های شمع‌ها emissive‌اند)
+  lights.push(...chandelierKit.lights);
   const ambient = new THREE.AmbientLight(0x666688, 0.5);
   group.add(ambient);
   lights.push(ambient);
