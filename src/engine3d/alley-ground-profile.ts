@@ -1,6 +1,6 @@
 'use client';
 
-import { ALLEY_BRANCH, ALLEY_ENTRANCE_STREET } from './alley-layout';
+import { ALLEY_BRANCH, ALLEY_EAST, ALLEY_ENTRANCE_STREET } from './alley-layout';
 
 /**
  * alley-ground-profile.ts — پروفایل ارتفاعی کف کوچه، مشترک بین زمین و هالهٔ نور (علیرضا)
@@ -71,7 +71,14 @@ export function alleyWalkableGroundAt(x: number, z: number = Number.NaN): number
     return stepFromCenter(z - ALLEY_BRANCH.centerZ, halfRoad, halfRoad + 0.27);
   }
 
-  // ۲) پیاده‌روی جنوبیِ فرعی از دهانهٔ فرعی تا دیوارِ انتهای کوچه امتداد دارد و
+  // ۲) باندِ خیابانِ شرقی: عرضِ خیابان ۱۳ متر است، پس پیاده‌روها پهن‌تر و
+  //    سنگ‌فرشِ میانی ۷٫۸ متر است. محورِ عرضِ این خیابان هم z است.
+  if (hasZ && x >= ALLEY_EAST.walkWestX && z >= ALLEY_EAST.northZ) {
+    const halfRoad = ALLEY_EAST.roadHalfWidth;
+    return stepFromCenter(z - ALLEY_EAST.centerZ, halfRoad, halfRoad + 0.27);
+  }
+
+  // ۳) پیاده‌روی جنوبیِ فرعی از دهانهٔ فرعی تا دیوارِ انتهای کوچه امتداد دارد و
   //    جلوی دیوارِ جنوبی یک پایهٔ مشترک برای هر دو بازو می‌سازد؛ اگر اینجا حساب
   //    نشود، بازیکن ۱۳ سانتی‌متر داخلِ سنگ‌فرشِ پایه فرو می‌رود.
   const apronEdge = ALLEY_BRANCH.southZ - ALLEY_BRANCH.sidewalkWidth;
@@ -79,13 +86,13 @@ export function alleyWalkableGroundAt(x: number, z: number = Number.NaN): number
     return stepUpAt(z, apronEdge - 0.27, apronEdge);
   }
 
-  // ۳) شاخهٔ اصلی: بعد از پیچِ L، ده قدمِ آخرِ پیاده‌روی چپ هم خیابان است
+  // ۴) شاخهٔ اصلی: بعد از پیچِ L، ده قدمِ آخرِ پیاده‌روی چپ هم خیابان است
   if (hasZ && x < 0 && z >= ALLEY_ENTRANCE_STREET.mainSidewalkEndZ) {
     const t = (z - ALLEY_ENTRANCE_STREET.mainSidewalkEndZ) / 0.27;
     return t >= 1 ? 0 : ALLEY_SIDEWALK_HEIGHT - smoothHeight(t);
   }
 
-  // ۴) شاخهٔ اصلی: پیاده‌روهای دو طرف در عرضِ کوچه
+  // ۵) شاخهٔ اصلی: پیاده‌روهای دو طرف در عرضِ کوچه
   return stepFromCenter(x, 5.95, 6.22);
 }
 

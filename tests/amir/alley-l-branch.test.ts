@@ -67,8 +67,12 @@ describe('کوچهٔ L‌شکل: حذف نرده، دوبرابر شدن طول 
 
     // ساختمان‌های دو طرف تا انتهای تازه ادامه دارند
     expect(alley.group.getObjectByName('BuildingLeft_4')).toBeDefined();
+    // ردیفِ راست در دهانهٔ خیابانِ شرقی قطع می‌شود، پس دیگر تا انتهای جنوبی
+    // نمی‌رود؛ ادامهٔ بلوک را ردیفِ شمالیِ خودِ خیابان می‌سازد.
     expect(alley.group.getObjectByName('BuildingRight_4')).toBeDefined();
-    expect(alley.group.getObjectByName('BuildingRight_5')).toBeDefined();
+    expect(alley.group.getObjectByName('BuildingRight_5')).toBeUndefined();
+    expect(alley.group.getObjectByName('EastBuildingNorth_0')).toBeDefined();
+    expect(alley.group.getObjectByName('EastBuildingSouth_0')).toBeDefined();
 
     alley.dispose();
   });
@@ -147,7 +151,9 @@ describe('کوچهٔ L‌شکل: حذف نرده، دوبرابر شدن طول 
     // همان x در شاخهٔ اصلی (جایی که |x| بزرگ است و z در باند فرعی نیست) باید صفر باشد
     expect(alleyWalkableGroundAt(-4, 10)).toBeCloseTo(0, 6);
     // پیاده‌روی شاخهٔ اصلی در امتدادِ تازه هم مثل قبل کار می‌کند
-    expect(alleyWalkableGroundAt(7.5, 22)).toBeCloseTo(0.13, 6);
+    expect(alleyWalkableGroundAt(7.5, 10)).toBeCloseTo(0.13, 6);
+    // ولی از دهانهٔ خیابانِ شرقی به بعد همان باند پهن‌ترِ خیابان است
+    expect(alleyWalkableGroundAt(7.5, 22)).toBeCloseTo(0, 6);
     expect(alleyWalkableGroundAt(0, 22)).toBeCloseTo(0, 6);
     // پایهٔ جنوبی (جلوی دیوارِ بن‌بست) در هر دو بازو ۱۳ سانتی‌متر بالاست
     expect(alleyWalkableGroundAt(0, ALLEY_BRANCH.southZ - 0.5)).toBeCloseTo(0.13, 6);

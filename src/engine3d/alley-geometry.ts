@@ -29,6 +29,8 @@ import { WetSurfaceMaterial } from './materials/wet-surface-material';
 import {
   ALLEY_BRANCH,
   ALLEY_BRANCH_ROWS,
+  ALLEY_EAST,
+  ALLEY_EAST_ROWS,
   ALLEY_ENTRANCE_STREET,
   ALLEY_LENGTHS,
   ALLEY_MAIN,
@@ -146,14 +148,19 @@ const LEFT_BUILDINGS: readonly BuildingSpec[] = [
   { zCenter: 17.35, length: 4.3, height: 10.9, xInset: -0.04, variant: 0, floors: 4, hasBalcony: true, litWindowFloor: 2 },
 ];
 
+/**
+ * ردیفِ راست (شرقِ شاخهٔ اصلی). بازبینیِ امیر: «سمتِ راستِ کوچه هم قرینهٔ فرعی
+ * اضافه شود» ⇒ این ردیف دیگر تا انتهای جنوبی نمی‌رود؛ در `z = ۱۸` (دیوارِ
+ * شمالیِ خیابانِ شرقی) قطع می‌شود تا دهانهٔ خیابان باز بماند و ادامهٔ آن بلوک،
+ * ردیفِ شمالیِ خودِ خیابان است.
+ */
 const RIGHT_BUILDINGS: readonly BuildingSpec[] = [
   { zCenter: -10.2, length: 7.4, height: 9.6, xInset: 0.08, variant: 1, floors: 3, hasBalcony: true },
   { zCenter: -2.6, length: 7.9, height: 11.4, xInset: ALLEY_GUIDE_WALL_INSET.right, variant: 0, floors: 4, litWindowFloor: 2 },
   { zCenter: 5.0, length: 7.4, height: 8.9, xInset: 0.12, variant: 1, floors: 3, hasBalcony: true },
-  { zCenter: 12.6, length: 8.2, height: 10.4, xInset: 0.0, variant: 0, floors: 3, litWindowFloor: 2 },
-  // ادامهٔ تازهٔ جنوبی تا انتهای کوچه (z = ۳۱) — همان بافتِ آجری با ارتفاع‌های متفاوت
-  { zCenter: 20.7, length: 7.8, height: 9.9, xInset: 0.06, variant: 0, floors: 3, hasBalcony: true, litWindowFloor: 1 },
-  { zCenter: 28.6, length: 8.0, height: 11.6, xInset: -0.05, variant: 1, floors: 4, litWindowFloor: 2 },
+  { zCenter: 12.4, length: 7.6, height: 10.4, xInset: 0.0, variant: 0, floors: 3, litWindowFloor: 2 },
+  // گوشهٔ بلوک: از ۱۶٫۲ تا ۱۸٫۰ — دقیقاً تا دیوارِ شمالیِ خیابان
+  { zCenter: 17.1, length: 1.8, height: 11.2, xInset: 0.04, variant: 1, floors: 4, litWindowFloor: 2 },
 ];
 
 /**
@@ -175,6 +182,28 @@ const NORTH_END_BUILDINGS: readonly BuildingSpec[] = [
   { zCenter: 8.0, length: 8.4, height: 11.2, xInset: 0.0, variant: 1, floors: 4, litWindowFloor: 2 },
   { zCenter: 0.0, length: 8.4, height: 9.6, xInset: 0.05, variant: 0, floors: 3, hasBalcony: true },
   { zCenter: -8.0, length: 8.4, height: 10.8, xInset: -0.04, variant: 1, floors: 3, litWindowFloor: 1 },
+];
+
+/**
+ * ردیف‌های خیابانِ شرقیِ باز. مثلِ ردیف‌های فرعی در گروهِ ۹۰ درجه چرخیده ساخته
+ * می‌شوند، پس `zCenter` اینجا در واقع فاصله در راستای x است و اعدادِ مثبت به
+ * شرق می‌روند. ردیف تا `viewEndX` (۴۴) ادامه دارد تا انتهای خیابان در مه محو
+ * شود و دیوارِ بن‌بست دیده نشود.
+ */
+const EAST_NORTH_BUILDINGS: readonly BuildingSpec[] = [
+  { zCenter: 12.6, length: 7.6, height: 12.6, xInset: 0.02, variant: 0, floors: 4, litWindowFloor: 2 },
+  { zCenter: 21.0, length: 9.2, height: 10.8, xInset: 0.08, variant: 1, floors: 3, hasBalcony: true, litWindowFloor: 1 },
+  { zCenter: 30.5, length: 9.6, height: 13.4, xInset: -0.04, variant: 0, floors: 4, litWindowFloor: 3 },
+  { zCenter: 40.0, length: 9.4, height: 11.6, xInset: 0.05, variant: 1, floors: 4, litWindowFloor: 1 },
+  { zCenter: 49.4, length: 8.6, height: 12.8, xInset: 0.0, variant: 0, floors: 4 },
+];
+
+const EAST_SOUTH_BUILDINGS: readonly BuildingSpec[] = [
+  { zCenter: 12.2, length: 7.0, height: 10.2, xInset: 0.05, variant: 1, floors: 3, hasBalcony: true },
+  { zCenter: 20.0, length: 8.6, height: 13.2, xInset: 0.0, variant: 0, floors: 4, litWindowFloor: 2 },
+  { zCenter: 29.4, length: 10.2, height: 11.8, xInset: -0.03, variant: 1, floors: 4, litWindowFloor: 1 },
+  { zCenter: 39.6, length: 10.0, height: 9.8, xInset: 0.06, variant: 0, floors: 3, hasBalcony: true },
+  { zCenter: 49.4, length: 9.2, height: 12.4, xInset: 0.0, variant: 1, floors: 4 },
 ];
 
 const BRANCH_SOUTH_BUILDINGS: readonly BuildingSpec[] = [
@@ -419,6 +448,50 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
   branchGround.name = 'BranchGround';
   floorGroup.add(branchGround);
 
+  // ------------------------------------------------------ کفِ خیابانِ شرقی
+  // آینهٔ همان کدِ کفِ فرعی: خیابان پهن‌تر است (۱۳ متر) و تا دوردستِ مه ادامه
+  // دارد. کف عمداً **تخت** است (مثلِ فرعی) — تیرِ چراغِ خیابان ۹۰ درجه چرخیده و
+  // هاله‌اش تاجِ کف را در محورِ x حساب می‌کند؛ کفِ تخت یعنی لکهٔ نور دقیقاً روی
+  // سنگ‌فرش می‌نشیند.
+  const eastLength = ALLEY_EAST.groundEastX - ALLEY_EAST.groundWestX;
+  const eastWidth = ALLEY_EAST.southZ - ALLEY_EAST.northZ;
+  const eastCenterX = (ALLEY_EAST.groundEastX + ALLEY_EAST.groundWestX) / 2;
+  const eastGeo = withUv2(
+    new THREE.PlaneGeometry(
+      eastLength,
+      eastWidth,
+      Math.round((COBBLE_GROUND_SEGMENTS.x * eastLength) / 13.2),
+      Math.round((COBBLE_GROUND_SEGMENTS.y * eastWidth) / 42),
+    ),
+  );
+  {
+    const uv = eastGeo.attributes.uv;
+    for (let i = 0; i < uv.count; i++) {
+      uv.setX(i, uv.getX(i) * (eastLength / 13.2));
+      uv.setY(i, uv.getY(i) * (eastWidth / 42));
+    }
+    uv.needsUpdate = true;
+  }
+  {
+    const pos = eastGeo.attributes.position;
+    const uv = eastGeo.attributes.uv;
+    for (let i = 0; i < pos.count; i++) {
+      const level = cobbleField.sampleLevel(
+        uv.getX(i) * COBBLE.repeatX,
+        uv.getY(i) * COBBLE.repeatY,
+      );
+      pos.setZ(i, COBBLE.relief * (level - 1));
+    }
+    pos.needsUpdate = true;
+    eastGeo.computeVertexNormals();
+  }
+  const eastGround = new THREE.Mesh(eastGeo, groundMat);
+  eastGround.rotation.x = -Math.PI / 2;
+  eastGround.position.set(eastCenterX, 0, (ALLEY_EAST.southZ + ALLEY_EAST.northZ) / 2);
+  eastGround.receiveShadow = true;
+  eastGround.name = 'EastGround';
+  floorGroup.add(eastGround);
+
   // پیاده‌روهای سنگ‌فرش برجسته و جدول گرانیتی چپ و راست
   // پیاده‌روی سنگی هم کاملاً خشک است و مثل زمین اصلی براق نمی‌شود
   const sidewalkMat = new THREE.MeshStandardMaterial({
@@ -435,13 +508,15 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
     envMapIntensity: 0.12,
   });
 
-  // پیاده‌رو و جدول در کوچهٔ L:
+  // پیاده‌رو و جدول در کوچهٔ L + خیابانِ شرقی:
   //   • سمتِ چپ پیش از دهانهٔ فرعی قطع می‌شود و در ده قدمِ آخرِ منتهی به پیچ،
   //     خیابان تا پای دیوار می‌آید (خیابانِ جلوی درِ تماشاخانه)
-  //   • سمتِ راست تا انتهای جنوبی ادامه دارد
+  //   • سمتِ راست هم در دهانهٔ خیابانِ شرقی (`z = ۱۸`) قطع می‌شود؛ از آن‌جا به
+  //     بعد پیاده‌روی خودِ خیابان است که در راستای x می‌رود. پیش‌تر این نوار تا
+  //     انتهای جنوبی یک‌سره بود و دهانهٔ خیابان را می‌بست.
   const sidewalkRuns: Array<{ side: -1 | 1; zStart: number; zEnd: number }> = [
     { side: -1, zStart: ALLEY_MAIN.groundNorthZ, zEnd: ALLEY_ENTRANCE_STREET.mainSidewalkEndZ },
-    { side: 1, zStart: ALLEY_MAIN.groundNorthZ, zEnd: ALLEY_MAIN.southZ },
+    { side: 1, zStart: ALLEY_MAIN.groundNorthZ, zEnd: ALLEY_EAST.northZ },
   ];
 
   for (const run of sidewalkRuns) {
@@ -575,6 +650,73 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
     floorGroup.add(gutter);
   }
 
+  // ------------------------------------ پیاده‌رو، جدول و جوی خیابانِ شرقی
+  // قرینهٔ فرعی، فقط پهن‌تر (۲٫۶ متر) و بی‌بن‌بست: پیاده‌روها تا `viewEndX`
+  // ادامه دارند تا انتهای خیابان در مه محو شود، نه اینکه دیوار بخورد.
+  const eastWalks: Array<{ id: string; centerZ: number; startX: number; endX: number }> = [
+    {
+      id: 'EastSidewalkNorth',
+      centerZ: ALLEY_EAST.northSidewalkCenterZ,
+      startX: ALLEY_EAST.walkWestX,
+      endX: ALLEY_EAST.viewEndX,
+    },
+    {
+      id: 'EastSidewalkSouth',
+      centerZ: ALLEY_EAST.southSidewalkCenterZ,
+      startX: ALLEY_EAST.walkWestX,
+      endX: ALLEY_EAST.viewEndX,
+    },
+  ];
+
+  for (const walkSpec of eastWalks) {
+    const length = walkSpec.endX - walkSpec.startX;
+    const centerX = (walkSpec.endX + walkSpec.startX) / 2;
+    const walk = new THREE.Mesh(
+      withUv2(new THREE.BoxGeometry(length, 0.13, ALLEY_EAST.sidewalkWidth)),
+      sidewalkMat,
+    );
+    walk.position.set(centerX, 0.065, walkSpec.centerZ);
+    walk.receiveShadow = true;
+    walk.castShadow = true;
+    walk.name = walkSpec.id;
+    floorGroup.add(walk);
+
+    const isNorth = walkSpec.centerZ < ALLEY_EAST.centerZ;
+    const curbZ = isNorth
+      ? ALLEY_EAST.northZ + ALLEY_EAST.sidewalkWidth
+      : ALLEY_EAST.southZ - ALLEY_EAST.sidewalkWidth;
+    const curb = new THREE.Mesh(
+      withUv2(new THREE.BoxGeometry(length, 0.155, ALLEY_EAST.curbWidth)),
+      stoneTrimMat,
+    );
+    curb.position.set(centerX, 0.077, curbZ);
+    curb.receiveShadow = true;
+    curb.castShadow = true;
+    curb.name = walkSpec.id.replace('Sidewalk', 'Curb');
+    floorGroup.add(curb);
+
+    const gutterMat = new THREE.MeshStandardMaterial({
+      color: 0x1a1c21,
+      roughness: 0.62,
+      metalness: 0.03,
+      envMap: environmentMap,
+      envMapIntensity: 0.22,
+      transparent: true,
+      opacity: 0.4,
+      depthWrite: false,
+      polygonOffset: true,
+      polygonOffsetFactor: -2,
+      polygonOffsetUnits: -2,
+    });
+    const gutter = new THREE.Mesh(
+      new THREE.PlaneGeometry(length - 3, ALLEY_EAST.gutterWidth),
+      gutterMat,
+    );
+    gutter.rotation.x = -Math.PI / 2;
+    gutter.position.set(centerX, 0.018, curbZ + (isNorth ? 0.34 : -0.34));
+    floorGroup.add(gutter);
+  }
+
   // چاله‌های آب باران — تنها نقاط براق کف؛ بقیهٔ سنگ‌فرش خشک است
   const puddleSpecs: Array<{ x: number; z: number; rx: number; rz: number; rot: number; mask: THREE.DataTexture }> = [
     { x: -2.2, z: -4.2, rx: 2.7, rz: 3.6, rot: 0.25, mask: puddleMaskA },
@@ -586,6 +728,9 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
     { x: -1.9, z: 12.8, rx: 2.6, rz: 3.2, rot: 0.42, mask: puddleMaskB },
     { x: 2.6, z: 23.4, rx: 2.4, rz: 3.0, rot: -0.28, mask: puddleMaskA },
     { x: -14.2, z: 26.4, rx: 3.0, rz: 2.5, rot: 0.9, mask: puddleMaskB },
+    // چاله‌های خیابانِ شرقیِ باز
+    { x: 13.5, z: 24.6, rx: 2.8, rz: 3.0, rot: -0.35, mask: puddleMaskA },
+    { x: 26.0, z: 23.4, rx: 3.2, rz: 2.6, rot: 0.55, mask: puddleMaskB },
   ];
 
   // هالهٔ نمناک: یک حلقهٔ نازک مات دور هر چاله، تا فقط «کمی اطراف آب» خیس
@@ -927,6 +1072,53 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
   branchSouthRow.position.set(0, 0, ALLEY_BRANCH_ROWS.south.groupZ);
   buildingsGroup.add(branchSouthRow);
   buildSideRow(BRANCH_SOUTH_BUILDINGS, ALLEY_BRANCH_ROWS.south.side, branchSouthRow, 'BranchBuildingSouth');
+
+  // ---------------------------------------- ردیف‌های ساختمان‌های خیابانِ شرقی
+  // همان سازندهٔ ردیف‌ها با گروهِ چرخیده، مثلِ فرعیِ غربی. ردیف تا `viewEndX`
+  // ادامه دارد و در مه گم می‌شود — **هیچ دیوار یا درِ بن‌بستی ساخته نمی‌شود**.
+  const eastNorthRow = new THREE.Group();
+  eastNorthRow.name = 'EastBuildingsNorth';
+  eastNorthRow.rotation.y = ALLEY_EAST_ROWS.rotationY;
+  eastNorthRow.position.set(0, 0, ALLEY_EAST_ROWS.north.groupZ);
+  buildingsGroup.add(eastNorthRow);
+  buildSideRow(EAST_NORTH_BUILDINGS, ALLEY_EAST_ROWS.north.side, eastNorthRow, 'EastBuildingNorth');
+
+  const eastSouthRow = new THREE.Group();
+  eastSouthRow.name = 'EastBuildingsSouth';
+  eastSouthRow.rotation.y = ALLEY_EAST_ROWS.rotationY;
+  eastSouthRow.position.set(0, 0, ALLEY_EAST_ROWS.south.groupZ);
+  buildingsGroup.add(eastSouthRow);
+  buildSideRow(EAST_SOUTH_BUILDINGS, ALLEY_EAST_ROWS.south.side, eastSouthRow, 'EastBuildingSouth');
+
+  // ساختمان‌های بستنِ دیدِ انتهای خیابان: یک بلوکِ سرِ خیابان در دوردست، پشتِ
+  // مه و بی‌چراغ، تا بازیکن از مرزِ نقشه «لبهٔ دنیا» یا تهی نبیند. عمداً **نه
+  // دیوارِ بن‌بست است و نه در** — فقط بافتِ شهر که خیابان جلویش می‌پیچد.
+  const eastVanishingRow = new THREE.Group();
+  eastVanishingRow.name = 'EastVanishingBuildings';
+  const vanishingBlocks = [
+    { x: 55.5, z: 15.4, width: 7.2, depth: 11.0, height: 13.8 },
+    { x: 56.8, z: 24.0, width: 8.0, depth: 9.0, height: 10.2 },
+    { x: 55.9, z: 32.8, width: 7.6, depth: 9.6, height: 15.0 },
+    { x: 63.2, z: 20.6, width: 9.0, depth: 14.0, height: 11.4 },
+    { x: 64.0, z: 31.0, width: 8.4, depth: 12.0, height: 14.2 },
+  ] as const;
+  vanishingBlocks.forEach((spec, i) => {
+    const block = new THREE.Mesh(
+      withUv2(new THREE.BoxGeometry(spec.width, spec.height, spec.depth)),
+      i % 2 === 0 ? brickMatWarm : brickMatSlate,
+    );
+    block.position.set(spec.x, spec.height / 2, spec.z);
+    block.castShadow = true;
+    block.receiveShadow = true;
+    eastVanishingRow.add(block);
+
+    // یک پنجرهٔ کم‌نورِ تنها، تا حجم‌ها در مه مرده به‌نظر نرسند
+    const lit = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 1.2), eerieLitWindowMat);
+    lit.position.set(spec.x - spec.width / 2 - 0.02, spec.height * 0.55, spec.z);
+    lit.rotation.y = -Math.PI / 2;
+    eastVanishingRow.add(lit);
+  });
+  buildingsGroup.add(eastVanishingRow);
 
   // پلاک لعابی نام کوچه روی ساختمان سمت چپ نزدیک اسپاون
   const plaqueFrame = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.42, 1.08), darkIronMat);
@@ -1452,6 +1644,24 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
       seed: 29.4,
       rotationY: -Math.PI / 2,
     },
+    // خیابانِ شرقیِ باز: قرینهٔ تیرِ فرعی، ۹۰ درجه چرخیده تا بازو در عرضِ خیابان
+    // به سمتِ مرکز باشد. دومی دورتر است تا انتهای خیابان در مه روشن بماند.
+    {
+      id: 'EastStreet',
+      x: 19.5,
+      z: ALLEY_EAST.southSidewalkCenterZ,
+      armSide: 1 as const,
+      seed: 33.7,
+      rotationY: Math.PI / 2,
+    },
+    {
+      id: 'EastStreetFar',
+      x: 34.5,
+      z: ALLEY_EAST.northSidewalkCenterZ,
+      armSide: -1 as const,
+      seed: 38.2,
+      rotationY: Math.PI / 2,
+    },
   ] as const;
 
   const utilityPoles: UtilityPoleInstance[] = utilityPoleSpecs.map((spec) => {
@@ -1487,6 +1697,8 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
     [-4.73, 2.6, 19.5],
     [4.73, 2.6, 19.5],
     [-19.5, 2.6, 28.93],
+    [19.5, 2.6, ALLEY_EAST.southSidewalkCenterZ - 1.22],
+    [34.5, 2.6, ALLEY_EAST.northSidewalkCenterZ + 1.22],
   ];
   for (let i = 0; i < moteCount; i++) {
     const [cx, cy, cz] = lampCenters[i % lampCenters.length];

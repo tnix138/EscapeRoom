@@ -3,7 +3,7 @@
 /**
  * collision.ts — برخورد و مرزهای فیزیکی کوچهٔ تماشاخانه (علیرضا / بازبینی رفع گیرکردن)
  * پیاده‌سازی خالص بدون Three.js برای تست واحد سریع در Node:
- * - دیوارهای ساختمان‌های چپ و راست کوچه (تا انتهای جنوبیِ شاخهٔ اصلی)
+ * - دیوارهای ساختمان‌های چپ و راست کوچه (ردیفِ راست در دهانهٔ خیابانِ شرقی قطع می‌شود)
  * - بلوکِ غربیِ شهر (گوشهٔ بیرونِ L) تا بازیکن از مستطیلِ مرزی به فرعیِ خیالی نرود
  * - دیوارِ انتهای جنوبی و دیوارِ بن‌بستِ فرعیِ غربی
  * - نمای تماشاخانه، ویترین تابلوی اعلانات و اتاقک گیشهٔ برنجی
@@ -11,7 +11,9 @@
  * - پایهٔ تیرهای چراغ برق کنار جدول
  * - حل پیوستهٔ برخورد دایره با AABB (MTV + گام‌بندی) تا بازیکن هرگز روی گوشه‌ها یا دیوارها گیر نکند
  *
- * کوچه L‌شکل است: مرزها یک مستطیلِ محیطی‌اند و شکلِ L را همین موانع می‌سازند
+ * نقشه L‌شکل + یک خیابانِ باز در شرق است: مرزها یک مستطیلِ محیطی‌اند و شکلِ نقشه
+ * را همین موانع می‌سازند. **انتهای شرقیِ خیابان مانع ندارد** — فقط مرزِ نقشه
+ * بازیکن را نگه می‌دارد، چون خیابان عمداً بن‌بست نیست و تا مه ادامه دارد
  * (منبعِ اعداد: `alley-layout.ts`).
  */
 
@@ -21,7 +23,7 @@ import {
   ALLEY_GUIDE_COLLISION_DEPTH,
   ALLEY_GUIDE_WALL_X,
 } from './alley-guide-layout';
-import { ALLEY_BRANCH, ALLEY_MAIN, ALLEY_THEATER } from './alley-layout';
+import { ALLEY_BRANCH, ALLEY_EAST, ALLEY_MAIN, ALLEY_THEATER } from './alley-layout';
 
 export interface CollisionResult {
   collided: boolean;
@@ -49,14 +51,15 @@ export interface AABB {
 }
 
 export const ALLEY_STATIC_OBSTACLES: AABB[] = [
-  // دیوار نمای ساختمان‌های سمت راست (شرق) — تا انتهای جنوبیِ کوچه
-  { minX: ALLEY_MAIN.innerX, maxX: 9.5, minZ: -18, maxZ: 32.5 },
+  // بلوکِ شرقیِ شهر: تمامِ گوشهٔ بیرونِ خیابانِ شرقی (شرقِ شاخهٔ اصلی و شمالِ
+  // خیابان). از `northZ` خیابان به بعد باز است تا دهانهٔ خیابان بسته نشود.
+  { minX: ALLEY_MAIN.innerX, maxX: ALLEY_EAST.viewEndX + 2, minZ: -18, maxZ: ALLEY_EAST.northZ },
   // بلوکِ غربیِ شهر: تمامِ گوشهٔ بیرونِ L (غربِ شاخهٔ اصلی و شمالِ فرعی).
   // همین یک مانع است که کوچه را از مستطیل به «L» تبدیل می‌کند.
   { minX: -36, maxX: -ALLEY_MAIN.innerX, minZ: -18, maxZ: ALLEY_BRANCH.northZ },
   // دیوارِ انتهای جنوبی: از بن‌بستِ فرعی تا دیوارِ شرقی، دهانهٔ فرعی را نمی‌بندد
   { minX: -36, maxX: -ALLEY_MAIN.innerX, minZ: ALLEY_BRANCH.southZ, maxZ: 36 },
-  { minX: -ALLEY_MAIN.innerX, maxX: 9.5, minZ: ALLEY_BRANCH.southZ, maxZ: 36 },
+  { minX: -ALLEY_MAIN.innerX, maxX: ALLEY_EAST.viewEndX + 2, minZ: ALLEY_BRANCH.southZ, maxZ: 36 },
   // دیوارِ انتهای غربیِ فرعی (بن‌بست)
   { minX: -36, maxX: ALLEY_BRANCH.westX, minZ: ALLEY_BRANCH.northZ, maxZ: ALLEY_BRANCH.southZ },
   // انتهای شمالیِ شاخهٔ اصلی (ردیفِ ساختمان‌هایی که جای نمای قبلیِ تئاتر را گرفته‌اند)
@@ -106,6 +109,19 @@ export const ALLEY_STATIC_OBSTACLES: AABB[] = [
   // جفت شمالی (z = −۷٫۰)
   { minX: -6.28, maxX: -5.62, minZ: -7.33, maxZ: -6.67 },
   { minX: 5.62, maxX: 6.28, minZ: -7.33, maxZ: -6.67 },
+  // پایهٔ دو تیرِ چراغِ خیابانِ شرقی (روی پیاده‌روهای شمالی و جنوبی)
+  {
+    minX: 19.5 - 0.33,
+    maxX: 19.5 + 0.33,
+    minZ: ALLEY_EAST.southSidewalkCenterZ - 0.33,
+    maxZ: ALLEY_EAST.southSidewalkCenterZ + 0.33,
+  },
+  {
+    minX: 34.5 - 0.33,
+    maxX: 34.5 + 0.33,
+    minZ: ALLEY_EAST.northSidewalkCenterZ - 0.33,
+    maxZ: ALLEY_EAST.northSidewalkCenterZ + 0.33,
+  },
 ];
 
 const COLLISION_EPS = 1e-4;
