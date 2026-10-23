@@ -374,14 +374,14 @@ export function createWoodPlankMaps(baseHex = 0x6f5034, size = 128): ProceduralS
  *
  * برخلاف الوار جعبه‌ها (۱۲۸ پیکسل با درز تخته)، این بافت **۵۱۲ پیکسل** است و
  * درز تخته ندارد. طرح آن امضای بلوط را می‌سازد: نوارهای رگهٔ مواج، دو
- * **قوس کلیسایی** که رگه را U شکل خم می‌کند، **پرتوهای مغزی** (فِلِک‌های روشن
- * کوتاه)، منافذ درشت کشیده و دو گره‌چوب. UV متری در ماژول در، کل لنگه را در
- * یک کاشی می‌نشاند تا هیچ درز تکرار دیده نشود.
+ * **قوس کلیسایی** که رگه را U شکل خم می‌کند، **پرتوهای مغزی** نرم و دو
+ * گره‌چوب. سطح کاملاً صاف است — هیچ منفذ/حفرهٔ تیره‌ای روی چوب نیست.
+ * UV متری در ماژول در، کل لنگه را در یک کاشی می‌نشاند تا هیچ درز تکرار دیده نشود.
  *
  * @param baseHex رنگ پایهٔ چوب (رنگ نهایی روی متریال سفید)
  */
 export function createLobbyDoorWoodMaps(
-  baseHex = 0x8a5a2e,
+  baseHex = 0x6b4426,
   size = 512,
   seed = 4242,
 ): ProceduralSurfaceMaps {
@@ -443,23 +443,25 @@ export function createLobbyDoorWoodMaps(
       // ۳) پرتو مغزی (medullary rays): فِلِک‌های روشن و کوتاه — ویژهٔ بلوط
       const rayNoise = valueNoise(u * 54, v * 320, seed + 41);
       const rayRegion = valueNoise(u * 2.6, v * 3.2, seed + 43);
-      const ray = clamp((rayNoise - 0.68) / 0.32, 0, 1) * clamp((rayRegion - 0.42) / 0.3, 0, 1);
+      const ray =
+        0.5 + (clamp((rayNoise - 0.68) / 0.32, 0, 1) * clamp((rayRegion - 0.42) / 0.3, 0, 1)) * 0.5;
 
-      // ۴) منافذ درشت بلوط: حفره‌های کشیده در راستای رگه
-      const poreNoise = valueNoise(u * 165, v * 42, seed + 57);
-      const pore = clamp((poreNoise - 0.77) / 0.23, 0, 1);
+      // ۴) منافذ چوب حذف شده‌اند — بازبینی: «سوراخ‌سوراخی» سطح دیده می‌شد.
+      // سطح صاف و یکدست با رگهٔ نرم می‌ماند و هیچ حفرهٔ تیره‌ای روی در نیست.
 
       // ۵) گره‌چوب: حلقه‌های هم‌مرکز بیضی‌شکل که رگه را دور خود می‌پیچند
+      // گره‌ها ملایم‌اند: نه حلقهٔ تیز (که شبیه سوراخ دیده شود)، فقط یک
+      // چرخش آرام در رگه دور یک نقطهٔ کمی تیره‌تر
       let knot = 0;
       for (const [kx, ky, krx, kry, kseed] of KNOTS) {
         const dist = Math.hypot((u - kx) / krx, (v - ky) / kry);
-        if (dist < 1.7) {
-          const rings = 0.5 + 0.5 * Math.sin(dist * 20 + kseed);
-          knot += rings * Math.max(0, 1 - dist / 1.7) ** 1.6;
-          knot += Math.max(0, 1 - dist) * 0.7;
+        if (dist < 1.6) {
+          const rings = 0.5 + 0.5 * Math.sin(dist * 9 + kseed);
+          knot += rings * Math.max(0, 1 - dist / 1.6) ** 2.2;
+          knot += Math.max(0, 1 - dist * 2.4) * 0.35;
         }
       }
-      knot = clamp(knot, 0, 1.7);
+      knot = clamp(knot, 0, 1.2);
 
       // ۶) لکهٔ بزرگ تنه — خیلی ملایم تا دو لنگه هم‌رنگ بمانند
       const mottle = valueNoise(u * 2.2, v * 1.1, seed + 71);
@@ -468,15 +470,14 @@ export function createLobbyDoorWoodMaps(
         1.0 +
           latewood * -0.46 +
           (earlywood - 0.5) * 0.3 +
-          ray * 0.42 +
+          (ray - 0.5) * 0.34 +
           (mottle - 0.5) * 0.16 -
-          knot * 0.42 -
-          pore * 0.34,
+          knot * 0.24,
         0.2,
         1.6,
       );
       // چوب تابستانه گرم‌تر و تیره‌تر، پرتوهای مغزی روشن و کمی سردتر
-      const warm = 1.0 - latewood * 0.05 - ray * 0.05 + (mottle - 0.5) * 0.08;
+      const warm = 1.0 - latewood * 0.05 - (ray - 0.5) * 0.04 + (mottle - 0.5) * 0.08;
 
       const off = idx * 4;
       colorData[off] = byte(baseR * shade * (1.04 * warm));
@@ -484,27 +485,27 @@ export function createLobbyDoorWoodMaps(
       colorData[off + 2] = byte(baseB * shade * (0.93 * warm));
       colorData[off + 3] = 255;
 
+      // ارتفاع بدون هیچ گودی/حفره — فقط موج ملایم رگه
       heights[idx] = clamp(
         0.5 -
-          latewood * 0.34 +
-          ray * 0.12 -
-          pore * 0.44 -
-          knot * 0.3 +
+          latewood * 0.26 +
+          (ray - 0.5) * 0.05 -
+          knot * 0.26 +
           (earlywood - 0.5) * 0.1,
         0,
         1,
       );
       roughness[idx] = clamp(
-        0.66 + latewood * 0.1 - ray * 0.14 + pore * 0.2 + knot * 0.12 + (mottle - 0.5) * 0.07,
-        0.48,
-        0.92,
+        0.68 + latewood * 0.08 - ray * 0.08 + knot * 0.1 + (mottle - 0.5) * 0.06,
+        0.5,
+        0.9,
       );
-      ao[idx] = clamp(1 - pore * 0.4 - knot * 0.22 - latewood * 0.04, 0.5, 1);
+      ao[idx] = clamp(1 - knot * 0.2 - latewood * 0.04, 0.62, 1);
     }
   }
 
   // یک کاشی روی کل در: UV متری خودش مقیاس را تعیین می‌کند، پس تکرار ۱×۱
-  return buildMapsFromHeightAndColor(size, heights, colorData, roughness, ao, 1, 1, 2.8);
+  return buildMapsFromHeightAndColor(size, heights, colorData, roughness, ao, 1, 1, 1.5);
 }
 
 /** ماسک آلفای ارگانیک برای لبهٔ نرم چاله‌های آب باران روی سنگ‌فرش */
