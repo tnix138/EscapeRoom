@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import NarrationLayer from '../hud/NarrationLayer';
 import { INVITATION_CUES, INVITATION_DURATION_MS } from '../hud/narration/narration-track';
 import { readPreferences, writePreferences } from '../hud/narration/audio-preferences';
+import { InvitationPreludeAudio } from '../../audio/invitation-prelude-audio';
 
 export interface InvitationCardVideoProps {
   playerName: string;
@@ -17,8 +18,8 @@ export default function InvitationCardVideo({ playerName, seatLabel, onComplete 
   const [elapsed, setElapsed] = useState(0);
   const [musicOn, setMusicOn] = useState(false);
   const [volume, setVolume] = useState(0.7);
-  const audioRef = useRef<AudioContext | null>(null);
-  const masterRef = useRef<GainNode | null>(null);
+  const engineRef = useRef<InvitationPreludeAudio | null>(null);
+  const prevSceneRef = useRef<'envelope' | 'card' | 'tickets'>('envelope');
   const progress = Math.min(elapsed / DURATION_MS, 1);
   const scene = elapsed < 4_000 ? 'envelope' : elapsed < 11_000 ? 'card' : 'tickets';
 
@@ -40,40 +41,33 @@ export default function InvitationCardVideo({ playerName, seatLabel, onComplete 
 
   useEffect(() => {
     if (!musicOn) {
-      audioRef.current?.close().catch(() => undefined);
-      audioRef.current = null;
+      engineRef.current?.dispose();
+      engineRef.current = null;
       return;
     }
-    const AudioContextClass = window.AudioContext ?? (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
-    if (!AudioContextClass) return;
-    const context = new AudioContextClass();
-    audioRef.current = context;
-    const master = context.createGain();
-    master.gain.value = 0.018 * volume;
-    masterRef.current = master;
-    master.connect(context.destination);
-    [110, 164.81, 220].forEach((frequency, index) => {
-      const oscillator = context.createOscillator();
-      const gain = context.createGain();
-      oscillator.type = index === 1 ? 'triangle' : 'sine';
-      oscillator.frequency.value = frequency;
-      gain.gain.value = index === 0 ? 0.5 : 0.24;
-      oscillator.connect(gain);
-      gain.connect(master);
-      oscillator.start();
-    });
+    const engine = new InvitationPreludeAudio(volume);
+    engine.start();
+    engineRef.current = engine;
     return () => {
-      context.close().catch(() => undefined);
-      if (audioRef.current === context) audioRef.current = null;
-      if (masterRef.current === master) masterRef.current = null;
+      engine.dispose();
+      if (engineRef.current === engine) engineRef.current = null;
     };
     // ساخت موتور فقط با روشن/خاموش شدن موسیقی؛ تغییر بلندی جداگانه اعمال می‌شود.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [musicOn]);
 
   useEffect(() => {
-    if (masterRef.current) masterRef.current.gain.value = 0.018 * volume;
+    engineRef.current?.setVolume(volume);
   }, [volume]);
+
+  useEffect(() => {
+    if (prevSceneRef.current !== scene) {
+      prevSceneRef.current = scene;
+      if (scene === 'card' || scene === 'tickets') {
+        engineRef.current?.triggerSceneAccent(scene);
+      }
+    }
+  }, [scene]);
 
   const secondsLeft = Math.max(0, Math.ceil((DURATION_MS - elapsed) / 1000));
   const phaseLabel = scene === 'envelope' ? 'پاکتی از جنس مخمل' : scene === 'card' ? 'اجرای امشب در اُرفه‌ئو' : 'بلیط‌های شما آماده‌اند';
@@ -100,7 +94,9 @@ export default function InvitationCardVideo({ playerName, seatLabel, onComplete 
         <div className="invitation-object" aria-hidden="true">
           <div className="envelope-shadow" />
           <div className={`velvet-envelope ${scene !== 'envelope' ? 'envelope-open' : ''}`}>
-            <div className="envelope-back"><div className="envelope-letter">
+            <div className="envelope-back" />
+            <div className="envelope-flap" />
+            <div className="envelope-letter">
               <div className="letter-border"><span className="letter-corner top-left">❧</span><span className="letter-corner top-right">❧</span><span className="letter-corner bottom-left">❧</span><span className="letter-corner bottom-right">❧</span>
                 <p className="letter-overline">TEATRO ORFEO · 1924</p>
                 <h2>دعوت‌نامه</h2>
@@ -110,8 +106,7 @@ export default function InvitationCardVideo({ playerName, seatLabel, onComplete 
                 <p className="letter-seat">{seatLabel || 'مهمان ویژه'} · امشب، ساعت ۹</p>
                 <p className="letter-footer">نمایش امشب؛ تنها یک‌بار اجرا می‌شود.</p>
               </div>
-            </div></div>
-            <div className="envelope-flap" />
+            </div>
             <div className="envelope-front"><div className="envelope-fold" /><div className="wax-seal"><span>O</span><i>✳</i></div><div className="envelope-name"><small>دعوت‌نامهٔ اختصاصی برای</small><strong>{playerName || 'مهمان تماشاخانه'}</strong></div></div>
             <span className="envelope-hand hand-left" /><span className="envelope-hand hand-right" />
           </div>
