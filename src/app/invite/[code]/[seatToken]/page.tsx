@@ -1,3 +1,4 @@
+import { normalizeSeatToken } from '@/contracts/seat-token-format';
 import InvitationGate from '@/components/invitation/InvitationGate';
 
 interface InvitePageProps {
@@ -11,5 +12,8 @@ export default async function InvitePage({ params, searchParams }: InvitePagePro
   const seatLabel = Array.isArray(query.seat) ? query.seat[0] : query.seat;
   const rawSeatIndex = Array.isArray(query.seatIndex) ? query.seatIndex[0] : query.seatIndex;
   const seatIndex = Number.isInteger(Number(rawSeatIndex)) ? Number(rawSeatIndex) : 0;
-  return <InvitationGate code={route.code} seatToken={route.seatToken} requestedName={playerName ?? ''} requestedSeat={seatLabel ?? ''} requestedSeatIndex={seatIndex} />;
+  // آدرس دعوت از چت فارسی کپی می‌شود؛ توکن را پیش از مصرف نرمال می‌کنیم (نویسهٔ پنهان/encode).
+  const seatToken = normalizeSeatToken(route.seatToken);
+  const code = normalizeSeatToken(route.code).toUpperCase();
+  return <InvitationGate code={code} seatToken={seatToken} requestedName={playerName ?? ''} requestedSeat={seatLabel ?? ''} requestedSeatIndex={seatIndex} />;
 }

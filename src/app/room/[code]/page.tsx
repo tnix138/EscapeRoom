@@ -21,6 +21,7 @@ import { Suspense, use, useEffect, useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { useTheaterSession } from '@/client-sdk/index';
+import { normalizeSeatToken } from '@/contracts/seat-token-format';
 import AlleyFirstPersonScene from '@/components/alley/AlleyFirstPersonScene';
 import FirstPersonCutsceneStage from '@/components/cinema/FirstPersonCutsceneStage';
 import DarkAuditoriumScene from '@/components/auditorium/DarkAuditoriumScene';
@@ -73,7 +74,8 @@ function useSeatToken(roomCode: string): { seatToken: string | null; resolved: b
   }, [roomCode]);
 
   return {
-    seatToken: queryToken ?? stored.token,
+    // توکن از آدرس یا storage می‌آید و ممکن است نویسهٔ پنهان/encode داشته باشد.
+    seatToken: normalizeSeatToken(queryToken ?? stored.token),
     resolved: queryToken != null || stored.resolved,
   };
 }

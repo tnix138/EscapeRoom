@@ -4,6 +4,7 @@
 // مسیرها این فایل را صدا می‌زنند و همهٔ منطق (اعتبار توکن، اعتبارسنجی بدنه و
 // محدودهٔ صحنه) همین‌جاست تا بدون HTTP هم تست شود.
 import { z } from 'zod';
+import { normalizeSeatToken } from '../../contracts/seat-token-format';
 import { checkAndRecord } from '../auth/rate-limit';
 import { getRoomRepository, type RoomRepository } from '../db/repository';
 import {
@@ -14,7 +15,9 @@ import {
 } from '../realtime/presence-tracker';
 import {
   GameServiceError,
+  SEAT_TOKEN_MISSING_MESSAGE,
   findSeatIndexByToken,
+  invalidSeatTokenError,
   loadRoom,
 } from './room-service';
 
@@ -48,8 +51,8 @@ async function requireRoomSeat(
   seatToken: string,
   repo: RoomRepository,
 ): Promise<{ state: NonNullable<Awaited<ReturnType<typeof loadRoom>>>; seatIndex: number }> {
-  if (!seatToken) {
-    throw new GameServiceError('INVALID_SEAT_TOKEN', 'توکن صندلی ارسال نشده است.', 401);
+  if (!normalizeSeatToken(seatToken)) {
+    throw new GameServiceError('INVALID_SEAT_TOKEN', SEAT_TOKEN_MISSING_MESSAGE, 401);
   }
   const state = await loadRoom(code, repo);
   if (!state) {
@@ -57,7 +60,7 @@ async function requireRoomSeat(
   }
   const seatIndex = findSeatIndexByToken(state, seatToken);
   if (seatIndex === null) {
-    throw new GameServiceError('INVALID_SEAT_TOKEN', 'توکن صندلی معتبر نیست.', 401);
+    throw invalidSeatTokenError(seatToken, state);
   }
   return { state, seatIndex };
 }

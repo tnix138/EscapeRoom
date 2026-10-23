@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { isWellFormedSeatToken, normalizeSeatToken } from '../../contracts/seat-token-format';
 import InvitationCardVideo from './InvitationCardVideo';
 import { rememberSeatToken } from './seat-storage';
 
@@ -13,7 +14,10 @@ interface InvitationGateProps {
   requestedSeatIndex: number;
 }
 
-type GateState = 'loading' | 'watching' | 'already-watched' | 'preview-complete';
+type GateState = 'loading' | 'watching' | 'already-watched' | 'preview-complete' | 'invalid-link';
+
+const FALLBACK_SEAT_ERROR =
+  'لینک دعوت شما معتبر نیست؛ از میزبان بخواهید لینک صندلی‌تان را دوباره بفرستد.';
 
 export default function InvitationGate({ code, seatToken, requestedName, requestedSeat, requestedSeatIndex }: InvitationGateProps) {
   const router = useRouter();
@@ -23,54 +27,78 @@ export default function InvitationGate({ code, seatToken, requestedName, request
   const [seatIndex, setSeatIndex] = useState(requestedSeatIndex);
   const [isPreview, setIsPreview] = useState(Boolean(requestedName));
   const [error, setError] = useState('');
+  const [seatError, setSeatError] = useState('');
   const [sending, setSending] = useState(false);
   const primaryActionRef = useRef<HTMLAnchorElement | null>(null);
+  const retryActionRef = useRef<HTMLButtonElement | null>(null);
+  // آخرین درخواست برنده است؛ پاسخ درخواست کهنه وضعیت را بازنویسی نمی‌کند.
+  const requestRef = useRef(0);
+
+  // توکن از آدرس می‌آید و ممکن است هنگام کپی در چت نویسهٔ پنهان یا encode گرفته باشد.
+  const token = normalizeSeatToken(seatToken);
+  const tokenLooksValid = isWellFormedSeatToken(token);
+
+  const loadSeat = useCallback(async () => {
+    const requestId = (requestRef.current += 1);
+    const isStale = () => requestRef.current !== requestId;
+    setState('loading');
+    try {
+      const response = await fetch(`/api/rooms/${encodeURIComponent(code)}`, {
+        headers: { 'X-Seat-Token': token },
+        cache: 'no-store',
+      });
+      // ۴۰۱ یعنی این لینک به هیچ صندلی در اتاق نمی‌خورد؛ بازیکن باید همان‌جا بفهمد،
+      // نه بعد از تماشای دعوت‌نامه و تلاش برای ورود به کوچه.
+      if (response.status === 401) {
+        const payload = await response.json().catch(() => null);
+        if (isStale()) return;
+        setSeatError(payload?.error?.message ?? FALLBACK_SEAT_ERROR);
+        setState('invalid-link');
+        return;
+      }
+      if (response.ok) {
+        const payload = await response.json();
+        const data = payload?.data ?? payload;
+        const room = data?.roomView ?? data;
+        const me = room?.me;
+        if (isStale()) return;
+        if (me?.playerName) setPlayerName(me.playerName);
+        if (me?.seatLabel) setSeatLabel(me.seatLabel);
+        if (Number.isInteger(me?.seatIndex)) setSeatIndex(me.seatIndex);
+        setIsPreview(false);
+        if (me?.hasWatchedInvitation) {
+          setState('already-watched');
+          return;
+        }
+      }
+    } catch {
+      // دعوت‌نامهٔ بصری مستقل از API هم قابل نمایش است.
+    }
+    if (isStale()) return;
+    setState('watching');
+  }, [code, token]);
 
   useEffect(() => {
     // قرارداد ذخیرهٔ توکن: `seat:<code>` و `orfeo:<code>:<token>` — مسیر اتاق همین‌ها را می‌خواند.
+    // مقدار ذخیره‌شده نسخهٔ نرمال‌شده است تا توکن آلوده در storage ماندگار نماند.
     try {
-      rememberSeatToken(code, seatToken, [window.sessionStorage, window.localStorage]);
+      rememberSeatToken(code, token, [window.sessionStorage, window.localStorage]);
     } catch {
       // storage اختیاری است؛ توکن در حافظهٔ همین صفحه باقی می‌ماند.
     }
-
-    let cancelled = false;
-    async function loadSeat() {
-      try {
-        const response = await fetch(`/api/rooms/${encodeURIComponent(code)}`, {
-          headers: { 'X-Seat-Token': seatToken },
-          cache: 'no-store',
-        });
-        if (response.ok) {
-          const payload = await response.json();
-          const data = payload?.data ?? payload;
-          const room = data?.roomView ?? data;
-          const me = room?.me;
-          if (me?.playerName) setPlayerName(me.playerName);
-          if (me?.seatLabel) setSeatLabel(me.seatLabel);
-          if (Number.isInteger(me?.seatIndex)) setSeatIndex(me.seatIndex);
-          setIsPreview(false);
-          if (me?.hasWatchedInvitation) {
-            setState('already-watched');
-            return;
-          }
-        }
-      } catch {
-        // دعوت‌نامهٔ بصری مستقل از API هم قابل نمایش است.
-      }
-      if (!cancelled) setState('watching');
-    }
     void loadSeat();
-    return () => { cancelled = true; };
-  }, [code, seatToken]);
+    return () => {
+      requestRef.current += 1;
+    };
+  }, [code, token, loadSeat]);
 
   // در حالت‌های پایانی، فوکوس روی اقدام اصلی می‌رود تا کاربر با کیبورد گیر نکند.
   useEffect(() => {
-    if (state === 'already-watched' || state === 'preview-complete') {
-      const timer = window.setTimeout(() => primaryActionRef.current?.focus({ preventScroll: true }), 0);
-      return () => window.clearTimeout(timer);
-    }
-    return undefined;
+    const target =
+      state === 'invalid-link' ? retryActionRef : state === 'already-watched' || state === 'preview-complete' ? primaryActionRef : null;
+    if (!target) return undefined;
+    const timer = window.setTimeout(() => target.current?.focus({ preventScroll: true }), 0);
+    return () => window.clearTimeout(timer);
   }, [state]);
 
   async function completeInvitation() {
@@ -79,11 +107,17 @@ export default function InvitationGate({ code, seatToken, requestedName, request
     try {
       const response = await fetch(`/api/rooms/${encodeURIComponent(code)}/action`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-Seat-Token': seatToken },
+        headers: { 'Content-Type': 'application/json', 'X-Seat-Token': token },
         body: JSON.stringify({ type: 'COMPLETE_INVITATION_VIDEO' }),
       });
       if (response.ok) {
         router.replace(`/room/${encodeURIComponent(code)}`);
+        return;
+      }
+      if (response.status === 401) {
+        const payload = await response.json().catch(() => null);
+        setSeatError(payload?.error?.message ?? FALLBACK_SEAT_ERROR);
+        setState('invalid-link');
         return;
       }
       if (response.status !== 404) {
@@ -108,6 +142,38 @@ export default function InvitationGate({ code, seatToken, requestedName, request
         <span className="loading-seal" aria-hidden="true">✳</span>
         <p role="status">در حال یافتن صندلی شما…</p>
         <span className="loading-line" />
+      </main>
+    );
+  }
+
+  if (state === 'invalid-link') {
+    return (
+      <main className="invitation-loading">
+        <span className="loading-seal" aria-hidden="true">✕</span>
+        <h1>این لینک دعوت کار نمی‌کند</h1>
+        <p role="alert">{seatError || FALLBACK_SEAT_ERROR}</p>
+        <p>
+          کد اتاق: <strong dir="ltr">{code}</strong>
+          {!tokenLooksValid && (
+            <>
+              {' '}
+              — به‌نظر می‌رسد لینک هنگام کپی ناقص شده است؛ آن را کامل از پیام اصلی باز کنید.
+            </>
+          )}
+        </p>
+        <div className="finish-actions">
+          <button
+            ref={retryActionRef}
+            className="invitation-primary"
+            type="button"
+            onClick={() => { void loadSeat(); }}
+          >
+            تلاش دوباره
+          </button>
+          <a className="invitation-secondary" href="/">
+            رزرو اتاق تازه
+          </a>
+        </div>
       </main>
     );
   }
