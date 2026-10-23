@@ -62,14 +62,21 @@ describe('بازطراحی کامل کوچهٔ سه‌بعدی تماشاخان�
 
     expect(alley.group.getObjectByName('BuildingLeft_0')).toBeDefined();
     expect(alley.group.getObjectByName('BuildingRight_0')).toBeDefined();
-    expect(alley.group.getObjectByName('AlleyBackGate')).toBeDefined();
+    // خواستهٔ بازبینی: «نردهٔ پشت سر» برداشته شد؛ انتهای کوچه حالا به فرعیِ
+    // L‌شکل و بن‌بستِ درِ چوبی ختم می‌شود، نه به دروازهٔ آهنی.
+    expect(alley.group.getObjectByName('AlleyBackGate')).toBeUndefined();
+    expect(alley.group.getObjectByName('BranchDeadEnd')).toBeDefined();
+    expect(alley.group.getObjectByName('BranchDeadEndDoor')).toBeDefined();
     expect(alley.group.getObjectByName('TheaterMarqueeSign')).toBeDefined();
 
-    // ۴ تیر چراغ برق (دو جفت رو‌به‌روی هم) + کابل‌های هوایی
+    // تیرهای چراغ برق (جفت‌های رو‌به‌روی هم؛ جفتِ امتدادِ جنوبی و فرعی هم اضافه
+    // شده‌اند) + کابل‌های هوایی
     expect(alley.group.getObjectByName('UtilityPole_SouthLeft')).toBeDefined();
     expect(alley.group.getObjectByName('UtilityPole_SouthRight')).toBeDefined();
     expect(alley.group.getObjectByName('UtilityPole_NorthLeft')).toBeDefined();
     expect(alley.group.getObjectByName('UtilityPole_NorthRight')).toBeDefined();
+    expect(alley.group.getObjectByName('UtilityPole_FarSouthLeft')).toBeDefined();
+    expect(alley.group.getObjectByName('UtilityPole_BranchNorth')).toBeDefined();
     expect(alley.group.getObjectByName('OverheadPowerCable')).toBeDefined();
 
     // ۴ دسته جعبه‌های چوبی و بشکه

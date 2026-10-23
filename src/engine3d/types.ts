@@ -5,6 +5,8 @@
  * هیچ وابستگی به Three.js در تایپ‌های خالص نیست تا تست واحد Node امن بماند.
  */
 
+import { ALLEY_L_BOUNDS } from './alley-layout';
+
 export interface WorldBounds {
   /** محدوده X (عرض کوچه) */
   minX: number;
@@ -63,13 +65,12 @@ export const DEFAULT_MOVEMENT_CONFIG: MovementConfig = {
   maxPitchDeg: 68,
 };
 
-export const DEFAULT_ALLEY_BOUNDS: WorldBounds = {
-  minX: -9,
-  maxX: 9,
-  minZ: -18,
-  maxZ: 8,
-  groundY: 0,
-};
+/**
+ * مرزهای کوچهٔ L‌شکل: مستطیلِ محیطیِ کلِ L (شاخهٔ اصلیِ دوبرابر + فرعیِ غربی).
+ * گوشه‌های بیرونِ L با موانعِ `ALLEY_STATIC_OBSTACLES` بسته شده‌اند، پس بازیکن
+ * عملاً فقط داخلِ خودِ L راه می‌رود. منبعِ اعداد: `alley-layout.ts`
+ */
+export const DEFAULT_ALLEY_BOUNDS: WorldBounds = ALLEY_L_BOUNDS;
 
 export const DEFAULT_ALLEY_SPAWN: PlayerSpawn = {
   position: { x: 0, y: 1.65, z: 6 },

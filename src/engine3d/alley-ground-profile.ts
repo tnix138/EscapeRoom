@@ -1,5 +1,7 @@
 'use client';
 
+import { ALLEY_BRANCH } from './alley-layout';
+
 /**
  * alley-ground-profile.ts — پروفایل ارتفاعی کف کوچه، مشترک بین زمین و هالهٔ نور (علیرضا)
  *
@@ -27,17 +29,51 @@ export function alleyGroundCrownAt(x: number): number {
 export const ALLEY_SIDEWALK_HEIGHT = 0.13;
 
 /**
- * ارتفاع سطح گام‌برداری بازیکن در عرض کوچه (متر):
- * در مسیر سنگ‌فرش میانی (|x| <= 5.95) صفر است و هنگام بالا رفتن از جدول و پیاده‌رو
- * (|x| >= 6.22) به شکل پیوسته به ۰٫۱۳ متر می‌رسد تا کف کفش کاراکترها داخل پیاده‌رو فرو نرود.
+ * پروفیلِ پلهٔ پیاده‌رو بر حسبِ فاصلۀ عرضی از محور (متر):
+ * داخلِ سنگ‌فرش صفر، روی جدول به‌شکلِ پیوسته و از لبهٔ پیاده‌رو به بعد ۰٫۱۳ متر.
  */
-export function alleyWalkableGroundAt(x: number): number {
+function smoothHeight(t: number): number {
+  const clamped = Math.max(0, Math.min(1, t));
+  return clamped * clamped * (3 - 2 * clamped) * ALLEY_SIDEWALK_HEIGHT;
+}
+
+/** از فاصلۀ عرضی تا لبهٔ پیاده‌رو: داخل صفر، روی جدول پیوسته، بیرون ۰٫۱۳ */
+function stepFromCenter(distance: number, roadEdge: number, curbEdge: number): number {
+  if (!Number.isFinite(distance)) return 0;
+  const d = Math.abs(distance);
+  if (d <= roadEdge) return 0;
+  if (d >= curbEdge) return ALLEY_SIDEWALK_HEIGHT;
+  return smoothHeight((d - roadEdge) / (curbEdge - roadEdge));
+}
+
+/** پلهٔ یک‌طرفه (برای پایهٔ جنوبی که فقط از یک سمت بالا می‌رود) */
+function stepUpAt(value: number, start: number, end: number): number {
+  if (!Number.isFinite(value)) return 0;
+  if (value <= start) return 0;
+  if (value >= end) return ALLEY_SIDEWALK_HEIGHT;
+  return smoothHeight((value - start) / (end - start));
+}
+
+export function alleyWalkableGroundAt(x: number, z: number = Number.NaN): number {
   if (!Number.isFinite(x)) return 0;
-  const ax = Math.abs(x);
-  if (ax <= 5.95) return 0;
-  if (ax >= 6.22) return ALLEY_SIDEWALK_HEIGHT;
-  const t = (ax - 5.95) / (6.22 - 5.95);
-  const smooth = t * t * (3 - 2 * t);
-  return smooth * ALLEY_SIDEWALK_HEIGHT;
+  const hasZ = Number.isFinite(z);
+
+  // ۱) باندِ فرعیِ غربی: محورِ عرض z است، نه x
+  if (hasZ && z >= ALLEY_BRANCH.northZ && x < ALLEY_BRANCH.groundEastX) {
+    const branchWidth = ALLEY_BRANCH.southZ - ALLEY_BRANCH.northZ; // ۹٫۸
+    const halfRoad = (branchWidth - 2 * ALLEY_BRANCH.sidewalkWidth) / 2; // ۳٫۲
+    return stepFromCenter(z - ALLEY_BRANCH.centerZ, halfRoad, halfRoad + 0.27);
+  }
+
+  // ۲) پیاده‌روی جنوبیِ فرعی از دهانهٔ فرعی تا دیوارِ انتهای کوچه امتداد دارد و
+  //    جلوی دیوارِ جنوبی یک پایهٔ مشترک برای هر دو بازو می‌سازد؛ اگر اینجا حساب
+  //    نشود، بازیکن ۱۳ سانتی‌متر داخلِ سنگ‌فرشِ پایه فرو می‌رود.
+  const apronEdge = ALLEY_BRANCH.southZ - ALLEY_BRANCH.sidewalkWidth;
+  if (hasZ && x <= 6.25 && z >= apronEdge - 0.27) {
+    return stepUpAt(z, apronEdge - 0.27, apronEdge);
+  }
+
+  // ۳) شاخهٔ اصلی: پیاده‌روهای دو طرف در عرضِ کوچه
+  return stepFromCenter(x, 5.95, 6.22);
 }
 
