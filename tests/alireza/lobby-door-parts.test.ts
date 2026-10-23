@@ -7,6 +7,7 @@ import {
   LOBBY_DOOR_STATUS_LAMPS,
   createLobbyDoor,
   lobbyDoorGlowPulse,
+  lobbyDoorHandleProfile,
 } from '@/engine3d/alley-lobby-door';
 
 /**
@@ -251,31 +252,129 @@ describe('درِ اصلی لابی: نیم‌دایرهٔ شیشه‌ای، دو
     alley.dispose();
   });
 
-  it('دو دستگیرهٔ استوانه‌ای برنجی (طلایی) در وسط در و قرینهٔ هم‌اند', () => {
+  it('در: کیفیت بالا و طرح‌دار — بافت ۵۱۲ پیکسلی بلوط با رگه، پرتو مغزی، قوس و زبری', () => {
     const alley = buildAlley();
-    const left = alley.group.getObjectByName('LobbyDoorHandleLeft') as THREE.Mesh<THREE.CylinderGeometry>;
-    const right = alley.group.getObjectByName('LobbyDoorHandleRight') as THREE.Mesh<THREE.CylinderGeometry>;
+    const slab = alley.group.getObjectByName('LobbyDoorLeafLeft_Slab') as THREE.Mesh<
+      THREE.BoxGeometry,
+      THREE.MeshStandardMaterial
+    >;
+    const wood = slab.material;
+
+    // بافت اختصاصی در — ۵۱۲ پیکسل، نه ۱۲۸ پیکسلِ الوار جعبه‌ها
+    expect(wood.map).toBeInstanceOf(THREE.DataTexture);
+    expect((wood.map as THREE.DataTexture).image.width).toBe(512);
+    expect(wood.normalMap).toBeInstanceOf(THREE.DataTexture);
+    expect((wood.normalMap as THREE.DataTexture).image.width).toBe(512);
+    expect(wood.roughnessMap).toBeInstanceOf(THREE.DataTexture);
+    // برجستگی رگه واضح است
+    expect(wood.normalScale.x).toBeGreaterThan(1);
+
+    // رنگ بلوط: گرم و عسلی (کانال قرمز مسلط، روشنایی متوسط)
+    const px = (wood.map as THREE.DataTexture).image.data as Uint8Array;
+    let sumR = 0;
+    let sumG = 0;
+    let sumB = 0;
+    let dark = 0;
+    const columns: number[] = new Array(64).fill(0);
+    const columnCounts: number[] = new Array(64).fill(0);
+    for (let i = 0, p = 0; i < px.length; i += 4, p++) {
+      sumR += px[i];
+      sumG += px[i + 1];
+      sumB += px[i + 2];
+      dark += px[i] < 40 ? 1 : 0;
+      const col = Math.floor(((p % 512) / 512) * 64);
+      columns[col] += 0.2126 * px[i] + 0.7152 * px[i + 1] + 0.0722 * px[i + 2];
+      columnCounts[col] += 1;
+    }
+    const n = px.length / 4;
+    const meanR = sumR / n;
+    const meanG = sumG / n;
+    const meanB = sumB / n;
+    expect(meanR).toBeGreaterThan(meanG);
+    expect(meanG).toBeGreaterThan(meanB);
+    expect(meanR).toBeGreaterThan(95); // بلوط روشن‌تر از قهوه‌ای تیرهٔ قبلی
+    expect(meanR).toBeLessThan(190);
+
+    // طرح‌دار است: روشنایی در عرض بافت نوسان محسوس دارد (نوارهای رگه)
+    const columnMeans = columns.map((sum, i) => sum / Math.max(1, columnCounts[i]));
+    const colMean = columnMeans.reduce((a, b) => a + b, 0) / columnMeans.length;
+    const colSd = Math.sqrt(
+      columnMeans.reduce((a, b) => a + (b - colMean) ** 2, 0) / columnMeans.length,
+    );
+    expect(colSd / colMean).toBeGreaterThan(0.03);
+    // منافذ و رگه‌های تیره وجود دارند ولی بافت را سیاه نمی‌کنند
+    expect(dark / n).toBeLessThan(0.08);
+
+    // زبری هم نقاشی دارد، نه عدد ثابت
+    const rp = (wood.roughnessMap as THREE.DataTexture).image.data as Uint8Array;
+    let rmin = 255;
+    let rmax = 0;
+    for (let i = 0; i < rp.length; i += 4) {
+      rmin = Math.min(rmin, rp[i]);
+      rmax = Math.max(rmax, rp[i]);
+    }
+    expect(rmax - rmin).toBeGreaterThan(30);
+
+    alley.dispose();
+  });
+
+  it('دستگیرهٔ میله‌ای برنجی: نوک مخروطی بالا و پایین، سه حلقهٔ برجسته و در وسط در', () => {
+    const alley = buildAlley();
+    const left = alley.group.getObjectByName('LobbyDoorHandleLeft') as THREE.Mesh<
+      THREE.LatheGeometry,
+      THREE.MeshStandardMaterial
+    >;
+    const right = alley.group.getObjectByName('LobbyDoorHandleRight') as THREE.Mesh<
+      THREE.LatheGeometry,
+      THREE.MeshStandardMaterial
+    >;
     expect(left, 'left handle').toBeDefined();
     expect(right, 'right handle').toBeDefined();
-    expect(left.geometry.type).toBe('CylinderGeometry');
+    // میلهٔ چرخشی، نه استوانهٔ ساده
+    expect(left.geometry.type).toBe('LatheGeometry');
 
-    // استوانهٔ عمودی: ارتفاع بیشتر از قطر
-    expect(left.geometry.parameters.height).toBeCloseTo(LOBBY_DOOR.handleLength, 6);
-    expect(left.geometry.parameters.height).toBeGreaterThan(
-      left.geometry.parameters.radiusTop * 4,
-    );
-    expect(left.rotation.x).toBeCloseTo(0, 6);
-
-    // وسط در: هر دو نزدیک محور مرکزی و قرینه
     const leftPos = worldPos(left);
     const rightPos = worldPos(right);
+    // وسط در: هر دو نزدیک محور مرکزی و قرینه
     expect(leftPos.x).toBeCloseTo(-rightPos.x, 6);
     expect(Math.abs(leftPos.x)).toBeLessThan(0.2);
     expect(leftPos.y).toBeCloseTo(rightPos.y, 6);
     expect(leftPos.z).toBeCloseTo(rightPos.z, 6);
-    // هر دستگیره روی لنگهٔ خودش است (سمت درست)
     expect(leftPos.x).toBeLessThan(0);
     expect(rightPos.x).toBeGreaterThan(0);
+
+    // پروفیل: نوک تیز در دو سر، بدنهٔ استوانه‌ای و حلقه‌های برجسته
+    const profile = lobbyDoorHandleProfile();
+    const half = LOBBY_DOOR.handleLength / 2;
+    const radii = profile.map((point) => point.x);
+    const ys = profile.map((point) => point.y);
+    expect(Math.min(...ys)).toBeCloseTo(-half, 6);
+    expect(Math.max(...ys)).toBeCloseTo(half, 6);
+    // نوک‌ها: شعاع نزدیک صفر، یعنی «کمی تیز»
+    expect(radii[0]).toBeLessThan(0.01);
+    expect(radii[radii.length - 1]).toBeLessThan(0.01);
+    expect(LOBBY_DOOR.handleTipLength).toBeGreaterThan(0.03);
+    expect(LOBBY_DOOR.handleTipLength).toBeLessThan(LOBBY_DOOR.handleLength / 4);
+    // حلقه‌ها برجسته‌تر از بدنه‌اند و تعدادشان درست است
+    expect(Math.max(...radii)).toBeCloseTo(LOBBY_DOOR.handleRingRadius, 6);
+    expect(LOBBY_DOOR.handleRingRadius).toBeGreaterThan(LOBBY_DOOR.handleRadius);
+    const ringPeaks = profile.filter(
+      (point) => Math.abs(point.x - LOBBY_DOOR.handleRingRadius) < 1e-9,
+    );
+    expect(ringPeaks.length).toBe(LOBBY_DOOR.handleRingCount * 2); // دو لبهٔ هر حلقه
+    expect(LOBBY_DOOR.handleRingCount).toBe(3);
+    // حلقه‌ها با فاصلهٔ مساوی و دور از نوک‌ها
+    const ringCenters = [0, 1, 2].map((ring) => {
+      const inner = -half + LOBBY_DOOR.handleTipLength;
+      const span = LOBBY_DOOR.handleLength - 2 * LOBBY_DOOR.handleTipLength;
+      return inner + (span * (ring + 1)) / (LOBBY_DOOR.handleRingCount + 1);
+    });
+    const gaps = ringCenters.slice(1).map((c, i) => c - ringCenters[i]);
+    expect(gaps[0]).toBeCloseTo(gaps[1], 6);
+    for (const center of ringCenters) {
+      expect(center).toBeGreaterThan(-half + LOBBY_DOOR.handleTipLength);
+      expect(center).toBeLessThan(half - LOBBY_DOOR.handleTipLength);
+    }
 
     // برنج طلایی و فلزی
     const brass = left.material as THREE.MeshStandardMaterial;
@@ -395,50 +494,6 @@ describe('درِ اصلی لابی: نیم‌دایرهٔ شیشه‌ای، دو
 
     // دیگر بالای قوس (جای قبلی) چراغی نیست
     expect(lamps.position.y).toBeLessThan(arcApexY - 0.2);
-
-    alley.dispose();
-  });
-
-  it('چوب در کیفیت بالا دارد: بافت ۵۱۲ پیکسلی اختصاصی با رگه، برجستگی و زبری', () => {
-    const alley = buildAlley();
-    const slab = alley.group.getObjectByName('LobbyDoorLeafLeft_Slab') as THREE.Mesh<
-      THREE.BoxGeometry,
-      THREE.MeshStandardMaterial
-    >;
-    const wood = slab.material;
-
-    // بافت اختصاصی در — ۵۱۲ پیکسل، نه ۱۲۸ پیکسلِ الوار جعبه‌ها
-    expect(wood.map).toBeInstanceOf(THREE.DataTexture);
-    expect((wood.map as THREE.DataTexture).image.width).toBe(512);
-    expect(wood.normalMap).toBeInstanceOf(THREE.DataTexture);
-    expect((wood.normalMap as THREE.DataTexture).image.width).toBe(512);
-    expect(wood.roughnessMap).toBeInstanceOf(THREE.DataTexture);
-    // برجستگی رگه واضح است
-    expect(wood.normalScale.x).toBeGreaterThan(1);
-
-    // رگه واقعاً دیده می‌شود: روشنایی بافت پراکندگی محسوس دارد و تیره و گرم است
-    const px = (wood.map as THREE.DataTexture).image.data as Uint8Array;
-    const lum: number[] = [];
-    for (let i = 0; i < px.length; i += 4) {
-      lum.push(0.2126 * px[i] + 0.7152 * px[i + 1] + 0.0722 * px[i + 2]);
-    }
-    const mean = lum.reduce((a, l) => a + l, 0) / lum.length;
-    const sd = Math.sqrt(lum.reduce((a, l) => a + (l - mean) ** 2, 0) / lum.length);
-    expect(mean).toBeGreaterThan(25);
-    expect(mean).toBeLessThan(110);
-    // رگه و گره‌چوب کنتراست محسوس دارند (حداقل ~۲۰٪ میانگین)
-    expect(sd).toBeGreaterThan(6);
-    expect(sd / mean).toBeGreaterThan(0.18);
-
-    // زبری هم نقاشی دارد، نه عدد ثابت
-    const rp = (wood.roughnessMap as THREE.DataTexture).image.data as Uint8Array;
-    let rmin = 255;
-    let rmax = 0;
-    for (let i = 0; i < rp.length; i += 4) {
-      rmin = Math.min(rmin, rp[i]);
-      rmax = Math.max(rmax, rp[i]);
-    }
-    expect(rmax - rmin).toBeGreaterThan(30);
 
     alley.dispose();
   });

@@ -47,8 +47,18 @@ export const LOBBY_DOOR = {
   /** نیمهٔ پایین چوبی: پنل برجستهٔ پایین لنگه */
   lowerPanelHeight: 1.0,
   lowerPanelCenterY: 0.56,
-  /** دستگیرهٔ استوانه‌ای برنجی */
-  handleRadius: 0.035,
+  /** دستگیرهٔ میله‌ای برنجی — بدنهٔ استوانه‌ای، دو نوک مخروطی و حلقه‌های برجسته */
+  handleRadius: 0.032,
+  /** شعاع حلقه‌های برجستهٔ روی میله */
+  handleRingRadius: 0.042,
+  /** تعداد حلقه‌های برجسته */
+  handleRingCount: 3,
+  /** ارتفاع هر حلقه در راستای میله */
+  handleRingHeight: 0.026,
+  /** طول نوک مخروطی بالا و پایین (کمی تیز) */
+  handleTipLength: 0.055,
+  /** شعاع نوک: صفر مطلق نوک را سوزنی می‌کند؛ این مقدار «کمی تیز» می‌دهد */
+  handleTipRadius: 0.006,
   handleLength: 0.62,
   handleCenterY: 1.26,
   /** فاصلهٔ محور دستگیره از لبهٔ داخلی لنگه (کنار شکاف وسط در) */
@@ -179,6 +189,50 @@ function roundedRectShape(width: number, height: number, radius: number): THREE.
   shape.lineTo(-w, -h + r);
   shape.quadraticCurveTo(-w, -h, -w + r, -h);
   return shape;
+}
+
+/**
+ * پروفیل چرخشی دستگیرهٔ برنجی (برای `LatheGeometry`).
+ *
+ * میلهٔ یکپارچه با دو **نوک مخروطی** در بالا و پایین («کمی تیز»)، بدنهٔ
+ * استوانه‌ای و **سه حلقهٔ برجسته** با لبهٔ پخ که مثل قرقره روی میله می‌نشینند.
+ * نقطه‌ها از پایین به بالا و در مختصات محلی خودِ دستگیره‌اند (y ∈ ±طول/۲).
+ */
+export function lobbyDoorHandleProfile(): THREE.Vector2[] {
+  const L = LOBBY_DOOR.handleLength;
+  const half = L / 2;
+  const R = LOBBY_DOOR.handleRadius;
+  const RR = LOBBY_DOOR.handleRingRadius;
+  const tip = LOBBY_DOOR.handleTipLength;
+  const tipR = LOBBY_DOOR.handleTipRadius;
+  const ringH = LOBBY_DOOR.handleRingHeight;
+  const points: THREE.Vector2[] = [];
+
+  points.push(new THREE.Vector2(0, -half));
+  points.push(new THREE.Vector2(tipR, -half));
+  // شانهٔ مخروطی پایین
+  points.push(new THREE.Vector2(R, -half + tip));
+
+  // سه حلقه در طول آزاد بین دو نوک، با فاصلهٔ مساوی
+  const innerTop = half - tip;
+  const innerBottom = -half + tip;
+  const span = innerTop - innerBottom;
+  for (let ring = 0; ring < LOBBY_DOOR.handleRingCount; ring++) {
+    const center = innerBottom + (span * (ring + 1)) / (LOBBY_DOOR.handleRingCount + 1);
+    const bottom = center - ringH / 2;
+    const top = center + ringH / 2;
+    // بدنه تا پایهٔ حلقه، پخ کوچک، حلقهٔ برجسته، پخ و برگشت به بدنه
+    points.push(new THREE.Vector2(R, bottom - 0.006));
+    points.push(new THREE.Vector2(RR, bottom));
+    points.push(new THREE.Vector2(RR, top));
+    points.push(new THREE.Vector2(R, top + 0.006));
+  }
+
+  // شانهٔ مخروطی بالا و نوک
+  points.push(new THREE.Vector2(R, half - tip));
+  points.push(new THREE.Vector2(tipR, half));
+  points.push(new THREE.Vector2(0, half));
+  return points;
 }
 
 /** تغییر ملایم درخشش شیشه‌ها؛ همیشه نزدیک ۱ و هرگز صفر نمی‌شود */
@@ -442,7 +496,9 @@ export function createLobbyDoor(options: LobbyDoorOptions = {}): LobbyDoorInstan
 
   const buildLeaf = (side: -1 | 1): THREE.Group => {
     // هر لنگه از ناحیهٔ متفاوتی از بافت نمونه می‌گیرد تا دو لنگه دوقلوی هم‌رگه نباشند
-    const grainUOffset = side < 0 ? 0 : 0.37;
+    // هر لنگه از نواری از بافت نمونه می‌گیرد که کامل داخل [۰،۱] بیفتد؛
+    // وگرنه لبهٔ تکرار بافت (u = ۰) به‌صورت یک خط درز روی چوب دیده می‌شود.
+    const grainUOffset = side < 0 ? 0.12 : 0.55;
     const leaf = new THREE.Group();
     leaf.name = side < 0 ? 'LobbyDoorLeafLeft' : 'LobbyDoorLeafRight';
     leaf.position.set(side * leafCenterX, 0, 0);
@@ -570,7 +626,7 @@ export function createLobbyDoor(options: LobbyDoorOptions = {}): LobbyDoorInstan
     // در وسط در کنار هم بنشینند (لبهٔ داخلی هر لنگه سمت مرکز است)
     const handleX = -side * (LOBBY_DOOR.leafWidth / 2 - LOBBY_DOOR.handleGapFromSeam);
     const handle = new THREE.Mesh(
-      new THREE.CylinderGeometry(LOBBY_DOOR.handleRadius, LOBBY_DOOR.handleRadius, LOBBY_DOOR.handleLength, 16),
+      new THREE.LatheGeometry(lobbyDoorHandleProfile(), 28),
       brassMat,
     );
     handle.name = side < 0 ? 'LobbyDoorHandleLeft' : 'LobbyDoorHandleRight';
@@ -594,13 +650,25 @@ export function createLobbyDoor(options: LobbyDoorOptions = {}): LobbyDoorInstan
       leaf.add(standoff);
     }
 
-    // صفحهٔ برنجی پشت دستگیره
+    // صفحهٔ برنجی پشت دستگیره — بیضیِ کم‌ارتفاع که میله را روی چوب می‌نشاند
+    const plateProfile = new THREE.Shape();
+    const plateW = 0.04;
+    const plateH = LOBBY_DOOR.handleLength / 2 + 0.012;
+    plateProfile.absellipse(0, 0, plateW, plateH, 0, Math.PI * 2, false, 0);
     const backplate = new THREE.Mesh(
-      new THREE.BoxGeometry(0.085, LOBBY_DOOR.handleLength + 0.12, 0.02),
+      new THREE.ExtrudeGeometry(plateProfile, {
+        depth: 0.014,
+        bevelEnabled: true,
+        bevelThickness: 0.006,
+        bevelSize: 0.006,
+        bevelSegments: 2,
+        curveSegments: 18,
+      }),
       brassMat,
     );
     backplate.name = `${leaf.name}_HandlePlate`;
-    backplate.position.set(handleX, LOBBY_DOOR.handleCenterY, frontZ + 0.008);
+    backplate.position.set(handleX, LOBBY_DOOR.handleCenterY, frontZ + 0.004);
+    backplate.castShadow = true;
     leaf.add(backplate);
 
     // نوار آستراگال کنار شکاف وسط (کاملاً در لبهٔ داخلی لنگه)

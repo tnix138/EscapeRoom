@@ -370,17 +370,18 @@ export function createWoodPlankMaps(baseHex = 0x6f5034, size = 128): ProceduralS
 }
 
 /**
- * چوب درِ اصلی لابی — کیفیت بالا برای سطح نزدیک به بازیکن.
+ * چوب **بلوط** درِ اصلی لابی — کیفیت بالا و طرح‌دار برای سطح نزدیک به بازیکن.
  *
  * برخلاف الوار جعبه‌ها (۱۲۸ پیکسل با درز تخته)، این بافت **۵۱۲ پیکسل** است و
- * درز تخته ندارد: یک تکهٔ چوب یک‌دست با رگهٔ عمودی ریز، خط‌های رشد مواج،
- * منافذ ریز و لکه‌های طبیعی روشن/تیره. UV متری در ماژول در، کل لنگه را در
+ * درز تخته ندارد. طرح آن امضای بلوط را می‌سازد: نوارهای رگهٔ مواج، دو
+ * **قوس کلیسایی** که رگه را U شکل خم می‌کند، **پرتوهای مغزی** (فِلِک‌های روشن
+ * کوتاه)، منافذ درشت کشیده و دو گره‌چوب. UV متری در ماژول در، کل لنگه را در
  * یک کاشی می‌نشاند تا هیچ درز تکرار دیده نشود.
  *
  * @param baseHex رنگ پایهٔ چوب (رنگ نهایی روی متریال سفید)
  */
 export function createLobbyDoorWoodMaps(
-  baseHex = 0x54331f,
+  baseHex = 0x8a5a2e,
   size = 512,
   seed = 4242,
 ): ProceduralSurfaceMaps {
@@ -392,17 +393,23 @@ export function createLobbyDoorWoodMaps(
 
   // رنگ پایه به فضای sRGB برگردانده می‌شود تا بایت‌های بافت دقیقاً همان رنگ
   // انتخاب‌شده باشند (Color داخلی three خطی است و بی‌تبدیل، چوب را سیاه می‌کند)
-  // گره‌چوب‌ها: مرکز، شعاع افقی/عمودی و فاز حلقه‌ها — قطعی و تکرارپذیر
-  const KNOTS: ReadonlyArray<readonly [number, number, number, number, number]> = [
-    [0.22, 0.18, 0.075, 0.065, 1.7],
-    [0.68, 0.63, 0.088, 0.074, 3.1],
-    [0.44, 0.88, 0.062, 0.07, 5.4],
-  ];
-
   const base = new THREE.Color(baseHex).convertLinearToSRGB();
   const baseR = base.r * 255;
   const baseG = base.g * 255;
   const baseB = base.b * 255;
+
+  // تعداد نوارهای رگه در عرض یک کاشی (۱۲ نوار ⇒ هر نوار ~۲۰ سانت روی در)
+  const GRAIN_BANDS = 12;
+  // مرکزهای «قوس کلیسایی» بلوط: جایی که رگه به شکل U خم می‌شود
+  const ARCHES: ReadonlyArray<readonly [number, number, number, number]> = [
+    [0.31, 0.2, 0.155, 1.0],
+    [0.74, 0.15, 0.13, 2.4],
+  ];
+  // گره‌چوب‌ها: مرکز، شعاع افقی/عمودی و فاز حلقه‌ها — قطعی و تکرارپذیر
+  const KNOTS: ReadonlyArray<readonly [number, number, number, number, number]> = [
+    [0.2, 0.41, 0.052, 0.05, 1.7],
+    [0.83, 0.76, 0.046, 0.058, 3.1],
+  ];
 
   for (let py = 0; py < size; py++) {
     const v = py / size;
@@ -410,82 +417,94 @@ export function createLobbyDoorWoodMaps(
       const u = px / size;
       const idx = py * size + px;
 
-      // رگهٔ طبیعی چوب از نویزِ کشیده در راستای عمود ساخته می‌شود (نه سینوس
-      // موازی): سه لایهٔ درشت/ریز/مویی که هرکدام در ارتفاع، آرام جابه‌جا می‌شوند.
-      // نتیجه رگه‌های نامنظم با ضخامت متغیر است، نه راه‌راه ماشینی.
-      const coarse = valueNoise(u * 30, v * 0.9, seed + 3);
-      const fine = valueNoise(u * 118, v * 2.2, seed + 21);
-      const hair = valueNoise(u * 290, v * 4.4, seed + 33);
+      // ---- طرح بلوط -------------------------------------------------------
+      // ۱) موج رگه: خط‌های رشد در ارتفاع آرام جابه‌جا می‌شوند (نه خط‌کش)
+      const wander =
+        Math.sin(v * Math.PI * 2.3 + 0.6) * 0.024 +
+        Math.sin(v * Math.PI * 5.9 + 2.1) * 0.009 +
+        (valueNoise(u * 1.6, v * 1.3, seed + 11) - 0.5) * 0.045;
 
-      // منافذ ریز چوب — نقاط تیرهٔ پراکنده
-      const poreNoise = valueNoise(u * 210, v * 150, seed + 57);
-      const pore = clamp((poreNoise - 0.76) / 0.24, 0, 1);
+      // ۲) قوس کلیسایی: رگه‌ها دور دو مرکز به شکل U خم می‌شوند — امضای بلوط
+      let arch = 0;
+      for (const [ax, av, aw, aph] of ARCHES) {
+        const envelope = Math.exp(-(((u - ax) / aw) ** 2));
+        arch += envelope * 0.075 * (0.5 + 0.5 * Math.cos(v * Math.PI * 2 + aph + (av - 0.2) * 4));
+      }
 
-      // لکه‌های بزرگ کهنگی و تفاوت تنهٔ چوب
-      const mottle = valueNoise(u * 2.4, v * 1.2, seed + 71);
+      // مختصات رگه: مجموع جابه‌جایی‌ها؛ خط‌ها در راستای عمود می‌روند
+      const grain = u + wander + arch;
 
-      // چند رگهٔ تیرهٔ کشیده که از بالای در تا پایین کشیده می‌شوند
-      const streakNoise = valueNoise(u * 26, v * 0.6, seed + 89);
-      const streak = clamp((streakNoise - 0.64) / 0.36, 0, 1);
+      // نوارهای رشد: لایهٔ نازک تیره (چوب تابستانه) و نوار پهن روشن
+      const phase = grain * GRAIN_BANDS * Math.PI * 2;
+      const band = 0.5 + 0.5 * Math.sin(phase);
+      const latewood = band ** 7; // خط نازک و تیره
+      const earlywood = band ** 1.6; // نوار روشن و پهن
 
-      // گره‌چوب: چند حلقهٔ هم‌مرکز بیضی‌شکل که رگه را دور خود می‌پیچند
+      // ۳) پرتو مغزی (medullary rays): فِلِک‌های روشن و کوتاه — ویژهٔ بلوط
+      const rayNoise = valueNoise(u * 54, v * 320, seed + 41);
+      const rayRegion = valueNoise(u * 2.6, v * 3.2, seed + 43);
+      const ray = clamp((rayNoise - 0.68) / 0.32, 0, 1) * clamp((rayRegion - 0.42) / 0.3, 0, 1);
+
+      // ۴) منافذ درشت بلوط: حفره‌های کشیده در راستای رگه
+      const poreNoise = valueNoise(u * 165, v * 42, seed + 57);
+      const pore = clamp((poreNoise - 0.77) / 0.23, 0, 1);
+
+      // ۵) گره‌چوب: حلقه‌های هم‌مرکز بیضی‌شکل که رگه را دور خود می‌پیچند
       let knot = 0;
-      for (let k = 0; k < KNOTS.length; k++) {
-        const [kx, ky, krx, kry, kseed] = KNOTS[k];
-        const dx = (u - kx) / krx;
-        const dy = (v - ky) / kry;
-        const dist = Math.hypot(dx, dy);
-        if (dist < 1.6) {
-          const rings = 0.5 + 0.5 * Math.sin(dist * 22 + kseed);
-          knot += rings * Math.max(0, 1 - dist / 1.6) ** 1.5;
-          knot += Math.max(0, 1 - dist) * 0.6;
+      for (const [kx, ky, krx, kry, kseed] of KNOTS) {
+        const dist = Math.hypot((u - kx) / krx, (v - ky) / kry);
+        if (dist < 1.7) {
+          const rings = 0.5 + 0.5 * Math.sin(dist * 20 + kseed);
+          knot += rings * Math.max(0, 1 - dist / 1.7) ** 1.6;
+          knot += Math.max(0, 1 - dist) * 0.7;
         }
       }
-      knot = clamp(knot, 0, 1.6);
+      knot = clamp(knot, 0, 1.7);
+
+      // ۶) لکهٔ بزرگ تنه — خیلی ملایم تا دو لنگه هم‌رنگ بمانند
+      const mottle = valueNoise(u * 2.2, v * 1.1, seed + 71);
 
       const shade = clamp(
-        0.94 +
-          (coarse - 0.5) * 0.34 +
-          (fine - 0.5) * 0.5 +
-          (hair - 0.5) * 0.28 +
+        1.0 +
+          latewood * -0.46 +
+          (earlywood - 0.5) * 0.3 +
+          ray * 0.42 +
           (mottle - 0.5) * 0.16 -
-          streak * 0.4 -
-          knot * 0.34 -
-          pore * 0.3,
-        0.24,
-        1.55,
+          knot * 0.42 -
+          pore * 0.34,
+        0.2,
+        1.6,
       );
-      // رگه‌های روشن کمی گرم‌ترند، منافذ سردتر و تیره‌تر
-      const warm = 0.97 + (coarse - 0.5) * 0.12 - knot * 0.04;
+      // چوب تابستانه گرم‌تر و تیره‌تر، پرتوهای مغزی روشن و کمی سردتر
+      const warm = 1.0 - latewood * 0.05 - ray * 0.05 + (mottle - 0.5) * 0.08;
 
       const off = idx * 4;
-      colorData[off] = byte(baseR * shade * (1.05 * warm));
+      colorData[off] = byte(baseR * shade * (1.04 * warm));
       colorData[off + 1] = byte(baseG * shade * (0.99 * warm));
-      colorData[off + 2] = byte(baseB * shade * (0.92 * warm));
+      colorData[off + 2] = byte(baseB * shade * (0.93 * warm));
       colorData[off + 3] = 255;
 
       heights[idx] = clamp(
-        0.42 +
-          (fine - 0.5) * 0.34 +
-          (hair - 0.5) * 0.26 +
-          (coarse - 0.5) * 0.16 -
-          streak * 0.14 -
-          knot * 0.3 -
-          pore * 0.34,
+        0.5 -
+          latewood * 0.34 +
+          ray * 0.12 -
+          pore * 0.44 -
+          knot * 0.3 +
+          (earlywood - 0.5) * 0.1,
         0,
         1,
       );
       roughness[idx] = clamp(
-        0.7 - (fine - 0.5) * 0.12 + pore * 0.16 + streak * 0.06 + knot * 0.1 + (mottle - 0.5) * 0.08,
-        0.52,
-        0.9,
+        0.66 + latewood * 0.1 - ray * 0.14 + pore * 0.2 + knot * 0.12 + (mottle - 0.5) * 0.07,
+        0.48,
+        0.92,
       );
-      ao[idx] = clamp(1 - pore * 0.32 - streak * 0.12 - knot * 0.18, 0.55, 1);
+      ao[idx] = clamp(1 - pore * 0.4 - knot * 0.22 - latewood * 0.04, 0.5, 1);
     }
   }
 
   // یک کاشی روی کل در: UV متری خودش مقیاس را تعیین می‌کند، پس تکرار ۱×۱
-  return buildMapsFromHeightAndColor(size, heights, colorData, roughness, ao, 1, 1, 2.1);
+  return buildMapsFromHeightAndColor(size, heights, colorData, roughness, ao, 1, 1, 2.8);
 }
 
 /** ماسک آلفای ارگانیک برای لبهٔ نرم چاله‌های آب باران روی سنگ‌فرش */
