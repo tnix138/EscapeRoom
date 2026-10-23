@@ -13,6 +13,7 @@
 
 import * as THREE from 'three';
 import type { ProceduralSurfaceMaps } from './materials/procedural-textures';
+import { COBBLE, buildCobbleField, cobblestoneSurfaceMaps } from './alley-cobblestone';
 
 /** کپی uv روی uv1 برای پشتیبانی کامل aoMap در Three.js */
 export function withUv2<T extends THREE.BufferGeometry>(geometry: T): T {
@@ -134,82 +135,22 @@ function buildMapsFromHeightAndColor(
 }
 
 /**
- * بافت سنگ‌فرش خشک کوچه با رج‌های نیم‌خشت، بندکشی تیره، تنوع رنگ هر
- * قلوه‌سنگ (بازالت، خاکی، سربی، خزه‌دار) و زبری بالای مات (۰٫۸۲–۰٫۹۸).
+ * بافت سنگ‌فرش خشکِ کف کوچه.
+ *
+ * خودِ چیدمانِ سنگ‌ها از این تابع نمی‌آید؛ میدان ارتفاع در ماژول
+ * `alley-cobblestone.ts` یک بار ساخته می‌شود (`buildCobbleField`) و همان میدان
+ * هم نقشه‌های PBR را می‌سازد و هم ترازِ واقعیِ سنگ‌ها را روی رأس‌های کف می‌نشاند.
+ * این‌جا فقط درِ ورودیِ قدیمی نگه داشته شده تا مصرف‌کننده‌ها نشکنند.
+ *
+ * `size` را بزرگ‌گیر (۵۱۲ پیش‌فرضِ کوچه) تا هر سنگ ~۴۰ پیکسل جا داشته باشد؛
+ * در ۲۵۶ پیکسل روی هر سنگ می‌افتاد و لبه‌ها و بند‌ها نرم و «نقاشی‌شده» می‌شدند.
  */
-export function createCobblestoneMaps(repeatX = 5, repeatY = 12, size = 256): ProceduralSurfaceMaps {
-  const count = size * size;
-  const heights = new Float32Array(count);
-  const colorData = new Uint8Array(count * 4);
-  const roughness = new Float32Array(count);
-  const ao = new Float32Array(count);
-
-  const cols = 7;
-  const rows = 9;
-
-  for (let py = 0; py < size; py++) {
-    const v = py / size;
-    for (let px = 0; px < size; px++) {
-      const u = px / size;
-      const idx = py * size + px;
-
-      const rowFloat = v * rows;
-      const rowIdx = Math.floor(rowFloat);
-      const fy = rowFloat - rowIdx;
-
-      const rowShift = (rowIdx % 2) * 0.5 + (hash2D(rowIdx, 3, 71) - 0.5) * 0.14;
-      const colFloat = u * cols + rowShift;
-      const colIdx = Math.floor(colFloat);
-      const fx = colFloat - colIdx;
-
-      const stoneIdX = ((colIdx % cols) + cols) % cols;
-      const stoneIdY = ((rowIdx % rows) + rows) % rows;
-      const stoneTone = hash2D(stoneIdX, stoneIdY, 19);
-      const stoneWarm = hash2D(stoneIdX + 31, stoneIdY + 17, 43);
-      const stoneTilt = (hash2D(stoneIdX + 7, stoneIdY + 53, 97) - 0.5) * 0.12;
-
-      const jointX = Math.min(fx, 1 - fx);
-      const jointY = Math.min(fy, 1 - fy);
-      const bevel = clamp(Math.min(jointX / 0.16, jointY / 0.19), 0, 1);
-      const pillow = Math.pow(Math.sin(clamp(bevel, 0, 1) * Math.PI * 0.5), 0.72);
-
-      const microGrain = (valueNoise(u * 64, v * 64, 5) - 0.5) * 0.13;
-      const wetPatch = valueNoise(u * 4.5, v * 4.5, 29);
-
-      const h = clamp(0.14 + pillow * 0.78 + stoneTilt + microGrain, 0, 1);
-      heights[idx] = h;
-
-      // درز ملات تیره و زبر در مقابل تاج سنگ‌های روشن‌تر
-      const isMortar = bevel < 0.22;
-      const baseLum = 44 + stoneTone * 34 + pillow * 22 + microGrain * 34;
-      let r = baseLum * (0.94 + stoneWarm * 0.18);
-      let g = baseLum * (0.95 + stoneWarm * 0.08);
-      let b = baseLum * (1.06 - stoneWarm * 0.08);
-
-      if (isMortar) {
-        r *= 0.42;
-        g *= 0.44;
-        b *= 0.46;
-      }
-
-      // سنگ‌فرش کوچه خشک است: رطوبت فقط کمی تیرگی می‌گذارد و هیچ براقیتی نمی‌سازد
-      const dampness = clamp(wetPatch * 0.5 - pillow * 0.12, 0, 1);
-      const wetDarken = 1 - dampness * 0.1;
-      const off = idx * 4;
-      colorData[off] = byte(r * wetDarken);
-      colorData[off + 1] = byte(g * wetDarken);
-      colorData[off + 2] = byte(b * wetDarken);
-      colorData[off + 3] = 255;
-
-      // زبری بالا (۰٫۸–۰٫۹۸) یعنی سطح مات؛ درز ملات هم مثل خود سنگ خشک است
-      roughness[idx] = isMortar
-        ? 0.92
-        : clamp(0.9 - dampness * 0.06 + microGrain * 0.12, 0.82, 0.98);
-      ao[idx] = clamp(0.32 + bevel * 0.68, 0.22, 1.0);
-    }
-  }
-
-  return buildMapsFromHeightAndColor(size, heights, colorData, roughness, ao, repeatX, repeatY, 3.6);
+export function createCobblestoneMaps(
+  repeatX: number = COBBLE.repeatX,
+  repeatY: number = COBBLE.repeatY,
+  size: number = COBBLE.textureSize,
+): ProceduralSurfaceMaps {
+  return cobblestoneSurfaceMaps(buildCobbleField(size), repeatX, repeatY);
 }
 
 /** سنگ‌فرش تخته‌های سنگی برش‌خوردهٔ پیاده‌رو و جدول */

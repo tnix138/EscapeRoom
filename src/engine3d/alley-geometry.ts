@@ -43,7 +43,6 @@ import {
 } from './alley-sky';
 import {
   createBrickWallMaps,
-  createCobblestoneMaps,
   createFlagstoneMaps,
   createLobbyDoorWoodMaps,
   createPuddleAlphaMap,
@@ -51,6 +50,12 @@ import {
   createWoodPlankMaps,
   withUv2,
 } from './alley-materials';
+import {
+  COBBLE,
+  COBBLE_GROUND_SEGMENTS,
+  buildCobbleField,
+  cobblestoneSurfaceMaps,
+} from './alley-cobblestone';
 import { createEntranceTorch, type EntranceTorchInstance } from './alley-entrance-torch';
 import {
   LOBBY_DOOR,
@@ -140,8 +145,13 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
   const sky = createAlleySkyDome(74);
   group.add(sky.dome);
 
-  const cobbleMaps = createCobblestoneMaps(5, 13, 256);
-  const flagstoneMaps = createFlagstoneMaps(2, 16, 128);
+  // سنگ‌فرش کف: یک میدانِ ارتفاع، دو مصرف‌کننده — نقشه‌های PBR و جابه‌جاییِ
+  // رأس‌های کف (امیر: سنگ‌ها باید ترازِ واقعاً متفاوت داشته باشند، نه فقط سایه)
+  const cobbleField = buildCobbleField(COBBLE.textureSize);
+  const cobbleMaps = cobblestoneSurfaceMaps(cobbleField, COBBLE.repeatX, COBBLE.repeatY);
+  // پیاده‌رو و سنگ‌تراشِ نما هم دو برابرِ قبل پیکسل می‌گیرد (۱۲۸ → ۲۵۶)؛ با
+  // بافتِ تیزِ کف، تکسچرِ ۱۲ پیکسلی کنارش مات و بی‌کیفیت دیده می‌شد
+  const flagstoneMaps = createFlagstoneMaps(2, 16, 256);
   const brickWarmMaps = createBrickWallMaps(0x6b4536, 3.5, 4.5, 256, 101);
   const brickSlateMaps = createBrickWallMaps(0x4e4a52, 3.2, 4.2, 256, 233);
   const theaterStoneMaps = createBrickWallMaps(0x5c534c, 5.5, 4.5, 256, 379);
@@ -249,23 +259,41 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
     color: 0xa09e97,
     map: cobbleMaps.colorMap,
     normalMap: cobbleMaps.normalMap,
-    normalScale: new THREE.Vector2(1.45, 1.45),
+    normalScale: new THREE.Vector2(1.6, 1.6),
     roughnessMap: cobbleMaps.roughnessMap,
     aoMap: cobbleMaps.aoMap,
-    aoMapIntensity: 0.9,
+    aoMapIntensity: 1.05,
     roughness: 0.96,
     metalness: 0.015,
     envMap: environmentMap,
     envMapIntensity: 0.16,
   });
 
-  const groundGeo = withUv2(new THREE.PlaneGeometry(13.2, 42, 24, 48));
+  const groundGeo = withUv2(
+    new THREE.PlaneGeometry(
+      13.2,
+      42,
+      COBBLE_GROUND_SEGMENTS.x,
+      COBBLE_GROUND_SEGMENTS.y,
+    ),
+  );
   // قوس بسیار ملایم تاج کوچه برای هدایت طبیعی آب باران به جوی کنار جدول
   // (منبع مشترک با هالهٔ نور چراغ‌ها در alley-ground-profile.ts)
+  //
+  // روی همان تاج، ترازِ هر سنگِ کف هم سوار می‌شود (`COBBLE.relief`): ترازِ
+  // بلندِ کف روی صفر است و نشسته‌ترین سنگ ۴٫۵ سانتی‌متر فرو می‌رود. جهتِ
+  // جابه‌جایی عمداً فقط روپایین است — تا چاله‌های آب، هالهٔ نور چراغ‌ها و
+  // درِ منهول که روی همین سطح نشسته‌اند زیرِ سنگ نروند.
   const posAttr = groundGeo.attributes.position;
+  const uvAttr = groundGeo.attributes.uv;
   for (let i = 0; i < posAttr.count; i++) {
-    posAttr.setZ(i, alleyGroundCrownAt(posAttr.getX(i)));
+    const level = cobbleField.sampleLevel(
+      uvAttr.getX(i) * COBBLE.repeatX,
+      uvAttr.getY(i) * COBBLE.repeatY,
+    );
+    posAttr.setZ(i, alleyGroundCrownAt(posAttr.getX(i)) + COBBLE.relief * (level - 1));
   }
+  posAttr.needsUpdate = true;
   groundGeo.computeVertexNormals();
 
   const ground = new THREE.Mesh(groundGeo, groundMat);
