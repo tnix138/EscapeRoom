@@ -9,6 +9,8 @@ import { hintStyle, pageStyle, panelStyle, titleStyle } from '@/components/admin
 import type { GamePhase } from '@/contracts/types';
 import { loadAdminRooms, loadAdminStats } from '@/server/admin/queries';
 import { getRoomRepository } from '@/server/db/repository';
+import { SUBSYSTEM_META } from '@/updates/project-updates';
+import { loadAdminUpdatesOverview } from '@/updates/changelog-loader';
 import { requireAdminPage } from './guard';
 
 export const dynamic = 'force-dynamic';
@@ -22,6 +24,8 @@ export default async function AdminDashboardPage() {
   const repo = getRoomRepository();
   const now = Date.now();
   const [stats, rooms] = await Promise.all([loadAdminStats(repo, now), loadAdminRooms(repo, now, 5)]);
+  const updatesOverview = loadAdminUpdatesOverview();
+  const recentUpdates = updatesOverview.updates.slice(0, 3);
 
   return (
     <main style={pageStyle}>
@@ -120,6 +124,69 @@ export default async function AdminDashboardPage() {
               />
               <span>
                 <strong>{preset.archetypeName}</strong> · کت {preset.coatLabel}
+              </span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section aria-label="آخرین آپدیت‌های فنی" style={panelStyle}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: 8,
+          }}
+        >
+          <h2 style={titleStyle}>
+            آخرین آپدیت‌های فنی پروژه ({faDigits(updatesOverview.totalEntries)} مورد ثبت‌شده)
+          </h2>
+          <Link
+            href="/admin/updates"
+            style={{ color: 'var(--gold-light)', fontSize: 'var(--text-sm)' }}
+          >
+            گزارش کامل فنی و همهٔ آپدیت‌ها →
+          </Link>
+        </div>
+        <div style={{ display: 'grid', gap: 8, marginTop: 10 }}>
+          {recentUpdates.map((item) => (
+            <Link
+              key={item.id}
+              href="/admin/updates"
+              style={{
+                display: 'grid',
+                gap: 4,
+                padding: '10px 12px',
+                borderRadius: 8,
+                border: '1px solid var(--line)',
+                background: 'var(--ink-soft)',
+                textDecoration: 'none',
+                color: 'var(--text-primary)',
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  flexWrap: 'wrap',
+                  gap: 6,
+                }}
+              >
+                <strong style={{ fontSize: 'var(--text-sm)', color: 'var(--cream)' }}>
+                  #{faDigits(String(item.index).padStart(2, '0'))} · {item.title}
+                </strong>
+                <span style={{ fontSize: 'var(--text-xs)', color: 'var(--gold-light)' }}>
+                  {item.subsystems.map((s) => SUBSYSTEM_META[s].shortLabel).join(' · ')}
+                </span>
+              </div>
+              <span style={hintStyle}>
+                {faDigits(item.bullets.length)} محور فنی · {faDigits(item.touchedFiles.length)} فایل تغییریافته
+                {item.testFiles.length > 0
+                  ? ` · ${faDigits(item.testFiles.length)} فایل تست`
+                  : ''}
               </span>
             </Link>
           ))}

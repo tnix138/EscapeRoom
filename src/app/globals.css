@@ -12101,8 +12101,319 @@ table {
   .alley3d-ticket-chevron,
   .alley3d-small-button,
   .coupon-flip-button,
-  .coupon-back .coupon-flip-button {
+  .coupon-back .coupon-flip-button,
+  .updates-filter-pill,
+  .update-card,
+  .updates-more-button,
+  .topbar-updates-link {
     transition: none;
   }
 }
+
+/* ==========================================================================
+   بخش «آپدیت‌ها» در صفحهٔ اصلی — هم‌تم با مخمل سرخ و طلای عتیقهٔ اُرفه‌ئو
+   ========================================================================== */
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.topbar-updates-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(212, 175, 99, 0.28);
+  background: linear-gradient(
+    180deg,
+    rgba(107, 16, 32, 0.28) 0%,
+    rgba(27, 20, 23, 0.72) 100%
+  );
+  color: var(--gold-light);
+  font-size: var(--text-sm);
+  letter-spacing: 0.02em;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.topbar-updates-link:hover {
+  border-color: rgba(212, 175, 99, 0.58);
+  background: linear-gradient(
+    180deg,
+    rgba(143, 33, 50, 0.38) 0%,
+    rgba(36, 25, 29, 0.88) 100%
+  );
+}
+
+.topbar-updates-link:focus-visible,
+.updates-filter-pill:focus-visible,
+.updates-more-button:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.updates-section {
+  position: relative;
+  z-index: 1;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 48px 38px 84px;
+  border-top: 1px solid rgba(212, 175, 99, 0.16);
+}
+
+.updates-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.updates-filter-pill {
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(212, 175, 99, 0.2);
+  background: rgba(27, 20, 23, 0.78);
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.updates-filter-pill:hover {
+  border-color: rgba(212, 175, 99, 0.45);
+  color: var(--cream);
+}
+
+.updates-filter-pill.is-active {
+  border-color: rgba(212, 175, 99, 0.68);
+  background: linear-gradient(
+    135deg,
+    rgba(107, 16, 32, 0.56) 0%,
+    rgba(36, 25, 29, 0.96) 100%
+  );
+  color: var(--gold-light);
+  box-shadow: 0 0 24px rgba(107, 16, 32, 0.28);
+}
+
+.updates-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.update-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 26px;
+  border: 1px solid rgba(212, 175, 99, 0.2);
+  background:
+    radial-gradient(
+      ellipse at 88% 8%,
+      rgba(107, 16, 32, 0.22),
+      transparent 58%
+    ),
+    linear-gradient(180deg, #1f1519 0%, #150f12 100%);
+  box-shadow:
+    0 18px 46px rgba(5, 3, 4, 0.56),
+    inset 0 0 0 1px rgba(212, 175, 99, 0.05);
+  transition:
+    border-color 0.22s ease,
+    transform 0.22s ease;
+}
+
+.update-card:hover {
+  border-color: rgba(212, 175, 99, 0.38);
+}
+
+.update-card.is-latest {
+  grid-column: 1 / -1;
+  border-color: rgba(212, 175, 99, 0.36);
+  background:
+    radial-gradient(
+      ellipse at 85% 15%,
+      rgba(143, 33, 50, 0.32),
+      transparent 60%
+    ),
+    linear-gradient(180deg, #25171d 0%, #160f13 100%);
+}
+
+.update-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.update-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(212, 175, 99, 0.26);
+  background: rgba(18, 13, 16, 0.65);
+  color: var(--gold-light);
+  font-size: var(--text-xs);
+}
+
+.update-badge.is-latest {
+  border-color: rgba(212, 175, 99, 0.52);
+  background: rgba(107, 16, 32, 0.42);
+}
+
+.update-order {
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+  letter-spacing: 0.04em;
+}
+
+.update-card-title {
+  margin: 0 0 10px;
+  font-size: var(--text-lg);
+  font-weight: 500;
+  line-height: 1.6;
+  color: #f2e8d6;
+}
+
+.update-card.is-latest .update-card-title {
+  font-size: 21px;
+}
+
+.update-card-summary {
+  margin: 0 0 16px;
+  color: var(--text-secondary);
+  font-size: var(--text-base);
+  line-height: 1.95;
+}
+
+.update-highlights {
+  list-style: none;
+  margin: 0 0 18px;
+  padding: 14px 16px;
+  border-top: 1px solid rgba(212, 175, 99, 0.12);
+  border-bottom: 1px solid rgba(212, 175, 99, 0.12);
+  background: rgba(18, 13, 16, 0.42);
+  display: grid;
+  gap: 9px;
+}
+
+.update-card.is-latest .update-highlights {
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px 20px;
+}
+
+.update-highlights li {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  color: var(--cream);
+  font-size: var(--text-sm);
+  line-height: 1.75;
+}
+
+.update-bullet-mark {
+  color: var(--gold);
+  font-size: var(--text-xs);
+  flex-shrink: 0;
+}
+
+.update-card-footer {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.update-category-tag {
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+}
+
+.updates-more-wrap {
+  margin-top: 26px;
+  display: flex;
+  justify-content: center;
+}
+
+.updates-more-button {
+  min-height: var(--control-height);
+  padding: 0 24px;
+  border-radius: 999px;
+  border: 1px solid rgba(212, 175, 99, 0.36);
+  background: linear-gradient(180deg, #24191d 0%, #171014 100%);
+  color: var(--gold-light);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.updates-more-button:hover {
+  border-color: var(--gold);
+  background: linear-gradient(180deg, #2e1d23 0%, #1c1317 100%);
+}
+
+@media (max-width: 800px) {
+  .updates-section {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .updates-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 620px) {
+  .topbar-actions {
+    gap: 10px;
+  }
+
+  .updates-section {
+    padding-top: 32px;
+    padding-bottom: 54px;
+  }
+
+  .update-card {
+    padding: 18px 18px;
+  }
+
+  .update-card.is-latest .update-card-title {
+    font-size: var(--text-lg);
+  }
+}
+
+@media (max-width: 480px) {
+  .updates-section {
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+
+  .topbar-updates-link {
+    padding: 0 11px;
+  }
+
+  .updates-filter-bar {
+    gap: 8px;
+  }
+
+  .updates-filter-pill {
+    min-height: 38px;
+    padding: 0 12px;
+  }
+}
+
 

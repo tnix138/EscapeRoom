@@ -1,4 +1,5 @@
 import ReservationForm from '@/components/reservation/ReservationForm';
+import LandingUpdatesSection from '@/components/updates/LandingUpdatesSection';
 
 export default function HomePage() {
   return (
@@ -9,7 +10,10 @@ export default function HomePage() {
           <span className="brand-mark" aria-hidden="true">✳</span>
           <span><strong>پردهٔ سرخ</strong><small>تماشاخانهٔ اُرفه‌ئو</small></span>
         </a>
-        <div className="topbar-note"><span className="status-dot" /> تجربهٔ گروهی ۳ تا ۸ نفره</div>
+        <div className="topbar-actions">
+          <a className="topbar-updates-link" href="#updates">آپدیت‌ها</a>
+          <div className="topbar-note"><span className="status-dot" /> تجربهٔ گروهی ۳ تا ۸ نفره</div>
+        </div>
       </header>
 
       <section className="hero" id="top">
@@ -45,6 +49,8 @@ export default function HomePage() {
         </div>
         <ReservationForm />
       </section>
+
+      <LandingUpdatesSection />
 
       <footer className="footer"><span>تماشاخانهٔ اُرفه‌ئو</span><span>بعضی رازها را باید با هم کشف کرد.</span><span>✳</span></footer>
     </main>
