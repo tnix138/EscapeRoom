@@ -29,6 +29,7 @@ import { WetSurfaceMaterial } from './materials/wet-surface-material';
 import {
   ALLEY_BRANCH,
   ALLEY_BRANCH_ROWS,
+  ALLEY_ENTRANCE_STREET,
   ALLEY_LENGTHS,
   ALLEY_MAIN,
   ALLEY_THEATER,
@@ -434,10 +435,12 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
     envMapIntensity: 0.12,
   });
 
-  // پیاده‌رو و جدول در کوچهٔ L: سمتِ چپ تا دهانهٔ فرعی می‌آید و بعد قطع می‌شود
-  // (وگرنه جلوی فرعی را می‌بست)، سمتِ راست تا انتهای جنوبی ادامه دارد.
+  // پیاده‌رو و جدول در کوچهٔ L:
+  //   • سمتِ چپ پیش از دهانهٔ فرعی قطع می‌شود و در ده قدمِ آخرِ منتهی به پیچ،
+  //     خیابان تا پای دیوار می‌آید (خیابانِ جلوی درِ تماشاخانه)
+  //   • سمتِ راست تا انتهای جنوبی ادامه دارد
   const sidewalkRuns: Array<{ side: -1 | 1; zStart: number; zEnd: number }> = [
-    { side: -1, zStart: ALLEY_MAIN.groundNorthZ, zEnd: ALLEY_BRANCH.northZ },
+    { side: -1, zStart: ALLEY_MAIN.groundNorthZ, zEnd: ALLEY_ENTRANCE_STREET.mainSidewalkEndZ },
     { side: 1, zStart: ALLEY_MAIN.groundNorthZ, zEnd: ALLEY_MAIN.southZ },
   ];
 
@@ -492,9 +495,9 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
 
   // --------------------------------------------- پیاده‌رو، جدول و جوی فرعی
   // فرعی عرضِ کم‌تری دارد (۹٫۸ متر)، پس پیاده‌روهایش باریک‌ترند؛ هندسه در راستای
-  // x کشیده است و مرکزشان روی zِ پیاده‌رو می‌نشیند.
+  // x کشیده است و مرکزشان روی zِ پیاده‌رو می‌نشیند. پیاده‌روی شمالی فقط غربِ
+  // خیابانِ جلوی در ادامه دارد (بقیه‌اش خیابان است).
   const branchWalkWestX = ALLEY_BRANCH.groundWestX;
-  const branchNorthWalkEastX = -ALLEY_MAIN.gutterX - ALLEY_MAIN.gutterWidth / 2;
   const branchSouthWalkEastX = 6.25;
 
   const branchWalks: Array<{
@@ -504,10 +507,12 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
     endX: number;
   }> = [
     {
-      id: 'BranchSidewalkNorth',
+      // پیاده‌روی شمالی فقط غربِ خیابانِ جلوی در می‌ماند؛ از لبهٔ چپِ در تا گوشهٔ
+      // L همان خیابان است، نه پیاده‌رو
+      id: 'BranchSidewalkNorthWest',
       centerZ: ALLEY_BRANCH.northSidewalkCenterZ,
       startX: branchWalkWestX,
-      endX: branchNorthWalkEastX,
+      endX: ALLEY_ENTRANCE_STREET.westEdgeX,
     },
     {
       id: 'BranchSidewalkSouth',
@@ -1437,15 +1442,8 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
     // امتدادِ جنوبیِ دوبرابر‌شده
     { id: 'FarSouthLeft', x: -5.95, z: 19.5, armSide: 1 as const, seed: 16.8, rotationY: 0 },
     { id: 'FarSouthRight', x: 5.95, z: 19.5, armSide: -1 as const, seed: 21.3, rotationY: 0 },
-    // فرعیِ غربی: شمالی روی پیاده‌روی شمالی، جنوبی روی پیاده‌روی جنوبی
-    {
-      id: 'BranchNorth',
-      x: -19.5,
-      z: ALLEY_BRANCH.northSidewalkCenterZ,
-      armSide: 1 as const,
-      seed: 25.6,
-      rotationY: -Math.PI / 2,
-    },
+    // فرعیِ غربی: تیرِ شمالی دقیقاً جلوی درِ تماشاخانه بود و به درخواستِ امیر حذف
+    // شد؛ فقط تیرِ پیاده‌روی جنوبی می‌ماند تا جلوی ورودی باز باشد
     {
       id: 'BranchSouth',
       x: -19.5,
@@ -1488,7 +1486,6 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
     [4.73, 2.6, -7.0],
     [-4.73, 2.6, 19.5],
     [4.73, 2.6, 19.5],
-    [-19.5, 2.6, 23.27],
     [-19.5, 2.6, 28.93],
   ];
   for (let i = 0; i < moteCount; i++) {
@@ -1556,10 +1553,9 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
     [utilityPoles[4].insulatorWorldPositions[2], utilityPoles[5].insulatorWorldPositions[2], 0.74],
     [utilityPoles[4].insulatorWorldPositions[0], new THREE.Vector3(-7.9, 6.05, 30.4), 0.42],
     [utilityPoles[5].insulatorWorldPositions[0], new THREE.Vector3(7.9, 6.05, 30.4), 0.42],
-    // ---- فرعی: اسپن عرضی بین دو تیر و ادامه به دیوارِ بن‌بست
-    [utilityPoles[6].insulatorWorldPositions[1], utilityPoles[7].insulatorWorldPositions[1], 0.7],
-    [utilityPoles[6].insulatorWorldPositions[0], new THREE.Vector3(-31.6, 6.1, 22.4), 0.5],
-    [utilityPoles[7].insulatorWorldPositions[0], new THREE.Vector3(-31.6, 6.1, 29.7), 0.5],
+    // ---- فرعی: تیرِ جنوبی به دیوارِ بن‌بست (تیرِ شمالیِ جلوی در حذف شده است)
+    [utilityPoles[6].insulatorWorldPositions[0], new THREE.Vector3(-31.6, 6.1, 29.7), 0.5],
+    [utilityPoles[6].insulatorWorldPositions[2], new THREE.Vector3(-31.6, 6.1, 22.4), 0.85],
   ];
 
   for (const [from, to, sag] of cableSpans) {

@@ -76,7 +76,9 @@ describe('بازطراحی کامل کوچهٔ سه‌بعدی تماشاخان�
     expect(alley.group.getObjectByName('UtilityPole_NorthLeft')).toBeDefined();
     expect(alley.group.getObjectByName('UtilityPole_NorthRight')).toBeDefined();
     expect(alley.group.getObjectByName('UtilityPole_FarSouthLeft')).toBeDefined();
-    expect(alley.group.getObjectByName('UtilityPole_BranchNorth')).toBeDefined();
+    // تیرِ شمالیِ فرعی که جلوی درِ ورودی بود حذف شده است
+    expect(alley.group.getObjectByName('UtilityPole_BranchNorth')).toBeUndefined();
+    expect(alley.group.getObjectByName('UtilityPole_BranchSouth')).toBeDefined();
     expect(alley.group.getObjectByName('OverheadPowerCable')).toBeDefined();
 
     // ۴ دسته جعبه‌های چوبی و بشکه

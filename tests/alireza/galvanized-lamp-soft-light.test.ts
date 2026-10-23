@@ -13,7 +13,6 @@ import {
 } from '@/engine3d/alley-props';
 import { alleyGroundCrownAt } from '@/engine3d/alley-ground-profile';
 import { ALLEY_STATIC_OBSTACLES, checkAABBCollision } from '@/engine3d/collision';
-import { ALLEY_BRANCH } from '@/engine3d/alley-layout';
 
 /**
  * خواستهٔ بازبینی:
@@ -56,7 +55,11 @@ function geometryRadialSegments(mesh: THREE.Mesh): number {
   return parameters?.radialSegments ?? 0;
 }
 
-/** شناسهٔ همهٔ تیرها: چهار تیرِ کوچهٔ اصلی + جفتِ امتدادِ جنوبی + جفتِ فرعی */
+/**
+ * شناسهٔ همهٔ تیرها: چهار تیرِ کوچهٔ اصلی + جفتِ امتدادِ جنوبی + تیرِ فرعی.
+ * تیرِ شمالیِ فرعی (`BranchNorth`) که دقیقاً جلوی درِ تماشاخانه بود، به درخواستِ
+ * امیر حذف شد؛ پس فرعی فقط یک تیر دارد و جفتِ رو‌به‌رو ندارد.
+ */
 const ALL_POLE_IDS = [
   'SouthLeft',
   'SouthRight',
@@ -64,16 +67,14 @@ const ALL_POLE_IDS = [
   'NorthRight',
   'FarSouthLeft',
   'FarSouthRight',
-  'BranchNorth',
   'BranchSouth',
 ] as const;
 
-/** جفت‌های رو‌به‌روی هم: هر دو روی یک خط (در کوچهٔ اصلی z و در فرعی x) */
+/** جفت‌های رو‌به‌روی هم در شاخهٔ اصلی: هر دو روی یک خط z */
 const POLE_PAIRS: ReadonlyArray<[string, string]> = [
   ['SouthLeft', 'SouthRight'],
   ['NorthLeft', 'NorthRight'],
   ['FarSouthLeft', 'FarSouthRight'],
-  ['BranchNorth', 'BranchSouth'],
 ];
 
 describe('چراغ برق گالوانیزهٔ دایره‌ای و پخش نرم نور', () => {
@@ -137,7 +138,7 @@ describe('چراغ برق گالوانیزهٔ دایره‌ای و پخش نر�
     alley.dispose();
   });
 
-  it('چراغ‌ها جفت‌های رو‌به‌روی هم‌اند: هم‌تراز و آینهٔ دقیق هم (فرعی ۹۰ درجه چرخیده)', () => {
+  it('چراغ‌ها جفت‌های رو‌به‌روی هم‌اند: هم‌تراز و آینهٔ دقیق هم', () => {
     const alley = createAlleyGeometry();
     alley.group.updateMatrixWorld(true);
 
@@ -147,24 +148,15 @@ describe('چراغ برق گالوانیزهٔ دایره‌ای و پخش نر�
       expect(left, leftId).toBeDefined();
       expect(right, rightId).toBeDefined();
 
-      // در شاخهٔ اصلی جفت‌ها روی یک خط z و قرینهٔ هم حول محور کوچه‌اند؛ در فرعی
-      // (که ۹۰ درجه چرخیده) همین رابطه در محور x برقرار است.
+      // جفت‌های شاخهٔ اصلی روی یک خط z و قرینهٔ هم حول محور کوچه‌اند
       const leftWorld = new THREE.Vector3();
       const rightWorld = new THREE.Vector3();
       left.getWorldPosition(leftWorld);
       right.getWorldPosition(rightWorld);
-      const isBranchPair = leftId.startsWith('Branch');
-      if (isBranchPair) {
-        expect(leftWorld.x).toBeCloseTo(rightWorld.x, 6);
-        // جفتِ فرعی: «BranchNorth» روی پیاده‌روی شمالی و «BranchSouth» روی جنوبی
-        expect(leftWorld.z).toBeLessThan(ALLEY_BRANCH.centerZ);
-        expect(rightWorld.z).toBeGreaterThan(ALLEY_BRANCH.centerZ);
-      } else {
-        expect(left.position.z).toBeCloseTo(right.position.z, 6);
-        expect(left.position.x).toBeCloseTo(-right.position.x, 6);
-        expect(left.position.x).toBeLessThan(0);
-        expect(right.position.x).toBeGreaterThan(0);
-      }
+      expect(left.position.z).toBeCloseTo(right.position.z, 6);
+      expect(left.position.x).toBeCloseTo(-right.position.x, 6);
+      expect(left.position.x).toBeLessThan(0);
+      expect(right.position.x).toBeGreaterThan(0);
 
       // سر چراغ هر دو به سمت مرکز راهرو است، پس دقیقاً رو‌به‌روی هم‌اند
       const leftGlobe = left.getObjectByName(`LampBulb_${leftId}`) as THREE.Mesh;
@@ -173,19 +165,10 @@ describe('چراغ برق گالوانیزهٔ دایره‌ای و پخش نر�
       const rightLamp = new THREE.Vector3();
       leftGlobe.getWorldPosition(leftLamp);
       rightGlobe.getWorldPosition(rightLamp);
-      if (isBranchPair) {
-        expect(leftLamp.z).toBeGreaterThan(leftWorld.z); // تیرِ شمالی، بازو به سمت مرکز (+z)
-        expect(rightLamp.z).toBeLessThan(rightWorld.z); // تیرِ جنوبی، بازو به سمت مرکز (−z)
-        expect(Math.abs(leftLamp.z - ALLEY_BRANCH.centerZ)).toBeCloseTo(
-          Math.abs(rightLamp.z - ALLEY_BRANCH.centerZ),
-          6,
-        );
-      } else {
-        expect(leftLamp.x).toBeGreaterThan(leftWorld.x); // به سمت داخل
-        expect(rightLamp.x).toBeLessThan(rightWorld.x);
-        expect(leftLamp.x).toBeCloseTo(-rightLamp.x, 6);
-        expect(leftLamp.z).toBeCloseTo(rightLamp.z, 6);
-      }
+      expect(leftLamp.x).toBeGreaterThan(leftWorld.x); // به سمت داخل
+      expect(rightLamp.x).toBeLessThan(rightWorld.x);
+      expect(leftLamp.x).toBeCloseTo(-rightLamp.x, 6);
+      expect(leftLamp.z).toBeCloseTo(rightLamp.z, 6);
 
       // ارتفاع سر چراغ و شدت نور هر دو یکسان است
       expect(leftGlobe.position.y).toBeCloseTo(rightGlobe.position.y, 6);
