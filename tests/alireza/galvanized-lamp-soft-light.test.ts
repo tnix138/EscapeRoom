@@ -13,11 +13,14 @@ import {
 } from '@/engine3d/alley-props';
 import { alleyGroundCrownAt } from '@/engine3d/alley-ground-profile';
 import { ALLEY_STATIC_OBSTACLES, checkAABBCollision } from '@/engine3d/collision';
+import { ALLEY_BRANCH } from '@/engine3d/alley-layout';
 
 /**
  * خواستهٔ بازبینی:
- * ۱) هر چهار چراغ برق کوچه کلاسیک گالوانیزهٔ دایره‌ای‌اند و دقیقاً یک شکل و
- *    یک اندازه‌اند (تیرهای چوبی قبلی هم به همین سبک تبدیل شدند).
+ * ۱) همهٔ چراغ‌های برق کوچه کلاسیک گالوانیزهٔ دایره‌ای‌اند و دقیقاً یک شکل و
+ *    یک اندازه‌اند (تیرهای چوبی قبلی هم به همین سبک تبدیل شدند). با دوبرابر
+ *    شدنِ کوچه و افزودنِ فرعیِ L‌شکل، دو جفتِ هم‌شکلِ دیگر (جفتِ امتدادِ جنوبی
+ *    و جفتِ فرعی) هم اضافه شد؛ پیش‌تر دقیقاً چهار تیر بودند.
  * ۲) چراغ‌ها در دو جفت رو‌به‌روی هم نشسته‌اند: جفت جنوبی و جفت شمالی، هر جفت
  *    روی یک خط z با فاصلهٔ مساوی از محور کوچه و بازو به سمت مرکز.
  * ۳) نور چراغ‌ها لکهٔ دایره‌ای با «خط» تیز روی سنگ‌فرش نمی‌سازد؛ پخش آن نرم
@@ -53,13 +56,33 @@ function geometryRadialSegments(mesh: THREE.Mesh): number {
   return parameters?.radialSegments ?? 0;
 }
 
-describe('چراغ برق چهارم (گالوانیزهٔ دایره‌ای) و پخش نرم نور', () => {
-  it('هر چهار چراغ برق یک شکل و گالوانیزه‌اند — هیچ تیر چوبی نمانده', () => {
+/** شناسهٔ همهٔ تیرها: چهار تیرِ کوچهٔ اصلی + جفتِ امتدادِ جنوبی + جفتِ فرعی */
+const ALL_POLE_IDS = [
+  'SouthLeft',
+  'SouthRight',
+  'NorthLeft',
+  'NorthRight',
+  'FarSouthLeft',
+  'FarSouthRight',
+  'BranchNorth',
+  'BranchSouth',
+] as const;
+
+/** جفت‌های رو‌به‌روی هم: هر دو روی یک خط (در کوچهٔ اصلی z و در فرعی x) */
+const POLE_PAIRS: ReadonlyArray<[string, string]> = [
+  ['SouthLeft', 'SouthRight'],
+  ['NorthLeft', 'NorthRight'],
+  ['FarSouthLeft', 'FarSouthRight'],
+  ['BranchNorth', 'BranchSouth'],
+];
+
+describe('چراغ برق گالوانیزهٔ دایره‌ای و پخش نرم نور', () => {
+  it('همهٔ چراغ‌های برق یک شکل و گالوانیزه‌اند — هیچ تیر چوبی نمانده', () => {
     const alley = createAlleyGeometry();
     const poles = poleRoots(alley);
 
-    expect(poles).toHaveLength(4);
-    for (const id of ['SouthLeft', 'SouthRight', 'NorthLeft', 'NorthRight']) {
+    expect(poles).toHaveLength(ALL_POLE_IDS.length);
+    for (const id of ALL_POLE_IDS) {
       expect(alley.group.getObjectByName(`UtilityPole_${id}`), id).toBeDefined();
     }
 
@@ -114,34 +137,55 @@ describe('چراغ برق چهارم (گالوانیزهٔ دایره‌ای) و
     alley.dispose();
   });
 
-  it('چراغ‌ها دو جفت رو‌به‌روی هم‌اند: هم‌تراز روی z و آینهٔ دقیق هم', () => {
+  it('چراغ‌ها جفت‌های رو‌به‌روی هم‌اند: هم‌تراز و آینهٔ دقیق هم (فرعی ۹۰ درجه چرخیده)', () => {
     const alley = createAlleyGeometry();
+    alley.group.updateMatrixWorld(true);
 
-    const pairs: Array<[string, string]> = [
-      ['SouthLeft', 'SouthRight'],
-      ['NorthLeft', 'NorthRight'],
-    ];
-
-    for (const [leftId, rightId] of pairs) {
+    for (const [leftId, rightId] of POLE_PAIRS) {
       const left = alley.group.getObjectByName(`UtilityPole_${leftId}`) as THREE.Group;
       const right = alley.group.getObjectByName(`UtilityPole_${rightId}`) as THREE.Group;
       expect(left, leftId).toBeDefined();
       expect(right, rightId).toBeDefined();
 
-      // هر دو روی یک خط z و قرینهٔ هم حول محور کوچه
-      expect(left.position.z).toBeCloseTo(right.position.z, 6);
-      expect(left.position.x).toBeCloseTo(-right.position.x, 6);
-      expect(left.position.x).toBeLessThan(0);
-      expect(right.position.x).toBeGreaterThan(0);
+      // در شاخهٔ اصلی جفت‌ها روی یک خط z و قرینهٔ هم حول محور کوچه‌اند؛ در فرعی
+      // (که ۹۰ درجه چرخیده) همین رابطه در محور x برقرار است.
+      const leftWorld = new THREE.Vector3();
+      const rightWorld = new THREE.Vector3();
+      left.getWorldPosition(leftWorld);
+      right.getWorldPosition(rightWorld);
+      const isBranchPair = leftId.startsWith('Branch');
+      if (isBranchPair) {
+        expect(leftWorld.x).toBeCloseTo(rightWorld.x, 6);
+        // جفتِ فرعی: «BranchNorth» روی پیاده‌روی شمالی و «BranchSouth» روی جنوبی
+        expect(leftWorld.z).toBeLessThan(ALLEY_BRANCH.centerZ);
+        expect(rightWorld.z).toBeGreaterThan(ALLEY_BRANCH.centerZ);
+      } else {
+        expect(left.position.z).toBeCloseTo(right.position.z, 6);
+        expect(left.position.x).toBeCloseTo(-right.position.x, 6);
+        expect(left.position.x).toBeLessThan(0);
+        expect(right.position.x).toBeGreaterThan(0);
+      }
 
-      // سر چراغ هر دو به سمت مرکز کوچه است، پس دقیقاً رو‌به‌روی هم‌اند
+      // سر چراغ هر دو به سمت مرکز راهرو است، پس دقیقاً رو‌به‌روی هم‌اند
       const leftGlobe = left.getObjectByName(`LampBulb_${leftId}`) as THREE.Mesh;
       const rightGlobe = right.getObjectByName(`LampBulb_${rightId}`) as THREE.Mesh;
-      const leftLampX = left.position.x + leftGlobe.position.x;
-      const rightLampX = right.position.x + rightGlobe.position.x;
-      expect(leftLampX).toBeCloseTo(-rightLampX, 6);
-      expect(leftLampX).toBeGreaterThan(left.position.x); // به سمت داخل
-      expect(rightLampX).toBeLessThan(right.position.x);
+      const leftLamp = new THREE.Vector3();
+      const rightLamp = new THREE.Vector3();
+      leftGlobe.getWorldPosition(leftLamp);
+      rightGlobe.getWorldPosition(rightLamp);
+      if (isBranchPair) {
+        expect(leftLamp.z).toBeGreaterThan(leftWorld.z); // تیرِ شمالی، بازو به سمت مرکز (+z)
+        expect(rightLamp.z).toBeLessThan(rightWorld.z); // تیرِ جنوبی، بازو به سمت مرکز (−z)
+        expect(Math.abs(leftLamp.z - ALLEY_BRANCH.centerZ)).toBeCloseTo(
+          Math.abs(rightLamp.z - ALLEY_BRANCH.centerZ),
+          6,
+        );
+      } else {
+        expect(leftLamp.x).toBeGreaterThan(leftWorld.x); // به سمت داخل
+        expect(rightLamp.x).toBeLessThan(rightWorld.x);
+        expect(leftLamp.x).toBeCloseTo(-rightLamp.x, 6);
+        expect(leftLamp.z).toBeCloseTo(rightLamp.z, 6);
+      }
 
       // ارتفاع سر چراغ و شدت نور هر دو یکسان است
       expect(leftGlobe.position.y).toBeCloseTo(rightGlobe.position.y, 6);
@@ -150,10 +194,12 @@ describe('چراغ برق چهارم (گالوانیزهٔ دایره‌ای) و
       expect(leftSpot.intensity).toBeCloseTo(rightSpot.intensity, 6);
     }
 
-    // جفت جنوبی و شمالی هر دو وجود دارند و از هم فاصله دارند
+    // جفت جنوبی، شمالی و امتدادِ جنوبی هر سه وجود دارند و از هم فاصله دارند
     const south = alley.group.getObjectByName('UtilityPole_SouthLeft') as THREE.Group;
     const north = alley.group.getObjectByName('UtilityPole_NorthLeft') as THREE.Group;
+    const farSouth = alley.group.getObjectByName('UtilityPole_FarSouthLeft') as THREE.Group;
     expect(Math.abs(south.position.z - north.position.z)).toBeGreaterThan(5);
+    expect(farSouth.position.z).toBeGreaterThan(south.position.z + 10);
 
     alley.dispose();
   });
@@ -342,7 +388,7 @@ describe('چراغ برق چهارم (گالوانیزهٔ دایره‌ای) و
       }
     });
 
-    expect(pools).toHaveLength(4);
+    expect(pools).toHaveLength(ALL_POLE_IDS.length);
     for (const pool of pools) {
       // نور اضافه و شفاف، بدون نوشتن در عمق (روی سنگ‌فرش می‌نشیند نه داخلش)
       expect(pool.material.blending).toBe(THREE.AdditiveBlending);
