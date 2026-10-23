@@ -87,7 +87,11 @@ export default function AlleyFirstPersonScene({ room, onPunchTicket, onUnlockDoo
     setVisitedClues((previous) => (previous.includes(kind) ? previous : [...previous, kind]));
   }
 
-  const couponText = useMemo(() => `کوپن من برای ${room.myHeldTickets.companionStub.targetTeammateName}: نماد ${currentEmblem?.label ?? 'نامشخص'}؛ پردهٔ «${room.myHeldTickets.companionStub.targetActSceneTitle}». ${room.myHeldTickets.companionStub.whisperNote}`, [room.myHeldTickets.companionStub, currentEmblem?.label]);
+  const couponText = useMemo(
+    () =>
+      `کوپن من برای «${room.myHeldTickets.companionStub.targetTeammateName}»: نماد «${currentEmblem?.label ?? 'نامشخص'}»، پردهٔ «${room.myHeldTickets.companionStub.targetActSceneTitle}»`,
+    [room.myHeldTickets.companionStub, currentEmblem?.label],
+  );
 
   useEffect(() => {
     setLocalPunched(false);
@@ -229,7 +233,7 @@ export default function AlleyFirstPersonScene({ room, onPunchTicket, onUnlockDoo
       </section>
 
       <div className="alley-bottom-hud">
-        <HeldTicketsDrawer key={room.me.playerId} ownerName={room.myHeldTickets.mainTicket.ownerName || room.me.playerName} seatLabel={room.myHeldTickets.mainTicket.seatLabel || room.me.seatLabel} playTitle={room.myHeldTickets.mainTicket.playTitle} alleyRowHintName={room.myHeldTickets.mainTicket.alleyRowHintName} companionStub={room.myHeldTickets.companionStub} initialSelection={room.myHeldTickets.mainTicket.selectedPunch} isValidated={isTicketPunched} revealedDigit={revealedDigit} isPunching={isPunching} onPunch={(selection) => { void punch(selection); }} onShareStub={() => { void onSendWhisper(couponText, true); }} />
+        <HeldTicketsDrawer key={room.me.playerId} ownerName={room.myHeldTickets.mainTicket.ownerName || room.me.playerName} seatLabel={room.myHeldTickets.mainTicket.seatLabel || room.me.seatLabel} playTitle={room.myHeldTickets.mainTicket.playTitle} alleyRowHintName={room.myHeldTickets.mainTicket.alleyRowHintName} companionStub={room.myHeldTickets.companionStub} initialSelection={room.myHeldTickets.mainTicket.selectedPunch} isValidated={isTicketPunched} revealedDigit={revealedDigit} isPunching={isPunching} onPunch={(selection) => { void punch(selection); }} onShareStub={() => onSendWhisper(couponText, true)} />
         <div className="ticket-feedback" aria-live="polite">{ticketFeedback && <span className={isTicketPunched ? 'ticket-success-text' : ''}>{isTicketPunched ? '✦ ' : '◇ '}{ticketFeedback}</span>}</div>
       </div>
 

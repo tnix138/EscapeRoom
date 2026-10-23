@@ -25,7 +25,13 @@ import { horrorLevelIntensity } from '../hud/horror/horror-signal';
 import { toPresenceSnapshots } from '@/client-sdk/presence-avatars';
 import { ThreeErrorBoundary } from '@/engine3d/ThreeErrorBoundary';
 import type { ClientRoomView } from '@/contracts/types';
-import type { TheaterEmblemId, PlayActNumber, RowRomanCode, AlleyRoomView } from '@/components/alley/contracts';
+import {
+  THEATER_EMBLEMS,
+  type TheaterEmblemId,
+  type PlayActNumber,
+  type RowRomanCode,
+  type AlleyRoomView,
+} from '@/components/alley/contracts';
 import HeldTicketsDrawer from './HeldTicketsDrawer';
 import ClueReadingPanel from './ClueReadingPanel';
 import TheaterDoorLockModal from './TheaterDoorLockModal';
@@ -122,6 +128,13 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
     for (const player of room.players) map[player.playerId] = player.playerName;
     return map;
   }, [room.players]);
+
+  // با باز شدن نجوای گروهی، قفل نشانگر ماوس آزاد می‌شود تا بازیکن راحت تایپ و کلیک کند.
+  useEffect(() => {
+    if (chatOpen && typeof document !== 'undefined' && document.pointerLockElement) {
+      document.exitPointerLock?.();
+    }
+  }, [chatOpen]);
 
   // Esc برگهٔ بلیط را می‌بندد (روی گوشی هم با دکمهٔ ✕ بسته می‌شود).
   useEffect(() => {
@@ -357,8 +370,11 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
 
   const mainTicket = room.myHeldTickets?.mainTicket;
   const companionStub = room.myHeldTickets?.companionStub;
+  const companionEmblemLabel = companionStub
+    ? (THEATER_EMBLEMS.find((item) => item.id === companionStub.targetEmblem)?.label ?? companionStub.targetEmblem)
+    : '';
   const couponText = companionStub
-    ? `کوپن من برای ${companionStub.targetTeammateName}: نماد ${companionStub.targetEmblem}؛ پردهٔ «${companionStub.targetActSceneTitle}». ${companionStub.whisperNote}`
+    ? `کوپن من برای «${companionStub.targetTeammateName}»: نماد «${companionEmblemLabel}»، پردهٔ «${companionStub.targetActSceneTitle}»`
     : '';
 
   const roomWithLocalState: AlleyRoomView = {
@@ -591,9 +607,7 @@ function ThreeCore({ room, onPunchTicket, onUnlockDoor, onSendWhisper, onDoorTra
                 onPunch={(sel) => {
                   void handlePunch(sel.emblem, sel.actNumber, sel.rowCode);
                 }}
-                onShareStub={() => {
-                  void onSendWhisper(couponText, true);
-                }}
+                onShareStub={() => onSendWhisper(couponText, true)}
               />
             </div>
           </div>

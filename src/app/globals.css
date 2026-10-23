@@ -6465,6 +6465,10 @@ button:disabled {
   line-height: 1.5;
 }
 
+.whisper-send-status.is-error {
+  color: #e69d92;
+}
+
 @media (max-width: 720px) {
   .emblem-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));

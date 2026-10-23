@@ -149,6 +149,8 @@ export default function DarkAuditoriumScene({
     try {
       await onSendWhisper(text);
       setWhisperDraft('');
+    } catch {
+      // در صورت خطای شبکه، متن نوشته شده حفظ می‌شود تا کاربر دوباره بفرستد
     } finally {
       setSending(false);
     }

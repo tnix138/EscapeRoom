@@ -28,7 +28,7 @@ interface HeldTicketsDrawerProps {
   revealedDigit: number | null;
   isPunching: boolean;
   onPunch: (selection: TicketPunchSelection) => void;
-  onShareStub: () => void;
+  onShareStub: () => Promise<void> | void;
 }
 
 export default function HeldTicketsDrawer({
@@ -47,7 +47,7 @@ export default function HeldTicketsDrawer({
   const [showCouponBack, setShowCouponBack] = useState(false);
   // پاسخ معما (نماد/پرده/ردیف) پیش‌فرض باز است؛ بازیکن با دکمهٔ کنارش جمعش می‌کند.
   const [puzzleOpen, setPuzzleOpen] = useState(true);
-  const [sharedNote, setSharedNote] = useState(false);
+  const [shareStatus, setShareStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
   const [emblem, setEmblem] = useState<TheaterEmblemId>(initialSelection?.emblem ?? 'mask');
   const [actNumber, setActNumber] = useState<PlayActNumber>(initialSelection?.actNumber ?? 1);
   const [rowCode, setRowCode] = useState<RowRomanCode>(initialSelection?.rowCode ?? 'I');
@@ -82,11 +82,17 @@ export default function HeldTicketsDrawer({
     onPunch(selection);
   }
 
-  function shareStub() {
-    onShareStub();
-    setSharedNote(true);
+  async function shareStub() {
+    if (shareStatus === 'sending') return;
+    setShareStatus('sending');
     if (shareTimer.current !== null) window.clearTimeout(shareTimer.current);
-    shareTimer.current = window.setTimeout(() => setSharedNote(false), 3200);
+    try {
+      await onShareStub();
+      setShareStatus('sent');
+    } catch {
+      setShareStatus('error');
+    }
+    shareTimer.current = window.setTimeout(() => setShareStatus('idle'), 3400);
   }
 
   return (
@@ -284,11 +290,23 @@ export default function HeldTicketsDrawer({
               <button className="coupon-flip-button" type="button" onClick={() => setShowCouponBack(false)}>
                 برگرداندن کوپن ↷
               </button>
-              <button className="share-clue-button" type="button" onClick={shareStub}>
-                مخابرهٔ سرنخ به گروه <span aria-hidden="true">↗</span>
+              <button
+                className="share-clue-button"
+                type="button"
+                disabled={shareStatus === 'sending'}
+                onClick={() => {
+                  void shareStub();
+                }}
+              >
+                {shareStatus === 'sending' ? 'در حال مخابره…' : 'مخابرهٔ سرنخ به گروه'}{' '}
+                <span aria-hidden="true">↗</span>
               </button>
               <p className="share-clue-status" role="status">
-                {sharedNote ? 'کوپن شما در نجوای گروهی فرستاده شد.' : ''}
+                {shareStatus === 'sent'
+                  ? 'کوپن شما در نجوای گروهی فرستاده شد.'
+                  : shareStatus === 'error'
+                    ? 'ارسال ناموفق بود؛ دوباره تلاش کنید.'
+                    : ''}
               </p>
             </div>
           </article>

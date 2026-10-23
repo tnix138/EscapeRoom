@@ -22,6 +22,10 @@
 
 import { useEffect, useRef, useState } from 'react';
 import {
+  openSharedRoomStream,
+  type SharedStreamHandle,
+} from '../../../client-sdk/shared-room-stream';
+import {
   PRESENCE_OFFLINE_TIMEOUT_MS,
   PRESENCE_SEND_INTERVAL_MS,
   isTeammateOnline,
@@ -128,11 +132,12 @@ export function usePresenceFeed({
     }
 
     let disposed = false;
-    let source: EventSource | null = null;
+    let source: SharedStreamHandle | null = null;
     let publishTimer: ReturnType<typeof setInterval> | null = null;
     let pruneTimer: ReturnType<typeof setInterval> | null = null;
     let flushFrame: number | null = null;
     let flushTimeout: ReturnType<typeof setTimeout> | null = null;
+    let publishInFlight = false;
     let clockOffset = 0;
     let lastSentAt = 0;
     let lastSentTransform: PublishableTransform | null = null;
@@ -161,7 +166,7 @@ export function usePresenceFeed({
     };
 
     const sendPresence = () => {
-      if (disposed) return;
+      if (disposed || publishInFlight) return;
       const current = transformRef.current;
       const now = Date.now();
       const due = now - lastSentAt >= PRESENCE_SEND_INTERVAL_MS;
@@ -175,6 +180,10 @@ export function usePresenceFeed({
 
       lastSentAt = now;
       lastSentTransform = current ? { ...current } : null;
+      publishInFlight = true;
+
+      const abortCtrl = typeof AbortController === 'function' ? new AbortController() : null;
+      const postTimeout = setTimeout(() => abortCtrl?.abort(), 2_500);
 
       void fetch(presenceEndpoint(roomCode), {
         method: 'POST',
@@ -182,10 +191,22 @@ export function usePresenceFeed({
         body: JSON.stringify(body),
         keepalive: true,
         cache: 'no-store',
+        signal: abortCtrl?.signal,
       })
-        .then((response) => {
+        .then(async (response) => {
           if (response.ok) {
             failures = 0;
+            const json: unknown = await response.json().catch(() => null);
+            const frame = readPresenceFrame(json);
+            if (!disposed) {
+              if (frame.serverNow !== null) {
+                clockOffset = clockOffsetFromFrame(frame.serverNow, Date.now());
+              }
+              if (frame.presences.length > 0) {
+                pending = pending.concat(frame.presences);
+                scheduleFlush();
+              }
+            }
             return;
           }
           failures += 1;
@@ -194,6 +215,10 @@ export function usePresenceFeed({
         .catch(() => {
           failures += 1;
           if (failures >= PRESENCE_MAX_FAILURES) stopPublishing();
+        })
+        .finally(() => {
+          clearTimeout(postTimeout);
+          publishInFlight = false;
         });
     };
 
@@ -205,8 +230,8 @@ export function usePresenceFeed({
     };
 
     const startStreaming = () => {
-      if (typeof EventSource === 'undefined') return;
-      source = new EventSource(presenceStreamUrl(roomCode, token));
+      source = openSharedRoomStream(presenceStreamUrl(roomCode, token));
+      if (!source) return;
       source.addEventListener('presence_update', (event) => {
         if (disposed) return;
         try {
