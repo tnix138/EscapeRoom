@@ -12,8 +12,13 @@
  *   • **شاخهٔ اصلی (Main) دو برابر شده:** از `northZ = −۱۳٫۲` (نمای تماشاخانه)
  *     تا `southZ = +۳۱` ⇒ ~۴۴ متر به‌جای ~۲۳ متر.
  *   • **فرعیِ غربی (Branch):** در انتهای جنوبی، راهرو به سمتِ چپ (= −X) می‌پیچد:
- *     از `westX = −۳۲` تا دیوارِ داخلیِ شاخهٔ اصلی (`−۸٫۶۵`) و به‌اندازهٔ ۹٫۸ متر
- *     عرض دارد (`northZ = ۲۱٫۲` تا `southZ = ۳۱`) ⇒ کوچه L می‌شود و فرعی بن‌بست است.
+ *     از `westX = −۳۷٫۹` تا دیوارِ داخلیِ شاخهٔ اصلی (`−۸٫۶۵`) و به‌اندازهٔ ۹٫۸ متر
+ *     عرض دارد (`northZ = ۲۱٫۲` تا `southZ = ۳۱`).
+ *   • **خیابانِ غربی (West Street) — بازبینیِ تازهٔ امیر:** «کوچه‌ای که ساختمان و
+ *     درب قرار گرفته رو تبدیل به خیابان کن و طولانی‌ترش کن؛ یعنی L نباشد و از
+ *     موقعیتِ (−۲۶، ۲۶) به سمتِ (−۲۶، ۰) هم ادامه داشته باشد.» ⇒ انتهای غربیِ فرعی
+ *     دیگر بن‌بست نیست: خیابان از آن گوشه به سمتِ شمال می‌پیچد و تا `z = ۰`
+ *     ادامه دارد (`ALLEY_WEST_STREET`) ⇒ نقشه از L به **U** تبدیل می‌شود.
  *
  * چرا این ماژول؟ همان درسِ پنجره و پرده: هر عددی که هم در هندسه، هم در برخورد و
  * هم در ارتفاعِ گام‌برداری مصرف می‌شود باید یک منبع داشته باشد، وگرنه بازیکن در
@@ -47,8 +52,8 @@ export const ALLEY_MAIN = {
 } as const;
 
 export const ALLEY_BRANCH = {
-  /** انتهای غربیِ فرعی (بن‌بست) */
-  westX: -32,
+  /** انتهای غربیِ فرعی — دیگر بن‌بست نیست و به خیابانِ غربی می‌رسد */
+  westX: -37.9,
   /** لبۀ دیوارِ شاخهٔ اصلی: فرعی از همین‌جا به غرب باز می‌شود */
   eastX: -8.65,
   /** نمای شمالیِ فرعی (بدنه‌اش شمالِ همین صفحه است) */
@@ -65,8 +70,39 @@ export const ALLEY_BRANCH = {
   curbWidth: 0.26,
   gutterWidth: 0.42,
   /** کفِ فرعی در راستای x کمی از دیوارها بیرون می‌زند */
-  groundWestX: -32.4,
+  groundWestX: -38.3,
   groundEastX: -6.6,
+} as const;
+
+/**
+ * خیابانِ غربی — شاخهٔ سومِ نقشه (بازبینیِ تازهٔ امیر):
+ * «موقعیتِ ۲۶-۲۶ به سمتِ ۲۶-۰ هم ادامه داشته باشد.»
+ *
+ * این شاخه از گوشهٔ جنوب‌غربیِ فرعی به سمتِ شمال می‌رود و در `z = ۰` تمام
+ * می‌شود (بن‌بستِ شمالی با درِ چوبی). عرضش دقیقاً مثلِ فرعی (۹٫۸ متر) است و
+ * لبهٔ شرقی‌اش ۱۸ سانتی‌متر غربِ لبهٔ غربیِ نمای تماشاخانه می‌نشیند تا ساختمانِ
+ * تئاتر دست‌نخورده بماند.
+ */
+export const ALLEY_WEST_STREET = {
+  centerX: -33,
+  width: 9.8,
+  /** لبهٔ شرقی (دیوارِ بلوکِ میانی) */
+  eastX: -28.1,
+  /** لبهٔ غربی — همان دیوارِ غربیِ فرعی در گوشهٔ جنوب‌غربی */
+  westX: -37.9,
+  /** انتهای شمالیِ خیابان (همان «۲۶-۰» خواسته‌شده) */
+  northZ: 0,
+  /** انتهای جنوبی: به باندِ فرعی می‌رسد */
+  southZ: 21.2,
+  roadHalfWidth: 3.2,
+  sidewalkWidth: 1.7,
+  westSidewalkCenterX: -37.05,
+  eastSidewalkCenterX: -28.95,
+  curbWidth: 0.26,
+  gutterWidth: 0.42,
+  /** کف، کمی از دیوارهای سه طرف بیرون می‌زند */
+  groundNorthZ: -0.6,
+  groundWestX: -38.3,
 } as const;
 
 /**
@@ -124,7 +160,7 @@ export const ALLEY_ENTRANCE_STREET = {
  * خودِ L راه می‌رود.
  */
 export const ALLEY_L_BOUNDS: WorldBounds = {
-  minX: ALLEY_BRANCH.westX,
+  minX: ALLEY_WEST_STREET.westX,
   maxX: 9,
   minZ: -18,
   maxZ: ALLEY_MAIN.southZ,
@@ -141,11 +177,25 @@ export function isInBranch(x: number, z: number): boolean {
   return isInBranchBand(z) && Number.isFinite(x) && x < -ALLEY_MAIN.innerX + 1e-9;
 }
 
+/** آیا این نقطه در خیابانِ غربی است (شاخهٔ شمالیِ تازه)؟ */
+export function isInWestStreet(x: number, z: number): boolean {
+  return (
+    Number.isFinite(x) &&
+    Number.isFinite(z) &&
+    x >= ALLEY_WEST_STREET.westX - 1e-9 &&
+    x <= ALLEY_WEST_STREET.eastX + 1e-9 &&
+    z >= ALLEY_WEST_STREET.northZ - 1e-9 &&
+    z <= ALLEY_WEST_STREET.southZ + 1e-9
+  );
+}
+
 /** طول و مرکزِ شاخهٔ اصلی و فرعی — برای تست و چیدمان */
 export const ALLEY_LENGTHS = {
   mainLength: ALLEY_MAIN.southZ - ALLEY_MAIN.northZ,
   branchLength: ALLEY_BRANCH.eastX - ALLEY_BRANCH.westX,
   branchWidth: ALLEY_BRANCH.southZ - ALLEY_BRANCH.northZ,
+  /** طولِ شاخهٔ شمالیِ تازه (از z = ۰ تا باندِ فرعی) */
+  westStreetLength: ALLEY_WEST_STREET.southZ - ALLEY_WEST_STREET.northZ,
 } as const;
 
 /**
@@ -166,13 +216,37 @@ export const ALLEY_BRANCH_ROWS = {
     groupZ: ALLEY_BRANCH.northZ + ALLEY_MAIN.facadeX,
     /** ردیف از این x شروع می‌شود (پشتِ ساختمان‌های گوشهٔ شاخهٔ اصلی) */
     eastEndX: -11.92,
-    westEndX: -32.4,
+    westEndX: ALLEY_WEST_STREET.eastX,
   },
   south: {
     side: -1 as const,
     groupZ: ALLEY_BRANCH.southZ - ALLEY_MAIN.facadeX,
     /** ردیفِ جنوبی انتهای جنوبیِ شاخهٔ اصلی را هم می‌بندد */
     eastEndX: ALLEY_MAIN.innerX,
-    westEndX: -32.4,
+    westEndX: ALLEY_WEST_STREET.westX,
+  },
+} as const;
+
+/**
+ * ردیف‌های ساختمانیِ خیابانِ غربی. این خیابان شمالی–جنوبی است، پس ردیف‌ها با
+ * همان چرخشِ صفرِ ردیف‌های شاخهٔ اصلی ساخته می‌شوند و فقط گروهشان جابه‌جا می‌شود:
+ *   • ردیفِ غربی: `side = −1` (نما رو به +X، یعنی داخلِ خیابان) و بدنه‌اش غربِ
+ *     دیوار؛ گروه روی `westX + facadeX` می‌نشیند.
+ *   • ردیفِ شرقی: `side = +1` (نما رو به −X) و بدنه‌اش شرقِ دیوار؛ گروه روی
+ *     `eastX − facadeX`.
+ */
+export const ALLEY_WEST_STREET_ROWS = {
+  west: {
+    side: -1 as const,
+    groupX: ALLEY_WEST_STREET.westX + ALLEY_MAIN.facadeX,
+  },
+  east: {
+    side: 1 as const,
+    groupX: ALLEY_WEST_STREET.eastX - ALLEY_MAIN.facadeX,
+  },
+  /** ردیفِ انتهای شمالی (رو به +Z) — همان سازندهٔ ردیف‌های فرعی با چرخشِ ۹۰ درجه */
+  north: {
+    side: 1 as const,
+    groupZ: ALLEY_WEST_STREET.northZ + ALLEY_MAIN.facadeX,
   },
 } as const;

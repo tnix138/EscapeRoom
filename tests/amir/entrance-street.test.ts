@@ -50,20 +50,16 @@ describe('خیابانِ جلوی درِ ورودی و حذفِ تیرِ برق�
     alley.dispose();
   });
 
-  it('پیاده‌روی شمالیِ فرعی جلوی در برداشته شده و فقط غربِ خیابان مانده', () => {
+  it('پیاده‌روی شمالیِ فرعی کامل برداشته شده: کلِ آن سمت خیابان است', () => {
     const alley = createAlleyGeometry();
-    const walk = meshByName(alley, 'BranchSidewalkNorthWest');
-    expect(walk).toBeDefined();
-    alley.group.updateMatrixWorld(true);
-    const box = new THREE.Box3().setFromObject(walk!);
-    // لبهٔ شرقیِ پیاده‌روی باقی‌مانده همان لبهٔ غربیِ خیابان است
-    expect(box.max.x).toBeLessThanOrEqual(ALLEY_ENTRANCE_STREET.westEdgeX + 1e-6);
-    expect(box.min.x).toBeLessThan(ALLEY_BRANCH.westX);
 
-    // پیاده‌روی جلوی در (شرقِ خیابان) دیگر وجود ندارد
+    // با بازشدنِ خیابانِ غربی، دیگر هیچ پیاده‌روی شمالی در فرعی نمانده است
     expect(meshByName(alley, 'BranchSidewalkNorth')).toBeUndefined();
-    expect(meshByName(alley, 'BranchCurbNorthWestCurb')).toBeDefined();
+    expect(meshByName(alley, 'BranchSidewalkNorthWest')).toBeUndefined();
     expect(meshByName(alley, 'BranchCurbNorthCurb')).toBeUndefined();
+    expect(meshByName(alley, 'BranchCurbNorthWestCurb')).toBeUndefined();
+    // پیاده‌روی جنوبیِ فرعی سر جایش است
+    expect(meshByName(alley, 'BranchSidewalkSouth')).toBeDefined();
 
     alley.dispose();
   });
