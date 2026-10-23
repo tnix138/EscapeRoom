@@ -5,9 +5,12 @@ import {
   ARC_TRACERY_SPOKES,
   LOBBY_DOOR,
   LOBBY_DOOR_STATUS_LAMPS,
+  WINDOW_FLOWER,
   createLobbyDoor,
   lobbyDoorGlowPulse,
   lobbyDoorHandleProfile,
+  windowFlowerPetalAngles,
+  windowFlowerVines,
 } from '@/engine3d/alley-lobby-door';
 
 /**
@@ -201,18 +204,29 @@ describe('درِ اصلی لابی: نیم‌دایرهٔ شیشه‌ای، دو
       expect(Math.abs(glass.position.x)).toBeLessThan(0.05);
       expect(glass.position.y).toBeCloseTo(LOBBY_DOOR.windowCenterY, 6);
 
-      // نقش‌نگاری آهنی: دو میلهٔ عمودی + دو میلهٔ افقی + گل‌سر، همه جلوی شیشه
+      // نقش‌نگاری آهنی **گل**: حلقه، هشت گلبرگ، مرکز گل، دو پیچک و برگ‌ها —
+      // همه جلوی شیشه و هیچ میلهٔ مستقیمی روی شیشه نیست
       const tracery = leaf.getObjectByName(`LobbyDoorLeaf${id}_WindowTracery`) as THREE.Group;
       expect(tracery).toBeDefined();
       let bars = 0;
+      let straightBars = 0;
       tracery.traverse((object) => {
-        if (object instanceof THREE.Mesh) bars++;
+        if (!(object instanceof THREE.Mesh)) return;
+        bars++;
+        if (object instanceof THREE.Mesh && object.geometry.type === 'BoxGeometry') {
+          const box = new THREE.Box3().setFromObject(object);
+          const size = box.getSize(new THREE.Vector3());
+          if (size.x > 0.05 || size.y > 0.05) straightBars++;
+        }
       });
-      expect(bars).toBe(5); // ۲ عمودی + ۲ افقی + ۱ گل‌سر
-      expect(leaf.getObjectByName(`LobbyDoorLeaf${id}_WindowRosette`)).toBeInstanceOf(THREE.Mesh);
+      expect(bars).toBeGreaterThan(10);
+      expect(straightBars).toBe(0); // میلهٔ راستِ افقی/عمودی نمانده است
 
+      // همهٔ اجزای نقش‌نگاری جلوی شیشه‌اند (z جهانی، چون پیچک‌ها هندسهٔ
+      // منحنی دارند و جابه‌جایی داخل هندسه پخته شده است)
+      const glassZ = worldPos(glass).z;
       for (const child of tracery.children) {
-        expect(child.position.z).toBeGreaterThan(glass.position.z);
+        expect(worldBox(child).min.z, child.name).toBeGreaterThan(glassZ);
       }
 
       // قاب آهنی دور شیشه
@@ -220,6 +234,79 @@ describe('درِ اصلی لابی: نیم‌دایرهٔ شیشه‌ای، دو
       expect(leaf.getObjectByName(`LobbyDoorLeaf${id}_WindowFrameVLeft`)).toBeInstanceOf(THREE.Mesh);
       expect(leaf.getObjectByName(`LobbyDoorLeaf${id}_WindowFrameHBottom`)).toBeInstanceOf(THREE.Mesh);
       expect(leaf.getObjectByName(`LobbyDoorLeaf${id}_WindowFrameVRight`)).toBeInstanceOf(THREE.Mesh);
+    }
+
+    alley.dispose();
+  });
+
+  it('نقش‌نگاری شیشه گل آهنی است: حلقه، هشت گلبرگ، مرکز، دو پیچک و برگ', () => {
+    const alley = buildAlley();
+    const expectedVines = 2;
+    for (const id of ['Left', 'Right']) {
+      const leaf = alley.group.getObjectByName(`LobbyDoorLeaf${id}`) as THREE.Group;
+      const tracery = leaf.getObjectByName(`LobbyDoorLeaf${id}_WindowTracery`) as THREE.Group;
+
+      // حلقهٔ گل وسط شیشه
+      const ring = leaf.getObjectByName(`LobbyDoorLeaf${id}_FlowerRing`) as THREE.Mesh<THREE.TorusGeometry>;
+      expect(ring, id).toBeInstanceOf(THREE.Mesh);
+      expect(ring.position.y).toBeCloseTo(LOBBY_DOOR.windowCenterY, 6);
+      expect(ring.position.x).toBeCloseTo(0, 6);
+
+      // هشت گلبرگ یکنواخت دور حلقه
+      const petals = tracery.children.filter((child) =>
+        child.name.startsWith(`LobbyDoorLeaf${id}_FlowerPetal_`),
+      );
+      expect(petals).toHaveLength(WINDOW_FLOWER.petalCount);
+      expect(WINDOW_FLOWER.petalCount).toBe(8);
+      // گلبرگ‌ها دقیقاً روی شعاع یکسان و زاویه‌های پخش‌شده می‌نشینند
+      for (const petal of petals) {
+        const distance = Math.hypot(
+          petal.position.x,
+          petal.position.y - LOBBY_DOOR.windowCenterY,
+        );
+        expect(distance).toBeCloseTo(WINDOW_FLOWER.petalRadius, 6);
+      }
+      const expectedAngles = windowFlowerPetalAngles();
+      const actualAngles = petals
+        .map((petal) =>
+          Math.atan2(petal.position.y - LOBBY_DOOR.windowCenterY, petal.position.x),
+        )
+        .map((angle) => (angle + Math.PI * 2) % (Math.PI * 2))
+        .sort((a, b) => a - b);
+      for (let i = 0; i < expectedAngles.length; i++) {
+        expect(actualAngles[i]).toBeCloseTo(expectedAngles[i], 6);
+      }
+
+      // مرکز گل
+      expect(leaf.getObjectByName(`LobbyDoorLeaf${id}_FlowerBoss`)).toBeInstanceOf(THREE.Mesh);
+
+      // دو پیچک منحنی (بالا و پایین) با مفتول چرخشی، نه میلهٔ راست
+      const vines = tracery.children.filter(
+        (child) => child.name === `LobbyDoorLeaf${id}_VineTop` || child.name === `LobbyDoorLeaf${id}_VineBottom`,
+      );
+      expect(vines).toHaveLength(expectedVines);
+      for (const vine of vines) {
+        const mesh = vine as THREE.Mesh;
+        expect(mesh.geometry.type).toBe('TubeGeometry');
+      }
+
+      // برگ‌ها و جوانه‌ها
+      const leaves = tracery.children.filter((child) =>
+        child.name.startsWith(`LobbyDoorLeaf${id}_FlowerLeaf_`),
+      );
+      const buds = tracery.children.filter((child) =>
+        child.name.startsWith(`LobbyDoorLeaf${id}_FlowerBud_`),
+      );
+      expect(leaves).toHaveLength(WINDOW_FLOWER.leafCount);
+      expect(buds).toHaveLength(expectedVines);
+    }
+
+    // پیچک بالا و پایین قرینهٔ هم‌اند
+    const vines = windowFlowerVines();
+    expect(vines.top).toHaveLength(vines.bottom.length);
+    for (let i = 0; i < vines.top.length; i++) {
+      expect(vines.top[i].x).toBeCloseTo(vines.bottom[i].x, 9);
+      expect(vines.top[i].y).toBeCloseTo(-vines.bottom[i].y, 9);
     }
 
     alley.dispose();
