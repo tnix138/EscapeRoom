@@ -31,6 +31,7 @@ import {
   ALLEY_BRANCH_ROWS,
   ALLEY_LENGTHS,
   ALLEY_MAIN,
+  ALLEY_THEATER,
 } from './alley-layout';
 import { alleyGroundCrownAt } from './alley-ground-profile';
 import {
@@ -139,8 +140,9 @@ const LEFT_BUILDINGS: readonly BuildingSpec[] = [
   { zCenter: -3.4, length: 7.5, height: 9.2, xInset: ALLEY_GUIDE_WALL_INSET.left, variant: 1, floors: 3 },
   { zCenter: 4.1, length: 7.6, height: 11.2, xInset: -0.06, variant: 0, floors: 4, hasBalcony: true, litWindowFloor: 3 },
   { zCenter: 12.2, length: 8.8, height: 9.8, xInset: 0.10, variant: 1, floors: 3 },
-  // از z = ۱۵٫۲ تا ۲۱٫۲ — دقیقاً تا لبهٔ دهانهٔ فرعی، بدون شکافِ آسمان
-  { zCenter: 18.2, length: 6.0, height: 10.9, xInset: -0.04, variant: 0, floors: 4, hasBalcony: true, litWindowFloor: 2 },
+  // از z = ۱۵٫۲ تا ۱۹٫۵ — بعد از آن بدنهٔ سنگیِ تئاتر گوشهٔ L را تا دیوارِ فرعی
+  // پر می‌کند (بدنهٔ تئاتر از z = ۱۹٫۵ تا ۲۱٫۱ می‌رود)
+  { zCenter: 17.35, length: 4.3, height: 10.9, xInset: -0.04, variant: 0, floors: 4, hasBalcony: true, litWindowFloor: 2 },
 ];
 
 const RIGHT_BUILDINGS: readonly BuildingSpec[] = [
@@ -158,10 +160,20 @@ const RIGHT_BUILDINGS: readonly BuildingSpec[] = [
  * `zCenter` اینجا در واقع فاصله در راستای x است و منفی‌ها به سمت غرب می‌روند.
  * گوشهٔ شمال‌شرقی از ساختمانِ گوشهٔ کوچهٔ اصلی پوشیده می‌شود (تا x = −۱۱٫۹۲).
  */
+// دیوارِ شمالیِ فرعی حالا تقریباً تمامش نمای تماشاخانه است؛ فقط نواری در غربِ
+// نما (بین لبهٔ غربیِ تئاتر و دیوارِ بن‌بست) ساختمانِ آجری می‌گیرد
 const BRANCH_NORTH_BUILDINGS: readonly BuildingSpec[] = [
-  { zCenter: -14.92, length: 6.4, height: 10.2, xInset: 0.02, variant: 0, floors: 3, hasBalcony: true, litWindowFloor: 1 },
-  { zCenter: -21.52, length: 7.6, height: 12.1, xInset: -0.05, variant: 1, floors: 4, litWindowFloor: 2 },
-  { zCenter: -28.76, length: 7.6, height: 9.4, xInset: 0.08, variant: 0, floors: 3 },
+  { zCenter: -30.2, length: 4.6, height: 10.6, xInset: 0.04, variant: 1, floors: 3, litWindowFloor: 1 },
+];
+
+/**
+ * ردیفِ بستهٔ انتهای شمالیِ شاخهٔ اصلی. پیش‌تر خودِ نمای تئاتر این سرِ کوچه را
+ * می‌بست؛ حالا که نما به فرعی منتقل شده، سه ساختمانِ آجریِ عادی جایش را می‌گیرند.
+ */
+const NORTH_END_BUILDINGS: readonly BuildingSpec[] = [
+  { zCenter: 8.0, length: 8.4, height: 11.2, xInset: 0.0, variant: 1, floors: 4, litWindowFloor: 2 },
+  { zCenter: 0.0, length: 8.4, height: 9.6, xInset: 0.05, variant: 0, floors: 3, hasBalcony: true },
+  { zCenter: -8.0, length: 8.4, height: 10.8, xInset: -0.04, variant: 1, floors: 3, litWindowFloor: 1 },
 ];
 
 const BRANCH_SOUTH_BUILDINGS: readonly BuildingSpec[] = [
@@ -888,6 +900,15 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
   // گروهِ ۹۰ درجه چرخیده: محورِ z محلی به +x جهانی و محورِ x محلی به −z جهانی
   // می‌رود، پس ردیف در راستای شرق–غرب کشیده می‌شود و نمای آن دقیقاً روی دیوارِ
   // فرعی می‌نشیند (جزئیات در `alley-layout.ts`).
+  // ردیفِ انتهای شمالی: همان ردیفِ چرخیدهٔ فرعی، فقط روی z = −۱۳٫۲ تا دیوار را
+  // رو به +Z (داخلِ کوچه) ببندد
+  const northEndRow = new THREE.Group();
+  northEndRow.name = 'NorthEndBuildings';
+  northEndRow.rotation.y = ALLEY_BRANCH_ROWS.rotationY;
+  northEndRow.position.set(0, 0, ALLEY_MAIN.northZ + ALLEY_MAIN.facadeX);
+  buildingsGroup.add(northEndRow);
+  buildSideRow(NORTH_END_BUILDINGS, ALLEY_BRANCH_ROWS.north.side, northEndRow, 'NorthEndBuilding');
+
   const branchNorthRow = new THREE.Group();
   branchNorthRow.name = 'BranchBuildingsNorth';
   branchNorthRow.rotation.y = ALLEY_BRANCH_ROWS.rotationY;
@@ -923,10 +944,24 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
   group.add(buildingsGroup);
 
   // =========================================================================
-  // ۳. نمای باشکوه تماشاخانهٔ اُرفه‌ئو در انتهای شمالی کوچه (z = -14)
+  // ۳. نمای باشکوه تماشاخانهٔ اُرفه‌ئو — روی دیوارِ شمالیِ فرعی (z = ۲۱٫۲)
   // =========================================================================
+  // بازبینیِ امیر: «دربِ اصلی و نمای کلِ ساختمان که شاملِ پنجره‌ها و تابلو می‌شود
+  // را ببر سمتِ چپِ اولِ ال.» نما از انتهای شمالیِ کوچه برداشته شد و روی دیوارِ
+  // شمالیِ فرعیِ غربی، درست بعد از گوشهٔ L، نصب می‌شود؛ رو به +Z یعنی داخلِ فرعی.
+  //
+  // برای اینکه چیدمانِ داخلیِ نما (۱۹٫۲ متر عرض، ستون‌ها، سه پنجره، سردر و در)
+  // دست‌نخورده بماند، همهٔ اجزا در مختصاتِ محلی ساخته می‌شوند (THEATER_X = ۰ و
+  // THEATER_Z = ۰ همان لنگرِ در است) و خودِ گروه جابه‌جا می‌شود. چرخش لازم نیست،
+  // چون نمای فرعی هم مثل نمای قبلی رو به +Z است.
+  // =========================================================================
+  const THEATER_X = 0;
+  const THEATER_Z = 0;
   const theaterGroup = new THREE.Group();
   theaterGroup.name = 'TheaterFacadeGroup';
+  // بدنهٔ سنگی ۱٫۶ متر عمق دارد و مرکزش ۰٫۹ عقب‌تر است؛ با این ۰٫۱ متر جابه‌جایی،
+  // صفحۀ جلوی نما دقیقاً روی دیوارِ فرعی (۲۱٫۲) می‌نشیند و هیچ درزِ خالی زیرش نمی‌ماند
+  theaterGroup.position.set(ALLEY_THEATER.doorX, 0, ALLEY_THEATER.wallZ + 0.1);
 
   const theaterStoneMat = new THREE.MeshStandardMaterial({
     color: 0x877c74,
@@ -942,12 +977,13 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
     envMapIntensity: 0.12,
   });
 
-  // بدنهٔ عریض عمارت تماشاخانه که کل انتهای کوچه را می‌بندد (جلو روی z = -14.10)
+  // بدنهٔ عریض عمارت تماشاخانه: کلِ دیوارِ شمالیِ فرعی را پر می‌کند؛ لبهٔ شرقی‌اش
+  // روی صفحۀ دیوارِ چپِ شاخهٔ اصلی و لبهٔ غربی‌اش روی مرزِ غربیِ فرعی می‌افتد
   const facadeMain = new THREE.Mesh(
     withUv2(new THREE.BoxGeometry(19.2, 11.6, 1.6)),
     theaterStoneMat,
   );
-  facadeMain.position.set(anchors.theaterDoor.x, 5.8, anchors.theaterDoor.z - 0.9);
+  facadeMain.position.set(THEATER_X, 5.8, THEATER_Z - 0.9);
   facadeMain.name = 'TheaterFacade';
   facadeMain.castShadow = true;
   facadeMain.receiveShadow = true;
@@ -966,24 +1002,24 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
     { depth: 0.9, bevelEnabled: true, bevelThickness: 0.08, bevelSize: 0.08, bevelSegments: 1 },
   );
   const pediment = new THREE.Mesh(pedimentShape, stoneTrimMat);
-  pediment.position.set(0, 11.55, anchors.theaterDoor.z - 0.85);
+  pediment.position.set(0, 11.55, THEATER_Z - 0.85);
   pediment.castShadow = true;
   theaterGroup.add(pediment);
 
-  // چهار ستون کلاسیک سنگی در دو سوی ورودی تئاتر
+  // چهار ستون کلاسیک سنگی در دو سوی ورودی تئاتر (بیرون‌آمده از نما، داخلِ فرعی)
   for (const colX of [-5.2, -2.55, 2.55, 5.2]) {
     const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.30, 0.35, 8.6, 16), stoneTrimMat);
-    shaft.position.set(colX, 4.5, anchors.theaterDoor.z + 0.05);
+    shaft.position.set(colX, 4.5, THEATER_Z + 0.05);
     shaft.castShadow = true;
     shaft.receiveShadow = true;
     theaterGroup.add(shaft);
 
     const base = new THREE.Mesh(new THREE.BoxGeometry(0.86, 0.45, 0.86), stoneTrimMat);
-    base.position.set(colX, 0.225, anchors.theaterDoor.z + 0.05);
+    base.position.set(colX, 0.225, THEATER_Z + 0.05);
     theaterGroup.add(base);
 
     const capital = new THREE.Mesh(new THREE.BoxGeometry(0.92, 0.36, 0.92), antiqueBrassMat);
-    capital.position.set(colX, 8.95, anchors.theaterDoor.z + 0.05);
+    capital.position.set(colX, 8.95, THEATER_Z + 0.05);
     theaterGroup.add(capital);
   }
 
@@ -1018,7 +1054,7 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
   // قابِ برنجیِ پنجره‌ها ۰٫۰۲ متر پس از لنگرِ در است؛ نیم‌ستون‌ها و سایبان‌ها
   // روی صفحۀ جلوی همین قاب نصب می‌شوند (پنلِ سرخِ پنجره از دیوار جلوتر است و
   // نیم‌ستونی که روی خودِ دیوار بنشیند پشتِ آن گم می‌شود)
-  const windowMountZ = anchors.theaterDoor.z - 0.02 + WINDOW_ARCHITECTURE.frameDepth / 2;
+  const windowMountZ = THEATER_Z - 0.02 + WINDOW_ARCHITECTURE.frameDepth / 2;
 
   CURTAIN.windowXs.forEach((wx: number, index: number) => {
     const archFrame = new THREE.Mesh(
@@ -1030,7 +1066,7 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
     theaterGroup.add(archFrame);
 
     const archWin = new THREE.Mesh(new THREE.BoxGeometry(1.48, 2.86, 0.12), crimsonStainedMat);
-    archWin.position.set(wx, WINDOW_ARCHITECTURE.centerY, anchors.theaterDoor.z + 0.03);
+    archWin.position.set(wx, WINDOW_ARCHITECTURE.centerY, THEATER_Z + 0.03);
     theaterGroup.add(archWin);
 
     // پرده کمی کوچک‌تر از دهانۀ پنجره است تا لبۀ سرخِ شیشه دورش دیده شود
@@ -1043,7 +1079,7 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
       curtainVelvetMat,
     );
     curtain.name = `TheaterCurtain_${index}`;
-    curtain.position.set(wx, WINDOW_ARCHITECTURE.centerY, anchors.theaterDoor.z + 0.12 + CURTAIN.hangOffset);
+    curtain.position.set(wx, WINDOW_ARCHITECTURE.centerY, THEATER_Z + 0.12 + CURTAIN.hangOffset);
     theaterGroup.add(curtain);
 
     // معماریِ دورِ پنجره: دو نیم‌ستونِ سنگیِ بیرون‌آمده از دیوار (از کفِ پنجره تا
@@ -1062,7 +1098,7 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
 
   // سایبان نورانی سردر تماشاخانه (Marquee Canopy) با متن واقعی
   const marqueeBox = new THREE.Mesh(new THREE.BoxGeometry(6.8, 1.48, 1.55), darkIronMat);
-  marqueeBox.position.set(0, 4.42, anchors.theaterDoor.z + 0.62);
+  marqueeBox.position.set(0, 4.42, THEATER_Z + 0.62);
   marqueeBox.castShadow = true;
   theaterGroup.add(marqueeBox);
 
@@ -1079,14 +1115,14 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
       polygonOffsetUnits: -2,
     }),
   );
-  marqueeBoard.position.set(0, 4.42, anchors.theaterDoor.z + 1.44);
+  marqueeBoard.position.set(0, 4.42, THEATER_Z + 1.44);
   marqueeBoard.name = 'TheaterMarqueeSign';
   theaterGroup.add(marqueeBoard);
 
   // میله‌های مهاری برنجی سایبان سردر
   for (const cx of [-2.9, 2.9]) {
     const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.022, 2.15, 6), antiqueBrassMat);
-    rod.position.set(cx, 5.72, anchors.theaterDoor.z + 0.68);
+    rod.position.set(cx, 5.72, THEATER_Z + 0.68);
     rod.rotation.x = 0.56;
     theaterGroup.add(rod);
   }
@@ -1099,18 +1135,18 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
     stoneMaps: theaterStoneMaps,
     environmentMap,
   });
-  lobbyDoor.group.position.set(anchors.theaterDoor.x, 0, anchors.theaterDoor.z);
+  lobbyDoor.group.position.set(THEATER_X, 0, THEATER_Z);
   theaterGroup.add(lobbyDoor.group);
 
   // دو چراغ کنار در ورودی به شکل مشعل: پیالهٔ برنزی-آهنی، بازوی هشت‌ضلعی
   // بیرون‌آمده از نما و فانوس چراغِ هشت‌ضلعی روی آن (به‌جای فانوس‌های لوزی قبلی).
-  // هر دو دقیقاً قرینه‌اند و روی نمای تماشاخانه (z = −۱۴٫۱) نصب می‌شوند.
+  // هر دو دقیقاً قرینه‌اند و روی نمای تماشاخانه نصب می‌شوند.
   const entranceTorches: EntranceTorchInstance[] = [];
   for (const side of [-1, 1] as const) {
     const torch = createEntranceTorch({
       id: side < 0 ? 'EntranceLeft' : 'EntranceRight',
       // نمای تماشاخانه ۰٫۱ متر جلوتر از لنگر در است (ضخامت بدنه ۱٫۶ با مرکز −۰٫۹)
-      position: { x: side * 1.95, y: 0, z: anchors.theaterDoor.z - 0.1 },
+      position: { x: side * 1.95, y: 0, z: THEATER_Z - 0.1 },
       facing: 1,
       seed: side < 0 ? 2.4 : 7.1,
       haloTexture: lampHaloTexture,
@@ -1128,7 +1164,7 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
   playerStatusLampsGroup.position.set(
     0,
     LOBBY_DOOR_STATUS_LAMPS.centerY,
-    anchors.theaterDoor.z + LOBBY_DOOR_STATUS_LAMPS.z,
+    THEATER_Z + LOBBY_DOOR_STATUS_LAMPS.z,
   );
   theaterGroup.add(playerStatusLampsGroup);
 

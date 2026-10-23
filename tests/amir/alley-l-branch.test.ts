@@ -1,14 +1,20 @@
 import * as THREE from 'three';
 import { describe, expect, it } from 'vitest';
 import { createAlleyGeometry } from '@/engine3d/alley-geometry';
-import { ALLEY_BRANCH, ALLEY_LENGTHS, ALLEY_MAIN, isInBranch } from '@/engine3d/alley-layout';
+import {
+  ALLEY_BRANCH,
+  ALLEY_LENGTHS,
+  ALLEY_MAIN,
+  ALLEY_THEATER,
+  isInBranch,
+} from '@/engine3d/alley-layout';
 import {
   ALLEY_STATIC_OBSTACLES,
   checkAABBCollision,
   sanitizePosition,
 } from '@/engine3d/collision';
 import { alleyWalkableGroundAt } from '@/engine3d/alley-ground-profile';
-import { DEFAULT_ALLEY_BOUNDS, DEFAULT_ALLEY_SPAWN } from '@/engine3d/types';
+import { DEFAULT_ALLEY_ANCHORS, DEFAULT_ALLEY_BOUNDS, DEFAULT_ALLEY_SPAWN } from '@/engine3d/types';
 
 /**
  * خواستهٔ بازبینی (امیر):
@@ -146,6 +152,53 @@ describe('کوچهٔ L‌شکل: حذف نرده، دوبرابر شدن طول 
     // پایهٔ جنوبی (جلوی دیوارِ بن‌بست) در هر دو بازو ۱۳ سانتی‌متر بالاست
     expect(alleyWalkableGroundAt(0, ALLEY_BRANCH.southZ - 0.5)).toBeCloseTo(0.13, 6);
     expect(alleyWalkableGroundAt(-25, ALLEY_BRANCH.southZ - 0.5)).toBeCloseTo(0.13, 6);
+  });
+
+  it('درِ اصلی و نمای کاملِ تئاتر به دیوارِ شمالیِ فرعی (اولِ ال) منتقل شده‌اند', () => {
+    const alley = createAlleyGeometry();
+    alley.group.updateMatrixWorld(true);
+
+    // نما دیگر انتهای شمالیِ شاخهٔ اصلی را نمی‌بندد
+    const facade = alley.group.getObjectByName('TheaterFacadeGroup') as THREE.Group;
+    expect(facade).toBeDefined();
+    const facadePos = facade.getWorldPosition(new THREE.Vector3());
+    expect(facadePos.x).toBeCloseTo(ALLEY_THEATER.doorX, 6);
+    expect(facadePos.z).toBeCloseTo(ALLEY_THEATER.wallZ + 0.1, 6);
+
+    // «اولِ ال» = درست بعد از گوشه: لبهٔ شرقیِ نما روی دیوارِ چپِ شاخهٔ اصلی
+    expect(ALLEY_THEATER.eastEdgeX).toBeCloseTo(-ALLEY_MAIN.facadeX, 6);
+    expect(ALLEY_THEATER.westEdgeX).toBeLessThan(ALLEY_BRANCH.westX + 6);
+
+    // هر سه جزءِ خواسته‌شده با هم منتقل شده‌اند: در، سه پنجره و تابلو
+    const door = alley.group.getObjectByName('TheaterDoor') as THREE.Group;
+    const doorWorld = door.getWorldPosition(new THREE.Vector3());
+    expect(doorWorld.z).toBeCloseTo(ALLEY_THEATER.wallZ + 0.1, 6);
+    expect(DEFAULT_ALLEY_ANCHORS.theaterDoor.x).toBeCloseTo(ALLEY_THEATER.doorX, 6);
+    expect(DEFAULT_ALLEY_ANCHORS.theaterDoor.z).toBeCloseTo(ALLEY_THEATER.wallZ, 6);
+    for (let i = 0; i < 3; i++) {
+      const frame = alley.group.getObjectByName(`TheaterWindowBrassFrame_${i}`) as THREE.Mesh;
+      expect(frame, `window ${i}`).toBeDefined();
+      expect(frame.getWorldPosition(new THREE.Vector3()).z).toBeGreaterThan(ALLEY_THEATER.wallZ);
+    }
+    const marquee = alley.group.getObjectByName('TheaterMarqueeSign') as THREE.Mesh;
+    expect(marquee.getWorldPosition(new THREE.Vector3()).z).toBeGreaterThan(ALLEY_THEATER.wallZ);
+
+    // دو مشعلِ ورودی هم با نما آمده‌اند و از دو طرف در قرینه‌اند
+    const leftTorch = alley.group.getObjectByName('EntranceTorch_EntranceLeft') as THREE.Group;
+    alley.group.getObjectByName('EntranceTorch_EntranceRight') as THREE.Group;
+    const leftWorld = leftTorch.getWorldPosition(new THREE.Vector3());
+    expect(leftWorld.x).toBeCloseTo(ALLEY_THEATER.doorX - 1.95, 6);
+    expect(leftWorld.z).toBeCloseTo(ALLEY_THEATER.wallZ, 6);
+
+    // انتهای شمالیِ شاخهٔ اصلی حالا با ساختمان‌های عادی بسته شده است
+    expect(alley.group.getObjectByName('NorthEndBuildings')).toBeDefined();
+    expect(checkAABBCollision(0, ALLEY_MAIN.northZ - 0.5, RADIUS, ALLEY_STATIC_OBSTACLES)).toBe(true);
+
+    // مسیر رسیدن به در باز است ولی داخلِ ستون‌های نما نمی‌شود رفت
+    expect(checkAABBCollision(ALLEY_THEATER.doorX, ALLEY_THEATER.wallZ + 0.6, RADIUS, ALLEY_STATIC_OBSTACLES)).toBe(false);
+    expect(checkAABBCollision(ALLEY_THEATER.doorX - 5.2, ALLEY_THEATER.wallZ + 0.3, RADIUS, ALLEY_STATIC_OBSTACLES)).toBe(true);
+
+    alley.dispose();
   });
 
   it('کمک‌تابعِ isInBranch فقط باندِ فرعی را می‌شناسد', () => {
