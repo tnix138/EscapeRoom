@@ -21,7 +21,7 @@ import {
   ALLEY_GUIDE_COLLISION_DEPTH,
   ALLEY_GUIDE_WALL_X,
 } from './alley-guide-layout';
-import { ALLEY_BRANCH, ALLEY_MAIN, ALLEY_THEATER, ALLEY_WEST_STREET } from './alley-layout';
+import { ALLEY_BRANCH, ALLEY_MAIN, ALLEY_THEATER } from './alley-layout';
 
 export interface CollisionResult {
   collided: boolean;
@@ -51,15 +51,14 @@ export interface AABB {
 export const ALLEY_STATIC_OBSTACLES: AABB[] = [
   // دیوار نمای ساختمان‌های سمت راست (شرق) — تا انتهای جنوبیِ کوچه
   { minX: ALLEY_MAIN.innerX, maxX: 9.5, minZ: -18, maxZ: 32.5 },
-  // بلوکِ میانیِ شهر: بینِ شاخهٔ اصلی (شرق) و خیابانِ غربی (غرب)، شمالِ فرعی.
-  // همین بلوک است که نقشه را از مستطیل به «U» تبدیل می‌کند.
-  { minX: ALLEY_WEST_STREET.eastX, maxX: -ALLEY_MAIN.innerX, minZ: -18, maxZ: ALLEY_BRANCH.northZ },
-  // بلوکِ شمالی: بالای انتهای شمالیِ خیابانِ غربی (بن‌بستِ درِ چوبی در z = ۰)
-  { minX: -60, maxX: ALLEY_WEST_STREET.eastX, minZ: -18, maxZ: ALLEY_WEST_STREET.northZ },
-  // دیوارِ غربی: از گوشهٔ شمال‌غربیِ خیابان تا انتهای جنوب‌غربیِ فرعی
-  { minX: -60, maxX: ALLEY_WEST_STREET.westX, minZ: ALLEY_WEST_STREET.northZ, maxZ: 36 },
-  // دیوارِ انتهای جنوبیِ هر دو بازو (دهانهٔ فرعی بسته نمی‌شود)
+  // بلوکِ غربیِ شهر: تمامِ گوشهٔ بیرونِ L (غربِ شاخهٔ اصلی و شمالِ فرعی).
+  // همین یک مانع است که کوچه را از مستطیل به «L» تبدیل می‌کند.
+  { minX: -36, maxX: -ALLEY_MAIN.innerX, minZ: -18, maxZ: ALLEY_BRANCH.northZ },
+  // دیوارِ انتهای جنوبی: از بن‌بستِ فرعی تا دیوارِ شرقی، دهانهٔ فرعی را نمی‌بندد
+  { minX: -36, maxX: -ALLEY_MAIN.innerX, minZ: ALLEY_BRANCH.southZ, maxZ: 36 },
   { minX: -ALLEY_MAIN.innerX, maxX: 9.5, minZ: ALLEY_BRANCH.southZ, maxZ: 36 },
+  // دیوارِ انتهای غربیِ فرعی (بن‌بست)
+  { minX: -36, maxX: ALLEY_BRANCH.westX, minZ: ALLEY_BRANCH.northZ, maxZ: ALLEY_BRANCH.southZ },
   // انتهای شمالیِ شاخهٔ اصلی (ردیفِ ساختمان‌هایی که جای نمای قبلیِ تئاتر را گرفته‌اند)
   { minX: -9.2, maxX: 9.2, minZ: -18, maxZ: -13.2 },
   // چهار ستونِ سنگیِ نمای تماشاخانه که از دیوارِ شمالیِ فرعی بیرون زده‌اند
@@ -100,8 +99,6 @@ export const ALLEY_STATIC_OBSTACLES: AABB[] = [
   { minX: -8.55, maxX: -6.55, minZ: 12.6, maxZ: 14.6 },
   // دسته جعبه، بشکه و پالتِ فرعی (پیاده‌روی جنوبیِ فرعی)
   { minX: -19.1, maxX: -16.4, minZ: 28.4, maxZ: 30.5 },
-  // دسته جعبه و بشکهٔ خیابانِ غربی (پیاده‌روی غربی)
-  { minX: -37.85, maxX: -36.4, minZ: 10.2, maxZ: 12.1 },
   // پایهٔ چهار چراغ برق گالوانیزه — دو جفت رو‌به‌روی هم روی جدول‌های چپ و راست
   // جفت جنوبی (z = +۳٫۶)
   { minX: -6.28, maxX: -5.62, minZ: 3.27, maxZ: 3.93 },

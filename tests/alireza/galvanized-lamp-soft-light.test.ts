@@ -68,8 +68,6 @@ const ALL_POLE_IDS = [
   'FarSouthLeft',
   'FarSouthRight',
   'BranchSouth',
-  'WestStreetSouth',
-  'WestStreetNorth',
 ] as const;
 
 /** جفت‌های رو‌به‌روی هم در شاخهٔ اصلی: هر دو روی یک خط z */

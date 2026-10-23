@@ -1,6 +1,6 @@
 'use client';
 
-import { ALLEY_BRANCH, ALLEY_ENTRANCE_STREET, ALLEY_WEST_STREET } from './alley-layout';
+import { ALLEY_BRANCH, ALLEY_ENTRANCE_STREET } from './alley-layout';
 
 /**
  * alley-ground-profile.ts — پروفایل ارتفاعی کف کوچه، مشترک بین زمین و هالهٔ نور (علیرضا)
@@ -79,24 +79,13 @@ export function alleyWalkableGroundAt(x: number, z: number = Number.NaN): number
     return stepUpAt(z, apronEdge - 0.27, apronEdge);
   }
 
-  // ۳) خیابانِ غربی (شاخهٔ شمالیِ U): محورِ عرض x است
-  if (
-    hasZ &&
-    x >= ALLEY_WEST_STREET.westX &&
-    x <= ALLEY_WEST_STREET.eastX &&
-    z >= ALLEY_WEST_STREET.northZ &&
-    z < ALLEY_WEST_STREET.southZ
-  ) {
-    return stepFromCenter(x - ALLEY_WEST_STREET.centerX, 3.2, 3.47);
-  }
-
-  // ۴) شاخهٔ اصلی: بعد از پیچِ L، ده قدمِ آخرِ پیاده‌روی چپ هم خیابان است
+  // ۳) شاخهٔ اصلی: بعد از پیچِ L، ده قدمِ آخرِ پیاده‌روی چپ هم خیابان است
   if (hasZ && x < 0 && z >= ALLEY_ENTRANCE_STREET.mainSidewalkEndZ) {
     const t = (z - ALLEY_ENTRANCE_STREET.mainSidewalkEndZ) / 0.27;
     return t >= 1 ? 0 : ALLEY_SIDEWALK_HEIGHT - smoothHeight(t);
   }
 
-  // ۵) شاخهٔ اصلی: پیاده‌روهای دو طرف در عرضِ کوچه
+  // ۴) شاخهٔ اصلی: پیاده‌روهای دو طرف در عرضِ کوچه
   return stepFromCenter(x, 5.95, 6.22);
 }
 
