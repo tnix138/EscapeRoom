@@ -199,18 +199,21 @@ describe('پردۀ پنجره‌ها — چین‌چینِ عمودی', () => {
 });
 
 describe('پردۀ پنجره‌ها — تیرگیِ حاله‌ایِ بالا و پایین', () => {
-  it('نوارِ میانی قرمزِ معمولی است و دو سر به سیاهی می‌رسد', () => {
-    expect(curtainShade(0.5)).toBeGreaterThan(0.97);
+  it('وسط قرمزِ معمولی و دو سر قرمزِ تیره است — نه سیاه', () => {
+    expect(curtainShade(0.5)).toBeGreaterThan(0.9);
     const edge = 1 - CURTAIN.endDarken;
     expect(Math.abs(curtainShade(0) - edge)).toBeLessThan(0.02);
     expect(Math.abs(curtainShade(1) - edge)).toBeLessThan(0.02);
-    // داخلِ نوارِ میانی تقریباً دست‌نخورده می‌ماند
-    const band = CURTAIN.litBand * 0.45;
-    expect(curtainShade(0.5 - band)).toBeGreaterThan(0.96);
-    expect(curtainShade(0.5 + band)).toBeGreaterThan(0.9);
-    // ولی تا لبه که می‌رسیم نصف نور کم می‌شود
-    expect(curtainShade(0.06)).toBeLessThan(0.55);
-    expect(curtainShade(0.94)).toBeLessThan(0.55);
+    // بازبینی دومِ امیر: «مشکی‌ها کمتر بشه» ⇒ لبه هرگز زیرِ ۰٫۴۵ نمی‌رود
+    expect(curtainShade(0)).toBeGreaterThan(0.45);
+    expect(curtainShade(1)).toBeGreaterThan(0.45);
+    // و حاله پهن است: تا ۳۰٪ ارتفاع هنوز نزدیکِ نورِ کامل است
+    const peak = Math.max(...Array.from({ length: 41 }, (_, i) => curtainShade(0.2 + i * 0.015)));
+    expect(curtainShade(0.3)).toBeGreaterThan(0.7 * peak);
+    expect(curtainShade(0.7)).toBeGreaterThan(0.6 * peak);
+    // ولی دو سر محسوس تیره‌ترند (وگرنه پرده یکدست می‌شود)
+    expect(curtainShade(0.06)).toBeLessThan(0.72);
+    expect(curtainShade(0.94)).toBeLessThan(0.72);
     // لبۀ بالا کمی تیره‌تر از لبۀ پایین است (سایۀ سرِ پرده)
     expect(curtainShade(0.98)).toBeLessThan(curtainShade(0.02));
   });
@@ -224,7 +227,8 @@ describe('پردۀ پنجره‌ها — تیرگیِ حاله‌ایِ بالا
       maxStep = Math.max(maxStep, Math.abs(cur - prev));
       prev = cur;
     }
-    expect(maxStep).toBeLessThan(0.02);
+    // گذار حالا هم پهن‌تر است هم نرم‌تر ⇒ گامِ مجاور باید خیلی ریز باشد
+    expect(maxStep).toBeLessThan(0.008);
     // و پروفیل تک‌موج است: یک بار تاریک→روشن و یک بار روشن→تاریک
     const { values: luma } = rowLuma(createCurtainFabricMaps().colorMap);
     const values = smooth(luma, 25);
@@ -239,8 +243,12 @@ describe('پردۀ پنجره‌ها — تیرگیِ حاله‌ایِ بالا
     let rise = 0;
     for (let i = peak + 1; i < values.length; i++) rise = Math.max(rise, values[i] - values[i - 1]);
     expect(rise).toBeLessThan(0.004);
-    expect(values[0]).toBeLessThan(0.45 * values[Math.floor(values.length / 2)]);
-    expect(values[values.length - 1]).toBeLessThan(0.55 * values[Math.floor(values.length / 2)]);
+    const mid = values[Math.floor(values.length / 2)];
+    // دو سر «تیرۀ سرخ»‌اند، نه سیاهیِ مطلق: بین ۰٫۳ تا ۰٫۷۵ِ نورِ میانه
+    expect(values[0]).toBeLessThan(0.75 * mid);
+    expect(values[0]).toBeGreaterThan(0.3 * mid);
+    expect(values[values.length - 1]).toBeLessThan(0.75 * mid);
+    expect(values[values.length - 1]).toBeGreaterThan(0.3 * mid);
   });
 });
 
@@ -284,8 +292,10 @@ describe('پردۀ پنجره‌ها — نقشه‌ها', () => {
       botRed /= n;
       expect(midRed).toBeGreaterThan(80);
       expect(midRed).toBeLessThan(215);
-      expect(topRed).toBeLessThan(0.45 * midRed);
-      expect(botRed).toBeLessThan(0.55 * midRed);
+      expect(topRed).toBeLessThan(0.75 * midRed);
+      expect(topRed).toBeGreaterThan(0.3 * midRed);
+      expect(botRed).toBeLessThan(0.75 * midRed);
+      expect(botRed).toBeGreaterThan(0.3 * midRed);
       // سرخ غالب است (مخمل، نه بنفش/قهوه‌ای) و سبزِ کم
       const c = at(Math.round(n * 0.31), mid);
       expect(c.r).toBeGreaterThan(c.g * 2.2);
@@ -335,8 +345,11 @@ describe('پردۀ پنجره‌ها — نقشه‌ها', () => {
       const n = values.length;
       const mid = values[Math.floor(n / 2)];
       expect(mid).toBeGreaterThan(0.3);
-      expect(values[0]).toBeLessThan(0.08 * mid);
-      expect(values[n - 1]).toBeLessThan(0.1 * mid);
+
+      // pedestalِ کوچک: نورِ پشتِ پرده در دو سر خاموش می‌شود ولی سیاهیِ مطلق نمی‌شود
+      expect(values[0]).toBeLessThan(0.2 * mid);
+      expect(values[0]).toBeGreaterThan(0.005 * mid);
+      expect(values[n - 1]).toBeLessThan(0.22 * mid);
       let maxStep = 0;
       for (let i = 1; i < n; i++) maxStep = Math.max(maxStep, Math.abs(values[i] - values[i - 1]));
       expect(maxStep).toBeLessThan(0.03);
