@@ -6,13 +6,20 @@ import { useState } from 'react';
 import type { AdminRole } from '@/contracts/admin';
 import { buttonStyle } from './styles';
 
-export type AdminSection = 'dashboard' | 'rooms' | 'players' | 'characters' | 'errors';
+export type AdminSection =
+  | 'dashboard'
+  | 'rooms'
+  | 'players'
+  | 'characters'
+  | 'updates'
+  | 'errors';
 
 const LINKS: ReadonlyArray<{ href: string; label: string; section: AdminSection }> = [
   { href: '/admin', label: 'داشبورد', section: 'dashboard' },
   { href: '/admin/rooms', label: 'اتاق‌ها', section: 'rooms' },
   { href: '/admin/players', label: 'بازیکنان', section: 'players' },
   { href: '/admin/characters', label: 'کاراکترها', section: 'characters' },
+  { href: '/admin/updates', label: 'آپدیت‌ها', section: 'updates' },
   { href: '/admin/errors', label: 'خطاها', section: 'errors' },
 ];
 
