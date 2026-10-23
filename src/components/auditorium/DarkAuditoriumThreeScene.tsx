@@ -326,9 +326,15 @@ function DarkCore({ room, onInspectHotspot, onSendWhisper }: DarkAuditoriumThree
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            if (!whisper.trim()) return;
-            void onSendWhisper(whisper);
-            setWhisper('');
+            const clean = whisper.trim();
+            if (!clean) return;
+            void onSendWhisper(clean)
+              .then(() => {
+                setWhisper('');
+              })
+              .catch(() => {
+                // حفظ متن پیش‌نویس در صورت خطای شبکه
+              });
           }}
           className="darkhall-chat-form"
         >

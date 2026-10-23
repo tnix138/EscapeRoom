@@ -11,6 +11,8 @@ import {
   whisperTypeLabel,
 } from './chat-rules';
 
+const WHISPER_SEND_WATCHDOG_MS = 10_000;
+
 interface WhisperMessage { id: string; senderName: string; type: 'whisper' | 'ticket_share' | 'system'; text: string; createdAt: number }
 interface WhisperChatPanelProps {
   messages: WhisperMessage[];
@@ -34,14 +36,24 @@ export default function WhisperChatPanel({
   const isOpen = open ?? internalOpen;
   const [text, setText] = useState('');
   const [sendState, setSendState] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+  const [errorDetail, setErrorDetail] = useState('');
   const [lastSeen, setLastSeen] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
+  const activeSendIdRef = useRef(0);
+  const mountedRef = useRef(true);
   const unread = isOpen ? 0 : unseenMessageCount(messages.length, lastSeen);
   /* کشیدنِ سربرگ به سمت لبهٔ چپ (فلشِ تب) پنل را می‌بندد. */
   const swipe = useSwipeDismiss(isOpen, () => setOpen(false), 'start');
   const draft = whisperDraft(text);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
@@ -52,8 +64,22 @@ export default function WhisperChatPanel({
 
   useEffect(() => {
     if (sendState !== 'sent' && sendState !== 'error') return undefined;
-    const timer = window.setTimeout(() => setSendState('idle'), 3200);
+    const timer = window.setTimeout(() => {
+      setSendState('idle');
+      setErrorDetail('');
+    }, 3600);
     return () => window.clearTimeout(timer);
+  }, [sendState]);
+
+  // محافظ ضدگیر رابط کاربری: حتی اگر وعدهٔ شبکه به هر دلیلی معلق بماند، دکمهٔ ارسال هرگز قفل دائمی نمی‌شود.
+  useEffect(() => {
+    if (sendState !== 'sending') return undefined;
+    const guard = window.setTimeout(() => {
+      activeSendIdRef.current += 1;
+      setSendState('error');
+      setErrorDetail('پاسخ سرور دیر شد؛ دوباره تلاش کنید.');
+    }, WHISPER_SEND_WATCHDOG_MS);
+    return () => window.clearTimeout(guard);
   }, [sendState]);
 
   // موج ۱۰: Esc پنل را می‌بندد و فوکوس را به دکمهٔ سربرگ برمی‌گرداند تا بازیکن
@@ -89,12 +115,22 @@ export default function WhisperChatPanel({
   async function send(shareStub: boolean) {
     if (sendState === 'sending') return;
     if (!shareStub && !draft.canSend) return;
+    if (shareStub && !couponText.trim()) return;
+
+    const sendId = activeSendIdRef.current + 1;
+    activeSendIdRef.current = sendId;
+    setErrorDetail('');
     setSendState('sending');
+
     try {
       await onSendWhisper(shareStub ? couponText : draft.trimmed, shareStub);
+      if (!mountedRef.current || activeSendIdRef.current !== sendId) return;
       if (!shareStub) setText('');
       setSendState('sent');
-    } catch {
+    } catch (err) {
+      if (!mountedRef.current || activeSendIdRef.current !== sendId) return;
+      const msg = err instanceof Error && err.message ? err.message : '';
+      setErrorDetail(msg);
       setSendState('error');
     }
   }
@@ -103,6 +139,9 @@ export default function WhisperChatPanel({
     event.preventDefault();
     void send(false);
   }
+
+  const statusText =
+    sendState === 'error' && errorDetail ? errorDetail : describeSendState(sendState);
 
   return (
     <>
@@ -158,10 +197,10 @@ export default function WhisperChatPanel({
             className="whisper-share-coupon"
             type="button"
             onClick={() => void send(true)}
-            disabled={sendState === 'sending' || !couponText}
+            disabled={sendState === 'sending' || !couponText.trim()}
             aria-busy={sendState === 'sending'}
           >
-            <span aria-hidden="true">♙</span> مخابرهٔ کوپنِ دست من به گروه <span aria-hidden="true">↗</span>
+            <span aria-hidden="true">♙</span> {sendState === 'sending' ? 'در حال مخابره…' : 'مخابرهٔ کوپنِ دست من به گروه'} <span aria-hidden="true">↗</span>
           </button>
 
           <form className="whisper-form" onSubmit={submit}>
@@ -172,7 +211,13 @@ export default function WhisperChatPanel({
               value={text}
               maxLength={WHISPER_MAX_LENGTH}
               enterKeyHint="send"
-              onChange={(event) => setText(event.target.value)}
+              onChange={(event) => {
+                setText(event.target.value);
+                if (sendState === 'error') {
+                  setSendState('idle');
+                  setErrorDetail('');
+                }
+              }}
               placeholder="آرام بنویسید…"
               aria-describedby="whisper-counter"
             />
@@ -185,7 +230,13 @@ export default function WhisperChatPanel({
             <span id="whisper-counter" className={`whisper-counter ${draft.remaining <= 20 ? 'is-low' : ''}`}>
               {draft.length.toLocaleString('fa')} / {WHISPER_MAX_LENGTH.toLocaleString('fa')}
             </span>
-            <span className="whisper-send-status" role="status" aria-live="polite">{describeSendState(sendState)}</span>
+            <span
+              className={`whisper-send-status ${sendState === 'error' ? 'is-error' : ''}`}
+              role="status"
+              aria-live="polite"
+            >
+              {statusText}
+            </span>
           </div>
         </div>
       )}

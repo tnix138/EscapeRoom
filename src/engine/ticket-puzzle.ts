@@ -17,6 +17,21 @@ export const THEATER_EMBLEMS: readonly TheaterEmblemId[] = [
   'bell',
 ] as const;
 
+export const THEATER_EMBLEM_LABELS_FA: Record<TheaterEmblemId, string> = {
+  mask: 'نقاب',
+  violin: 'ویولن',
+  dancer: 'رقصنده',
+  candelabra: 'شمعدان',
+  rose: 'رز سرخ',
+  swan: 'قو',
+  hourglass: 'ساعت شنی',
+  bell: 'زنگ پرده',
+};
+
+export function emblemLabelFa(emblem: TheaterEmblemId): string {
+  return THEATER_EMBLEM_LABELS_FA[emblem] ?? emblem;
+}
+
 /** پوستر دیوار چپ کوچه: عنوان هر پرده (شماره پرده از روی عنوان پیدا می‌شود) */
 export const LEFT_WALL_PLAYBILL: ReadonlyArray<{
   actNumber: PlayActNumber;

@@ -15,6 +15,7 @@ import { ONLINE_WINDOW_MS, projectRoomView } from '../../engine/view-projector';
 import {
   actSceneTitle,
   doorCodeFromTargets,
+  emblemLabelFa,
   isCorrectPunch,
   normalizeDoorCode,
 } from '../../engine/ticket-puzzle';
@@ -440,12 +441,43 @@ export async function performGameAction(
   return { ...result, roomView: projectRoomView(state, result.seatIndex, Date.now()) };
 }
 
-const chatSchema = z.object({
-  text: z.string().transform(sanitizePlayerName).refine((t) => t.length >= 1 && t.length <= 280, {
-    message: 'پیام باید بین ۱ تا ۲۸۰ کاراکتر باشد.',
-  }),
-  shareStub: z.boolean().optional(),
-});
+/**
+ * پاک‌سازی متن نجوا بدون حذف سرنخ‌های معما (اعداد، پرانتزها، علامت‌های نقل‌قول و غیره):
+ * فقط تگ‌های واقعی HTML و نویسه‌های کنترلی/جعل جهت حذف می‌شوند و نیم‌فاصله فارسی (\u200C) حفظ می‌شود.
+ */
+export function sanitizeChatMessage(raw: string): string {
+  return raw
+    .replace(/<\/?[a-zA-Z][^>]*>/g, '')
+    // eslint-disable-next-line no-control-regex
+    .replace(/[\u0000-\u001F\u007F\u200B\u200E\u200F\u202A-\u202E\u2066-\u2069\uFEFF]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+const chatSchema = z
+  .object({
+    text: z.string().optional().default('').transform(sanitizeChatMessage),
+    shareStub: z.boolean().optional(),
+  })
+  .superRefine((val, ctx) => {
+    if (val.shareStub) {
+      if (val.text.length > 500) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['text'],
+          message: 'پیام بیش از حد طولانی است.',
+        });
+      }
+      return;
+    }
+    if (val.text.length < 1 || val.text.length > 400) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['text'],
+        message: 'پیام باید بین ۱ تا ۴۰۰ کاراکتر باشد.',
+      });
+    }
+  });
 
 export const CHAT_RATE_LIMIT_MAX = 20;
 export const CHAT_RATE_LIMIT_WINDOW_MS = 10_000;
@@ -480,17 +512,24 @@ export async function sendChatMessage(
           id: `msg-${s.version}-${now}-${seatIndex}-stub`,
           senderName: seat.playerName,
           type: 'ticket_share',
-          text: `کوپن دست من برای بلیط «${nextSeat.playerName}»: نماد «${nextTarget.targetEmblem}»، پردهٔ «${actSceneTitle(nextTarget.targetAct)}»`,
+          text: `کوپن دست من برای بلیط «${nextSeat.playerName}»: نماد «${emblemLabelFa(nextTarget.targetEmblem)}»، پردهٔ «${actSceneTitle(nextTarget.targetAct)}»`,
           createdAt: now,
         });
       }
-      s.messages.push({
-        id: `msg-${s.version}-${now}-${seatIndex}`,
-        senderName: seat.playerName,
-        type: 'whisper',
-        text,
-        createdAt: now,
-      });
+      const isAutoCouponEcho =
+        Boolean(shareStub) &&
+        (text.length === 0 ||
+          text.startsWith('کوپن من برای ') ||
+          text.startsWith('کوپن دست من برای '));
+      if (!isAutoCouponEcho) {
+        s.messages.push({
+          id: `msg-${s.version}-${now}-${seatIndex}`,
+          senderName: seat.playerName,
+          type: 'whisper',
+          text,
+          createdAt: now,
+        });
+      }
       if (s.messages.length > 100) s.messages = s.messages.slice(-100);
       return seatIndex;
     },
