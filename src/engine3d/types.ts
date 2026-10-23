@@ -5,7 +5,7 @@
  * هیچ وابستگی به Three.js در تایپ‌های خالص نیست تا تست واحد Node امن بماند.
  */
 
-import { ALLEY_L_BOUNDS } from './alley-layout';
+import { ALLEY_L_BOUNDS, ALLEY_THEATER } from './alley-layout';
 
 export interface WorldBounds {
   /** محدوده X (عرض کوچه) */
@@ -80,5 +80,7 @@ export const DEFAULT_ALLEY_SPAWN: PlayerSpawn = {
 export const DEFAULT_ALLEY_ANCHORS: AlleyAnchors = {
   playbill: { x: -7.5, y: 2.2, z: -2 },
   rowChart: { x: 7.5, y: 2.2, z: -1.5 },
-  theaterDoor: { x: 0, y: 1.8, z: -14 },
+  // درِ اصلیِ تماشاخانه حالا روی دیوارِ شمالیِ فرعیِ غربی است (بازبینیِ امیر:
+  // «درب و نمای کلِ ساختمان را ببر سمتِ چپِ اولِ ال»)
+  theaterDoor: { x: ALLEY_THEATER.doorX, y: ALLEY_THEATER.doorAnchorY, z: ALLEY_THEATER.wallZ },
 };

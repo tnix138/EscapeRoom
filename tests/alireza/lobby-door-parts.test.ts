@@ -12,6 +12,7 @@ import {
   windowFlowerPetalAngles,
   windowFlowerVines,
 } from '@/engine3d/alley-lobby-door';
+import { DEFAULT_ALLEY_ANCHORS } from '@/engine3d/types';
 
 /**
  * خواستهٔ بازبینی — درِ اصلی لابی از سه بخش:
@@ -473,13 +474,14 @@ describe('درِ اصلی لابی: نیم‌دایرهٔ شیشه‌ای، دو
 
     const leftPos = worldPos(left);
     const rightPos = worldPos(right);
-    // وسط در: هر دو نزدیک محور مرکزی و قرینه
-    expect(leftPos.x).toBeCloseTo(-rightPos.x, 6);
-    expect(Math.abs(leftPos.x)).toBeLessThan(0.2);
+    // وسط در: هر دو نزدیک محورِ در (که حالا در فرعی است) و قرینه
+    const doorX = DEFAULT_ALLEY_ANCHORS.theaterDoor.x;
+    expect(leftPos.x - doorX).toBeCloseTo(-(rightPos.x - doorX), 6);
+    expect(Math.abs(leftPos.x - doorX)).toBeLessThan(0.2);
     expect(leftPos.y).toBeCloseTo(rightPos.y, 6);
     expect(leftPos.z).toBeCloseTo(rightPos.z, 6);
-    expect(leftPos.x).toBeLessThan(0);
-    expect(rightPos.x).toBeGreaterThan(0);
+    expect(leftPos.x).toBeLessThan(doorX);
+    expect(rightPos.x).toBeGreaterThan(doorX);
 
     // پروفیل: نوک تیز در دو سر، بدنهٔ استوانه‌ای و حلقه‌های برجسته
     const profile = lobbyDoorHandleProfile();
@@ -546,10 +548,13 @@ describe('درِ اصلی لابی: نیم‌دایرهٔ شیشه‌ای، دو
       expect(arcBox.max.y).toBeLessThan(marqueeBox.min.y + 0.05);
     }
 
-    // درِ لابی روی نمای تماشاخانه و هم‌تراز با لنگر است
+    // درِ لابی روی نمای تماشاخانه (که به دیوارِ شمالیِ فرعی منتقل شده) و هم‌تراز
+    // با لنگرِ در است
     const door = alley.group.getObjectByName('TheaterDoor') as THREE.Group;
-    expect(door.position.z).toBeCloseTo(-14, 6);
-    expect(door.position.x).toBeCloseTo(0, 6);
+    alley.group.updateMatrixWorld(true);
+    const doorWorld = door.getWorldPosition(new THREE.Vector3());
+    expect(doorWorld.z).toBeCloseTo(DEFAULT_ALLEY_ANCHORS.theaterDoor.z + 0.1, 6);
+    expect(doorWorld.x).toBeCloseTo(DEFAULT_ALLEY_ANCHORS.theaterDoor.x, 6);
 
     alley.dispose();
   });
@@ -601,7 +606,9 @@ describe('درِ اصلی لابی: نیم‌دایرهٔ شیشه‌ای، دو
     // قاب سنگی هم باریک‌تر شد و همچنان دور در را می‌گیرد
     const surroundBox = worldBox(alley.group.getObjectByName('LobbyDoorSurround') as THREE.Mesh);
     expect(surroundBox.max.x - surroundBox.min.x).toBeLessThan(3);
-    expect(surroundBox.max.x).toBeGreaterThan(LOBBY_DOOR.arcOuterRadius);
+    expect(surroundBox.max.x).toBeGreaterThan(
+      DEFAULT_ALLEY_ANCHORS.theaterDoor.x + LOBBY_DOOR.arcOuterRadius,
+    );
 
     alley.dispose();
   });
@@ -622,7 +629,10 @@ describe('درِ اصلی لابی: نیم‌دایرهٔ شیشه‌ای، دو
     const halfChord = Math.sqrt(LOBBY_DOOR.arcInnerRadius ** 2 - dy ** 2);
     for (const bulb of lamps.children) {
       const pos = worldPos(bulb);
-      expect(Math.abs(pos.x) + LOBBY_DOOR_STATUS_LAMPS.bulbRadius).toBeLessThan(halfChord);
+      expect(
+        Math.abs(pos.x - DEFAULT_ALLEY_ANCHORS.theaterDoor.x) +
+          LOBBY_DOOR_STATUS_LAMPS.bulbRadius,
+      ).toBeLessThan(halfChord);
       expect(pos.y).toBeCloseTo(LOBBY_DOOR_STATUS_LAMPS.centerY, 6);
     }
 

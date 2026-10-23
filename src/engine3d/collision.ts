@@ -21,7 +21,7 @@ import {
   ALLEY_GUIDE_COLLISION_DEPTH,
   ALLEY_GUIDE_WALL_X,
 } from './alley-guide-layout';
-import { ALLEY_BRANCH, ALLEY_MAIN } from './alley-layout';
+import { ALLEY_BRANCH, ALLEY_MAIN, ALLEY_THEATER } from './alley-layout';
 
 export interface CollisionResult {
   collided: boolean;
@@ -59,8 +59,19 @@ export const ALLEY_STATIC_OBSTACLES: AABB[] = [
   { minX: -ALLEY_MAIN.innerX, maxX: 9.5, minZ: ALLEY_BRANCH.southZ, maxZ: 36 },
   // دیوارِ انتهای غربیِ فرعی (بن‌بست)
   { minX: -36, maxX: ALLEY_BRANCH.westX, minZ: ALLEY_BRANCH.northZ, maxZ: ALLEY_BRANCH.southZ },
-  // نمای تماشاخانه و ستون‌های سنگی انتهای شمالی
+  // انتهای شمالیِ شاخهٔ اصلی (ردیفِ ساختمان‌هایی که جای نمای قبلیِ تئاتر را گرفته‌اند)
   { minX: -9.2, maxX: 9.2, minZ: -18, maxZ: -13.2 },
+  // چهار ستونِ سنگیِ نمای تماشاخانه که از دیوارِ شمالیِ فرعی بیرون زده‌اند
+  // (نما حالا در ابتدای پیچِ L است؛ بدنه‌اش داخلِ بلوکِ غربی می‌افتد)
+  ...[-5.2, -2.55, 2.55, 5.2].map((offset) => {
+    const x = ALLEY_THEATER.doorX + offset;
+    return {
+      minX: x - 0.45,
+      maxX: x + 0.45,
+      minZ: ALLEY_THEATER.wallZ - 0.15,
+      maxZ: ALLEY_THEATER.wallZ + 0.5,
+    };
+  }),
   // ویترین چوبی-برنجی تابلوی اعلانات روی دیوار چپ (امکان نزدیک شدن مستقیم برای خواندن متن)
   {
     minX: ALLEY_GUIDE_WALL_X.left - ALLEY_GUIDE_COLLISION_DEPTH.behindWall,

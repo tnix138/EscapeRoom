@@ -8,6 +8,7 @@ import {
   windowFlowerPlan,
   windowFlowerVines,
 } from '@/engine3d/alley-lobby-door';
+import { DEFAULT_ALLEY_ANCHORS } from '@/engine3d/types';
 
 /**
  * خواستهٔ بازبینی امیر روی درِ لابی:
@@ -118,12 +119,14 @@ describe('گلِ قرینه روی شیشهٔ دو لنگهٔ در (نه دو ک
       }
     }
 
-    // قرینهٔ جهانی: جعبهٔ هر پیچک حول محور وسط در (x = ۰) با هم‌قرینهٔ خود می‌خورد
+    // قرینهٔ جهانی: جعبهٔ هر پیچک حول محور وسط در با هم‌قرینهٔ خود می‌خورد
+    // (در حالا در فرعی است، پس محورِ تقارن `theaterDoor.x` است، نه صفر)
+    const doorX = DEFAULT_ALLEY_ANCHORS.theaterDoor.x;
     for (const vine of ['VineTop', 'VineBottom']) {
       const leftBox = worldBox(alley.group.getObjectByName(`LobbyDoorLeafLeft_${vine}`)!);
       const rightBox = worldBox(alley.group.getObjectByName(`LobbyDoorLeafRight_${vine}`)!);
-      expect(leftBox.min.x).toBeCloseTo(-rightBox.max.x, 4);
-      expect(leftBox.max.x).toBeCloseTo(-rightBox.min.x, 4);
+      expect(leftBox.min.x - doorX).toBeCloseTo(-(rightBox.max.x - doorX), 4);
+      expect(leftBox.max.x - doorX).toBeCloseTo(-(rightBox.min.x - doorX), 4);
       expect(leftBox.min.y).toBeCloseTo(rightBox.min.y, 4);
       expect(leftBox.max.y).toBeCloseTo(rightBox.max.y, 4);
     }

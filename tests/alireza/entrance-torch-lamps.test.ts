@@ -48,14 +48,18 @@ describe('دو چراغ مشعلی هشت‌ضلعی کنار در ورودی', 
     const left = alley.group.getObjectByName('EntranceTorch_EntranceLeft') as THREE.Group;
     const right = alley.group.getObjectByName('EntranceTorch_EntranceRight') as THREE.Group;
 
-    // هر دو روی نمای تماشاخانه و دو طرف در (x = ±۱٫۹۵) — قرینهٔ کامل
+    // هر دو روی نمای تماشاخانه و دو طرف در (x = ±۱٫۹۵ نسبت به محورِ در) — قرینهٔ کامل.
+    // نما حالا روی دیوارِ شمالیِ فرعی است، پس مختصاتِ محلیِ مشعل‌ها نسبت به محورِ
+    // در و دیوارِ فرعی سنجیده می‌شود.
+    const doorX = DEFAULT_ALLEY_ANCHORS.theaterDoor.x;
+    const doorZ = DEFAULT_ALLEY_ANCHORS.theaterDoor.z;
     expect(Math.abs(left.position.x)).toBeCloseTo(1.95, 6);
     expect(left.position.x).toBeCloseTo(-right.position.x, 6);
     expect(left.position.z).toBeCloseTo(right.position.z, 6);
-    expect(left.position.z).toBeCloseTo(DEFAULT_ALLEY_ANCHORS.theaterDoor.z - 0.1, 6);
-
-    // فانوس هر دو هم‌ارتفاع است
     alley.group.updateMatrixWorld(true);
+    const leftTorchZ = left.getWorldPosition(new THREE.Vector3()).z;
+    expect(leftTorchZ).toBeCloseTo(doorZ - 0.1 + 0.1, 6);
+    expect(left.getWorldPosition(new THREE.Vector3()).x).toBeCloseTo(doorX - 1.95, 6);
     const leftGlass = left.getObjectByName('TorchLanternGlass_EntranceLeft') as THREE.Mesh;
     const rightGlass = right.getObjectByName('TorchLanternGlass_EntranceRight') as THREE.Mesh;
     const leftY = leftGlass.getWorldPosition(new THREE.Vector3()).y;
