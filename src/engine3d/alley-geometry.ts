@@ -881,7 +881,6 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
   });
   lobbyDoor.group.position.set(anchors.theaterDoor.x, 0, anchors.theaterDoor.z);
   theaterGroup.add(lobbyDoor.group);
-  const door = lobbyDoor.group;
 
   // دو چراغ کنار در ورودی به شکل مشعل: پیالهٔ برنزی-آهنی، بازوی هشت‌ضلعی
   // بیرون‌آمده از نما و فانوس چراغِ هشت‌ضلعی روی آن (به‌جای فانوس‌های لوزی قبلی).
@@ -1330,13 +1329,10 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
   utilityPoles.forEach((pole) => lights.push(pole.spotLight));
   entranceTorches.forEach((torch) => lights.push(torch.light));
 
-  const doorSpot = new THREE.SpotLight(0xffcb88, 14.0, 16, Math.PI / 4.2, 0.55, 1.4);
-  doorSpot.name = 'TheaterEntranceSpotLight';
-  doorSpot.position.set(0, 4.15, anchors.theaterDoor.z + 1.55);
-  doorSpot.target = door;
-  doorSpot.castShadow = false;
-  group.add(doorSpot);
-  lights.push(doorSpot);
+  // بازبینیِ امیر: «تابلوی بالای درب ورودی یه چراغ وسطش قسمت پایین داره، اونو حذف
+  // کن.» این نورافکنِ وسط (TheaterEntranceSpotLight) همان لکهٔ گرمی بود که از
+  // میانِ هوا زیرِ تابلوی سردر می‌تابید و هیچ بدنه‌ای هم نداشت؛ برداشته شد.
+  // روشناییِ ورودی حالا فقط از دو مشعلِ کنارِ در و ماه/نورِ محیطی می‌آید.
 
   // چراغ مطالعهٔ هر دو تابلو از یک پیکربندی می‌آید: رنگ، شدت، برد و افت نور
   // یکی است و هر کدام دقیقاً هم‌فاصله از سطح تابلوی خودش می‌نشیند (قرینهٔ کامل)
@@ -1387,9 +1383,6 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
     lobbyDoor.update(elapsedSeconds);
 
     if (Number.isFinite(elapsedSeconds)) {
-      const marqueePulse = 0.94 + 0.06 * Math.sin(elapsedSeconds * 5.3) * Math.cos(elapsedSeconds * 11.7);
-      doorSpot.intensity = 14.0 * marqueePulse;
-
       // شناور بودن آرام ذرات غبار و نم باران زیر نور چراغ‌ها
       const attr = moteGeo.getAttribute('position') as THREE.BufferAttribute;
       const arr = attr.array as Float32Array;
