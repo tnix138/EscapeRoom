@@ -281,9 +281,13 @@ export function createAlleyGeometry(options: CreateAlleyOptions = {}): AlleyGeom
   // (منبع مشترک با هالهٔ نور چراغ‌ها در alley-ground-profile.ts)
   //
   // روی همان تاج، ترازِ هر سنگِ کف هم سوار می‌شود (`COBBLE.relief`): ترازِ
-  // بلندِ کف روی صفر است و نشسته‌ترین سنگ ۴٫۵ سانتی‌متر فرو می‌رود. جهتِ
+  // بلندِ کف روی صفر است و نشسته‌ترین سنگ پنج سانتی‌متر فرو می‌رود. جهتِ
   // جابه‌جایی عمداً فقط روپایین است — تا چاله‌های آب، هالهٔ نور چراغ‌ها و
   // درِ منهول که روی همین سطح نشسته‌اند زیرِ سنگ نروند.
+  //
+  // `sampleLevel` خودش حولِ u=۰ آینه است و `repeatX` زوج ⇒ شبکهٔ رأس‌ها هم
+  // دورِ محورِ کوچه قرینه می‌شود (تستِ `cobblestone-relief` همین را می‌گیرد)،
+  // پس دو طرفِ کوچه دو چینیِ بی‌ربط نیستند.
   const posAttr = groundGeo.attributes.position;
   const uvAttr = groundGeo.attributes.uv;
   for (let i = 0; i < posAttr.count; i++) {
