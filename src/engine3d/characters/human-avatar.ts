@@ -5,9 +5,16 @@
 // می‌شود. ProceduralHumanAvatar فقط برای تست‌های بدون مرورگر و fallback خطای بارگذاری حفظ شده.
 
 import * as THREE from 'three';
-import { GLTFLoader, type GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 import { clone as cloneSkinnedModel } from 'three/examples/jsm/utils/SkeletonUtils.js';
 import type { HumanLook } from './human-presets';
+import {
+  filterTrianglesByZoneMask,
+  getBodyHiddenZoneMask,
+  getCoveringZoneMask,
+  type CharacterClothingName,
+} from './clothing-zones';
 import { resolveHeadAnchors, getHumanEyeHeight, DEFAULT_PLAYER_EYE_HEIGHT } from './human-head-shape';
 import type { HeadAnchors } from './human-head-shape';
 import { ProceduralHumanAvatar, type HumanMotion, type HumanPose } from './procedural-human-avatar';
@@ -25,10 +32,15 @@ interface CharacterAsset {
   animations: THREE.AnimationClip[];
 }
 
+interface CharacterGarment {
+  name: 'shirt' | 'jeans' | 'dress';
+  asset: CharacterAsset;
+}
+
 interface LoadedCharacterParts {
   body: CharacterAsset;
-  coat: CharacterAsset;
   boots: CharacterAsset;
+  garments: CharacterGarment[];
   hair: CharacterAsset;
 }
 
@@ -57,9 +69,19 @@ const HAIR_ASSET: Readonly<Record<HairStyle, string>> = {
   long: 'hair-long.glb',
 };
 
-const loader = new GLTFLoader();
+const OUTFIT_ASSETS: Readonly<
+  Record<'feminine' | 'masculine', readonly { name: CharacterGarment['name']; file: string }[]>
+> = {
+  feminine: [{ name: 'dress', file: 'dress.glb' }],
+  masculine: [
+    { name: 'shirt', file: 'shirt.glb' },
+    { name: 'jeans', file: 'jeans.glb' },
+  ],
+};
+
+const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
 const assetPromises = new Map<string, Promise<CharacterAsset>>();
-let corePromise: Promise<Omit<LoadedCharacterParts, 'hair'>> | null = null;
+let corePromise: Promise<Pick<LoadedCharacterParts, 'body' | 'boots'>> | null = null;
 
 function loadAsset(fileName: string): Promise<CharacterAsset> {
   const cached = assetPromises.get(fileName);
@@ -67,7 +89,7 @@ function loadAsset(fileName: string): Promise<CharacterAsset> {
 
   const promise = loader
     .loadAsync(`${MODEL_BASE_URL}/${fileName}`)
-    .then((gltf) => ({ scene: gltf.scene, animations: gltf.animations }))
+    .then((gltf) => ({ scene: gltf.scene as THREE.Group, animations: gltf.animations }))
     .catch((error: unknown) => {
       assetPromises.delete(fileName);
       throw error;
@@ -76,13 +98,9 @@ function loadAsset(fileName: string): Promise<CharacterAsset> {
   return promise;
 }
 
-function loadCoreParts(): Promise<Omit<LoadedCharacterParts, 'hair'>> {
-  corePromise ??= Promise.all([
-    loadAsset('body.glb'),
-    loadAsset('coat.glb'),
-    loadAsset('boots.glb'),
-  ])
-    .then(([body, coat, boots]) => ({ body, coat, boots }))
+function loadCoreParts(): Promise<Pick<LoadedCharacterParts, 'body' | 'boots'>> {
+  corePromise ??= Promise.all([loadAsset('body.glb'), loadAsset('boots.glb')])
+    .then(([body, boots]) => ({ body, boots }))
     .catch((error: unknown) => {
       corePromise = null;
       throw error;
@@ -91,11 +109,13 @@ function loadCoreParts(): Promise<Omit<LoadedCharacterParts, 'hair'>> {
 }
 
 async function loadCharacterParts(look: HumanLook): Promise<LoadedCharacterParts> {
-  const [core, hair] = await Promise.all([
+  const garmentFiles = OUTFIT_ASSETS[look.feminine ? 'feminine' : 'masculine'];
+  const [core, hair, garments] = await Promise.all([
     loadCoreParts(),
     loadAsset(HAIR_ASSET[look.hair.style]),
+    Promise.all(garmentFiles.map(async ({ name, file }) => ({ name, asset: await loadAsset(file) }))),
   ]);
-  return { ...core, hair };
+  return { ...core, hair, garments };
 }
 
 function deterministicUnit(value: string): number {
@@ -138,12 +158,16 @@ function applyLookMorphs(mesh: THREE.Mesh, look: HumanLook): void {
   set('gender_male', look.feminine ? 0 : 1);
   set('age_child', 0);
   set('age_old', Math.max(0, (look.age - 0.2) / 0.8) * 0.7);
+  // A reduced female cup target keeps the silhouette soft and proportionate;
+  // the same target is present on the fitted garment meshes to preserve their fit.
+  set('breast_cup_min', look.feminine ? 0.7 : 0);
+  set('breast_cup_max', 0);
 
   const buildSignal = THREE.MathUtils.clamp((look.build - 1) * 5, -0.4, 0.4);
-  set('weight_min', Math.max(0, -buildSignal));
+  set('weight_min', Math.max(Math.max(0, -buildSignal), look.feminine ? 0.65 : 0));
   set('weight_max', Math.max(0, buildSignal));
-  const muscleSignal = (deterministicUnit(`${look.id}:build`) - 0.5) * 0.28;
-  set('muscle_min', Math.max(0, -muscleSignal));
+  const muscleSignal = (deterministicUnit(`${look.id}:build`) - 0.5) * (look.feminine ? 0.1 : 0.28);
+  set('muscle_min', Math.max(Math.max(0, -muscleSignal), look.feminine ? 0.4 : 0));
   set('muscle_max', Math.max(0, muscleSignal));
   set('proportions_ideal', 0.08);
   set('proportions_uncommon', 0);
@@ -167,7 +191,11 @@ function skinMaterialColor(material: THREE.Material, look: HumanLook): number | 
   if (name.includes('skin')) return look.skinHex;
   if (name.includes('iris')) return look.eyeHex;
   if (name.includes('hair') || name.includes('eyebrow') || name.includes('eyelash')) return look.hairHex;
-  if (name.includes('trenchcoat') || name.includes('coat')) return look.coatHex;
+  if (name.includes('shirt')) return look.shirtHex;
+  if (name.includes('jeans') || name.includes('trouser') || name.includes('pants') || name.includes('skirt')) return look.trouserHex;
+  if (name.includes('jacket') || name.includes('trenchcoat') || name.includes('coat') || name.includes('dress')) {
+    return look.coatHex;
+  }
   if (name.includes('boot') || name.includes('shoe')) return look.shoeHex;
   return null;
 }
@@ -195,6 +223,21 @@ function cloneLookMaterials(root: THREE.Object3D, look: HumanLook, owned: Set<TH
     object.material = Array.isArray(object.material)
       ? object.material.map(cloneMaterial)
       : cloneMaterial(object.material);
+  });
+}
+
+function applyClothingZoneMask(
+  root: THREE.Object3D,
+  mask: number,
+  ownedGeometries: Set<THREE.BufferGeometry>,
+): void {
+  if (!mask) return;
+  root.traverse((object) => {
+    if (!(object instanceof THREE.Mesh)) return;
+    const filtered = filterTrianglesByZoneMask(object.geometry, mask);
+    if (filtered === object.geometry) return;
+    ownedGeometries.add(filtered);
+    object.geometry = filtered;
   });
 }
 
@@ -228,6 +271,7 @@ export class HumanAvatar extends THREE.Group {
   private readonly eyeAnchor = new THREE.Object3D();
   private readonly modelRoot = new THREE.Group();
   private readonly ownedMaterials = new Set<THREE.Material>();
+  private readonly ownedGeometries = new Set<THREE.BufferGeometry>();
   private readonly morphMeshes: THREE.Mesh[] = [];
   private readonly rigs: RigBones[] = [];
   private readonly actions = new Map<LocomotionClip, THREE.AnimationAction[]>();
@@ -312,6 +356,8 @@ export class HumanAvatar extends THREE.Group {
       }
       for (const material of this.ownedMaterials) material.dispose();
       this.ownedMaterials.clear();
+      for (const geometry of this.ownedGeometries) geometry.dispose();
+      this.ownedGeometries.clear();
       this.materials.length = 0;
       this.rigs.length = 0;
       this.morphMeshes.length = 0;
@@ -327,20 +373,26 @@ export class HumanAvatar extends THREE.Group {
     this.modelRoot.rotation.y = MODEL_FORWARD_YAW;
     this.add(this.modelRoot);
 
-    const partEntries: Array<[keyof LoadedCharacterParts, CharacterAsset, string]> = [
-      ['body', parts.body, 'character-body-rig'],
-      ['coat', parts.coat, 'character-coat-rig'],
-      ['boots', parts.boots, 'character-boots-rig'],
-      ['hair', parts.hair, 'avatar-hair'],
+    const wornGarments: CharacterClothingName[] = parts.garments.map(({ name }) => name);
+    const bodyHiddenZoneMask = getBodyHiddenZoneMask([...wornGarments, 'boots']);
+    const lateralScale = look.feminine ? 0.82 : 1;
+    const partEntries: Array<{ asset: CharacterAsset; partName: string; zoneMask?: number }> = [
+      { asset: parts.body, partName: 'character-body-rig', zoneMask: bodyHiddenZoneMask },
+      ...parts.garments.map(({ name, asset }) => ({
+        asset,
+        partName: `character-${name}-rig`,
+        zoneMask: getCoveringZoneMask(name, wornGarments),
+      })),
+      { asset: parts.boots, partName: 'character-boots-rig' },
+      { asset: parts.hair, partName: 'avatar-hair' },
     ];
     const bodyClips = parts.body.animations;
-    const partRoots: THREE.Group[] = [];
 
-    for (const [kind, asset, partName] of partEntries) {
+    for (const { asset, partName, zoneMask } of partEntries) {
       const root = cloneSkinnedModel(asset.scene) as THREE.Group;
       root.name = partName;
+      if (zoneMask) applyClothingZoneMask(root, zoneMask, this.ownedGeometries);
       this.modelRoot.add(root);
-      partRoots.push(root);
       cloneLookMaterials(root, look, this.ownedMaterials);
 
       root.traverse((object) => {
@@ -351,13 +403,14 @@ export class HumanAvatar extends THREE.Group {
       });
 
       const bones = collectBones(root);
+      const headBone = bones.get('head');
+      if (headBone) headBone.scale.x /= lateralScale;
       const pelvisRestPosition = bones.get('pelvis')?.position.clone() ?? new THREE.Vector3();
       const restRotations = new Map(
         [...bones].map(([name, bone]) => [name, bone.rotation.clone()]),
       );
       const mixer = new THREE.AnimationMixer(root);
       this.rigs.push({ root, mixer, bones, pelvisRestPosition, restRotations });
-      void kind;
     }
 
     this.materials.push(...this.ownedMaterials);
@@ -368,7 +421,9 @@ export class HumanAvatar extends THREE.Group {
     const bounds = new THREE.Box3().setFromObject(this.modelRoot, true);
     const rawHeight = Math.max(0.1, bounds.max.y - bounds.min.y);
     const scale = this.standingHeight / rawHeight;
-    this.modelRoot.scale.setScalar(scale);
+    // Keep calibrated height/eye line unchanged while narrowing feminine silhouettes;
+    // the head-bone counter-scale preserves natural head size.
+    this.modelRoot.scale.set(scale * lateralScale, scale, scale);
     this.modelRoot.position.y = -bounds.min.y * scale;
     this.modelRoot.updateMatrixWorld(true);
 
@@ -683,6 +738,8 @@ export class HumanAvatar extends THREE.Group {
     }
     for (const material of this.ownedMaterials) material.dispose();
     this.ownedMaterials.clear();
+    for (const geometry of this.ownedGeometries) geometry.dispose();
+    this.ownedGeometries.clear();
     this.materials.length = 0;
     this.rigs.length = 0;
     this.morphMeshes.length = 0;

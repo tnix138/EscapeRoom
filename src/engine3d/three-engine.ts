@@ -3,7 +3,7 @@
 /**
  * three-engine.ts — هسته رندرر Three.js با چرخه حیات امن برای Next.js (علیرضا — موج ۴)
  * - ساخت renderer/scene/camera فقط در مرورگر
- * - resize با ResizeObserver + devicePixelRatio محدود به 2
+ * - resize با ResizeObserver + devicePixelRatio محدود به 1.5 برای کاهش fill-rate در وب
  * - dispose کامل
  * - تشخیص WebGL
  */
@@ -41,7 +41,7 @@ export class ThreeEngine {
       alpha: options.alpha ?? false,
       powerPreference: 'high-performance',
     });
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio ?? 1, 2));
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio ?? 1, 1.5));
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;

@@ -83,7 +83,9 @@ const NAMES = [
   'سارا', 'مریم', 'نیما', 'کیان', 'لیلا', 'توحید', 'امیرعلی', 'علیرضا',
 ] as const;
 
-const HAIR_STYLES: readonly HairStyle[] = ['slick', 'wavy', 'bun', 'short', 'curly', 'long'];
+const FEMININE_SEAT_ORDER = [0, 1, 4] as const;
+const FEMININE_HAIR_STYLES: readonly HairStyle[] = ['long', 'wavy', 'bun', 'curly'];
+const MASCULINE_HAIR_STYLES: readonly HairStyle[] = ['slick', 'short', 'curly', 'wavy'];
 const FACIAL_HAIR: readonly FacialHair[] = ['none', 'stubble', 'none', 'moustache', 'beard', 'none'];
 
 export function hashString(value: string): number {
@@ -147,11 +149,15 @@ export function resolveHumanLook(
   const seedSource = hasSeat ? `seat:${seatIndex}` : `player:${playerId || 'guest'}`;
   const random = makeRandom(hashString(seedSource));
   const seat = hasSeat ? (seatIndex as number) : -1;
-  const feminine = seat >= 0 ? seat === 0 || seat === 1 : random() < 0.4;
+  const feminineSeatRank = FEMININE_SEAT_ORDER.findIndex((index) => index === seat);
+  const feminine = seat >= 0 ? feminineSeatRank !== -1 : random() < 0.4;
 
   const age = seat === 5 ? 0.72 : between(random, 0.06, 0.42);
   const head = baseHead(feminine, random);
-  const style = seat >= 0 ? HAIR_STYLES[seat % HAIR_STYLES.length]! : pick(random, HAIR_STYLES);
+  const hairStyles = feminine ? FEMININE_HAIR_STYLES : MASCULINE_HAIR_STYLES;
+  const style = hasSeat
+    ? hairStyles[(feminine ? feminineSeatRank : seat) % hairStyles.length]!
+    : pick(random, hairStyles);
   const facialHair: FacialHair = feminine
     ? 'none'
     : seat >= 0
@@ -170,7 +176,7 @@ export function resolveHumanLook(
     feminine,
     age,
     heightMeters: calibratedHeightMeters,
-    build: between(random, 0.92, 1.08),
+    build: feminine ? between(random, 0.91, 0.99) : between(random, 0.92, 1.08),
     skinHex: SKIN_TONES[(seat >= 0 ? seat : Math.floor(random() * SKIN_TONES.length)) % SKIN_TONES.length]!,
     hairHex: HAIR_TONES[(seat >= 0 ? seat + 1 : Math.floor(random() * HAIR_TONES.length)) % HAIR_TONES.length]!,
     coatHex: COAT_HEX[(seat >= 0 ? seat : Math.floor(random() * COAT_HEX.length)) % COAT_HEX.length]!,
@@ -187,7 +193,7 @@ export function resolveHumanLook(
     },
     facialHair,
     accessory:
-      seat === 3 ? 'glasses' : seat === 6 ? 'earring' : seat === 7 ? 'pocket-watch' : 'none',
+      seat === 3 ? 'glasses' : seat === 4 ? 'earring' : seat === 7 ? 'pocket-watch' : 'none',
     marks: {
       mole: random() < 0.45,
       freckles: random() < 0.3,

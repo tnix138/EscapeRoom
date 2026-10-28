@@ -17,10 +17,17 @@ interface GlbDocument {
   scene?: number;
   skins?: Array<{ joints: number[] }>;
   meshes?: Array<{
-    primitives?: Array<{ targets?: Array<Record<string, number>> }>;
+    name?: string;
+    primitives?: Array<{
+      attributes?: Record<string, number>;
+      targets?: Array<Record<string, number>>;
+    }>;
     extras?: { targetNames?: string[] };
   }>;
+  accessors?: Array<{ componentType?: number; count?: number; type?: string }>;
   animations?: Array<{ name?: string }>;
+  extensionsUsed?: string[];
+  images?: Array<{ mimeType?: string }>;
 }
 
 function readGlbJson(fileName: string): GlbDocument {
@@ -70,8 +77,10 @@ function glbNodeWorldPosition(model: GlbDocument, nodeName: string): THREE.Vecto
 
 const MODEL_FILES = [
   'body.glb',
-  'coat.glb',
   'boots.glb',
+  'shirt.glb',
+  'jeans.glb',
+  'dress.glb',
   'hair-short.glb',
   'hair-bob.glb',
   'hair-long.glb',
@@ -97,6 +106,19 @@ describe('مدل‌های rigged استاندارد کاراکتر', () => {
     }
   });
 
+  it('مدل‌ها Meshopt/WebP دارند و حجم کل دارایی‌ها زیر ۸ MiB است', () => {
+    const directory = path.resolve(process.cwd(), 'public/models/characters');
+    const totalBytes = MODEL_FILES.reduce((total, file) => total + readFileSync(path.join(directory, file)).byteLength, 0);
+    expect(totalBytes).toBeLessThan(8 * 1024 * 1024);
+
+    for (const file of MODEL_FILES) {
+      const model = readGlbJson(file);
+      expect(model.extensionsUsed, file).toContain('EXT_meshopt_compression');
+      expect(model.extensionsUsed, file).toContain('EXT_texture_webp');
+      expect(model.images?.every((image) => image.mimeType === 'image/webp'), file).toBe(true);
+    }
+  });
+
   it('مدل بدن کلیپ‌های idle/walk/run و مورف‌های چشم/چهره را دارد', () => {
     const body = readGlbJson('body.glb');
     const animationNames = new Set(body.animations?.map((clip) => clip.name));
@@ -109,6 +131,22 @@ describe('مدل‌های rigged استاندارد کاراکتر', () => {
     expect(targetNames).toContain('blink_right');
     expect(targetNames).toContain('face_nose_length_incr');
     expect(targetNames).toContain('face_jaw_width_decr');
+  });
+
+  it('ماسک‌های ناحیهٔ لباس روی مش پوستِ بدن و همان تعداد رأس ذخیره شده‌اند', () => {
+    const body = readGlbJson('body.glb');
+    const base = body.meshes?.find((mesh) => mesh.name === 'base')?.primitives?.[0];
+    const zoneAccessorIndex = base?.attributes?._CCZONE;
+    const positionAccessorIndex = base?.attributes?.POSITION;
+    expect(zoneAccessorIndex).toBeDefined();
+    expect(positionAccessorIndex).toBeDefined();
+
+    const zones = body.accessors?.[zoneAccessorIndex!];
+    const positions = body.accessors?.[positionAccessorIndex!];
+    expect(zones?.type).toBe('SCALAR');
+    expect(zones?.componentType).toBe(5126);
+    expect(zones?.count).toBe(positions?.count);
+    expect(zones?.count).toBeGreaterThan(10_000);
   });
 
   it('تبدیل محور مدل، رو به جلو را به -Z می‌برد و چپ/راست را درست نگه می‌دارد', () => {
