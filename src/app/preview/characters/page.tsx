@@ -1,4 +1,4 @@
-// src/app/preview/characters/page.tsx — پیش‌نمایش کاراکترهای انسان (قبل/بعد + نمای چهره)
+// src/app/preview/characters/page.tsx — پیش‌نمایش آواتار rigged (مقایسه + نمای چهره)
 import CharacterStudio from '@/components/characters/CharacterStudio';
 
 export const metadata = { title: 'استودیوی کاراکترها | تماشاخانه اُرفه‌ئو' };
@@ -16,12 +16,12 @@ export default function CharactersPreviewPage() {
     >
       <header style={{ maxWidth: 1080, margin: '0 auto 16px' }}>
         <h1 style={{ fontSize: '1.35rem', margin: '0 0 6px', color: '#e9d8b4' }}>
-          استودیوی کاراکترها — از مانکن تا انسان
+          استودیوی کاراکترها — از مدل دست‌ساز تا آواتار استاندارد
         </h1>
         <p style={{ margin: 0, fontSize: 13, lineHeight: 2, color: '#a99d8d' }}>
-          همهٔ چهره‌ها رویه‌ای (procedural) ساخته شده‌اند: جمجمهٔ مجسمه‌شده، منافذ و لک پوست،
-          ابروی تاربه‌تار، عنبیهٔ بافت‌دار، پلکِ پلک‌زن، موی رشته‌ای و پارچهٔ بافت‌دار.
-          حالت «قبل/بعد» همان آواتار قدیمی را کنار نسخهٔ جدید می‌گذارد تا تفاوت را در یک نگاه ببینید.
+          مدل جدید از مجموعهٔ محلی GLB با rig مشترک ۵۳ استخوانی، morph targetهای چهره، بافت و
+          انیمیشن استفاده می‌کند. «قبل/بعد» آن را با آواتار رویه‌ای قدیمی مقایسه می‌کند؛
+          نمای نزدیک، صف هشت کاراکتر، ژست قدم‌زدن و سه حالت نور هم برای بررسی در دسترس‌اند.
         </p>
       </header>
       <div style={{ maxWidth: 1080, margin: '0 auto' }}>

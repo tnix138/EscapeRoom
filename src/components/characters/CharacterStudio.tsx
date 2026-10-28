@@ -4,11 +4,10 @@
  * CharacterStudio.tsx — استودیوی زندهٔ کاراکترهای انسانی
  * -----------------------------------------------------------------
  * این صفحه برای همین یک سؤال ساخته شده: «چرا کاراکترها شبیه انسان نیستند؟»
- * - کنار هم گذاشتن مدل قدیمی (کپسول/کره) و مدل جدید (جمجمهٔ مجسمه‌شده + پوست بافت‌دار)
- * - نمای نزدیک چهره برای دیدن پلک، عنبیه، ابروی تاربه‌تار و منافذ پوست
- * - سه نور متفاوت (استودیو/تالار/کوچهٔ شب) تا معلوم شود چقدر از «ربات بودن»
- *   تقصیر نورپردازی و بازتاب محیطی است، نه فقط هندسه
- * - شمارندهٔ زندهٔ FPS و مثلث‌ها برای اینکه زیبایی به قیمت کارایی تمام نشود
+ * - مقایسهٔ آواتار رویه‌ای قدیمی با مدل استاندارد GLB و rig مشترک
+ * - نمای نزدیک چهره برای دیدن بافت‌ها، morph targetها، مو و لباس
+ * - سه نور متفاوت (استودیو/تالار/کوچهٔ شب) برای سنجش خوانایی مدل در صحنه
+ * - شمارندهٔ زندهٔ FPS و مثلث‌ها برای اینکه کیفیت بصری به قیمت کارایی تمام نشود
  */
 
 import { useEffect, useRef, useState } from 'react';
@@ -204,7 +203,8 @@ export default function CharacterStudio() {
     legacyGroup.visible = false;
     scene.add(legacyGroup);
     const legacy = buildLegacyAvatar();
-    legacy.position.x = -COMPARE_RADIUS;
+    // ترتیب RTL رابط کاربری: مدلِ جدید در سمت چپ، مدلِ قبل در سمت راست.
+    legacy.position.x = COMPARE_RADIUS;
     legacyGroup.add(legacy);
 
     const camera = new THREE.PerspectiveCamera(38, 1, 0.05, 60);
@@ -293,11 +293,12 @@ export default function CharacterStudio() {
         avatars.forEach((avatar, index) => {
           if (index === focusIndex) {
             avatar.visible = true;
-            avatar.position.set(COMPARE_RADIUS, 0, 0);
+            avatar.position.set(-COMPARE_RADIUS, 0, 0);
             avatar.rotation.y = Math.PI;
             avatar.update(dt, { speed: 0, pitchDeg: 0 });
           }
         });
+        // מודל ההשוואה הידני פונה ל־-Z; הסיבוב מציב את פניו מול מצלמת +Z.
         legacy.rotation.y = Math.PI;
       }
 
@@ -495,7 +496,7 @@ export default function CharacterStudio() {
                 borderRadius: 6,
               }}
             >
-              بعد: جمجمهٔ مجسمه‌شده + پوست/مو/پارچهٔ بافت‌دار
+              بعد: مدل انسانی GLB + اسکلت ۵۳ استخوانی، بافت و انیمیشن
             </span>
           </div>
         )}

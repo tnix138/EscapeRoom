@@ -124,6 +124,24 @@ describe('فاز ۱۱ — کاراکتر انسانِ باورپذیر (جمجم
     avatar.dispose();
   });
 
+  it('انگشت شست و ابروهای چپ/راست به سمت درستِ بدن قرار دارند', () => {
+    const avatar = new HumanAvatar({ look: DEFAULT_HUMAN_LOOKS[0]! });
+    const leftThumb = avatar.getObjectByName('avatar-thumb-left') as THREE.Group;
+    const rightThumb = avatar.getObjectByName('avatar-thumb-right') as THREE.Group;
+    expect(leftThumb.position.x).toBeLessThan(0);
+    expect(rightThumb.position.x).toBeGreaterThan(0);
+
+    const leftBrow = avatar.getObjectByName('avatar-brow-left') as THREE.InstancedMesh;
+    const rightBrow = avatar.getObjectByName('avatar-brow-right') as THREE.InstancedMesh;
+    const leftMatrix = new THREE.Matrix4();
+    const rightMatrix = new THREE.Matrix4();
+    leftBrow.getMatrixAt(0, leftMatrix);
+    rightBrow.getMatrixAt(0, rightMatrix);
+    expect(new THREE.Vector3().setFromMatrixPosition(leftMatrix).x).toBeLessThan(0);
+    expect(new THREE.Vector3().setFromMatrixPosition(rightMatrix).x).toBeGreaterThan(0);
+    avatar.dispose();
+  });
+
   it('پلک می‌زند، تنفس می‌کند و گام‌برداری دو طرفه است', () => {
     const avatar = new HumanAvatar({ look: DEFAULT_HUMAN_LOOKS[2]! });
     const leftLeg = avatar.getObjectByName('avatar-leg-left')!;

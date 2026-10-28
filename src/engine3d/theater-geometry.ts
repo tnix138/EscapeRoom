@@ -7,8 +7,8 @@
  * - لوستر کریستالیِ هشت‌شاخه (هر شاخه دو چراغ + آویزِ کریستالِ عمودی)
  * - تابلوهای دیواری
  * - شخصیت‌های بزرگسال: رقصنده ایتالیایی و مرد سیاه‌پوش با تناسبات واقعی (قد ۱.۷۵ و ۱.۹۵ متر)
- * - بدون مدل خارجی — همه رویه‌ای با Capsule/Box — لایسنس MIT (Three.js)
- * - مستند منبع: procedural — جایگزین مدل‌های glTF آماده در موج‌های بعد با مجوز CC0/Mixamo
+ * - کاراکترها: مدل rigged استاندارد GLB با پوست و متریال PBR، در کنار هندسهٔ رویه‌ای صحنه
+ * - منبع مدل‌ها و مجوز CC0: public/models/characters/README.md
  */
 
 import * as THREE from 'three';
@@ -146,8 +146,8 @@ function createAdultCharacter(type: 'dancer' | 'darkMan'): THREE.Group {
   const avatar = new HumanAvatar({ look, displayName: look.displayName });
   group.add(avatar);
   group.userData.humanAvatar = avatar;
-  group.userData.leftArm = avatar.getObjectByName('avatar-arm-left');
-  group.userData.rightArm = avatar.getObjectByName('avatar-arm-right');
+  group.userData.leftArm = avatar.getArmControl('left');
+  group.userData.rightArm = avatar.getArmControl('right');
   group.userData.body = avatar.getObjectByName('avatar-body');
   group.userData.height = look.heightMeters;
 
@@ -320,6 +320,9 @@ export function createTheaterGeometry(): TheaterGeometryResult {
   lights.push(moon);
 
   const dispose = () => {
+    // مدل‌های GLB هندسه/بافت مشترک دارند؛ خودِ آواتار فقط متریال‌های اختصاصی را آزاد می‌کند.
+    (dancer.userData.humanAvatar as HumanAvatar | undefined)?.dispose();
+    (darkMan.userData.humanAvatar as HumanAvatar | undefined)?.dispose();
     // هندسه/متریال صندلی‌ها بین هر ۲۰ صندلی مشترک‌اند؛ با Set هرکدام فقط یک‌بار آزاد می‌شوند
     const geometries = new Set<THREE.BufferGeometry>();
     const materials = new Set<THREE.Material>();

@@ -1,10 +1,9 @@
 'use client';
 
-// src/engine3d/presence/RemotePlayer.ts — آواتار بازیکن راه دور روی اسکلت انسانِ واقعی
+// src/engine3d/presence/RemotePlayer.ts — آواتار راه‌دور روی rig استاندارد GLB
 //
-// قرارداد عمومی این کلاس تغییر نکرده است (position/yaw، setSnapshot، update، dispose)
-// تا سالن، کوچه و HUD بدون تغییر کار کنند؛ اما بدنهٔ آواتار حالا از HumanAvatar
-// می‌آید: جمجمهٔ مجسمه‌شده، چشمِ پلک‌زن، موی تاربه‌تار و گام‌برداری با زانو.
+// قرارداد عمومی کلاس (position/yaw، setSnapshot، update، dispose) حفظ شده تا سالن،
+// کوچه و HUD بدون تغییر کار کنند؛ مدل از GLBهای CC0 با اسکلت ۵۳ استخوانی و کلیپ‌های PBR/انیمیشن می‌آید.
 //
 // نگاشت ارتفاع: شبکهٔ حضور یک نقطهٔ «چشم» (y ≈ ۱٫۶۵) می‌فرستد؛ آواتار از کف پا
 // ساخته می‌شود، پس همیشه eyeHeight از y کم می‌شود. اگر قد کاراکتر کوتاه‌تر/بلندتر
@@ -141,8 +140,9 @@ function createNameTag(label: string): RemoteNameTag | null {
 export class RemotePlayer extends THREE.Group {
   readonly playerId: string;
   readonly avatar: HumanAvatar;
-  private readonly eyeHeight: number;
+  private eyeHeight: number;
   private readonly nameTag: RemoteNameTag | null = null;
+  private disposed = false;
   private target: PresenceSnapshot['transform'];
   private targetTimestamp = -Infinity;
   private smoothedSpeed = 0;
@@ -175,6 +175,17 @@ export class RemotePlayer extends THREE.Group {
 
     this.applyTransform(this.target);
     this.lastYaw = this.rotation.y;
+    if (typeof options.eyeHeight !== 'number') {
+      void this.avatar.ready.then(() => {
+        if (this.disposed) return;
+        this.eyeHeight = this.avatar.eyeHeight;
+        this.applyTransform(this.target);
+        this.lastYaw = this.rotation.y;
+        if (this.nameTag) {
+          this.nameTag.sprite.position.y = Math.max(1.86, this.avatar.standingHeight + 0.08);
+        }
+      });
+    }
   }
 
   /** ارتفاع چشم این آواتار از کف پا (متر) */
@@ -240,6 +251,7 @@ export class RemotePlayer extends THREE.Group {
   }
 
   dispose(): void {
+    this.disposed = true;
     this.avatar.dispose();
     if (this.nameTag) {
       this.nameTag.material.dispose();

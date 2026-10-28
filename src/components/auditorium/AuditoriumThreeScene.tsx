@@ -129,10 +129,8 @@ function TheaterCore({ room, elapsedMs = 0, showAllSeats = false, onSeatClick }:
         theater.dancer.rotation.y = Math.sin(t * 0.001) * 0.2 * danceEnergy;
         const rig = theater.dancer.userData.humanAvatar as HumanAvatar | undefined;
         rig?.update(delta, { speed: 0, yawRate: Math.cos(t * 0.001) * 0.2 });
-        const leftArm = theater.dancer.userData.leftArm as THREE.Group | undefined;
-        const rightArm = theater.dancer.userData.rightArm as THREE.Group | undefined;
-        if (leftArm) leftArm.rotation.z = -0.2 + Math.sin(t * 0.002) * 0.5 * danceEnergy;
-        if (rightArm) rightArm.rotation.z = 0.2 - Math.sin(t * 0.002) * 0.35 * danceEnergy;
+        rig?.setArmPose('left', -0.2 + Math.sin(t * 0.002) * 0.5 * danceEnergy);
+        rig?.setArmPose('right', 0.2 - Math.sin(t * 0.002) * 0.35 * danceEnergy);
       }
 
       // مرد سیاه‌پوش — از ثانیه ۳۱؛ محو شدن با شفافیت موادی که واقعاً روی بدن است
@@ -167,6 +165,9 @@ function TheaterCore({ room, elapsedMs = 0, showAllSeats = false, onSeatClick }:
 
     return () => {
       engine.stop();
+      seatedAvatars.forEach((root) => {
+        (root.userData.humanAvatar as HumanAvatar | undefined)?.dispose();
+      });
       if (theaterRef.current) {
         engine.scene.remove(theaterRef.current.group);
         theaterRef.current.dispose();
