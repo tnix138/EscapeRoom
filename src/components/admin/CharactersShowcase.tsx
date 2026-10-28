@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import type { AdminPlayerView } from '@/contracts/admin';
 import { RemotePlayer } from '@/engine3d/presence/RemotePlayer';
+import type { HumanAvatar } from '@/engine3d/characters/human-avatar';
 import {
   createSeatedPlayerCharacter,
   createTheaterGeometry,
@@ -416,6 +417,9 @@ export default function CharactersShowcase({ players }: CharactersShowcaseProps)
       cancelAnimationFrame(rafId);
       observer?.disconnect();
       remoteActors.forEach((a) => a.dispose());
+      seatedActors.forEach((root) => {
+        (root.userData.humanAvatar as HumanAvatar | undefined)?.dispose();
+      });
       theaterHelper?.dispose();
       renderer.dispose();
     };
