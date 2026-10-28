@@ -30,6 +30,14 @@ describe('فاز ۱۱ — کاراکتر انسانِ باورپذیر (جمجم
       ].join('|'),
     );
     expect(new Set(signatures).size).toBe(8);
+    expect([0, 1, 4].every((index) => DEFAULT_HUMAN_LOOKS[index]!.feminine)).toBe(true);
+    expect([0, 1, 4].every((index) => DEFAULT_HUMAN_LOOKS[index]!.build < 1)).toBe(true);
+    expect([2, 3, 5, 6, 7].every((index) => !DEFAULT_HUMAN_LOOKS[index]!.feminine)).toBe(true);
+    expect(DEFAULT_HUMAN_LOOKS[0]!.hair.style).toBe('long');
+    expect(DEFAULT_HUMAN_LOOKS[1]!.hair.style).toBe('wavy');
+    expect(DEFAULT_HUMAN_LOOKS[4]!.hair.style).toBe('bun');
+    expect(DEFAULT_HUMAN_LOOKS[4]!.facialHair).toBe('none');
+    expect(DEFAULT_HUMAN_LOOKS[4]!.accessory).toBe('earring');
 
     const again = resolveHumanLook('seat-3', 3);
     expect(again.head.noseLength).toBe(resolveHumanLook('seat-3', 3).head.noseLength);

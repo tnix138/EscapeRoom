@@ -8,7 +8,7 @@
  * عمداً نسخه‌دار نیست: کش با تغییر نام دارایی‌ها خودبه‌خود تازه می‌شود.
  */
 
-const STATIC_CACHE = 'orfeo-static-v1';
+const STATIC_CACHE = 'orfeo-static-v3';
 const STATIC_PREFIXES = ['/_next/static/', '/icons/', '/audio/', '/models/characters/'];
 
 self.addEventListener('install', (event) => {
